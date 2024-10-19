@@ -6,7 +6,7 @@ Blog api project
 
 ## project setup
 
-```
+```bash
 .
 ├── docs/                                    # Documentation files
 ├── node_modules/                            # Node.js dependencies
