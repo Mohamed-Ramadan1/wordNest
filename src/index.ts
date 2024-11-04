@@ -1,16 +1,8 @@
-import express, { Request, Response } from "express";
-import mongoose from "mongoose";
-import { DB } from "./config/database.config";
+import { connectDatabase } from "./config/database.config";
+import { port } from "./config/server.config";
+import { app } from "./app";
 
-const app = express();
-const port = 3000;
-
-mongoose.connect(DB).then(() => {
-  console.log("Database is connected");
-});
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, TypeScript with Express!");
-});
+connectDatabase();
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
