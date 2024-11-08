@@ -1,8 +1,8 @@
 import app from "./app";
-import { connectDatabase } from "./config/database.config";
-import { port } from "./config/server.config";
 import { v2 as cloudinary } from "cloudinary";
-import { cloudConfig } from "./config/cloudinary.config";
+import { connectDatabase } from "@config/database.config";
+import { port } from "@config/server.config";
+import { cloudConfig } from "@config/cloudinary.config";
 
 cloudinary.config({
   cloud_name: cloudConfig.CLOUD_NAME,
