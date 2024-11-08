@@ -1,7 +1,14 @@
+import app from "./app";
 import { connectDatabase } from "./config/database.config";
 import { port } from "./config/server.config";
+import { v2 as cloudinary } from "cloudinary";
+import { cloudConfig } from "./config/cloudinary.config";
 
-import app from "./app";
+cloudinary.config({
+  cloud_name: cloudConfig.CLOUD_NAME,
+  api_key: cloudConfig.API_KEY,
+  api_secret: cloudConfig.API_SECRET,
+});
 
 // connect database.
 connectDatabase();
