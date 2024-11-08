@@ -1,0 +1,25 @@
+node_modules
+
+logs
+*.log
+
+npm-debug.log*
+
+
+dist
+
+# TypeScript cache
+*.tsbuildinfo
+
+
+.dockerignore
+Dockerfile
+
+# Git
+.git
+.gitignore
+
+.vscode
+
+.DS_Store
+Thumbs.db
