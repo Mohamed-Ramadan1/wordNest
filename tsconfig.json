@@ -11,6 +11,14 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./src",
     "paths": {
+      "@utils/*": ["utils/*"],
+      "@config/*": ["config/*"],
+      "@emails/*": ["emails/*"],
+      "@jobs/*": ["jobs/*"],
+      "@types/*": ["types/*"],
+      "@logging/*": ["logging/*"],
+      "@features/*": ["features/*"],
+      "@errors/*": ["errors/*"],
       "*": ["*", "models/*"]
     }
   },
