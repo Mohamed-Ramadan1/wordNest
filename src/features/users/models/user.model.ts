@@ -2,6 +2,7 @@ import { Schema, Model, model } from "mongoose";
 import { IUser, Roles } from "../interfaces/user.interface";
 import { isEmail } from "validator";
 import bcrypt from "bcryptjs";
+
 const userSchema: Schema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
@@ -54,6 +55,6 @@ userSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-const User: Model<IUser> = model<IUser>("User", userSchema);
+const UserModel: Model<IUser> = model<IUser>("User", userSchema);
 
-export default User;
+export default UserModel;
