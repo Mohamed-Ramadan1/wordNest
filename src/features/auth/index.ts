@@ -1,1 +1,1 @@
-export { default as AuthController } from "./controllers/auth.controller";
+export { default as authRouter } from "./routes/auth.routes";

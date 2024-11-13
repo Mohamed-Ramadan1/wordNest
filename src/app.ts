@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 
 // routes imports
 import { userRouter, userAdminRouter } from "@features/users";
+import { authRouter } from "@features/auth";
 import globalError from "@errors/controller/error.Controller";
 import AppError from "@utils/appError";
 
