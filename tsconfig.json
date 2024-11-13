@@ -18,7 +18,6 @@
       "@types/*": ["types/*"],
       "@logging/*": ["logging/*"],
       "@features/*": ["features/*"],
-      "@errors/*": ["errors/*"],
       "@shared/*": ["shared/*"]
     }
   },

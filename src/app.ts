@@ -3,14 +3,22 @@ import express, { Application, NextFunction, Request, Response } from "express";
 // routes imports
 import { userRouter, userAdminRouter } from "@features/users";
 import { authRouter } from "@features/auth";
-import globalError from "@errors/controller/error.Controller";
+import { globalError } from "@shared/index";
 import AppError from "@utils/appError";
 
 const app: Application = express();
 app.use(express.json());
 
 // Routes
+
+// auth related routes
+app.use("/api/v1/auth", authRouter);
+
+// user related routes
 app.use("/api/v1/users", userRouter);
+
+// admin user related routes
+app.use("/api/v1/admin/users", userAdminRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
