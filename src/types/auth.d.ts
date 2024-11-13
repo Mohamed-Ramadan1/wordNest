@@ -1,4 +1,3 @@
-
 import { IUser } from "@features/users";
 import { Request } from "express";
 
@@ -9,6 +8,13 @@ declare global {
       user?: IUser; // Optional, since not all requests have a user
       headers: {
         authorization?: string; // Optional, since not all requests have an authorization header
+      };
+      body: {
+        email: string;
+        firstName: string;
+        lastName: string;
+
+        password: string;
       };
     }
   }

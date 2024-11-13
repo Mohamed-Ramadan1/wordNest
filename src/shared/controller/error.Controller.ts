@@ -62,7 +62,7 @@ const sendErrorProd = (err: CustomError, res: Response) => {
   }
 };
 
-const globalError = (
+export const globalError = (
   err: CustomError,
   req: Request,
   res: Response,
@@ -82,5 +82,3 @@ const globalError = (
     sendErrorProd(err, res);
   }
 };
-
-export default globalError;

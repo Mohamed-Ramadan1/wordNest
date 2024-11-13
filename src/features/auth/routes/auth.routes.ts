@@ -4,4 +4,6 @@ import AccountRecoveryController from "../controllers/accountRecovery.controller
 
 const router = Router();
 
+router.route("/register").post(AuthController.emailRegister);
+
 export default router;
