@@ -4,7 +4,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import { userRouter, userAdminRouter } from "@features/users";
 import { authRouter } from "@features/auth";
 import { globalError } from "@shared/index";
-import AppError from "@utils/appError";
+import { AppError } from "@utils/index";
 
 const app: Application = express();
 app.use(express.json());

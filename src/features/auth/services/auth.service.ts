@@ -2,7 +2,7 @@
 import { UserModel } from "@features/users";
 
 // utils imports
-import { AppError } from "@utils/index";
+import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
 
 export default class AuthService {
   static async registerWithEmail(

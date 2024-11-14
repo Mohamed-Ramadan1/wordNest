@@ -10,7 +10,7 @@ import { UserModel } from "@features/users";
 import AuthService from "../services/auth.service";
 
 // Utils imports
-import { AppError, catchAsync } from "@utils/index";
+import { AppError, catchAsync, sendResponse } from "@utils/index";
 
 export default class AuthController {
   // Register a new user with Google account.
@@ -28,12 +28,8 @@ export default class AuthController {
         lastName,
         password
       );
+      sendResponse(201, res, { user, status: "success" });
     }
-  );
-
-  // Login a user with Google account.
-  static socialLogin = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {}
   );
 
   // Login a user with email address.
