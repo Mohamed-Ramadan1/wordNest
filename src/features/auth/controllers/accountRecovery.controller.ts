@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import { UserModel } from "@features/users";
 
 // Utils imports
-import { AppError, catchAsync } from "@utils/index";
+import { AppError, catchAsync,  } from "@utils/index";
 
 export default class AccountRecoveryController {
   // Verify user's email address.

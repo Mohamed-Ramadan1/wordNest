@@ -6,6 +6,9 @@ export enum Roles {
   BlogAdmin = "blog-admin",
 }
 
+export const defaultProfilePicture: string =
+  "https://res.cloudinary.com/deqgzvkxp/image/upload/v1718812055/defaultProileImg_j1ilwv.png";
+
 export interface IUser extends Document {
   _id: ObjectId;
   firstName: String;
@@ -17,23 +20,17 @@ export interface IUser extends Document {
   emailResetToken: string;
   emailResetTokenExpiredAt: Date;
   isActive: boolean;
-
   following: number;
   followingIds: ObjectId[];
-
   followers: number;
   followerIds: ObjectId[];
-
   bio: string;
   profilePicture: string;
-
   password: string;
   passwordChangedAt: Date;
   passwordResetToken: string;
   passwordResetTokenExpiredAt: Date;
-
   notificationsEnabled: boolean;
-
   role: Roles[];
   createdAt: Date;
   updatedAt: Date;

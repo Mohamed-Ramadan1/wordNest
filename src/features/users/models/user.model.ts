@@ -1,5 +1,9 @@
 import { Schema, Model, model } from "mongoose";
-import { IUser, Roles } from "../interfaces/user.interface";
+import {
+  IUser,
+  Roles,
+  defaultProfilePicture,
+} from "../interfaces/user.interface";
 import { isEmail } from "validator";
 import bcrypt from "bcryptjs";
 
@@ -31,7 +35,7 @@ const userSchema: Schema = new Schema<IUser>(
     followerIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
     bio: { type: String, default: "" },
-    profilePicture: { type: String, default: "" },
+    profilePicture: { type: String, default: defaultProfilePicture },
 
     password: { type: String, required: true },
     passwordChangedAt: { type: Date, default: null },
