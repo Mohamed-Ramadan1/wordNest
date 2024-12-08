@@ -6,6 +6,7 @@ import {
 } from "../interfaces/user.interface";
 import { isEmail } from "validator";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 const userSchema: Schema = new Schema<IUser>(
   {
@@ -17,15 +18,17 @@ const userSchema: Schema = new Schema<IUser>(
       required: true,
       unique: true,
       index: true,
+      lowercase: true,
       validate: {
         validator: (email: string) => isEmail(email),
         message: "Invalid email format",
       },
     },
-    emailVerificationToken: { type: String, default: null },
+    emailVerificationToken: { type: String },
+    emailVerificationExpires: { type: Date, default: undefined },
     emailVerified: { type: Boolean, default: false },
-    emailResetToken: { type: String, default: null },
-    emailResetTokenExpiredAt: { type: Date, default: null },
+    emailResetToken: { type: String, default: undefined },
+    emailResetTokenExpiredAt: { type: Date, default: undefined },
     isActive: { type: Boolean, default: true },
 
     following: { type: Number, default: 0 },
@@ -37,11 +40,11 @@ const userSchema: Schema = new Schema<IUser>(
     bio: { type: String, default: "" },
     profilePicture: { type: String, default: defaultProfilePicture },
 
-    password: { type: String, required: true },
-    passwordChangedAt: { type: Date, default: null },
-    passwordResetToken: { type: String, default: null },
+    password: { type: String, required: true, select: false },
+    passwordChangedAt: { type: Date, default: undefined },
+    passwordResetToken: { type: String, default: undefined },
 
-    role: {
+    roles: {
       type: [String],
       enum: Object.values(Roles),
       default: [Roles.User],
@@ -59,6 +62,13 @@ userSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
+// add method  to userSchema for verification token  generation.
+userSchema.methods.createEmailVerificationToken = function (): string {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.emailVerificationToken = token;
+  this.emailVerificationExpires = Date.now() + 3600000; // 1 hour
+  return token;
+};
 const UserModel: Model<IUser> = model<IUser>("User", userSchema);
 
 export default UserModel;

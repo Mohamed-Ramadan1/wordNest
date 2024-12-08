@@ -16,6 +16,7 @@ export interface IUser extends Document {
 
   email: string;
   emailVerificationToken: string;
+  emailVerificationExpires: Date;
   emailVerified: boolean;
   emailResetToken: string;
   emailResetTokenExpiredAt: Date;
@@ -31,7 +32,10 @@ export interface IUser extends Document {
   passwordResetToken: string;
   passwordResetTokenExpiredAt: Date;
   notificationsEnabled: boolean;
-  role: Roles[];
+  roles: Roles[];
   createdAt: Date;
   updatedAt: Date;
+
+  createEmailVerificationToken(): string;
+  comparePassword(candidatePassword: string, userPassword: string): boolean;
 }
