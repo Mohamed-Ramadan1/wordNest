@@ -4,6 +4,6 @@ export interface ApiResponse<T> {
   results?: number;
   token?: string;
   data: {
-    data: T;
+    [key: string]: T;
   };
 }

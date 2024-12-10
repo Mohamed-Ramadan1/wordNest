@@ -1,4 +1,5 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import morgan from "morgan";
 
 // routes imports
 import { userRouter, userAdminRouter } from "@features/users";
@@ -7,6 +8,9 @@ import { globalError } from "@shared/index";
 import { AppError } from "@utils/index";
 
 const app: Application = express();
+
+app.use(morgan("dev"));
+
 app.use(express.json());
 
 // Routes

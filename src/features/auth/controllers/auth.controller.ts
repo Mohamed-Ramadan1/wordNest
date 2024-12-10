@@ -4,7 +4,7 @@
 import { NextFunction, Request, Response } from "express";
 
 // Models imports
-import { UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users";
 
 // services imports
 import AuthService from "../services/auth.service";
@@ -12,38 +12,38 @@ import AuthService from "../services/auth.service";
 // Utils imports
 import { AppError, catchAsync, sendResponse } from "@utils/index";
 
-export default class AuthController {
+// interfaces imports
+import { IAuthController } from "../interfaces/authController.interface";
+import { ApiResponse } from "@shared/index";
+
+export default class AuthController implements IAuthController {
   // Register a new user with Google account.
-  static socialRegister = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {}
-  );
+  socialRegister = catchAsync(async (req: Request, res: Response) => {});
 
   // Register a new user with email address.
-  static emailRegister = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const { email, firstName, lastName, password } = req.body;
-      const user = await AuthService.registerWithEmail(
-        email,
-        firstName,
-        lastName,
-        password
-      );
-      sendResponse(201, res, { user, status: "success" });
-    }
-  );
+  emailRegister = catchAsync(async (req: Request, res: Response) => {
+    const { email, firstName, lastName, password } = req.body;
+    const { user, token } = await AuthService.registerWithEmail(
+      email,
+      firstName,
+      lastName,
+      password,
+      res
+    );
+    const re: ApiResponse<IUser> = {
+      status: "success",
+      token,
+      data: { user },
+    };
+    sendResponse(201, res, re);
+  });
 
   // Login a user with email address.
-  static emailLogin = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {}
-  );
+  emailLogin = catchAsync(async (req: Request, res: Response) => {});
 
   // Refresh token.
-  static refreshAccessToken = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {}
-  );
+  refreshAccessToken = catchAsync(async (req: Request, res: Response) => {});
 
   // Logout a user.
-  static logout = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {}
-  );
+  logout = catchAsync(async (req: Request, res: Response) => {});
 }
