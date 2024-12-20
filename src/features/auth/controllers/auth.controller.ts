@@ -17,9 +17,8 @@ import { IAuthController } from "../interfaces/authController.interface";
 import { ApiResponse } from "@shared/index";
 import {
   logSuccessfulLogin,
-  logFailedLogin,
+  logSuccessfulLogout,
 } from "@logging/loggers/authLogger";
-import { logFailedEmailSent } from "@logging/loggers/emailLogger";
 
 export default class AuthController implements IAuthController {
   // Register a new user with Google account.
@@ -41,17 +40,34 @@ export default class AuthController implements IAuthController {
       data: { user },
     };
 
-    logSuccessfulLogin(user.email, req.ip);
-    logFailedEmailSent("Failed", user.email);
     sendResponse(201, res, re);
   });
 
   // Login a user with email address.
-  emailLogin = catchAsync(async (req: Request, res: Response) => {});
+  emailLogin = catchAsync(async (req: Request, res: Response) => {
+    const { token } = await AuthService.loginWithEmail(req.user as IUser, res);
+    const re: ApiResponse<IUser> = {
+      status: "success",
+      message: "User logged in successfully",
+      token,
+    };
+    logSuccessfulLogin(req.user?.email as string, req.ip);
+    sendResponse(200, res, re);
+  });
 
   // Refresh token.
   refreshAccessToken = catchAsync(async (req: Request, res: Response) => {});
 
   // Logout a user.
-  logout = catchAsync(async (req: Request, res: Response) => {});
+  logout = catchAsync(async (req: Request, res: Response) => {
+    const token: string = AuthService.logout(req.user as IUser, res);
+
+    const re: ApiResponse<string> = {
+      status: "success ",
+      message: "User logged out successfully",
+      token,
+    };
+    logSuccessfulLogout(req.user?.email as string, req.ip);
+    sendResponse(200, res, re);
+  });
 }

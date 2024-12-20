@@ -11,11 +11,16 @@ const logger = winston.createLogger({
 });
 
 // Log fail attempts  to send emails to the users
-export function logFailedEmailSent(emailType: string, userEmail: string) {
+export function logFailedEmailSent(
+  emailType: string,
+  userEmail: string,
+  attempts: number
+) {
   logger.error("Failed to send email", {
     event: "email_failed",
     type: emailType,
     user: userEmail,
+    attempts: attempts,
     timestamp: new Date().toISOString(),
   });
 }

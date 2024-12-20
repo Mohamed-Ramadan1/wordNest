@@ -1,5 +1,6 @@
 import Bull, { Queue, Job } from "bull";
 import { sendWelcomeEmail } from "@features/auth/emails/sendWelcomeEmail";
+import { logFailedEmailSent } from "@logging/loggers/emailLogger";
 
 // Initialize the queue
 export const emailQueue: Queue = new Bull("emails", {
@@ -53,6 +54,9 @@ emailQueue.on("failed", (job, err) => {
   );
   console.error(`Job ID: ${job.id} failed`);
   console.error(`Error: ${err.message}`);
+
+  // Log failed email attempt
+  logFailedEmailSent(job.name, job.data.user.email, job.attemptsMade);
 });
 
 // Event: Job stalled

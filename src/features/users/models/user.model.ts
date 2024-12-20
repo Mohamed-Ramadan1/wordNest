@@ -69,6 +69,14 @@ userSchema.methods.createEmailVerificationToken = function (): string {
   this.emailVerificationExpires = Date.now() + 3600000; // 1 hour
   return token;
 };
+
+userSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+  userPassword: string
+): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, userPassword);
+};
+
 const UserModel: Model<IUser> = model<IUser>("User", userSchema);
 
 export default UserModel;

@@ -25,7 +25,10 @@ export function logSuccessfulLogin(
 }
 
 //  Log a failed login
-export function logFailedLogin(userEmail: string, ipAddress: string) {
+export function logFailedLogin(
+  userEmail: string,
+  ipAddress: string | undefined
+) {
   logger.warn("Failed login attempt", {
     event: "login_failed",
     user: userEmail,
@@ -52,6 +55,19 @@ export function logSuccessfulRegister(
 export function logFailedRegister(userEmail: string, ipAddress: string) {
   logger.warn("Failed register attempt", {
     event: "register_failed",
+    user: userEmail,
+    ip: ipAddress,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+// Log a successful logout
+export function logSuccessfulLogout(
+  userEmail: string,
+  ipAddress: string | undefined
+) {
+  logger.info("User logged out successfully", {
+    event: "logout",
     user: userEmail,
     ip: ipAddress,
     timestamp: new Date().toISOString(),

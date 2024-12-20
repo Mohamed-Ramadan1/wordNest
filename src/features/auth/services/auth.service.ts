@@ -10,6 +10,7 @@ import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
 
 //jobs imports
 import { emailQueue } from "@jobs/index";
+import { promises } from "dns";
 
 export default class AuthService {
   static async registerWithEmail(
@@ -38,5 +39,21 @@ export default class AuthService {
     emailQueue.add("welcomeEmail", { user });
 
     return { user, token };
+  }
+
+  static async loginWithEmail(
+    user: IUser,
+    res: Response
+  ): Promise<{ token: string }> {
+    const token: string = await generateAuthToken(user, res);
+
+    return { token };
+  }
+
+  static logout(user: IUser, res: Response): string {
+    const token: string = generateLogOutToken(user, res);
+    res.clearCookie("jwt");
+
+    return token;
   }
 }

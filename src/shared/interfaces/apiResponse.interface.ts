@@ -3,7 +3,7 @@ export interface ApiResponse<T> {
   message?: string;
   results?: number;
   token?: string;
-  data: {
+  data?: {
     [key: string]: T;
   };
 }

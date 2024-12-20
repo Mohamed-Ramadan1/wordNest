@@ -16,9 +16,9 @@ Donation blogers.
 */
 
 /*
-Setup Bull
 Setup Redis
 Setup Cron Jobs (with node corn )
+Setup Elasticsearch
 Setup different testing stages 
 */
 
