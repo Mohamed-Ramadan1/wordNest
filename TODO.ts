@@ -18,7 +18,6 @@ Donation blogers.
 /*
 Setup Bull
 Setup Redis
-Setup Winston
 Setup Cron Jobs (with node corn )
 Setup different testing stages 
 */

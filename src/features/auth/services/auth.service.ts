@@ -19,7 +19,6 @@ export default class AuthService {
     password: string,
     res: Response
   ): Promise<{ user: IUser; token: string }> {
-
     // create a new user with the provided details.
     const user: IUser = new UserModel({
       email,

@@ -15,6 +15,11 @@ import { AppError, catchAsync, sendResponse } from "@utils/index";
 // interfaces imports
 import { IAuthController } from "../interfaces/authController.interface";
 import { ApiResponse } from "@shared/index";
+import {
+  logSuccessfulLogin,
+  logFailedLogin,
+} from "@logging/loggers/authLogger";
+import { logFailedEmailSent } from "@logging/loggers/emailLogger";
 
 export default class AuthController implements IAuthController {
   // Register a new user with Google account.
@@ -35,6 +40,9 @@ export default class AuthController implements IAuthController {
       token,
       data: { user },
     };
+
+    logSuccessfulLogin(user.email, req.ip);
+    logFailedEmailSent("Failed", user.email);
     sendResponse(201, res, re);
   });
 

@@ -17,6 +17,8 @@ export const emailQueue: Queue = new Bull("emails", {
 });
 
 // Process the jobs in the queue
+
+// Job: welcomeEmails - Sends a welcome email to the user
 emailQueue.process("welcomeEmail", async (job: Job) => {
   try {
     console.log(`Processing Job ID: ${job.id}`);
