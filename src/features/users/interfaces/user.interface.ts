@@ -15,8 +15,9 @@ export interface IUser extends Document {
   lastName: string;
 
   email: string;
-  emailVerificationToken: string;
-  emailVerificationExpires: Date;
+  emailVerificationToken: string | undefined;
+  emailVerificationExpires: Date | undefined;
+  emailVerifiedAt: Date;
   emailVerified: boolean;
   emailResetToken: string;
   emailResetTokenExpiredAt: Date;

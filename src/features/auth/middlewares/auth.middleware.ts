@@ -11,7 +11,7 @@ import { AppError, catchAsync, validateDto } from "@utils/index";
 import { RegistrationDto } from "../dtos/registration.dto";
 
 import { LoginDTO } from "../dtos/login.dto";
-import { logFailedLogin } from "@logging/loggers/authLogger";
+import { logFailedLogin } from "@logging/index";
 
 export default class AuthMiddleware {
   public validateRegistration = [

@@ -2,24 +2,24 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
+export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create verification link using environment variable and the generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${user.emailVerificationToken}`;
+    // Create new verification link using environment variable and the newly generated token
+    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/token=${user.emailVerificationToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `Welcome to ${siteName} - Please Verify Your Email`,
+      subject: `New Verification Link for Your ${siteName} Account`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to ${siteName}</title>
+            <title>New Verification Link - ${siteName}</title>
             <style>
                 body {
                     margin: 0;
@@ -53,7 +53,7 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     padding: 30px 20px;
                     background-color: #ffffff;
                 }
-                .welcome-message {
+                .title {
                     font-size: 24px;
                     color: #2c3e50;
                     margin-bottom: 20px;
@@ -80,18 +80,24 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     color: #3498db;
                     margin: 15px 0;
                 }
-                .features-list {
-                    background-color: #f8f9fa;
-                    padding: 20px;
+                .alert {
+                    background-color: #fff3cd;
+                    border: 1px solid #ffeeba;
+                    color: #856404;
+                    padding: 15px;
                     border-radius: 5px;
                     margin: 20px 0;
                 }
-                .features-list ul {
-                    margin: 0;
-                    padding-left: 20px;
+                .alert-title {
+                    font-weight: bold;
+                    margin-bottom: 5px;
                 }
-                .features-list li {
-                    margin: 10px 0;
+                .security-note {
+                    background-color: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                    font-size: 14px;
                 }
                 .footer {
                     text-align: center;
@@ -120,11 +126,11 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="welcome-message">Welcome to ${siteName}, ${user.firstName}!</h2>
+                    <h2 class="title">New Verification Link Requested</h2>
                     
-                    <p>Thank you for joining our community of writers and readers. We're excited to have you on board!</p>
+                    <p>Hello ${user.firstName},</p>
                     
-                    <p>To get started, please verify your email address by clicking the button below:</p>
+                    <p>We received a request for a new verification link for your ${siteName} account. Your previous verification link has expired, but no worries - we've generated a new one for you!</p>
                     
                     <div style="text-align: center;">
                         <a href="${verificationLink}" class="button">Verify Email Address</a>
@@ -135,22 +141,30 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                         ${verificationLink}
                     </div>
                     
-                    <p><strong>Note:</strong> This verification link will expire in 1 hour for security reasons.</p>
+                    <div class="alert">
+                        <div class="alert-title">⚠️ Security Notice</div>
+                        <p>If you did not request this verification link or haven't signed up for ${siteName}, please ignore this email. Your email address may have been entered by mistake.</p>
+                    </div>
                     
-                    <div class="features-list">
-                        <p><strong>With ${siteName}, you can:</strong></p>
+                    <div class="security-note">
+                        <p><strong>Important Information:</strong></p>
                         <ul>
-                            <li>Share your stories with our growing community</li>
-                            <li>Connect with other writers and readers</li>
-                            <li>Customize your profile and start building your following</li>
+                            <li>This new verification link will expire in 1 hour</li>
+                            <li>For security reasons, only the most recent verification link will work</li>
+                            <li>If you need another link, you can request one from the verification page</li>
                         </ul>
                     </div>
                     
-                    <p>If you didn't create an account with ${siteName}, please ignore this email.</p>
+                    <p>Once verified, you'll have full access to all ${siteName} features, including:</p>
+                    <ul>
+                        <li>Creating and publishing blog posts</li>
+                        <li>Following other writers</li>
+                        <li>Engaging with the community</li>
+                    </ul>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
-                    <p>If you have any questions, contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
+                    <p>Questions? Contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
                 </div>
             </div>
         </body>
@@ -161,16 +175,16 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending welcome email:", err.message);
+          console.error("Error sending new verification email:", err.message);
           reject(err);
         } else {
-          console.log("Welcome email sent successfully");
+          console.log("New verification email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendWelcomeEmail:", error);
+    console.error("Error in sendNewVerificationEmail:", error);
     throw error;
   }
 };

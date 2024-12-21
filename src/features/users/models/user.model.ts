@@ -26,6 +26,7 @@ const userSchema: Schema = new Schema<IUser>(
     },
     emailVerificationToken: { type: String },
     emailVerificationExpires: { type: Date, default: undefined },
+    emailVerifiedAt: { type: Date, default: undefined },
     emailVerified: { type: Boolean, default: false },
     emailResetToken: { type: String, default: undefined },
     emailResetTokenExpiredAt: { type: Date, default: undefined },

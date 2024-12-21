@@ -1,6 +1,11 @@
 import Bull, { Queue, Job } from "bull";
-import { sendWelcomeEmail } from "@features/auth/emails/sendWelcomeEmail";
-import { logFailedEmailSent } from "@logging/loggers/emailLogger";
+import {
+  sendWelcomeEmail,
+  sendNewVerificationEmail,
+  sendVerificationSuccessEmail,
+} from "@features/auth/emails";
+import { logFailedEmailSent } from "@logging/index";
+import { EmailQueueType } from "@config/emailQueue.config";
 
 // Initialize the queue
 export const emailQueue: Queue = new Bull("emails", {
@@ -20,7 +25,7 @@ export const emailQueue: Queue = new Bull("emails", {
 // Process the jobs in the queue
 
 // Job: welcomeEmails - Sends a welcome email to the user
-emailQueue.process("welcomeEmail", async (job: Job) => {
+emailQueue.process(EmailQueueType.WelcomeEmail, async (job: Job) => {
   try {
     console.log(`Processing Job ID: ${job.id}`);
     console.log(`Job Data:`, job.data);
@@ -32,6 +37,48 @@ emailQueue.process("welcomeEmail", async (job: Job) => {
     sendWelcomeEmail(user); // Pass the user object to the email-sending function
 
     return `Welcome email successfully sent to ${user.email}`;
+  } catch (err) {
+    console.error(`Error processing job ID ${job.id}:`, err);
+    throw err; // Ensures the job is marked as failed
+  }
+});
+
+// Job: sendAccountVerifiedEmail - Sends an account verified email to the user
+emailQueue.process(
+  EmailQueueType.SendAccountVerifiedEmail,
+  async (job: Job) => {
+    try {
+      console.log(`Processing Job ID: ${job.id}`);
+      console.log(`Job Data:`, job.data);
+
+      // Extract user from job data
+      const { user } = job.data;
+
+      console.log(`Sending account verified email to: ${user.email}`);
+      sendVerificationSuccessEmail(user); // Pass the user object to the email-sending function
+
+      return `Account verified email successfully sent to ${user.email}`;
+    } catch (err) {
+      console.error(`Error processing job ID ${job.id}:`, err);
+      throw err; // Ensures the job is marked as failed
+    }
+  }
+);
+
+// Job: resendVerificationEmail - Re-sends the verification email to the user
+emailQueue.process(EmailQueueType.ResendVerificationEmail, async (job: Job) => {
+  // Logic to resend the verification email to the user
+  try {
+    console.log(`Processing Job ID: ${job.id}`);
+    console.log(`Job Data:`, job.data);
+
+    // Extract user from job data
+    const { user } = job.data;
+
+    console.log(`Resending verification email to: ${user.email}`);
+    sendNewVerificationEmail(user); // Pass the user object to the email-sending function
+
+    return `Verification email successfully resent to ${user.email}`;
   } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
     throw err; // Ensures the job is marked as failed
