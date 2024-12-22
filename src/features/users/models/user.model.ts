@@ -27,7 +27,10 @@ const userSchema: Schema = new Schema<IUser>(
     emailVerificationToken: { type: String },
     emailVerificationExpires: { type: Date, default: undefined },
     emailVerifiedAt: { type: Date, default: undefined },
+    resendVerificationTokenCount: { type: Number, default: 0 },
+    lastVerificationEmailSentAt: { type: Date, default: undefined },
     emailVerified: { type: Boolean, default: false },
+
     emailResetToken: { type: String, default: undefined },
     emailResetTokenExpiredAt: { type: Date, default: undefined },
     isActive: { type: Boolean, default: true },
@@ -43,8 +46,17 @@ const userSchema: Schema = new Schema<IUser>(
 
     password: { type: String, required: true, select: false },
     passwordChangedAt: { type: Date, default: undefined },
-    passwordResetToken: { type: String, default: undefined },
 
+    passwordResetToken: { type: String, default: undefined },
+    passwordResetTokenExpiredAt: {
+      type: Date,
+      default: undefined,
+    },
+    passwordResetRequestsAttempts: {
+      type: Number,
+      default: 0,
+    },
+    passwordLastResetRequestAttemptDate: { type: Date, default: undefined },
     roles: {
       type: [String],
       enum: Object.values(Roles),
@@ -77,6 +89,16 @@ userSchema.methods.comparePassword = async function (
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, userPassword);
 };
+
+// method that generate password reset token and set other related attributes .
+userSchema.methods.createPasswordResetToken = function (): void {
+  this.passwordResetToken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetTokenExpiredAt = Date.now() + 1 * 60 * 60 * 1000;
+  this.passwordResetRequestsAttempts++;
+  this.passwordLastResetRequestAttemptDate = new Date();
+};
+
+// create model from schema
 
 const UserModel: Model<IUser> = model<IUser>("User", userSchema);
 

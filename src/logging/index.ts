@@ -4,6 +4,8 @@ export {
   logFailedRegister,
   logSuccessfulLogout,
   logSuccessfulRegister,
+  logSuccessfulPasswordReset,
+  logFailedPasswordReset,
 } from "./loggers/authLogger";
 
 export {

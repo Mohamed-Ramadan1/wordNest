@@ -14,6 +14,8 @@ declare global {
         firstName: string;
         lastName: string;
         password: string;
+        newPassword?: string;
+        confirmNewPassword?: string;
       };
     }
   }

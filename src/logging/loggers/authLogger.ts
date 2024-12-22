@@ -1,5 +1,6 @@
 import winston from "winston";
 import { jsonFormatter } from "../formatters/jsonFormatter";
+import { ObjectId } from "mongoose";
 
 // Configure Winston logger
 const logger = winston.createLogger({
@@ -70,6 +71,40 @@ export function logSuccessfulLogout(
     event: "logout",
     user: userEmail,
     ip: ipAddress,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+// Log successful request reset password
+export function logSuccessfulPasswordReset(
+  userEmail: string,
+  userId: ObjectId,
+
+  ipAddress: string | undefined
+) {
+  logger.info("User requested password reset successfully", {
+    event: "password_reset",
+    user: userEmail,
+    userID: userId,
+    ip: ipAddress,
+
+    timestamp: new Date().toISOString(),
+  });
+}
+
+// Logo failure request reset password
+export function logFailedPasswordReset(
+  userEmail: string,
+  ipAddress: string | undefined,
+  userId: ObjectId,
+  errorMessage: string
+) {
+  logger.warn("Failed password reset attempt", {
+    event: "password_reset_failed",
+    user: userEmail,
+    userID: userId,
+    ip: ipAddress,
+    error: errorMessage,
     timestamp: new Date().toISOString(),
   });
 }

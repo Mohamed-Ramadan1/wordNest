@@ -3,6 +3,8 @@ import {
   sendWelcomeEmail,
   sendNewVerificationEmail,
   sendVerificationSuccessEmail,
+  sendForgotPasswordEmail,
+  sendPasswordChangedEmail,
 } from "@features/auth/emails";
 import { logFailedEmailSent } from "@logging/index";
 import { EmailQueueType } from "@config/emailQueue.config";
@@ -81,6 +83,45 @@ emailQueue.process(EmailQueueType.ResendVerificationEmail, async (job: Job) => {
     return `Verification email successfully resent to ${user.email}`;
   } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
+
+    throw err; // Ensures the job is marked as failed
+  }
+});
+
+// Job reset password request - send reset password request email to the user email
+emailQueue.process(EmailQueueType.RequestPasswordReset, (job: Job) => {
+  try {
+    console.log(`Processing Job ID: ${job.id}`);
+    console.log(`Job Data:`, job.data);
+
+    // Extract user from job data
+    const { user } = job.data;
+
+    console.log(`Sending password reset request email to: ${user.email}`);
+    sendForgotPasswordEmail(user);
+
+    return `Password reset request email successfully sent to ${user.email}`;
+  } catch (err) {
+    console.error(`Error processing job ID ${job.id}:`, err);
+    throw err; // Ensures the job is marked as failed
+  }
+});
+
+// Job: resetPassword - send confirmation email to the user let him know that the password has been reset successfully.
+emailQueue.process(EmailQueueType.ResetPassword, (job: Job) => {
+  try {
+    console.log(`Processing Job ID: ${job.id}`);
+    console.log(`Job Data:`, job.data);
+
+    // Extract user from job data
+    const { user } = job.data;
+
+    console.log(`Sending password reset confirmation email to: ${user.email}`);
+    sendPasswordChangedEmail(user);
+
+    return `Password reset confirmation email successfully sent to ${user.email}`;
+  } catch (err) {
+    console.error(`Error processing job ID ${job.id}:`, err);
     throw err; // Ensures the job is marked as failed
   }
 });
@@ -101,7 +142,6 @@ emailQueue.on("failed", (job, err) => {
   );
   console.error(`Job ID: ${job.id} failed`);
   console.error(`Error: ${err.message}`);
-
   // Log failed email attempt
   logFailedEmailSent(job.name, job.data.user.email, job.attemptsMade);
 });

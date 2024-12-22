@@ -2,24 +2,23 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
+export const sendPasswordChangedEmail = async (user: IUser): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create new verification link using environment variable and the newly generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${user.emailVerificationToken}`;
+    const loginLink = `${process.env.FRONTEND_URL}/login`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `New Verification Link for Your ${siteName} Account`,
+      subject: `Password Successfully Changed - ${siteName}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>New Verification Link - ${siteName}</title>
+            <title>Password Changed - ${siteName}</title>
             <style>
                 body {
                     margin: 0;
@@ -58,10 +57,15 @@ export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
                     color: #2c3e50;
                     margin-bottom: 20px;
                 }
+                .success-icon {
+                    text-align: center;
+                    font-size: 48px;
+                    margin: 20px 0;
+                }
                 .button {
                     display: inline-block;
                     padding: 14px 28px;
-                    background-color: #3498db;
+                    background-color: #28a745;
                     color: #ffffff !important;
                     text-decoration: none;
                     border-radius: 5px;
@@ -70,20 +74,12 @@ export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
                     transition: background-color 0.3s ease;
                 }
                 .button:hover {
-                    background-color: #2980b9;
-                }
-                .verification-link {
-                    background-color: #f8f9fa;
-                    padding: 15px;
-                    border-radius: 5px;
-                    word-break: break-all;
-                    color: #3498db;
-                    margin: 15px 0;
+                    background-color: #218838;
                 }
                 .alert {
-                    background-color: #fff3cd;
-                    border: 1px solid #ffeeba;
-                    color: #856404;
+                    background-color: #d4edda;
+                    border: 1px solid #c3e6cb;
+                    color: #155724;
                     padding: 15px;
                     border-radius: 5px;
                     margin: 20px 0;
@@ -126,41 +122,32 @@ export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="title">New Verification Link Requested</h2>
+                    <div class="success-icon">✅</div>
+                    <h2 class="title">Password Successfully Changed</h2>
                     
                     <p>Hello ${user.firstName},</p>
                     
-                    <p>We received a request for a new verification link for your ${siteName} account. Your previous verification link has expired, but no worries - we've generated a new one for you!</p>
+                    <p>Your password has been successfully changed. You can now sign in to your account using your new password.</p>
                     
                     <div style="text-align: center;">
-                        <a href="${verificationLink}" class="button">Verify Email Address</a>
-                    </div>
-                    
-                    <p>Or copy and paste this link into your browser:</p>
-                    <div class="verification-link">
-                        ${verificationLink}
+                        <a href="${loginLink}" class="button">Sign In Now</a>
                     </div>
                     
                     <div class="alert">
-                        <div class="alert-title">⚠️ Security Notice</div>
-                        <p>If you did not request this verification link or haven't signed up for ${siteName}, please ignore this email. Your email address may have been entered by mistake.</p>
+                        <div class="alert-title">🔒 Security Information</div>
+                        <p>This change was made on ${new Date().toLocaleString()} from a device that accessed your account.</p>
+                        <p>If you did not make this change, please contact our support team immediately.</p>
                     </div>
                     
                     <div class="security-note">
-                        <p><strong>Important Information:</strong></p>
+                        <p><strong>Account Security Tips:</strong></p>
                         <ul>
-                            <li>This new verification link will expire in 1 hour</li>
-                            <li>For security reasons, only the most recent verification link will work</li>
-                            <li>If you need another link, you can request one from the verification page</li>
+                            <li>Never share your password with anyone</li>
+                            <li>Use unique passwords for different accounts</li>
+                            <li>Enable two-factor authentication for added security</li>
+                            <li>Always sign out when using shared devices</li>
                         </ul>
                     </div>
-                    
-                    <p>Once verified, you'll have full access to all ${siteName} features, including:</p>
-                    <ul>
-                        <li>Creating and publishing blog posts</li>
-                        <li>Following other writers</li>
-                        <li>Engaging with the community</li>
-                    </ul>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
@@ -175,16 +162,16 @@ export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending new verification email:", err.message);
+          console.error("Error sending password changed email:", err.message);
           reject(err);
         } else {
-          console.log("New verification email sent successfully");
+          console.log("Password changed email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendNewVerificationEmail:", error);
+    console.error("Error in sendPasswordChangedEmail:", error);
     throw error;
   }
 };

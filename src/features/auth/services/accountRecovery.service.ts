@@ -20,7 +20,11 @@ import {
   logSuccessfulEmailVerification,
   logSuccessfulEmailResend,
   logFailedEmailResend,
+  logFailedPasswordReset,
+  logSuccessfulPasswordReset,
 } from "@logging/index";
+
+// Account recovery class
 export default class AccountRecoveryService {
   // Verify user's email address.
   static verifyEmail = async (user: IUser): Promise<void> => {
@@ -63,6 +67,8 @@ export default class AccountRecoveryService {
   static resendVerification = async (user: IUser) => {
     try {
       user.createEmailVerificationToken();
+      user.lastVerificationEmailSentAt = new Date();
+      user.resendVerificationTokenCount++;
       await user.save();
       emailQueue.add(EmailQueueType.ResendVerificationEmail, { user });
       // log the successful email resend attempt.
@@ -73,8 +79,82 @@ export default class AccountRecoveryService {
       throw new AppError(err.message, 500);
     }
   };
+
   // Forgot password.
-  static requestPasswordReset = async (email: string) => {};
+  static requestPasswordReset = async (user: IUser, ip: string | undefined) => {
+    const session: ClientSession = await startSession();
+
+    try {
+      session.startTransaction();
+
+      // Generate password reset token
+      user.createPasswordResetToken();
+
+      // Save the user document with the session
+      await user.save({ session });
+
+      // Log successful password reset request
+      logSuccessfulPasswordReset(user.email, user.id, ip);
+
+      // Commit the transaction
+      await session.commitTransaction();
+
+      emailQueue.add(EmailQueueType.RequestPasswordReset, { user });
+    } catch (err: any) {
+      // Log the failed password reset attempt
+      logFailedPasswordReset(
+        user.email,
+        ip,
+        user.id,
+        err.message || "Unknown error"
+      );
+
+      // Abort the transaction if it was started
+      if (session.inTransaction()) {
+        await session.abortTransaction();
+      }
+
+      // Throw a meaningful error
+      throw new AppError(
+        "Password reset request failed. Please try again later.",
+        500
+      );
+    } finally {
+      // End the session
+      session.endSession();
+    }
+  };
   // Reset password.
-  static resetPassword = async (token: string, newPassword: string) => {};
+  static resetPassword = async (
+    user: IUser,
+    newPassword: string,
+    ip: string | undefined
+  ) => {
+    const session: ClientSession = await startSession();
+
+    try {
+      session.startTransaction();
+
+      user.set({
+        password: newPassword,
+        passwordChangedAt: new Date(),
+        passwordResetToken: undefined,
+        passwordResetTokenExpiredAt: undefined,
+        passwordResetRequestsAttempts: 0,
+        passwordLastResetRequestAttemptDate: undefined,
+      });
+
+      await user.save({ session });
+      await session.commitTransaction();
+      emailQueue.add(EmailQueueType.ResetPassword, { user });
+      logSuccessfulPasswordReset(user.email, user.id, ip);
+    } catch (err: any) {
+      await session.abortTransaction();
+      logFailedPasswordReset(user.email, ip, user.id, err.message);
+      // If transaction failed, re-throw the error
+      throw new AppError("Password reset failed. Please try again later.", 500);
+    } finally {
+      session.endSession();
+    }
+  };
 }

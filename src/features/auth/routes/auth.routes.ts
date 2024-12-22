@@ -43,9 +43,17 @@ router
 // forgot password request.
 router
   .route("/password/forgot")
-  .post(AccountRecoveryController.requestPasswordReset);
+  .post(
+    AccountRecoveryMiddleware.validateRequestResetPassword,
+    AccountRecoveryController.requestPasswordReset
+  );
 
 // Reset password.
-router.route("/password/reset").post(AccountRecoveryController.resetPassword);
+router
+  .route("/password/reset/:token")
+  .post(
+    AccountRecoveryMiddleware.validateResetPassword,
+    AccountRecoveryController.resetPassword
+  );
 
 export default router;

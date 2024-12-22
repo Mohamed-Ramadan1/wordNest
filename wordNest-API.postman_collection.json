@@ -1,0 +1,411 @@
+{
+	"info": {
+		"_postman_id": "3a60def7-9c6f-4e77-8817-8557c66c5de6",
+		"name": "wordNest-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31297722"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "Get all users ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete user by id ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/id",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"id"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update user details ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/id",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"id"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user by id ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/id",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"id"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "user",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"mohamedramadan11b@gmail.com\",\n    \"firstName\":\"Mohamed \",\n    \"lastName\":\"Ramadan\",\n    \"password\":\"123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"mohamedramadan11b@gmail.com\",\n    \"password\": \"123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "### Auth Login\n\nThis endpoint is used to authenticate and log in a user.\n\n#### Request Body\n\n- email (text, required): The email address of the user.\n- password (text, required): The password of the user.\n    \n\n#### Response\n\nThe response of this request can be documented as a JSON schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"token\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);",
+									"pm.variables.get(\"variable_key\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "### Auth Logout\n\nThis endpoint is used to log out the user and invalidate the authentication token.\n\n#### Request Body\n\n- No request body is required for this endpoint.\n    \n\n#### Response Body\n\nThe response is in JSON format and includes the following fields:\n\n- `status` (string): Indicates the status of the logout operation.\n- `message` (string): Provides additional information about the logout status.\n- `token` (string): Represents the invalidated authentication token.\n    \n\n#### JSON Schema\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"token\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend verification email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{URL}}/auth/verify-email/resend",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email",
+								"resend"
+							]
+						},
+						"description": "### Auth Verify Email Resend\n\nThis endpoint is used to resend the verification email for the user.\n\n#### Request\n\n- Method: POST\n- URL: {{URL}}/auth/verify-email/resend\n- Body: form-data\n    \n\n#### Request Body Parameters\n\n- No request body parameters were provided for this request.\n    \n\n#### Response\n\nThe response for this request is in JSON format and includes the following fields:\n\n- `status` (string): Indicates the status of the request.\n- `message` (string): Provides additional information or a message related to the request.\n    \n\n#### Response JSON Schema\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/verify-email/token",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-email",
+								"token"
+							]
+						},
+						"description": "## Verify Email\n\nThis endpoint is used to verify the user's email using the provided token.\n\n### Request Body\n\n- token (string, required): The verification token sent to the user's email.\n    \n\n### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"string\",\n  \"message\": \"string\"\n}\n\n ```\n\n- status (string): The status of the verification process.\n- message (string): A message indicating the result of the verification process."
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/password/forgot",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"forgot"
+							]
+						},
+						"description": "\n# Forgot Password\n\nThis endpoint is used to initiate the process of resetting a user's password by sending a reset link to the provided email address.\n\n## Request\n\n- Method: POST\n- URL: {{URL}}/auth/password/forgot\n- Body:\n  - email (string, required): The email address of the user requesting the password reset.\n\n## Response\n\nThe response for this request follows the JSON schema below:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"success\": {\n      \"type\": \"boolean\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n```\n\nThe response object contains the following properties:\n- success (boolean): Indicates whether the password reset request was successful.\n- message (string): A message providing information about the password reset process.\n\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"newPassword\":\"Aa1234567@!\",\n    \"confirmNewPassword\":\"Aa1234567@!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/password/reset/edbe69e331a5508235e942dd06183d2590613f59f58245af90e967f15745312f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"reset",
+								"edbe69e331a5508235e942dd06183d2590613f59f58245af90e967f15745312f"
+							]
+						},
+						"description": "### Reset Password\n\nThis endpoint is used to reset the password by providing a new password and confirming the new password.\n\n#### Request Body\n\n- `newPassword` (string, required): The new password for the user account.\n- `confirmNewPassword` (string, required): The confirmation of the new password.\n    \n\n#### Response\n\n- `status` (string): The status of the password reset operation.\n- `message` (string): A message related to the password reset operation.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+					},
+					"response": []
+				}
+			],
+			"description": "**Auth Collection Description:**\n\nThis collection contains all the API endpoints related to user authentication and authorization. It includes routes for user registration, login, password reset, email verification, and token management. The authentication processes are built to ensure secure access to protected resources within the application.\n\nEndpoints:\n\n- **Registration**: Allows new users to create an account.\n    \n- **Login**: Allows users to authenticate and receive a JWT token.\n    \n- **Password Reset**: Handles user requests to reset their passwords.\n    \n- **Email Verification**: Verifies the email address after registration.\n    \n- **Token Refresh**: Allows users to refresh their JWT tokens.\n    \n\nEnsure you have the necessary environment variables and request bodies configured before testing these endpoints."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
