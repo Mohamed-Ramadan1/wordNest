@@ -2,24 +2,23 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
+export const sendPasswordChangedEmail = async (user: IUser): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create verification link using environment variable and the generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${user.emailVerificationToken}`;
+    const loginLink = `${process.env.FRONTEND_URL}/login`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `Welcome to ${siteName} - Please Verify Your Email`,
+      subject: `Password Successfully Changed - ${siteName}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to ${siteName}</title>
+            <title>Password Changed - ${siteName}</title>
             <style>
                 body {
                     margin: 0;
@@ -53,15 +52,20 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     padding: 30px 20px;
                     background-color: #ffffff;
                 }
-                .welcome-message {
+                .title {
                     font-size: 24px;
                     color: #2c3e50;
                     margin-bottom: 20px;
                 }
+                .success-icon {
+                    text-align: center;
+                    font-size: 48px;
+                    margin: 20px 0;
+                }
                 .button {
                     display: inline-block;
                     padding: 14px 28px;
-                    background-color: #3498db;
+                    background-color: #28a745;
                     color: #ffffff !important;
                     text-decoration: none;
                     border-radius: 5px;
@@ -70,28 +74,26 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     transition: background-color 0.3s ease;
                 }
                 .button:hover {
-                    background-color: #2980b9;
+                    background-color: #218838;
                 }
-                .verification-link {
-                    background-color: #f8f9fa;
+                .alert {
+                    background-color: #d4edda;
+                    border: 1px solid #c3e6cb;
+                    color: #155724;
                     padding: 15px;
-                    border-radius: 5px;
-                    word-break: break-all;
-                    color: #3498db;
-                    margin: 15px 0;
-                }
-                .features-list {
-                    background-color: #f8f9fa;
-                    padding: 20px;
                     border-radius: 5px;
                     margin: 20px 0;
                 }
-                .features-list ul {
-                    margin: 0;
-                    padding-left: 20px;
+                .alert-title {
+                    font-weight: bold;
+                    margin-bottom: 5px;
                 }
-                .features-list li {
-                    margin: 10px 0;
+                .security-note {
+                    background-color: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                    font-size: 14px;
                 }
                 .footer {
                     text-align: center;
@@ -120,37 +122,36 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="welcome-message">Welcome to ${siteName}, ${user.firstName}!</h2>
+                    <div class="success-icon">✅</div>
+                    <h2 class="title">Password Successfully Changed</h2>
                     
-                    <p>Thank you for joining our community of writers and readers. We're excited to have you on board!</p>
+                    <p>Hello ${user.firstName},</p>
                     
-                    <p>To get started, please verify your email address by clicking the button below:</p>
+                    <p>Your password has been successfully changed. You can now sign in to your account using your new password.</p>
                     
                     <div style="text-align: center;">
-                        <a href="${verificationLink}" class="button">Verify Email Address</a>
+                        <a href="${loginLink}" class="button">Sign In Now</a>
                     </div>
                     
-                    <p>Or copy and paste this link into your browser:</p>
-                    <div class="verification-link">
-                        ${verificationLink}
+                    <div class="alert">
+                        <div class="alert-title">🔒 Security Information</div>
+                        <p>This change was made on ${new Date().toLocaleString()} from a device that accessed your account.</p>
+                        <p>If you did not make this change, please contact our support team immediately.</p>
                     </div>
                     
-                    <p><strong>Note:</strong> This verification link will expire in 1 hour for security reasons.</p>
-                    
-                    <div class="features-list">
-                        <p><strong>With ${siteName}, you can:</strong></p>
+                    <div class="security-note">
+                        <p><strong>Account Security Tips:</strong></p>
                         <ul>
-                            <li>Share your stories with our growing community</li>
-                            <li>Connect with other writers and readers</li>
-                            <li>Customize your profile and start building your following</li>
+                            <li>Never share your password with anyone</li>
+                            <li>Use unique passwords for different accounts</li>
+                            <li>Enable two-factor authentication for added security</li>
+                            <li>Always sign out when using shared devices</li>
                         </ul>
                     </div>
-                    
-                    <p>If you didn't create an account with ${siteName}, please ignore this email.</p>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
-                    <p>If you have any questions, contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
+                    <p>Questions? Contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
                 </div>
             </div>
         </body>
@@ -161,16 +162,16 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending welcome email:", err.message);
+          console.error("Error sending password changed email:", err.message);
           reject(err);
         } else {
-          console.log("Welcome email sent successfully");
+          console.log("Password changed email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendWelcomeEmail:", error);
+    console.error("Error in sendPasswordChangedEmail:", error);
     throw error;
   }
 };

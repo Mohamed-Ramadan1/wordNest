@@ -2,24 +2,24 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
+export const sendForgotPasswordEmail = async (user: IUser): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create verification link using environment variable and the generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${user.emailVerificationToken}`;
+    // Create password reset link using environment variable and the reset token
+    const resetPasswordLink = `${process.env.FRONTEND_URL}/reset-password/${user.passwordResetToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `Welcome to ${siteName} - Please Verify Your Email`,
+      subject: `Password Reset Request - ${siteName}`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to ${siteName}</title>
+            <title>Password Reset - ${siteName}</title>
             <style>
                 body {
                     margin: 0;
@@ -53,7 +53,7 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     padding: 30px 20px;
                     background-color: #ffffff;
                 }
-                .welcome-message {
+                .title {
                     font-size: 24px;
                     color: #2c3e50;
                     margin-bottom: 20px;
@@ -72,7 +72,7 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                 .button:hover {
                     background-color: #2980b9;
                 }
-                .verification-link {
+                .reset-link {
                     background-color: #f8f9fa;
                     padding: 15px;
                     border-radius: 5px;
@@ -80,18 +80,32 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     color: #3498db;
                     margin: 15px 0;
                 }
-                .features-list {
-                    background-color: #f8f9fa;
-                    padding: 20px;
+                .alert {
+                    background-color: #fff3cd;
+                    border: 1px solid #ffeeba;
+                    color: #856404;
+                    padding: 15px;
                     border-radius: 5px;
                     margin: 20px 0;
                 }
-                .features-list ul {
-                    margin: 0;
-                    padding-left: 20px;
+                .alert-title {
+                    font-weight: bold;
+                    margin-bottom: 5px;
                 }
-                .features-list li {
-                    margin: 10px 0;
+                .rate-limit-warning {
+                    background-color: #f8d7da;
+                    border: 1px solid #f5c6cb;
+                    color: #721c24;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }
+                .security-note {
+                    background-color: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                    font-size: 14px;
                 }
                 .footer {
                     text-align: center;
@@ -120,37 +134,52 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="welcome-message">Welcome to ${siteName}, ${user.firstName}!</h2>
+                    <h2 class="title">Password Reset Request</h2>
                     
-                    <p>Thank you for joining our community of writers and readers. We're excited to have you on board!</p>
+                    <p>Hello ${user.firstName},</p>
                     
-                    <p>To get started, please verify your email address by clicking the button below:</p>
+                    <p>We received a request to reset the password for your ${siteName} account. To proceed with the password reset, click the button below:</p>
                     
                     <div style="text-align: center;">
-                        <a href="${verificationLink}" class="button">Verify Email Address</a>
+                        <a href="${resetPasswordLink}" class="button">Reset Password</a>
                     </div>
                     
                     <p>Or copy and paste this link into your browser:</p>
-                    <div class="verification-link">
-                        ${verificationLink}
+                    <div class="reset-link">
+                        ${resetPasswordLink}
                     </div>
                     
-                    <p><strong>Note:</strong> This verification link will expire in 1 hour for security reasons.</p>
                     
-                    <div class="features-list">
-                        <p><strong>With ${siteName}, you can:</strong></p>
+                    <div class="rate-limit-warning">
+                        <div class="alert-title">⚠️ Rate Limit Warning</div>
+                     <p><strong>For security reasons</strong>, you can request a password reset only <strong>twice within a 24-hour period</strong>. Please complete the process carefully to ensure uninterrupted access to your account.</p>
+                    </div>
+                    
+                    
+                    <div class="alert">
+                        <div class="alert-title">⚠️ Important Security Notice</div>
+                        <p>If you didn't request a password reset or don't recognize this activity, please ignore this email and ensure your account is secure by:</p>
                         <ul>
-                            <li>Share your stories with our growing community</li>
-                            <li>Connect with other writers and readers</li>
-                            <li>Customize your profile and start building your following</li>
+                            <li>Checking that your password is strong and unique</li>
+                            <li>Enabling two-factor authentication if available</li>
+                            <li>Contacting our support team if you notice any suspicious activity</li>
                         </ul>
                     </div>
                     
-                    <p>If you didn't create an account with ${siteName}, please ignore this email.</p>
+                    <div class="security-note">
+                        <p><strong>Please Note:</strong></p>
+                        <ul>
+                            <li>This password reset link will expire in 1 hour</li>
+                            <li>For security reasons, only the most recent reset link will work</li>
+                            <li>You are limited to 2 password reset requests every 24 hours</li>
+                            <li>After resetting your password, you'll be asked to log in again</li>
+                            <li>Make sure to choose a strong, unique password that you haven't used before</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
-                    <p>If you have any questions, contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
+                    <p>Questions? Contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
                 </div>
             </div>
         </body>
@@ -161,16 +190,16 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending welcome email:", err.message);
+          console.error("Error sending password reset email:", err.message);
           reject(err);
         } else {
-          console.log("Welcome email sent successfully");
+          console.log("Password reset email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendWelcomeEmail:", error);
+    console.error("Error in sendForgotPasswordEmail:", error);
     throw error;
   }
 };

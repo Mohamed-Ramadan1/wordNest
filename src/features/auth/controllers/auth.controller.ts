@@ -1,27 +1,24 @@
 // Purpose: Auth controller for handling authentication requests.
 
 // Import necessary modules and packages  .
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 // Models imports
-import { IUser, UserModel } from "@features/users";
+import { IUser } from "@features/users";
 
 // services imports
 import AuthService from "../services/auth.service";
 
 // Utils imports
-import { AppError, catchAsync, sendResponse } from "@utils/index";
+import { catchAsync, sendResponse } from "@utils/index";
 
 // interfaces imports
 import { IAuthController } from "../interfaces/authController.interface";
 import { ApiResponse } from "@shared/index";
-import {
-  logSuccessfulLogin,
-  logSuccessfulLogout,
-} from "@logging/loggers/authLogger";
+import { logSuccessfulLogin, logSuccessfulLogout } from "@logging/index";
 
 export default class AuthController implements IAuthController {
-  // Register a new user with Google account.
+  // !Register a new user with Google account.(Not implemented)
   socialRegister = catchAsync(async (req: Request, res: Response) => {});
 
   // Register a new user with email address.
@@ -54,9 +51,6 @@ export default class AuthController implements IAuthController {
     logSuccessfulLogin(req.user?.email as string, req.ip);
     sendResponse(200, res, re);
   });
-
-  // Refresh token.
-  refreshAccessToken = catchAsync(async (req: Request, res: Response) => {});
 
   // Logout a user.
   logout = catchAsync(async (req: Request, res: Response) => {

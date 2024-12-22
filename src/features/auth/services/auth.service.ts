@@ -1,16 +1,16 @@
 // modules / packages imports.
-import { isEmail } from "class-validator";
 import { Response } from "express";
-import { omit } from "lodash";
 // Models imports
 import { IUser, UserModel } from "@features/users";
 
 // utils imports
-import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
+import { generateAuthToken, generateLogOutToken } from "@utils/index";
 
 //jobs imports
 import { emailQueue } from "@jobs/index";
-import { promises } from "dns";
+
+// config imports
+import { EmailQueueType } from "@config/emailQueue.config";
 
 export default class AuthService {
   static async registerWithEmail(
@@ -36,7 +36,7 @@ export default class AuthService {
     const token: string = generateAuthToken(user, res);
 
     // add welcome email to the emails-queue.
-    emailQueue.add("welcomeEmail", { user });
+    emailQueue.add(EmailQueueType.WelcomeEmail, { user });
 
     return { user, token };
   }
