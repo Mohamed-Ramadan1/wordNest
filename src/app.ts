@@ -1,6 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-
+import path from "path";
 // routes imports
 import { userRouter, userAdminRouter } from "@features/users";
 import { authRouter } from "@features/auth";
@@ -12,9 +12,9 @@ const app: Application = express();
 app.use(morgan("dev"));
 
 app.use(express.json());
-
-// Routes
-
+//serving static files
+app.use(express.static(path.join(__dirname, "public")));
+// setup security and other related middlewares
 // auth related routes
 app.use("/api/v1/auth", authRouter);
 

@@ -1,0 +1,2 @@
+{"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2024-12-19T18:12:48.459Z","type":"Failed","user":"mohamedramadan11b@gmail.com"}
+{"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2024-12-20T10:00:42.263Z","type":"welcomeEmail","user":"mohamedramadan11b@gmail.com"}

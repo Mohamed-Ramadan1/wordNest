@@ -46,7 +46,6 @@ const userSchema: Schema = new Schema<IUser>(
 
     password: { type: String, required: true, select: false },
     passwordChangedAt: { type: Date, default: undefined },
-
     passwordResetToken: { type: String, default: undefined },
     passwordResetTokenExpiredAt: {
       type: Date,
