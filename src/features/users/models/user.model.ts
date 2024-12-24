@@ -43,7 +43,7 @@ const userSchema: Schema = new Schema<IUser>(
 
     bio: { type: String, default: "" },
     profilePicture: { type: String, default: defaultProfilePicture },
-
+    profilePictureId: { type: String, default: "" },
     password: { type: String, required: true, select: false },
     passwordChangedAt: { type: Date, default: undefined },
     passwordResetToken: { type: String, default: undefined },

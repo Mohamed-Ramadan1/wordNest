@@ -16,3 +16,8 @@ export {
 } from "./loggers/emailsVerificationsLogger";
 
 export { logFailedEmailSent } from "./loggers/emailLogger";
+
+export {
+  logFailedImageDelete,
+  logFailedImageUpload,
+} from "./loggers/cloudinaryLogger";

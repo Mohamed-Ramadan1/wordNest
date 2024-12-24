@@ -1,11 +1,19 @@
 // system imports
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 // models imports
 import UserModel from "../../models/user.model";
+// interfaces imports
+import { IUser } from "@features/users/interfaces/user.interface";
+
+// services imports
+import UserService from "../../services/users/user.service";
 
 // utils imports
-import { catchAsync } from "@utils/index";
+import { catchAsync, sendResponse } from "@utils/index";
+
+// shared interface imports
+import { ApiResponse } from "@shared/index";
 
 export default class UserController {
   /**
@@ -13,7 +21,19 @@ export default class UserController {
    * This involves uploading a new picture and saving the reference to the user's profile.
    */
   public updateProfilePicture = catchAsync(
-    async (req: Request, res: Response) => {}
+    async (req: Request, res: Response) => {
+      const updatedUser = await UserService.updateProfilePicture(
+        req.user as IUser,
+        req.file
+      );
+      const response: ApiResponse<IUser> = {
+        status: "success",
+        message: "Profile picture updated successfully",
+        data: { updatedUser },
+      };
+
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -104,7 +124,7 @@ export default class UserController {
 
   /**
    * Links a social account (e.g., Google, Facebook) to the user's account.
-   * Stores the social account's information for future logins or account recovery.
+   * Stores the social account's information for profile adding .
    */
   public addSocialAccount = catchAsync(
     async (req: Request, res: Response) => {}
@@ -112,7 +132,6 @@ export default class UserController {
 
   /**
    * Removes a linked social account from the user's account.
-   * Ensures the user still has at least one valid login method after removal.
    */
   public removeSocialAccount = catchAsync(
     async (req: Request, res: Response) => {}

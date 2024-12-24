@@ -8,6 +8,7 @@ cloudinary.config({
   cloud_name: cloudConfig.CLOUD_NAME,
   api_key: cloudConfig.API_KEY,
   api_secret: cloudConfig.API_SECRET,
+  timeout: 60000,
 });
 
 // connect database.

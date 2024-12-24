@@ -1,17 +1,29 @@
+// express imports.
 import express, { Application, NextFunction, Request, Response } from "express";
+
+// package imports.
 import morgan from "morgan";
 import path from "path";
-// routes imports
+
+// routes imports from features
 import { userRouter, userAdminRouter } from "@features/users";
 import { authRouter } from "@features/auth";
+
+// error handling middleware
 import { globalError } from "@shared/index";
+
+// utils imports
 import { AppError } from "@utils/index";
 
+// Initialize express app
 const app: Application = express();
 
+// setup logging middleware for requests.
 app.use(morgan("dev"));
 
+// setup body parser middleware(parse incoming request bodies)
 app.use(express.json());
+
 //serving static files
 app.use(express.static(path.join(__dirname, "public")));
 // setup security and other related middlewares

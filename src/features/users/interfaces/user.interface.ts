@@ -29,6 +29,7 @@ export interface IUser extends Document {
   followerIds: ObjectId[];
   bio: string;
   profilePicture: string;
+  profilePictureId: string;
   password: string;
   passwordChangedAt: Date;
   passwordResetToken: string;
