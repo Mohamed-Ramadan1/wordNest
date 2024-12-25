@@ -10,8 +10,9 @@ import crypto from "crypto";
 
 const userSchema: Schema = new Schema<IUser>(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    firstName: { type: String, required: true, max: 20, min: 3 },
+    lastName: { type: String, required: true, max: 20, min: 3 },
+    bio: { type: String, default: "", min: 0, max: 500 },
 
     email: {
       type: String,
@@ -41,7 +42,6 @@ const userSchema: Schema = new Schema<IUser>(
     followers: { type: Number, default: 0 },
     followerIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
-    bio: { type: String, default: "" },
     profilePicture: { type: String, default: defaultProfilePicture },
     profilePictureId: { type: String, default: "" },
     password: { type: String, required: true, select: false },

@@ -30,7 +30,11 @@ router.patch(
   userMiddleware.validateUpdateUserProfilePicture,
   userController.updateProfilePicture
 );
-router.patch("/profile/information", userController.updateProfileInformation);
+router.patch(
+  "/profile/information",
+  userMiddleware.validateUpdateUserProfileInformation,
+  userController.updateProfileInformation
+);
 
 // Password management
 router.patch("/account/password", userController.changeAccountPassword);

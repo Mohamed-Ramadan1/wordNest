@@ -14,6 +14,7 @@ import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
 import { ApiResponse } from "@shared/index";
+import { ObjectId } from "mongoose";
 
 export default class UserController {
   /**
@@ -29,7 +30,7 @@ export default class UserController {
       const response: ApiResponse<IUser> = {
         status: "success",
         message: "Profile picture updated successfully",
-        data: { updatedUser },
+        data: { user: updatedUser },
       };
 
       sendResponse(200, res, response);
@@ -41,7 +42,20 @@ export default class UserController {
    * This function allows partial updates to the user's profile.
    */
   public updateProfileInformation = catchAsync(
-    async (req: Request, res: Response) => {}
+    async (req: Request, res: Response) => {
+      const updatedUser = await UserService.updateProfileInformation(
+        req.user?._id as ObjectId,
+        req.profileInformationToUpdate
+      );
+
+      const response: ApiResponse<IUser> = {
+        status: "success",
+        message: "Profile information updated successfully",
+        data: { user: updatedUser },
+      };
+
+      sendResponse(200, res, response);
+    }
   );
 
   /**
