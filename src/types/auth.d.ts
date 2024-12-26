@@ -16,7 +16,7 @@ declare global {
         password: string;
         newPassword?: string;
         confirmNewPassword?: string;
-        bio?:string;
+        bio?: string;
       };
     }
   }

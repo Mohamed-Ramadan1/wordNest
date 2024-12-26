@@ -6,9 +6,6 @@ import UserModel from "../../models/user.model";
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
-// services imports
-import UserService from "../../services/users/user.service";
-
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 

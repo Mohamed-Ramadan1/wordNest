@@ -1,20 +1,23 @@
-// system imports
+// express imports
 import { Request, Response } from "express";
+
+// mongoose imports
+import { ObjectId } from "mongoose";
 
 // models imports
 import UserModel from "../../models/user.model";
+
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
-
-// services imports
-import UserService from "../../services/users/user.service";
 
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
+// services imports
+import { AccountSettingsService } from "@features/users/services/users/accountSettings.service";
+
 // shared interface imports
 import { ApiResponse } from "@shared/index";
-import { ObjectId } from "mongoose";
 
 export class AccountSettingsController {
   /**
@@ -24,7 +27,16 @@ export class AccountSettingsController {
   //! in progress
   public changeAccountPassword = catchAsync(
     async (req: Request, res: Response) => {
-      // i expected to reciv the old password and the new password
+      await AccountSettingsService.changePassword(
+        req.user as IUser,
+        req.body.newPassword
+      );
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "your password have been changed successfully.",
+      };
+
+      sendResponse(200, res, response);
     }
   );
 

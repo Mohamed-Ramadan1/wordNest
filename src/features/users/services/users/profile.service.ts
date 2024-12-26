@@ -20,7 +20,7 @@ import { cloudinaryQueue } from "@jobs/index";
 // logs imports
 import { logFailedImageUpload } from "@logging/index";
 // dto imports
-import { IFieldsToBeUpdates } from "@features/users/dtos/users.dto";
+import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
 
 export class ProfileService {
   // get current singed in user

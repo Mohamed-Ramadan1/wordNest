@@ -1,34 +1,33 @@
-// core module imports
-import fs from "fs";
-
 // models imports
 import UserModel from "../../models/user.model";
 
 //mongoose imports
-
 import { ClientSession, startSession, ObjectId } from "mongoose";
-// packages imports
-import cloudinary from "cloudinary";
+
+// utils imports
 import { AppError } from "@utils/appError";
+
+// models imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
-// config imports
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
-
-// jobs imports
-import { cloudinaryQueue } from "@jobs/index";
-// logs imports
-import { logFailedImageUpload } from "@logging/index";
-// dto imports
-import { IFieldsToBeUpdates } from "@features/users/dtos/users.dto";
-
 export class AccountSettingsService {
-  static async changePassword(
-    userId: string,
-    oldPassword: string,
-    newPassword: string
-  ) {
-    // Logic to change the account password
+  static async changePassword(user: IUser, newPassword: string): Promise<void> {
+    const session: ClientSession = await startSession();
+    try {
+      session.startTransaction();
+
+      // update user password
+      user.password = newPassword;
+      user.passwordChangedAt = new Date();
+      await user.save({ session });
+
+      await session.commitTransaction();
+    } catch (err: any) {
+      await session.abortTransaction();
+      throw new AppError("Failed to change password", 500);
+    } finally {
+      session.endSession();
+    }
   }
 
   // Account Deletion

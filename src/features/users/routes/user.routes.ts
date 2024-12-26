@@ -10,6 +10,8 @@ import { AccountEmailController } from "../controllers/users/accountEmail.contro
 // middleware imports
 import { protect } from "@shared/index";
 import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
+import { AccountSettingsMiddleware } from "../middlewares/users/accountSettings.middleware";
+
 // multer import
 import { upload } from "@config/multer.config";
 
@@ -45,6 +47,7 @@ router.patch(
 // Password management
 router.patch(
   "/account/password",
+  AccountSettingsMiddleware.validateChangeAccountPassword,
   accountSettingsController.changeAccountPassword
 );
 

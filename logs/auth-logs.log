@@ -43,3 +43,11 @@
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-22T19:56:30.325Z","user":"mohamedramadan11b@gmail.com","userID":"67686e8b6bdd344fb617d901"}
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-22T20:47:32.563Z","user":"mohamedramadan11b@gmail.com","userID":"67686e8b6bdd344fb617d901"}
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-22T20:51:28.024Z","user":"mohamedramadan11b@gmail.com","userID":"67686e8b6bdd344fb617d901"}
+{"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:36:34.590Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-26T16:36:47.864Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:36:59.928Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:37:14.992Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:37:19.470Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:37:46.342Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-26T16:39:25.717Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-26T16:52:40.854Z","user":"mohamedramadan11b@gmail.com"}

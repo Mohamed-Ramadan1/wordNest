@@ -20,7 +20,6 @@ import { cloudinaryQueue } from "@jobs/index";
 // logs imports
 import { logFailedImageUpload } from "@logging/index";
 // dto imports
-import { IFieldsToBeUpdates } from "@features/users/dtos/users.dto";
 
 export class AccountNotificationService {
   // Notifications

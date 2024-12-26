@@ -1,7 +1,7 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
-import { IFieldsToBeUpdates } from "../../dtos/users.dto";
+import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
 
 export class ProfileMiddleware {
   static validateUpdateUserProfilePicture = catchAsync(
