@@ -2,16 +2,22 @@
 import { Router } from "express";
 
 // controller imports
-import UserController from "../controllers/users/user.controller";
+import { ProfileController } from "../controllers/users/profile.controller";
+import { AccountSettingsController } from "../controllers/users/accountSettings.controller";
+import { AccountNotificationController } from "../controllers/users/accountNotification.controller";
+import { AccountEmailController } from "../controllers/users/accountEmail.controller";
 
 // middleware imports
 import { protect } from "@shared/index";
-import { userMiddleware } from "@features/users/middlewares/users/user.middleware";
+import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
 // multer import
 import { upload } from "@config/multer.config";
 
 // Create an instance of UserController
-const userController = new UserController();
+const profileController = new ProfileController();
+const accountSettingsController = new AccountSettingsController();
+const accountNotificationController = new AccountNotificationController();
+const accountEmailController = new AccountEmailController();
 
 // Initialize router
 const router: Router = Router();
@@ -22,59 +28,60 @@ const router: Router = Router();
 router.use(protect);
 
 // Profile management
-router.get("/profile", userController.getProfile);
+router.get("/profile", profileController.getProfile);
 
 router.patch(
   "/profile/picture",
   upload.single("profilePicture"),
-  userMiddleware.validateUpdateUserProfilePicture,
-  userController.updateProfilePicture
+  ProfileMiddleware.validateUpdateUserProfilePicture,
+  profileController.updateProfilePicture
 );
 router.patch(
   "/profile/information",
-  userMiddleware.validateUpdateUserProfileInformation,
-  userController.updateProfileInformation
+  ProfileMiddleware.validateUpdateUserProfileInformation,
+  profileController.updateProfileInformation
 );
 
 // Password management
-router.patch("/account/password", userController.changeAccountPassword);
+router.patch(
+  "/account/password",
+  accountSettingsController.changeAccountPassword
+);
 
 // Account deletion
-router.post("/account/deletion-request", userController.requestAccountDeletion);
+router.post(
+  "/account/deletion-request",
+  accountSettingsController.requestAccountDeletion
+);
 router.delete(
   "/account/confirm-deletion",
-  userController.confirmAccountDeletion
+  accountSettingsController.confirmAccountDeletion
 );
 
 // Account activation/deactivation
-router.post("/account/activate", userController.activateAccount);
-router.post("/account/deactivate", userController.deactivateAccount);
+router.post("/account/activate", accountSettingsController.activateAccount);
+router.post("/account/deactivate", accountSettingsController.deactivateAccount);
 
 // Notification management
 router.post(
   "/account/notifications/enable",
-  userController.enableAccountNotifications
+  accountNotificationController.enableAccountNotifications
 );
 router.post(
   "/account/notifications/disable",
-  userController.disableAccountNotifications
+  accountNotificationController.disableAccountNotifications
 );
 
 // Email change
 router.post(
   "/account/email/change-request",
-  userController.requestAccountEmailChange
+  accountEmailController.requestAccountEmailChange
 );
 router.patch(
   "/account/email/confirm-change",
-  userController.confirmAccountEmailChange
+  accountEmailController.confirmAccountEmailChange
 );
 
-// Social accounts (No need for `protect` as it's already applied globally)
-router.post("/account/social/link", userController.addSocialAccount);
-router.delete("/account/social/unlink", userController.removeSocialAccount);
-
 // Data export
-router.get("/account/export-data", userController.exportAccountData);
 
 export default router;

@@ -2,7 +2,8 @@ import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
 import { IFieldsToBeUpdates } from "../../dtos/users.dto";
-export class userMiddleware {
+
+export class ProfileMiddleware {
   static validateUpdateUserProfilePicture = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       if (!req.file || !req.file.mimetype.startsWith("image/")) {

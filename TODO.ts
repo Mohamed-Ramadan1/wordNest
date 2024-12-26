@@ -98,3 +98,11 @@ Platform Tips & Features Introduction
 
 
 */
+
+/**
+ * 26/12/2024
+ *  Complete user's feature for both users and admins
+ *  create and complete support ticket  feature
+ * setup swagger for API documentation .
+  
+ */
