@@ -5,7 +5,8 @@ import { ChangePasswordDTO } from "@features/users/dtos/changePassword.dto";
 import { validateDto } from "@utils/validate.dto";
 import { IUser } from "@features/users/interfaces/user.interface";
 import UserModel from "@features/users/models/user.model";
-export class AccountSettingsMiddleware {
+
+export class AccountPasswordManagementMiddleware {
   static validateChangeAccountPassword = [
     validateDto(ChangePasswordDTO),
     catchAsync(async (req: Request, res: Response, next: NextFunction) => {

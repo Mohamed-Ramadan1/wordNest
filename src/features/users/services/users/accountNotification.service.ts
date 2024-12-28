@@ -1,6 +1,3 @@
-// core module imports
-import fs from "fs";
-
 // models imports
 import UserModel from "../../models/user.model";
 
@@ -8,26 +5,52 @@ import UserModel from "../../models/user.model";
 
 import { ClientSession, startSession, ObjectId } from "mongoose";
 // packages imports
-import cloudinary from "cloudinary";
+
 import { AppError } from "@utils/appError";
-import { IUser } from "@features/users/interfaces/user.interface";
-
-// config imports
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
-
-// jobs imports
-import { cloudinaryQueue } from "@jobs/index";
-// logs imports
-import { logFailedImageUpload } from "@logging/index";
-// dto imports
 
 export class AccountNotificationService {
   // Notifications
-  static async enableNotifications(userId: string) {
+  static async enableNotifications(userId: ObjectId): Promise<void> {
     // Logic to enable notifications
+    const session: ClientSession = await startSession();
+    try {
+      session.startTransaction();
+      await UserModel.findByIdAndUpdate(
+        userId,
+        { $set: { notificationsEnabled: true } },
+        { session }
+      );
+      await session.commitTransaction();
+    } catch (err: any) {
+      await session.abortTransaction();
+      throw new AppError(
+        "field to enable user notification. please tray again.",
+        500
+      );
+    } finally {
+      session.endSession();
+    }
   }
 
-  static async disableNotifications(userId: string) {
+  static async disableNotifications(userId: ObjectId): Promise<void> {
     // Logic to disable notifications
+    const session: ClientSession = await startSession();
+    try {
+      session.startTransaction();
+      await UserModel.findByIdAndUpdate(
+        userId,
+        { $set: { notificationsEnabled: false } },
+        { session }
+      );
+      await session.commitTransaction();
+    } catch (err: any) {
+      await session.abortTransaction();
+      throw new AppError(
+        "field to disable  user notifications. please tray again.",
+        500
+      );
+    } finally {
+      session.endSession();
+    }
   }
 }

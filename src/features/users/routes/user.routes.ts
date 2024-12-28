@@ -1,25 +1,31 @@
 // express imports
 import { Router } from "express";
 
-// controller imports
-import { ProfileController } from "../controllers/users/profile.controller";
-import { AccountSettingsController } from "../controllers/users/accountSettings.controller";
-import { AccountNotificationController } from "../controllers/users/accountNotification.controller";
-import { AccountEmailController } from "../controllers/users/accountEmail.controller";
+// multer config import
+import { upload } from "@config/multer.config";
 
 // middleware imports
 import { protect } from "@shared/index";
 import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
-import { AccountSettingsMiddleware } from "../middlewares/users/accountSettings.middleware";
+import { AccountPasswordManagementMiddleware } from "../middlewares/users/accountPasswordManagement.middleware";
+import { AccountNotificationMiddleware } from "../middlewares/users/accountNotification.middleware";
 
-// multer import
-import { upload } from "@config/multer.config";
+// controller imports
+import { ProfileController } from "../controllers/users/profile.controller";
+import { AccountNotificationController } from "../controllers/users/accountNotification.controller";
+import { AccountEmailController } from "../controllers/users/accountEmail.controller";
+import { AccountDeletionController } from "../controllers/users/accountDeletion.controller";
+import { AccountPasswordManagementController } from "../controllers/users/accountPasswordManagement.controller";
+import { AccountStatusController } from "../controllers/users/accountStatus.controller";
 
 // Create an instance of UserController
 const profileController = new ProfileController();
-const accountSettingsController = new AccountSettingsController();
+const accountDeletionController = new AccountDeletionController();
 const accountNotificationController = new AccountNotificationController();
+const accountStatusController = new AccountStatusController();
 const accountEmailController = new AccountEmailController();
+const accountPasswordManagementController =
+  new AccountPasswordManagementController();
 
 // Initialize router
 const router: Router = Router();
@@ -47,31 +53,33 @@ router.patch(
 // Password management
 router.patch(
   "/account/password",
-  AccountSettingsMiddleware.validateChangeAccountPassword,
-  accountSettingsController.changeAccountPassword
+  AccountPasswordManagementMiddleware.validateChangeAccountPassword,
+  accountPasswordManagementController.changeAccountPassword
 );
 
 // Account deletion
 router.post(
   "/account/deletion-request",
-  accountSettingsController.requestAccountDeletion
+  accountDeletionController.requestAccountDeletion
 );
 router.delete(
   "/account/confirm-deletion",
-  accountSettingsController.confirmAccountDeletion
+  accountDeletionController.confirmAccountDeletion
 );
 
 // Account activation/deactivation
-router.post("/account/activate", accountSettingsController.activateAccount);
-router.post("/account/deactivate", accountSettingsController.deactivateAccount);
+router.post("/account/activate", accountStatusController.activateAccount);
+router.post("/account/deactivate", accountStatusController.deactivateAccount);
 
 // Notification management
-router.post(
+router.patch(
   "/account/notifications/enable",
+  AccountNotificationMiddleware.validateEnableAccountNotifications,
   accountNotificationController.enableAccountNotifications
 );
-router.post(
+router.patch(
   "/account/notifications/disable",
+  AccountNotificationMiddleware.validateDisableAccountNotifications,
   accountNotificationController.disableAccountNotifications
 );
 

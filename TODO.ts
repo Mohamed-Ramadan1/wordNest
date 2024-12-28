@@ -1,5 +1,4 @@
 /* 
-auth
 likes system
 blogs system
 private groupes 

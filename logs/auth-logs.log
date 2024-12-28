@@ -51,3 +51,4 @@
 {"event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","timestamp":"2024-12-26T16:37:46.342Z","user":"mohamedramadan11b@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-26T16:39:25.717Z","user":"mohamedramadan11b@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-26T16:52:40.854Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-28T14:03:37.938Z","user":"mohamedramadan11b@gmail.com","userID":"677004c5f3c3a60e06db49a5"}
