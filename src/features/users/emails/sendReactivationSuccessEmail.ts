@@ -2,26 +2,26 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendDeactivationConfirmationEmail = async (
+export const sendReactivationSuccessEmail = async (
   user: IUser
 ): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create confirmation link
-    const confirmationLink = `${process.env.FRONTEND_URL}/confirm-deactivation/${user.deactivationAccountToken}`;
+    // Create login link
+    const loginLink = `${process.env.FRONTEND_URL}/login`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `${siteName} - Confirm Your Account Deactivation Request`,
+      subject: `${siteName} - Your Account Has Been Successfully Reactivated`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Confirm Account Deactivation</title>
+            <title>Account Successfully Reactivated</title>
             <style>
                 body {
                     margin: 0;
@@ -60,10 +60,22 @@ export const sendDeactivationConfirmationEmail = async (
                     color: #2c3e50;
                     margin-bottom: 20px;
                 }
+                .success-icon {
+                    text-align: center;
+                    margin: 20px 0;
+                    font-size: 48px;
+                }
+                .welcome-message {
+                    text-align: center;
+                    font-size: 20px;
+                    color: #27ae60;
+                    margin: 20px 0;
+                    font-weight: 500;
+                }
                 .button {
                     display: inline-block;
                     padding: 14px 28px;
-                    background-color: #e74c3c;
+                    background-color: #27ae60;
                     color: #ffffff !important;
                     text-decoration: none;
                     border-radius: 5px;
@@ -72,34 +84,19 @@ export const sendDeactivationConfirmationEmail = async (
                     transition: background-color 0.3s ease;
                 }
                 .button:hover {
-                    background-color: #c0392b;
+                    background-color: #219a52;
                 }
-                .confirmation-link {
-                    background-color: #f8f9fa;
-                    padding: 15px;
-                    border-radius: 5px;
-                    word-break: break-all;
-                    color: #e74c3c;
-                    margin: 15px 0;
-                }
-                .warning-info {
-                    background-color: #fff3cd;
-                    border: 1px solid #ffeeba;
-                    color: #856404;
-                    padding: 20px;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                }
-                .security-info {
-                    background-color: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                }
-                .reactivation-info {
+                .success-box {
                     background-color: #e8f5e9;
                     border: 1px solid #c8e6c9;
                     color: #2e7d32;
+                    padding: 20px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                    text-align: center;
+                }
+                .next-steps {
+                    background-color: #f8f9fa;
                     padding: 20px;
                     border-radius: 5px;
                     margin: 20px 0;
@@ -131,50 +128,39 @@ export const sendDeactivationConfirmationEmail = async (
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="message-title">Confirm Account Deactivation</h2>
+                    <div class="success-icon">
+                        ✅
+                    </div>
+                    
+                    <h2 class="message-title">Welcome Back!</h2>
                     
                     <p>Hello ${user.firstName},</p>
-                    
-                    <p>We received a request to deactivate your ${siteName} account. To ensure the security of your account, we need you to confirm this action.</p>
-                    
-                    <div class="warning-info">
-                        <p><strong>Important:</strong> Once confirmed, your account will be deactivated and you will need to go through the reactivation process to access it again.</p>
+
+                    <div class="welcome-message">
+                        We're so happy to see you here again! 🎉
                     </div>
                     
-                    <p>If you wish to proceed with account deactivation, please click the button below:</p>
-                    
-                    <div style="text-align: center;">
-                        <a href="${confirmationLink}" class="button">Confirm Deactivation</a>
+                    <div class="success-box">
+                        <h3>Your account has been successfully reactivated!</h3>
+                        <p>You can now access all your account features and services. We've missed having you as part of our community!</p>
                     </div>
                     
-                    <p>Or copy and paste this link into your browser:</p>
-                    <div class="confirmation-link">
-                        ${confirmationLink}
-                    </div>
-                    
-                    <div class="reactivation-info">
-                        <p><strong>Reactivation Information:</strong></p>
-                        <p>If you wish to reactivate your account in the future:</p>
+                    <div class="next-steps">
+                        <h3>Next Steps:</h3>
                         <ul>
-                            <li>Try to log in with your existing email and password</li>
-                            <li>You'll automatically receive a reactivation link via email</li>
-                            <li>The reactivation link will be valid for 1 hour</li>
-                            <li>You have 4 attempts to request a reactivation link every 48 hours</li>
-                            <li>Click the link and log in again with your credentials to reactivate your account</li>
+                            <li>Log in using your existing email and password</li>
+                            <li>Review your account settings and preferences</li>
+                            <li>Update your security settings if needed</li>
                         </ul>
                     </div>
                     
-                    <div class="security-info">
-                        <p><strong>Security Information:</strong></p>
-                        <ul>
-                            <li>This confirmation link will expire in 1 hour.</li>
-                            <li>If you didn't request this deactivation, please change your password immediately and contact our support team.</li>
-                            <li>For security reasons, the deactivation process cannot be undone instantly. You'll need to wait for the reactivation process if you change your mind.</li>
-                             <li>Please not that your only have 5 attempts to deactivation requests peer-48 hours for security matters.</li>
-                            </ul>
+                    <div style="text-align: center;">
+                        <a href="${loginLink}" class="button">Log In Now</a>
                     </div>
                     
-                    <p>If you did not request to deactivate your account, please ignore this email and ensure your account security.</p>
+                    <p style="margin-top: 30px;">If you have any questions or need assistance, our support team is here to help. Don't hesitate to reach out to us.</p>
+                    
+                    <p>Thank you for being a part of the ${siteName} community again. We look forward to providing you with the best possible experience!</p>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
@@ -190,18 +176,18 @@ export const sendDeactivationConfirmationEmail = async (
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
           console.error(
-            "Error sending deactivation confirmation email:",
+            "Error sending reactivation success email:",
             err.message
           );
           reject(err);
         } else {
-          console.log("Deactivation confirmation email sent successfully");
+          console.log("Reactivation success email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendDeactivationConfirmationEmail:", error);
+    console.error("Error in sendReactivationSuccessEmail:", error);
     throw error;
   }
 };

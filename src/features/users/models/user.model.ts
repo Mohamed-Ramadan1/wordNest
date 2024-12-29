@@ -34,7 +34,16 @@ const userSchema: Schema = new Schema<IUser>(
 
     emailResetToken: { type: String, default: undefined },
     emailResetTokenExpiredAt: { type: Date, default: undefined },
+
     isActive: { type: Boolean, default: true },
+    deactivationAccountToken: { type: String, default: undefined },
+    deactivationAccountTokenExpiredAt: { type: Date, default: undefined },
+    lastDeactivationRequestAt: { type: Date, default: undefined },
+    deactivationRequestCount: { type: Number, default: 0 },
+    reactivationAccountToken: { type: String, default: undefined },
+    reactivationAccountTokenExpiredAt: { type: Date, default: undefined },
+    lastReactivationRequestAt: { type: Date, default: undefined },
+    reactivationRequestCount: { type: Number, default: 0 },
 
     following: { type: Number, default: 0 },
     followingIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
@@ -97,8 +106,25 @@ userSchema.methods.createPasswordResetToken = function (): void {
   this.passwordLastResetRequestAttemptDate = new Date();
 };
 
-// create model from schema
+// method to generate deactivation token and assign it to the user.
+userSchema.methods.createDeactivationAccountToken = function (): void {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.deactivationAccountToken = token;
+  this.deactivationAccountTokenExpiredAt = Date.now() + 3600000; // 1 hour
+  this.lastDeactivationRequestAt = new Date();
+  this.deactivationRequestCount++;
+};
 
+// method to generate reactivation token and assign it to the user.
+userSchema.methods.createReactivationAccountToken = function (): void {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.reactivationAccountToken = token;
+  this.reactivationAccountTokenExpiredAt = Date.now() + 3600000; // 1 hour
+  this.lastReactivationRequestAt = new Date();
+  this.reactivationRequestCount++;
+};
+
+// create model from schema
 const UserModel: Model<IUser> = model<IUser>("User", userSchema);
 
 export default UserModel;

@@ -45,7 +45,7 @@ export default class AuthService {
     user: IUser,
     res: Response
   ): Promise<{ token: string }> {
-    const token: string = await generateAuthToken(user, res);
+    const token: string = generateAuthToken(user, res);
 
     return { token };
   }

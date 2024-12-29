@@ -21,3 +21,12 @@ export {
   logFailedImageDelete,
   logFailedImageUpload,
 } from "./loggers/cloudinaryLogger";
+
+export {
+  logSuccessfulAccountDeactivationConfirmation,
+  logFailedAccountDeactivationConfirmation,
+  logFailedAccountDeactivationRequest,
+  logSuccessfulAccountDeactivationRequest,
+  logFailedAccountActivation,
+  logSuccessfulAccountActivation,
+} from "./loggers/accountStatus";

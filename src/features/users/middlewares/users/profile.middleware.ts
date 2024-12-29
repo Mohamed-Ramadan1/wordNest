@@ -2,6 +2,7 @@ import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
+import fs from "fs";
 
 export class ProfileMiddleware {
   static validateUpdateUserProfilePicture = catchAsync(
@@ -9,6 +10,14 @@ export class ProfileMiddleware {
       if (!req.file || !req.file.mimetype.startsWith("image/")) {
         return next(new AppError("Please provide a image", 400));
       }
+
+      if (req.file.size > 1024 * 1024 * 2) {
+        // delete the old image from the public storage
+        await fs.promises.unlink(req.file.path);
+
+        return next(new AppError("Image size should not exceed 2MB", 400));
+      }
+
       next();
     }
   );

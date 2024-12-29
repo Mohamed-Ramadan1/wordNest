@@ -6,7 +6,7 @@ import UserModel from "../../models/user.model";
 
 //mongoose imports
 
-import { ClientSession, startSession, ObjectId } from "mongoose";
+import { ObjectId } from "mongoose";
 // packages imports
 import cloudinary from "cloudinary";
 import { AppError } from "@utils/appError";
@@ -38,10 +38,8 @@ export class ProfileService {
     pictureData: any
   ): Promise<IUser> {
     // Logic to update profile picture.
-    const session: ClientSession = await startSession();
 
     try {
-      session.startTransaction();
       const uploadedImage: cloudinary.UploadApiResponse | null =
         await cloudinary.v2.uploader.upload(pictureData.path);
 
@@ -67,47 +65,35 @@ export class ProfileService {
           profilePicture: uploadedImage.secure_url,
           profilePictureId: uploadedImage.public_id,
         },
-        { new: true, session }
+        { new: true }
       )) as IUser;
-
-      // commit transaction
-      await session.commitTransaction();
 
       // return the updated user.
       return updatedUser;
     } catch (err: any) {
       console.log(err);
-      await session.abortTransaction();
       throw new AppError("Fail to upload image", 500);
-    } finally {
-      session.endSession();
     }
   }
 
+  // update profile information for the user
   static async updateProfileInformation(
     userId: ObjectId,
     updatedField: IFieldsToBeUpdates
   ): Promise<IUser> {
-    const session: ClientSession = await startSession();
-
     try {
-      session.startTransaction();
       const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
         userId,
         updatedField,
-        { new: true, session }
+        { new: true }
       );
       if (!updatedUser) {
         throw new AppError("User not found", 404);
       }
 
-      await session.commitTransaction();
       return updatedUser;
     } catch (err: any) {
-      await session.abortTransaction();
       throw new AppError("Fail to update user information", 500);
-    } finally {
-      session.endSession();
     }
   }
 }

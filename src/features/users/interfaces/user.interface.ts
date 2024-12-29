@@ -23,6 +23,15 @@ export interface IUser extends Document {
   lastVerificationEmailSentAt: Date;
   emailResetTokenExpiredAt: Date;
   isActive: boolean;
+  deactivationAccountToken: string | undefined;
+  deactivationAccountTokenExpiredAt: Date | undefined;
+  lastDeactivationRequestAt: Date | undefined;
+  deactivationRequestCount: number;
+  reactivationAccountToken: string | undefined;
+  reactivationAccountTokenExpiredAt: Date | undefined;
+  lastReactivationRequestAt: Date | undefined;
+  reactivationRequestCount: number;
+
   following: number;
   followingIds: ObjectId[];
   followers: number;
@@ -40,8 +49,9 @@ export interface IUser extends Document {
   roles: Roles[];
   createdAt: Date;
   updatedAt: Date;
-
   createEmailVerificationToken(): string;
   createPasswordResetToken(): void;
+  createDeactivationAccountToken(): void;
+  createReactivationAccountToken(): void;
   comparePassword(candidatePassword: string, userPassword: string): boolean;
 }

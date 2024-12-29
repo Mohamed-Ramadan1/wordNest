@@ -6,6 +6,15 @@ import {
   sendForgotPasswordEmail,
   sendPasswordChangedEmail,
 } from "@features/auth/emails";
+
+//emails from users feature
+import {
+  sendDeactivationConfirmationEmail,
+  sendDeactivationAccountSuccess,
+  sendReactivationConfirmationEmail,
+  sendReactivationSuccessEmail,
+} from "@features/users/emails";
+
 import { logFailedEmailSent } from "@logging/index";
 import { EmailQueueType } from "@config/emailQueue.config";
 
@@ -16,6 +25,11 @@ const emailHandlers = {
   [EmailQueueType.ResendVerificationEmail]: sendNewVerificationEmail,
   [EmailQueueType.RequestPasswordReset]: sendForgotPasswordEmail,
   [EmailQueueType.ResetPassword]: sendPasswordChangedEmail,
+  [EmailQueueType.DeactivateAccountRequest]: sendDeactivationConfirmationEmail,
+  [EmailQueueType.DeactivateAccountConfirmation]:
+    sendDeactivationAccountSuccess,
+  [EmailQueueType.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
+  [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
 };
 
 // Initialize the queue

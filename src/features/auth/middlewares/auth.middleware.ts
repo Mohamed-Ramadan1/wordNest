@@ -12,6 +12,8 @@ import { RegistrationDto } from "../dtos/registration.dto";
 
 import { LoginDTO } from "../dtos/login.dto";
 import { logFailedLogin } from "@logging/index";
+import { emailQueue } from "@jobs/index";
+import { EmailQueueType } from "@config/emailQueue.config";
 
 export default class AuthMiddleware {
   public validateRegistration = [
@@ -36,9 +38,43 @@ export default class AuthMiddleware {
         "+password"
       );
 
-      if (!user || !(await user.comparePassword(password, user.password))) {
+      if (!user || !user.comparePassword(password, user.password)) {
         logFailedLogin(email, req.ip);
         throw new AppError("Invalid email or password", 401);
+      }
+
+      if (!user.isActive) {
+        // Check if user has reached max attempts (4) and needs to wait
+        if (user.reactivationRequestCount >= 4) {
+          const lastRequestDate = user.lastReactivationRequestAt;
+          const hoursElapsed = lastRequestDate
+            ? Math.abs(new Date().getTime() - lastRequestDate.getTime()) /
+              (1000 * 60 * 60)
+            : 0;
+
+          if (hoursElapsed < 48) {
+            throw new AppError(
+              `Your account is inactive. You've reached the maximum reactivation attempts. ` +
+                `Please wait ${Math.ceil(48 - hoursElapsed)} hours before trying again. ` +
+                `If you haven't received the emails, check your spam folder or contact support.`,
+              401
+            );
+          }
+          // Reset counter if 48 hours have passed
+          user.reactivationRequestCount = 0;
+        }
+
+        // Use existing schema method to generate token and update counts
+        user.createReactivationAccountToken();
+        await user.save({ validateBeforeSave: false });
+
+        // Add email to queue
+        await emailQueue.add(EmailQueueType.ReactivateAccountConfirm, { user });
+
+        throw new AppError(
+          "Account is deactivated. We've sent you an email with instructions to reactivate your account.",
+          401
+        );
       }
 
       req.user = user;
