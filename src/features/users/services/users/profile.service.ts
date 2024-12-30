@@ -16,11 +16,17 @@ import { IUser } from "@features/users/interfaces/user.interface";
 import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
 
 // jobs imports
-import { cloudinaryQueue } from "@jobs/index";
+import {
+  cloudinaryQueue,
+  resourceCleanupQueue,
+  ResourceCleanupQueueType,
+} from "@jobs/index";
 // logs imports
 import { logFailedImageUpload } from "@logging/index";
 // dto imports
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
+
+// queue imports
 
 export class ProfileService {
   // get current singed in user
@@ -48,8 +54,11 @@ export class ProfileService {
         throw new AppError("Failed to upload profile picture", 500);
       }
 
-      // delete the old image from the public storage
-      await fs.promises.unlink(pictureData.path);
+      // add job delete the old image from the local storage to job queue
+      resourceCleanupQueue.add(ResourceCleanupQueueType.DeleteLocalFiles, {
+        resourcePath: pictureData.path,
+        resource: "profile picture",
+      });
 
       // delete the image from the cloudinary storage with queue job
       if (user.profilePictureId) {

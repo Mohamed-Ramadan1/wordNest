@@ -2,7 +2,8 @@ import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
-import fs from "fs";
+// jobs imports
+import { resourceCleanupQueue, ResourceCleanupQueueType } from "@jobs/index";
 
 export class ProfileMiddleware {
   static validateUpdateUserProfilePicture = catchAsync(
@@ -12,8 +13,11 @@ export class ProfileMiddleware {
       }
 
       if (req.file.size > 1024 * 1024 * 2) {
-        // delete the old image from the public storage
-        await fs.promises.unlink(req.file.path);
+        // add job delete the old image from the local storage to job queue
+        resourceCleanupQueue.add(ResourceCleanupQueueType.DeleteLocalFiles, {
+          resourcePath: req.file.path,
+          resource: "profile picture",
+        });
 
         return next(new AppError("Image size should not exceed 2MB", 400));
       }

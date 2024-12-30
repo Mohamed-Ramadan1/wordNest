@@ -54,3 +54,4 @@
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-28T14:03:37.938Z","user":"mohamedramadan11b@gmail.com","userID":"677004c5f3c3a60e06db49a5"}
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","timestamp":"2024-12-29T15:05:02.019Z","user":"mohamedramadan11b@gmail.com","userID":"677004c5f3c3a60e06db49a5"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-29T15:51:02.809Z","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","timestamp":"2024-12-30T11:43:03.454Z","user":"mohamedramadan11b@gmail.com"}
