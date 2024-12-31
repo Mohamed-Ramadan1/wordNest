@@ -10,7 +10,7 @@ import { ProfileMiddleware } from "@features/users/middlewares/users/profile.mid
 import { AccountPasswordManagementMiddleware } from "../middlewares/users/accountPasswordManagement.middleware";
 import { AccountNotificationMiddleware } from "../middlewares/users/accountNotification.middleware";
 import { AccountStatusMiddleware } from "../middlewares/users/accountStatus.middleware";
-
+import { AccountDeletionMiddleware } from "../middlewares/users/accountDeletion.middleware";
 // controller imports
 import { ProfileController } from "../controllers/users/profile.controller";
 import { AccountNotificationController } from "../controllers/users/accountNotification.controller";
@@ -62,11 +62,13 @@ router.patch(
 router.post(
   "/account/deletion-request",
   protect,
+  AccountDeletionMiddleware.validateRequestAccountDeletion,
   accountDeletionController.requestAccountDeletion
 );
 router.delete(
   "/account/confirm-deletion",
   protect,
+  AccountDeletionMiddleware.validateConfirmAccountDeletion,
   accountDeletionController.confirmAccountDeletion
 );
 

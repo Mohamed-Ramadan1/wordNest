@@ -13,6 +13,8 @@ import {
   sendDeactivationAccountSuccess,
   sendReactivationConfirmationEmail,
   sendReactivationSuccessEmail,
+  sendDeletionAccountSuccess,
+  sendDeletionConfirmationEmail,
 } from "@features/users/emails";
 
 import { logFailedEmailSent } from "@logging/index";
@@ -30,6 +32,8 @@ const emailHandlers = {
     sendDeactivationAccountSuccess,
   [EmailQueueType.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
   [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
+  [EmailQueueType.DeleteAccountRequest]: sendDeletionConfirmationEmail,
+  [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
 };
 
 // Initialize the queue
@@ -64,7 +68,7 @@ const processEmailJob = async (job: Job) => {
     await emailHandler(user);
 
     return `${job.name} email successfully sent to ${user.email}`;
-  } catch (err) {
+  } catch (err) { 
     console.error(`Error processing job ID ${job.id}:`, err);
     throw err;
   }

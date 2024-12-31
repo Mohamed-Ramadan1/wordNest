@@ -10,8 +10,18 @@ import crypto from "crypto";
 
 const userSchema: Schema = new Schema<IUser>(
   {
-    firstName: { type: String, required: true, max: 20, min: 3 },
-    lastName: { type: String, required: true, max: 20, min: 3 },
+    firstName: {
+      type: String,
+      required: [true, "First name is required"],
+      minlength: [3, "First name must be at least 3 characters"],
+      maxlength: [20, "First name must be less than 20 characters"],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Last name is required"],
+      minlength: [3, "Last name must be at least 3 characters"],
+      maxlength: [20, "Last name must be less than 20 characters"],
+    },
     bio: { type: String, default: "", min: 0, max: 500 },
 
     email: {
@@ -45,6 +55,12 @@ const userSchema: Schema = new Schema<IUser>(
     lastReactivationRequestAt: { type: Date, default: undefined },
     reactivationRequestCount: { type: Number, default: 0 },
 
+    deleteAccountRequestToken: { type: String, default: undefined },
+    deleteAccountRequestTokenExpiredAt: { type: Date, default: undefined },
+    deleteAccountRequestCount: { type: Number, default: 0 },
+    lastDeleteAccountRequestAt: { type: Date, default: undefined },
+    deleteAccountConfirmedAt: { type: Date, default: undefined },
+
     following: { type: Number, default: 0 },
     followingIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
 
@@ -76,10 +92,12 @@ const userSchema: Schema = new Schema<IUser>(
   { timestamps: true }
 );
 
-// hash the user password
+userSchema.index({ email: 1, isActive: 1 });
+
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = bcrypt.hashSync(this.password, 10);
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 
@@ -122,6 +140,15 @@ userSchema.methods.createReactivationAccountToken = function (): void {
   this.reactivationAccountTokenExpiredAt = Date.now() + 3600000; // 1 hour
   this.lastReactivationRequestAt = new Date();
   this.reactivationRequestCount++;
+};
+
+// method to generate delete account request token and assign it to the user.
+userSchema.methods.createDeleteAccountRequestToken = function (): void {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.deleteAccountRequestToken = token;
+  this.deleteAccountRequestTokenExpiredAt = Date.now() + 1 * 60 * 60 * 1000;
+  this.lastDeleteAccountRequestAt = new Date();
+  this.deleteAccountRequestCount++;
 };
 
 // create model from schema

@@ -32,6 +32,12 @@ export interface IUser extends Document {
   lastReactivationRequestAt: Date | undefined;
   reactivationRequestCount: number;
 
+  deleteAccountRequestToken: string | undefined;
+  deleteAccountRequestTokenExpiredAt: Date | undefined;
+  deleteAccountRequestCount: number | undefined;
+  lastDeleteAccountRequestAt: Date | undefined;
+  deleteAccountConfirmedAt: Date | undefined;
+
   following: number;
   followingIds: ObjectId[];
   followers: number;

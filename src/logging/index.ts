@@ -30,3 +30,10 @@ export {
   logFailedAccountActivation,
   logSuccessfulAccountActivation,
 } from "./loggers/accountStatus";
+
+export {
+  logFailedAccountDeletionConfirmation,
+  logFailedAccountDeletionRequest,
+  logSuccessfulAccountDeletionConfirmation,
+  logSuccessfulAccountDeletionRequest,
+} from "./loggers/accountDeletionLogger";
