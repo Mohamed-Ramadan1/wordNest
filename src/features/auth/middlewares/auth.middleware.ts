@@ -43,6 +43,14 @@ export default class AuthMiddleware {
         throw new AppError("Invalid email or password", 401);
       }
 
+      // check if user account is to be deleted
+      if (user.userAccountToBeDeleted) {
+        throw new AppError(
+          "This account is in the grace period for deletion. Please contact support to restore your account.",
+          401
+        );
+      }
+
       if (!user.isActive) {
         // Check if user has reached max attempts (4) and needs to wait
         if (user.reactivationRequestCount >= 4) {
