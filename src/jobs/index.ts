@@ -6,3 +6,8 @@ export {
   ResourceCleanupQueueType,
   resourceCleanupQueue,
 } from "./queues/resourceCleanupQueue";
+
+export {
+  DeleteUserAccountQueueType,
+  deleteUserAccountQueue,
+} from "./queues/deleteUserAccountQueue";

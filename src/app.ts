@@ -14,6 +14,7 @@ import { globalError } from "@shared/index";
 
 // utils imports
 import { AppError } from "@utils/index";
+require("events").setMaxListeners(20);
 
 // Initialize express app
 const app: Application = express();
@@ -27,6 +28,7 @@ app.use(express.json());
 //serving static files
 app.use(express.static(path.join(__dirname, "public")));
 // setup security and other related middlewares
+
 // auth related routes
 app.use("/api/v1/auth", authRouter);
 

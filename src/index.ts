@@ -1,3 +1,6 @@
+import { EventEmitter } from "events";
+EventEmitter.defaultMaxListeners = 20;
+
 import app from "./app";
 import { v2 as cloudinary } from "cloudinary";
 import { connectDatabase } from "@config/database.config";

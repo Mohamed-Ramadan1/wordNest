@@ -66,8 +66,7 @@ router.post(
   accountDeletionController.requestAccountDeletion
 );
 router.delete(
-  "/account/confirm-deletion",
-  protect,
+  "/account/confirm-deletion/:token",
   AccountDeletionMiddleware.validateConfirmAccountDeletion,
   accountDeletionController.confirmAccountDeletion
 );

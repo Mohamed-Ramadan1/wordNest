@@ -60,6 +60,8 @@ const userSchema: Schema = new Schema<IUser>(
     deleteAccountRequestCount: { type: Number, default: 0 },
     lastDeleteAccountRequestAt: { type: Date, default: undefined },
     deleteAccountConfirmedAt: { type: Date, default: undefined },
+    userAccountToBeDeleted: { type: Boolean, default: false },
+    userAccountDeletedAt: { type: Date, default: undefined },
 
     following: { type: Number, default: 0 },
     followingIds: [{ type: Schema.Types.ObjectId, ref: "User" }],

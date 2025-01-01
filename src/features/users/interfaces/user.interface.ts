@@ -37,6 +37,8 @@ export interface IUser extends Document {
   deleteAccountRequestCount: number | undefined;
   lastDeleteAccountRequestAt: Date | undefined;
   deleteAccountConfirmedAt: Date | undefined;
+  userAccountToBeDeleted: boolean;
+  userAccountDeletedAt: Date | undefined;
 
   following: number;
   followingIds: ObjectId[];
@@ -59,5 +61,6 @@ export interface IUser extends Document {
   createPasswordResetToken(): void;
   createDeactivationAccountToken(): void;
   createReactivationAccountToken(): void;
+  createDeleteAccountRequestToken(): void;
   comparePassword(candidatePassword: string, userPassword: string): boolean;
 }

@@ -36,6 +36,7 @@ export function logSuccessfulAccountDeletionRequest(
 export function logFailedAccountDeletionRequest(
   userEmail: string,
   ipAddress: string,
+  userId: ObjectId,
   error: Error
 ) {
   logger.error("Account deletion request failed", {
@@ -56,7 +57,8 @@ export function logSuccessfulAccountDeletionConfirmation(
   userId: ObjectId,
   userJoinedAt: Date,
   confirmedAt: Date,
-  requestedAt: Date
+  requestedAt: Date,
+  actualDeletionDate: Date
 ) {
   logger.info("Account deleted successfully", {
     event: "account_deletion",
@@ -67,7 +69,9 @@ export function logSuccessfulAccountDeletionConfirmation(
     confirmedAt,
     ipAddress,
     requestedAt,
+    actualDeletionDate,
     service: "AccountService",
+
     timestamp: new Date().toISOString(),
   });
 }

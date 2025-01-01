@@ -43,7 +43,7 @@ export const emailQueue: Queue = new Bull("emails", {
     host: "localhost",
   },
   defaultJobOptions: {
-    attempts: 3,
+    attempts: 5,
     backoff: {
       type: "exponential",
       delay: 5000,
@@ -68,7 +68,7 @@ const processEmailJob = async (job: Job) => {
     await emailHandler(user);
 
     return `${job.name} email successfully sent to ${user.email}`;
-  } catch (err) { 
+  } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
     throw err;
   }
@@ -76,7 +76,7 @@ const processEmailJob = async (job: Job) => {
 
 // Register processors for each email type
 Object.keys(emailHandlers).forEach((emailType) => {
-  emailQueue.process(emailType, processEmailJob);
+  emailQueue.process(emailType, 1, processEmailJob);
 });
 
 // Queue event handlers

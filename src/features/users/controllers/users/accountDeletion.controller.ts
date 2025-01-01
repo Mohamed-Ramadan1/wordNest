@@ -20,7 +20,10 @@ export class AccountDeletionController {
    */
   public requestAccountDeletion = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountDeletionService.requestAccountDeletion(req.user as IUser);
+      await AccountDeletionService.requestAccountDeletion(
+        req.user as IUser,
+        req.ip
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message:
@@ -36,23 +39,16 @@ export class AccountDeletionController {
    */
   public confirmAccountDeletion = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountDeletionService.confirmAccountDeletion(req.user as IUser);
+      await AccountDeletionService.confirmAccountDeletion(
+        req.user as IUser,
+        req.ip
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message:
-          "Account deletion confirmed. Your account has been deleted successfully.",
+          "Account deletion confirmed. Your account has been deleted successfully for some more information please review your email address..",
       };
       sendResponse(200, res, response);
     }
   );
 }
-
-/**
- * user will request deletion of account
- * user will recive account with information about deletion and the information about the deletion process and the consequences of deleting the account
- *user will confirm the dlg deletion 
-
-  * user will have attribute to request deletion of the account the delete operation will created as job and added to new job queue called accountDeleteQueue
- * create send email to virifay the action 
- * handel the case of the middleware and its related actions 
- *  */
