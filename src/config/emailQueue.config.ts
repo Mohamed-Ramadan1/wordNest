@@ -5,4 +5,10 @@ export enum EmailQueueType {
   SendAccountVerifiedEmail = "sendAccountVerifiedEmail",
   RequestPasswordReset = "requestPasswordReset",
   ResetPassword = "resetPassword",
+  DeactivateAccountRequest = "deactivateAccountRequest",
+  DeactivateAccountConfirmation = "deactivateAccountConfirmation",
+  ReactivateAccountConfirm = "reactivateAccountConfirm",
+  ReactivateAccountSuccess = "reactivateAccountSuccess",
+  DeleteAccountRequest = "deleteAccountRequest",
+  DeleteAccountConfirm = "deleteAccountConfirm",
 }

@@ -40,6 +40,14 @@ export const protect = catchAsync(
         new AppError("The user belonging to this token no longer exists", 401)
       );
     }
+    // check if user account is to be deleted
+    if (user.userAccountToBeDeleted) {
+      throw new AppError(
+        "This account is in the grace period for deletion. Please contact support to restore your account.",
+        401
+      );
+    }
+
     if (user.isActive === false) {
       return next(
         new AppError(

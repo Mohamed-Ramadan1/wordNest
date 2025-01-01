@@ -6,4 +6,5 @@ export { IUser } from "./interfaces/user.interface";
 
 // routes exports
 export { default as userRouter } from "./routes/user.routes";
+
 export { default as userAdminRouter } from "./routes/userAdmin.routes";

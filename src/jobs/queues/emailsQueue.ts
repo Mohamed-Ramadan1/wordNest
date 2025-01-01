@@ -6,8 +6,35 @@ import {
   sendForgotPasswordEmail,
   sendPasswordChangedEmail,
 } from "@features/auth/emails";
+
+//emails from users feature
+import {
+  sendDeactivationConfirmationEmail,
+  sendDeactivationAccountSuccess,
+  sendReactivationConfirmationEmail,
+  sendReactivationSuccessEmail,
+  sendDeletionAccountSuccess,
+  sendDeletionConfirmationEmail,
+} from "@features/users/emails";
+
 import { logFailedEmailSent } from "@logging/index";
 import { EmailQueueType } from "@config/emailQueue.config";
+
+// Map email types to their corresponding sending functions
+const emailHandlers = {
+  [EmailQueueType.WelcomeEmail]: sendWelcomeEmail,
+  [EmailQueueType.SendAccountVerifiedEmail]: sendVerificationSuccessEmail,
+  [EmailQueueType.ResendVerificationEmail]: sendNewVerificationEmail,
+  [EmailQueueType.RequestPasswordReset]: sendForgotPasswordEmail,
+  [EmailQueueType.ResetPassword]: sendPasswordChangedEmail,
+  [EmailQueueType.DeactivateAccountRequest]: sendDeactivationConfirmationEmail,
+  [EmailQueueType.DeactivateAccountConfirmation]:
+    sendDeactivationAccountSuccess,
+  [EmailQueueType.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
+  [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
+  [EmailQueueType.DeleteAccountRequest]: sendDeletionConfirmationEmail,
+  [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
+};
 
 // Initialize the queue
 export const emailQueue: Queue = new Bull("emails", {
@@ -16,140 +43,68 @@ export const emailQueue: Queue = new Bull("emails", {
     host: "localhost",
   },
   defaultJobOptions: {
-    attempts: 3, // Retry failed jobs up to 3 times
+    attempts: 5,
     backoff: {
-      type: "exponential", // Exponential backoff strategy
-      delay: 5000, // Initial delay of 5 seconds
+      type: "exponential",
+      delay: 5000,
     },
   },
 });
 
-// Process the jobs in the queue
-
-// Job: welcomeEmails - Sends a welcome email to the user
-emailQueue.process(EmailQueueType.WelcomeEmail, async (job: Job) => {
+// Generic email processor function
+const processEmailJob = async (job: Job) => {
   try {
     console.log(`Processing Job ID: ${job.id}`);
     console.log(`Job Data:`, job.data);
 
-    // Extract user from job data
     const { user } = job.data;
+    const emailHandler = emailHandlers[job.name as EmailQueueType];
 
-    console.log(`Sending welcome email to: ${user.email}`);
-    sendWelcomeEmail(user); // Pass the user object to the email-sending function
-
-    return `Welcome email successfully sent to ${user.email}`;
-  } catch (err) {
-    console.error(`Error processing job ID ${job.id}:`, err);
-    throw err; // Ensures the job is marked as failed
-  }
-});
-
-// Job: sendAccountVerifiedEmail - Sends an account verified email to the user
-emailQueue.process(
-  EmailQueueType.SendAccountVerifiedEmail,
-  async (job: Job) => {
-    try {
-      console.log(`Processing Job ID: ${job.id}`);
-      console.log(`Job Data:`, job.data);
-
-      // Extract user from job data
-      const { user } = job.data;
-
-      console.log(`Sending account verified email to: ${user.email}`);
-      sendVerificationSuccessEmail(user); // Pass the user object to the email-sending function
-
-      return `Account verified email successfully sent to ${user.email}`;
-    } catch (err) {
-      console.error(`Error processing job ID ${job.id}:`, err);
-      throw err; // Ensures the job is marked as failed
+    if (!emailHandler) {
+      throw new Error(`No handler found for email type: ${job.name}`);
     }
-  }
-);
 
-// Job: resendVerificationEmail - Re-sends the verification email to the user
-emailQueue.process(EmailQueueType.ResendVerificationEmail, async (job: Job) => {
-  // Logic to resend the verification email to the user
-  try {
-    console.log(`Processing Job ID: ${job.id}`);
-    console.log(`Job Data:`, job.data);
+    console.log(`Sending ${job.name} email to: ${user.email}`);
+    await emailHandler(user);
 
-    // Extract user from job data
-    const { user } = job.data;
-
-    console.log(`Resending verification email to: ${user.email}`);
-    sendNewVerificationEmail(user); // Pass the user object to the email-sending function
-
-    return `Verification email successfully resent to ${user.email}`;
+    return `${job.name} email successfully sent to ${user.email}`;
   } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
-
-    throw err; // Ensures the job is marked as failed
+    throw err;
   }
+};
+
+// Register processors for each email type
+Object.keys(emailHandlers).forEach((emailType) => {
+  emailQueue.process(emailType, 1, processEmailJob);
 });
 
-// Job reset password request - send reset password request email to the user email
-emailQueue.process(EmailQueueType.RequestPasswordReset, (job: Job) => {
-  try {
-    console.log(`Processing Job ID: ${job.id}`);
-    console.log(`Job Data:`, job.data);
+// Queue event handlers
+const setupQueueEvents = (queue: Queue) => {
+  queue.on("completed", (job, result) => {
+    console.log(
+      "---------------------------------------------------------------------"
+    );
+    console.log(`Job ID: ${job.id} completed`);
+    console.log(`Result: ${result}`);
+  });
 
-    // Extract user from job data
-    const { user } = job.data;
+  queue.on("failed", (job, err) => {
+    console.error(
+      "---------------------------------------------------------------------"
+    );
+    console.error(`Job ID: ${job.id} failed`);
+    console.error(`Error: ${err.message}`);
+    logFailedEmailSent(job.name, job.data.user.email, job.attemptsMade);
+  });
 
-    console.log(`Sending password reset request email to: ${user.email}`);
-    sendForgotPasswordEmail(user);
+  queue.on("stalled", (job) => {
+    console.warn(
+      "---------------------------------------------------------------------"
+    );
+    console.warn(`Job ID: ${job.id} stalled. Re-attempting...`);
+  });
+};
 
-    return `Password reset request email successfully sent to ${user.email}`;
-  } catch (err) {
-    console.error(`Error processing job ID ${job.id}:`, err);
-    throw err; // Ensures the job is marked as failed
-  }
-});
-
-// Job: resetPassword - send confirmation email to the user let him know that the password has been reset successfully.
-emailQueue.process(EmailQueueType.ResetPassword, (job: Job) => {
-  try {
-    console.log(`Processing Job ID: ${job.id}`);
-    console.log(`Job Data:`, job.data);
-
-    // Extract user from job data
-    const { user } = job.data;
-
-    console.log(`Sending password reset confirmation email to: ${user.email}`);
-    sendPasswordChangedEmail(user);
-
-    return `Password reset confirmation email successfully sent to ${user.email}`;
-  } catch (err) {
-    console.error(`Error processing job ID ${job.id}:`, err);
-    throw err; // Ensures the job is marked as failed
-  }
-});
-
-// Event: Job completed
-emailQueue.on("completed", (job, result) => {
-  console.log(
-    "---------------------------------------------------------------------"
-  );
-  console.log(`Job ID: ${job.id} completed`);
-  console.log(`Result: ${result}`);
-});
-
-// Event: Job failed
-emailQueue.on("failed", (job, err) => {
-  console.error(
-    "---------------------------------------------------------------------"
-  );
-  console.error(`Job ID: ${job.id} failed`);
-  console.error(`Error: ${err.message}`);
-  // Log failed email attempt
-  logFailedEmailSent(job.name, job.data.user.email, job.attemptsMade);
-});
-
-// Event: Job stalled
-emailQueue.on("stalled", (job) => {
-  console.warn(
-    "---------------------------------------------------------------------"
-  );
-  console.warn(`Job ID: ${job.id} stalled. Re-attempting...`);
-});
+// Setup queue events
+setupQueueEvents(emailQueue);
