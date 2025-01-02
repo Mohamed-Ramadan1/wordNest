@@ -7,7 +7,7 @@ export const sendNewVerificationEmail = async (user: IUser): Promise<void> => {
     const transport = createMailTransporter();
 
     // Create new verification link using environment variable and the newly generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${user.emailVerificationToken}`;
+    const verificationLink = `${process.env.FRONTEND_URL}/auth/verify-email/${user.emailVerificationToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

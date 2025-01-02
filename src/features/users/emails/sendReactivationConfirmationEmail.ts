@@ -9,7 +9,7 @@ export const sendReactivationConfirmationEmail = async (
     const transport = createMailTransporter();
 
     // Create reactivation link
-    const reactivationLink = `${process.env.FRONTEND_URL}/confirm-reactivation/${user.reactivationAccountToken}`;
+    const reactivationLink = `${process.env.FRONTEND_URL}/users/account/activate/${user.reactivationAccountToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

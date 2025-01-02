@@ -37,3 +37,5 @@ export {
   logSuccessfulAccountDeletionConfirmation,
   logSuccessfulAccountDeletionRequest,
 } from "./loggers/accountDeletionLogger";
+
+export * as changeAccountEmailLogger from "./loggers/changeAccountEmailLogger";

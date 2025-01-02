@@ -7,19 +7,22 @@ export enum DeleteUserAccountQueueType {
 }
 
 // Initialize the queue
-export const deleteUserAccountQueue: Queue = new Bull("emails", {
-  redis: {
-    port: 6379,
-    host: "localhost",
-  },
-  defaultJobOptions: {
-    attempts: 5,
-    backoff: {
-      type: "exponential",
-      delay: 5000,
+export const deleteUserAccountQueue: Queue = new Bull(
+  "deleteUserAccountQueue",
+  {
+    redis: {
+      port: 6379,
+      host: "localhost",
     },
-  },
-});
+    defaultJobOptions: {
+      attempts: 5,
+      backoff: {
+        type: "exponential",
+        delay: 5000,
+      },
+    },
+  }
+);
 
 // Generic email processor function
 const processDeleteUserAccountJob = async (job: Job) => {

@@ -32,6 +32,21 @@ export interface IUser extends Document {
   lastReactivationRequestAt: Date | undefined;
   reactivationRequestCount: number;
 
+  changeEmailRequestToken: string | undefined;
+  changeEmailVerificationTokenExpiresAt: Date | undefined;
+  changeEmailRequestCount: number;
+  lastChangeEmailRequestAt: Date | undefined;
+
+  tempChangedEmail: string | undefined;
+  tempChangeEmailVerificationToken: string | undefined;
+  tempChangedEmailVerificationTokenSentAt: Date | undefined;
+  tempChangedEmailVerificationTokenExpiresAt: Date | undefined;
+  tempChangedEmailVerificationTokenCount: number;
+  tempChangedEmailVerifiedAt: Date | undefined;
+
+  previousEmails: { email: string; changedAt: Date }[];
+  emailChangeLockedUntil: Date | undefined;
+
   deleteAccountRequestToken: string | undefined;
   deleteAccountRequestTokenExpiredAt: Date | undefined;
   deleteAccountRequestCount: number | undefined;
@@ -40,27 +55,42 @@ export interface IUser extends Document {
   userAccountToBeDeleted: boolean;
   userAccountDeletedAt: Date | undefined;
 
+  // Social attributes
   following: number;
   followingIds: ObjectId[];
   followers: number;
   followerIds: ObjectId[];
+
+  // Profile
   bio: string;
   profilePicture: string;
   profilePictureId: string;
+
+  // Password management
   password: string;
   passwordChangedAt: Date;
   passwordResetToken: string;
   passwordResetTokenExpiredAt: Date;
   passwordResetRequestsAttempts: number;
   passwordLastResetRequestAttemptDate: Date;
+
+  // Preferences
   notificationsEnabled: boolean;
   roles: Roles[];
+
+  // Tracking
   createdAt: Date;
   updatedAt: Date;
+  lastLoginAt: Date | undefined;
+  lastLoginIP: string | undefined;
+
+  // Methods
   createEmailVerificationToken(): string;
   createPasswordResetToken(): void;
   createDeactivationAccountToken(): void;
   createReactivationAccountToken(): void;
   createDeleteAccountRequestToken(): void;
+  createChangeEmailRequestToken(): void;
+  createTempChangedEmailVerificationToken(): void;
   comparePassword(candidatePassword: string, userPassword: string): boolean;
 }

@@ -2,24 +2,26 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
+export const sendNewEmailVerificationEmail = async (
+  user: IUser
+): Promise<void> => {
   try {
     const transport = createMailTransporter();
 
-    // Create verification link using environment variable and the generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/auth/verify-email/${user.emailVerificationToken}`;
+    // Create verification link
+    const verificationLink = `${process.env.FRONTEND_URL}/users/account/email/verify-new-email/${user.tempChangeEmailVerificationToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
-      to: user.email,
-      subject: `Welcome to ${siteName} - Please Verify Your Email`,
+      to: user.tempChangedEmail, // Send to the new email address
+      subject: `${siteName} - Verify Your New Email Address`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to ${siteName}</title>
+            <title>Verify New Email Address</title>
             <style>
                 body {
                     margin: 0;
@@ -53,7 +55,7 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     padding: 30px 20px;
                     background-color: #ffffff;
                 }
-                .welcome-message {
+                .message-title {
                     font-size: 24px;
                     color: #2c3e50;
                     margin-bottom: 20px;
@@ -61,7 +63,7 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                 .button {
                     display: inline-block;
                     padding: 14px 28px;
-                    background-color: #3498db;
+                    background-color: #27ae60;
                     color: #ffffff !important;
                     text-decoration: none;
                     border-radius: 5px;
@@ -70,28 +72,37 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     transition: background-color 0.3s ease;
                 }
                 .button:hover {
-                    background-color: #2980b9;
+                    background-color: #219a52;
                 }
                 .verification-link {
                     background-color: #f8f9fa;
                     padding: 15px;
                     border-radius: 5px;
                     word-break: break-all;
-                    color: #3498db;
+                    color: #27ae60;
                     margin: 15px 0;
                 }
-                .features-list {
+                .account-info {
+                    background-color: #e8f5e9;
+                    border: 1px solid #c8e6c9;
+                    color: #2e7d32;
+                    padding: 20px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }
+                .security-info {
                     background-color: #f8f9fa;
                     padding: 20px;
                     border-radius: 5px;
                     margin: 20px 0;
                 }
-                .features-list ul {
-                    margin: 0;
-                    padding-left: 20px;
-                }
-                .features-list li {
-                    margin: 10px 0;
+                .warning-info {
+                    background-color: #fff3cd;
+                    border: 1px solid #ffeeba;
+                    color: #856404;
+                    padding: 20px;
+                    border-radius: 5px;
+                    margin: 20px 0;
                 }
                 .footer {
                     text-align: center;
@@ -120,11 +131,20 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="welcome-message">Welcome to ${siteName}, ${user.firstName}!</h2>
+                    <h2 class="message-title">Verify Your New Email Address</h2>
                     
-                    <p>Thank you for joining our community of writers and readers. We're excited to have you on board!</p>
+                    <p>Hello ${user.firstName},</p>
                     
-                    <p>To get started, please verify your email address by clicking the button below:</p>
+                    <p>You're almost done changing your email address on ${siteName}. To complete the process and verify your new email address, please click the button below:</p>
+                    
+                    <div class="account-info">
+                        <p><strong>Account Information:</strong></p>
+                        <ul>
+                            <li>Account Name: ${user.firstName} ${user.lastName}</li>
+                            <li>Previous Email: ${user.email}</li>
+                            <li>New Email: ${user.tempChangedEmail}</li>
+                        </ul>
+                    </div>
                     
                     <div style="text-align: center;">
                         <a href="${verificationLink}" class="button">Verify Email Address</a>
@@ -135,18 +155,20 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                         ${verificationLink}
                     </div>
                     
-                    <p><strong>Note:</strong> This verification link will expire in 1 hour for security reasons.</p>
-                    
-                    <div class="features-list">
-                        <p><strong>With ${siteName}, you can:</strong></p>
+                    <div class="security-info">
+                        <p><strong>Important Information:</strong></p>
                         <ul>
-                            <li>Share your stories with our growing community</li>
-                            <li>Connect with other writers and readers</li>
-                            <li>Customize your profile and start building your following</li>
+                            <li>This verification link will expire in 1 hour</li>
+                            <li>Your current email will remain active until you verify this new email</li>
+                            <li>After verification, all future communications will be sent to this new email address</li>
+                            <li>Your account settings and data will remain unchanged</li>
                         </ul>
                     </div>
                     
-                    <p>If you didn't create an account with ${siteName}, please ignore this email.</p>
+                    <div class="warning-info">
+                        <p><strong>Note:</strong> If you did not request to change your email address on ${siteName}, please ignore this email and contact our support team immediately.</p>
+                    </div>
+                    
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
@@ -161,16 +183,19 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending welcome email:", err.message);
+          console.error(
+            "Error sending new email verification email:",
+            err.message
+          );
           reject(err);
         } else {
-          console.log("Welcome email sent successfully");
+          console.log("New email verification email sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendWelcomeEmail:", error);
+    console.error("Error in sendNewEmailVerificationEmail:", error);
     throw error;
   }
 };

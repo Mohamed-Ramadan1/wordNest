@@ -55,6 +55,28 @@ const userSchema: Schema = new Schema<IUser>(
     lastReactivationRequestAt: { type: Date, default: undefined },
     reactivationRequestCount: { type: Number, default: 0 },
 
+    // change email related feilds
+    changeEmailRequestToken: { type: String, default: undefined },
+    changeEmailVerificationTokenExpiresAt: { type: Date, default: undefined },
+    changeEmailRequestCount: { type: Number, default: 0 },
+    lastChangeEmailRequestAt: { type: Date, default: undefined },
+    tempChangedEmail: { type: String, default: undefined },
+    tempChangeEmailVerificationToken: { type: String, default: undefined },
+    tempChangedEmailVerificationTokenSentAt: { type: Date, default: undefined },
+    tempChangedEmailVerificationTokenExpiresAt: {
+      type: Date,
+      default: undefined,
+    },
+    tempChangedEmailVerificationTokenCount: { type: Number, default: 0 },
+    tempChangedEmailVerifiedAt: { type: Date, default: undefined },
+    previousEmails: [
+      {
+        email: { type: String, required: true },
+        changedAt: { type: Date, required: true },
+      },
+    ],
+    emailChangeLockedUntil: { type: Date, default: undefined },
+
     deleteAccountRequestToken: { type: String, default: undefined },
     deleteAccountRequestTokenExpiredAt: { type: Date, default: undefined },
     deleteAccountRequestCount: { type: Number, default: 0 },
@@ -151,6 +173,24 @@ userSchema.methods.createDeleteAccountRequestToken = function (): void {
   this.deleteAccountRequestTokenExpiredAt = Date.now() + 1 * 60 * 60 * 1000;
   this.lastDeleteAccountRequestAt = new Date();
   this.deleteAccountRequestCount++;
+};
+
+// method to generate change email request token and assign it to the user.
+userSchema.methods.createChangeEmailRequestToken = function (): void {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.changeEmailRequestToken = token;
+  this.changeEmailVerificationTokenExpiresAt = Date.now() + 3600000; // 1 hour
+  this.lastChangeEmailRequestAt = new Date();
+  this.changeEmailRequestCount++;
+};
+
+// method to generate temp email verification token and assign it to the user.
+userSchema.methods.createTempChangedEmailVerificationToken = function (): void {
+  const token: string = crypto.randomBytes(32).toString("hex");
+  this.tempChangeEmailVerificationToken = token;
+  this.tempChangedEmailVerificationTokenSentAt = new Date();
+  this.tempChangedEmailVerificationTokenExpiresAt = Date.now() + 3600000; // 1 hour
+  this.tempChangedEmailVerificationTokenCount++;
 };
 
 // create model from schema

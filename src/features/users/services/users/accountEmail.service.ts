@@ -1,33 +1,75 @@
-// core module imports
-import fs from "fs";
+// utils imports
+import { AppError } from "@utils/appError";
 
 // models imports
-import UserModel from "../../models/user.model";
-
-//mongoose imports
-
-import { ClientSession, startSession, ObjectId } from "mongoose";
-// packages imports
-import cloudinary from "cloudinary";
-import { AppError } from "@utils/appError";
 import { IUser } from "@features/users/interfaces/user.interface";
-
-// config imports
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
-
 // jobs imports
-import { cloudinaryQueue } from "@jobs/index";
-// logs imports
-import { logFailedImageUpload } from "@logging/index";
-// dto imports
+import { emailQueue } from "@jobs/queues/emailsQueue";
+// config imports
+import { EmailQueueType } from "@config/emailQueue.config";
 
+// logger imports
+import { changeAccountEmailLogger } from "@logging/index";
 export class AccountEmailService {
-  // Email Management
-  static async requestEmailChange(userId: string, newEmail: string) {
-    // Logic to request an email change
+  /**
+   * Handles the request to change the user's email address.
+   * Generates a verification token for the current email.
+   */
+  static async requestEmailChange(
+    user: IUser,
+    newEmail: string,
+    ipAddress: string | undefined
+  ): Promise<void> {
+    try {
+      user.createChangeEmailRequestToken();
+      user.tempChangedEmail = newEmail;
+      await user.save();
+
+      // add background job to send email notification
+      emailQueue.add(EmailQueueType.ChangeAccountEmailRequest, {
+        user,
+      });
+      // log successful email change request
+      changeAccountEmailLogger.logSuccessRequestChangeAccountEmail(
+        user.email,
+        user._id,
+        ipAddress ? ipAddress : "Unknown IP address",
+        user.lastChangeEmailRequestAt as Date
+      );
+    } catch (err: any) {
+      changeAccountEmailLogger.logFailedRequestChangeAccountEmail(
+        user.email,
+        user._id,
+        ipAddress ? ipAddress : "Unknown IP address",
+        err.message
+      );
+      throw new AppError(
+        "Failed to request email change,please tray again.",
+        500
+      );
+    }
   }
 
-  static async confirmEmailChange(userId: string, token: string) {
+  /**
+   * Confirms the email change by validating the token sent to the current email.
+   * Sends a verification token to the new email upon success.
+   */
+  static async confirmEmailChange(user: IUser) {
     // Logic to confirm email change
+  }
+
+  /**
+   * Resend the verification token to the new email address.
+   */
+  static async resendNewEmailVerificationToken(user: IUser) {
+    // Logic to resend the token to the new email
+  }
+
+  /**
+   * Verifies ownership of the new email by validating the token sent to the new email.
+   * Updates the email in the user's account upon success.
+   */
+  static async verifyNewEmailOwnership(user: IUser) {
+    // Logic to verify ownership of the new email
   }
 }

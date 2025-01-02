@@ -7,7 +7,7 @@ export const sendForgotPasswordEmail = async (user: IUser): Promise<void> => {
     const transport = createMailTransporter();
 
     // Create password reset link using environment variable and the reset token
-    const resetPasswordLink = `${process.env.FRONTEND_URL}/reset-password/${user.passwordResetToken}`;
+    const resetPasswordLink = `${process.env.FRONTEND_URL}/auth/reset-password/${user.passwordResetToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

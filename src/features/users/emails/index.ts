@@ -4,3 +4,6 @@ export { sendReactivationConfirmationEmail } from "./sendReactivationConfirmatio
 export { sendReactivationSuccessEmail } from "./sendReactivationSuccessEmail";
 export { sendDeletionAccountSuccess } from "./sendDeletionAccountSuccess";
 export { sendDeletionConfirmationEmail } from "./sendDeletionConfirmationEmail";
+export { sendNewEmailVerificationEmail } from "./sendNewEmailVerificationEmail";
+export { sendChangeEmailRequestEmail } from "./sendChangeEmailRequestEmail";
+export { sendEmailChangeSuccessEmail } from "./sendEmailChangeSuccessEmail";
