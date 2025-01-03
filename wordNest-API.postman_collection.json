@@ -127,7 +127,463 @@
 				},
 				{
 					"name": "user",
-					"item": []
+					"item": [
+						{
+							"name": "update profile picture ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "profilePicture",
+											"type": "file",
+											"src": "/home/mohamedramadan/Pictures/Screenshots/Screenshot from 2025-01-02 18-26-40.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URL}}/users/profile/picture",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"profile",
+										"picture"
+									]
+								},
+								"description": "### Update User Profile Picture\n\nThis endpoint is used to update the profile picture of a user.\n\n#### Request Body\n\n- form-data\n    - profilePicture (file): The new profile picture to be uploaded.\n\n#### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\"type\": \"string\"},\n    \"message\": {\"type\": \"string\"},\n    \"data\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"user\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"_id\": {\"type\": \"string\"},\n            \"firstName\": {\"type\": \"string\"},\n            \"lastName\": {\"type\": \"string\"},\n            \"email\": {\"type\": \"string\"},\n            \"resendVerificationTokenCount\": {\"type\": \"integer\"},\n            \"emailVerified\": {\"type\": \"boolean\"},\n            \"isActive\": {\"type\": \"boolean\"},\n            \"following\": {\"type\": \"integer\"},\n            \"followingIds\": {\"type\": \"array\"},\n            \"followers\": {\"type\": \"integer\"},\n            \"followerIds\": {\"type\": \"array\"},\n            \"bio\": {\"type\": \"string\"},\n            \"profilePicture\": {\"type\": \"string\"},\n            \"passwordResetRequestsAttempts\": {\"type\": \"integer\"},\n            \"roles\": {\"type\": \"array\"},\n            \"notificationsEnabled\": {\"type\": \"boolean\"},\n            \"emailVerificationToken\": {\"type\": \"string\"},\n            \"emailVerificationExpires\": {\"type\": \"string\"},\n            \"createdAt\": {\"type\": \"string\"},\n            \"updatedAt\": {\"type\": \"string\"},\n            \"__v\": {\"type\": \"integer\"},\n            \"lastVerificationEmailSentAt\": {\"type\": \"string\"},\n            \"passwordChangedAt\": {\"type\": \"string\"},\n            \"profilePictureId\": {\"type\": \"string\"}\n          }\n        }\n      }\n    }\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get current user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/profile",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"profile"
+									]
+								},
+								"description": "### Get User Profile\n\nThis endpoint retrieves the profile data of the authenticated user.\n\n#### Request\n\n- Method: GET\n- URL: {{URL}}/users/profile\n    \n\n#### Response\n\n- Status: 200 OK\n- Content-Type: application/json\n    \n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"data\": {\n    \"userData\": {\n      \"_id\": \"\",\n      \"firstName\": \"\",\n      \"lastName\": \"\",\n      \"email\": \"\",\n      \"resendVerificationTokenCount\": 0,\n      \"emailVerified\": true,\n      \"isActive\": true,\n      \"following\": 0,\n      \"followingIds\": [],\n      \"followers\": 0,\n      \"followerIds\": [],\n      \"bio\": \"\",\n      \"profilePicture\": \"\",\n      \"passwordResetRequestsAttempts\": 0,\n      \"roles\": [\"\"],\n      \"notificationsEnabled\": true,\n      \"emailVerificationToken\": \"\",\n      \"emailVerificationExpires\": \"\",\n      \"createdAt\": \"\",\n      \"updatedAt\": \"\",\n      \"__v\": 0,\n      \"lastVerificationEmailSentAt\": \"\",\n      \"passwordChangedAt\": \"\",\n      \"profilePictureId\": \"\"\n    }\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "update account information",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"firstName\":\"Mohamed\",\n    \"lastName\":\"Ramadan\",\n    \"bio\":\"A talent software enginner that hope one day will be one of the powerfull enginners.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/profile/information",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"profile",
+										"information"
+									]
+								},
+								"description": "### HTTP PATCH /users/profile/information\n\nThis endpoint is used to update the profile information of a user.\n\n#### Request Body\n\n- firstName (string, optional): The updated first name of the user.\n    \n- lastName (string, optional): The updated last name of the user.\n    \n- bio (string, optional): The updated biography of the user.\n    \n\n#### Response\n\nThe response of this request is documented as a JSON schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"user\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"_id\": {\n                            \"type\": \"string\"\n                        },\n                        \"firstName\": {\n                            \"type\": \"string\"\n                        },\n                        \"lastName\": {\n                            \"type\": \"string\"\n                        },\n                        \"email\": {\n                            \"type\": \"string\"\n                        },\n                        \"resendVerificationTokenCount\": {\n                            \"type\": \"integer\"\n                        },\n                        \"emailVerified\": {\n                            \"type\": \"boolean\"\n                        },\n                        \"isActive\": {\n                            \"type\": \"boolean\"\n                        },\n                        \"following\": {\n                            \"type\": \"integer\"\n                        },\n                        \"followingIds\": {\n                            \"type\": \"array\"\n                        },\n                        \"followers\": {\n                            \"type\": \"integer\"\n                        },\n                        \"followerIds\": {\n                            \"type\": \"array\"\n                        },\n                        \"bio\": {\n                            \"type\": \"string\"\n                        },\n                        \"profilePicture\": {\n                            \"type\": \"string\"\n                        },\n                        \"passwordResetRequestsAttempts\": {\n                            \"type\": \"integer\"\n                        },\n                        \"roles\": {\n                            \"type\": \"array\"\n                        },\n                        \"notificationsEnabled\": {\n                            \"type\": \"boolean\"\n                        },\n                        \"emailVerificationToken\": {\n                            \"type\": \"string\"\n                        },\n                        \"emailVerificationExpires\": {\n                            \"type\": \"string\"\n                        },\n                        \"createdAt\": {\n                            \"type\": \"string\"\n                        },\n                        \"updatedAt\": {\n                            \"type\": \"string\"\n                        },\n                        \"__v\": {\n                            \"type\": \"integer\"\n                        },\n                        \"lastVerificationEmailSentAt\": {\n                            \"type\": \"string\"\n                        },\n                        \"passwordChangedAt\": {\n                            \"type\": \"string\"\n                        },\n                        \"profilePictureId\": {\n                            \"type\": \"string\"\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "change account password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"currentPassword\":\"123456789\",\n    \"newPassword\":\"Aa!123456\",\n    \"newPasswordConfirmation\":\"Aa!123456\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/account/password",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"password"
+									]
+								},
+								"description": "### Update User Password\n\nThis endpoint is used to update the password for a user account.\n\n#### Request Body\n\n- `currentPassword` (string) - The current password of the user.\n- `newPassword` (string) - The new password for the user account.\n- `newPasswordConfirmation` (string) - Confirmation of the new password.\n    \n\n#### Response\n\nThe response for this request is a JSON object conforming to the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "Enable account notification",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/notifications/enable",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"notifications",
+										"enable"
+									]
+								},
+								"description": "The `PATCH /users/account/notifications/enable` endpoint is used to update the notification settings for a user's account.\n\n### Response\n\nThe response for this request is a JSON object with the following schema:\n\n- `status` (string): Represents the status of the notification update.\n- `message` (string): Provides additional information or a message related to the notification update.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "disable account notifications",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/account/notifications/disable",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"notifications",
+										"disable"
+									]
+								},
+								"description": "\n### Update User Notification Preferences\n\nThis endpoint is used to disable notifications for a user's account.\n\n**Request Body**\n- No request body is required for this endpoint.\n\n**Response**\n- Status: 200 OK\n- Content Type: application/json\n- Body:\n  ```json\n  {\n      \"status\": \"\",\n      \"message\": \"\"\n  }\n  ```\n"
+							},
+							"response": []
+						},
+						{
+							"name": "deactivate user account request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/deactivate-request",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"deactivate-request"
+									]
+								},
+								"description": "### Deactivate User Account\n\nThis endpoint is used to deactivate a user account request\n\nthe user will recive an email with link when he click this link he will confirm the deactiation process.\n\n- **Response**\n    \n\n- `status` (string): The status of the deactivation process.\n- `message` (string): Additional information about the deactivation process."
+							},
+							"response": []
+						},
+						{
+							"name": "confirm account deactivation",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/deactivate-confirm/ce9083d39124bdb15c705080f80afddaeda8892625571a854cf73657e0cfb807",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"deactivate-confirm",
+										"ce9083d39124bdb15c705080f80afddaeda8892625571a854cf73657e0cfb807"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "activate user account",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/activate/eb1f7c8a2ba7bda48eae4e1a2f03d56d54a24f9061e62b738ba9d1c2eae6172c",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"activate",
+										"eb1f7c8a2ba7bda48eae4e1a2f03d56d54a24f9061e62b738ba9d1c2eae6172c"
+									]
+								},
+								"description": "### Activate User Account\n\nThis endpoint triggers the activation of a user account using the provided activation code.\n\n#### Request Body\n\n- No request body parameters required.\n    \n\n#### Response\n\nThe response is in JSON format and follows the schema below:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "delete account request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/deletion-request",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"deletion-request"
+									]
+								},
+								"description": "### Create Account Deletion Request\n\nThis endpoint allows the user to send a request to delete their account.\n\n#### Request Body Parameters\n\n#### Response\n\n- `status` (string): The status of the account deletion request.\n- `message` (string): Additional information or message related to the account deletion request."
+							},
+							"response": []
+						},
+						{
+							"name": "confirm account deletion ",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/confirm-deletion/54a2fa45e4730ba057249d06e00be6cb6775102549fae5ff1c2798be9ddd4b22",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"confirm-deletion",
+										"54a2fa45e4730ba057249d06e00be6cb6775102549fae5ff1c2798be9ddd4b22"
+									]
+								},
+								"description": "This endpoint sends an HTTP DELETE request to confirm the deletion of a user account with a specific confirmation code.\n\n### Request Body\n\nThis request does not require a request body.\n\n### Response\n\nUpon successful execution, the server responds with a status code of 200 and a JSON object in the response body. The JSON object contains the following fields:\n\n- `status`: (string) Indicates the status of the deletion confirmation.\n- `message`: (string) Provides additional information regarding the deletion confirmation process."
+							},
+							"response": []
+						},
+						{
+							"name": "change account email request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"newEmail\":\"mohamedramadanmeray@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/users/account/email/change-request",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"email",
+										"change-request"
+									]
+								},
+								"description": "### Change User Email Request\n\nThis endpoint is used to initiate a request to change the user's email.\n\n#### Request Body\n\n- `newEmail`: (string) The new email address for the user's account.\n    \n\n#### Response\n\n- `status`: (string) The status of the request.\n- `message`: (string) Additional message related to the status."
+							},
+							"response": []
+						},
+						{
+							"name": "confirm account email change",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/email/confirm-change/55371dfff00c12a5fe0c7c6558d64f236251d324226b0b43d1cfbf5e8d5aa6a1",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"email",
+										"confirm-change",
+										"55371dfff00c12a5fe0c7c6558d64f236251d324226b0b43d1cfbf5e8d5aa6a1"
+									]
+								},
+								"description": "### PATCH /users/account/email/confirm-change/{id}\n\nThis endpoint is used to confirm the change of email for a user account.\n\n#### Request Body\n\n- No request body is required for this endpoint.\n    \n\n#### Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```\n\nThe response contains the status and a message, both of which are strings."
+							},
+							"response": []
+						},
+						{
+							"name": "verify new changed email address",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/email/verify-new-email/4d0c820a0f6a69f9e5c36e62a278369b52ffb67d9fe3d4be2964c8581ae3ab1e",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"email",
+										"verify-new-email",
+										"4d0c820a0f6a69f9e5c36e62a278369b52ffb67d9fe3d4be2964c8581ae3ab1e"
+									]
+								},
+								"description": "\nThis endpoint sends an HTTP PATCH request to verify a new email for a user's account. The request body should include the new email verification token in the URL. The response will have a status code of 200 and a JSON body with a status and message field.\n\n### Request Body\n- No request body parameters are required for this endpoint.\n\n### Response\n- `status` (string): Indicates the status of the email verification process.\n- `message` (string): Provides additional information about the verification status.\n\n"
+							},
+							"response": []
+						},
+						{
+							"name": "resend new account verification token",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/users/account/email/resend-new-email-token",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"users",
+										"account",
+										"email",
+										"resend-new-email-token"
+									]
+								},
+								"description": "### Request Description\n\nThis endpoint is used to resend a new email verification token for the user's account. The request should be sent as an HTTP POST to the specified URL with the necessary parameters in the request body.\n\n### Request Body\n\n- No specific request body parameters were provided.\n    \n\n### Response\n\nThe response to this request will be in JSON format with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```\n\nThe response will include the status and a message indicating the result of the request."
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -198,7 +654,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"mohamedramadan11b@gmail.com\",\n    \"password\": \"123456789\"\n}",
+							"raw": "{\n    \"email\": \"mohamedramadan11b@gmail.com\",\n    \"password\":\"Aa!123456\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,6 +785,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"mohamedramadan11b@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{URL}}/auth/password/forgot",
 							"host": [
@@ -346,6 +811,18 @@
 				},
 				{
 					"name": "Reset password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],

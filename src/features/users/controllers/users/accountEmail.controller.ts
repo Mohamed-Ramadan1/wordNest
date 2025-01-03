@@ -16,7 +16,6 @@ export class AccountEmailController {
    * Handles a request to change the user's email address.
    * Initiates the process, including generating a verification token.
    */
-  //! in progress
   public requestAccountEmailChange = catchAsync(
     async (req: Request, res: Response) => {
       const { newEmail } = req.body;
@@ -38,10 +37,10 @@ export class AccountEmailController {
    * Confirms the user's email address change.
    * Verifies the provided token and updates the email address in the user's account.
    */
-  //! in progress
+
   public confirmAccountEmailChange = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountEmailService.confirmEmailChange(req.user as IUser);
+      await AccountEmailService.confirmEmailChange(req.user as IUser, req.ip);
       const response: ApiResponse<null> = {
         status: "success",
         message:
@@ -55,10 +54,12 @@ export class AccountEmailController {
    * Returns an error if the new email address is already associated with another user.
    */
 
-  //!in progress
   public verifyNewEmailOwnership = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountEmailService.verifyNewEmailOwnership(req.user as IUser);
+      await AccountEmailService.verifyNewEmailOwnership(
+        req.user as IUser,
+        req.ip
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Email ownership verification successful.",
@@ -73,11 +74,11 @@ export class AccountEmailController {
    * The token is sent to the new email address.
    */
 
-  //!in progress
   public resendNewEmailVerificationToken = catchAsync(
     async (req: Request, res: Response) => {
       await AccountEmailService.resendNewEmailVerificationToken(
-        req.user as IUser
+        req.user as IUser,
+        req.ip
       );
       const response: ApiResponse<null> = {
         status: "success",

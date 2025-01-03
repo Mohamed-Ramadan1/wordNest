@@ -118,7 +118,6 @@ router.post(
 // Confirm email change with token sent to current email
 router.patch(
   "/account/email/confirm-change/:token",
-  protect,
   AccountEmailMiddleware.validateConfirmEmailChange,
   accountEmailController.confirmAccountEmailChange
 );
@@ -126,7 +125,7 @@ router.patch(
 // Verify ownership of the new email with token
 router.patch(
   "/account/email/verify-new-email/:token",
-  protect,
+
   AccountEmailMiddleware.validateVerifyNewEmailOwnership,
   accountEmailController.verifyNewEmailOwnership
 );

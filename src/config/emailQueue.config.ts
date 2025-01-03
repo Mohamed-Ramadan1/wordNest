@@ -13,5 +13,5 @@ export enum EmailQueueType {
   DeleteAccountConfirm = "deleteAccountConfirm",
   ChangeAccountEmailRequest = "changeAccountEmailRequest",
   NewAccountConfirmationEmail = "newAccountConfirmationEmail",
-  changeAccountEmailChangeSuccess = "changeAccountEmailChangeSuccess",
+  ChangeAccountEmailChangeSuccess = "changeAccountEmailChangeSuccess",
 }

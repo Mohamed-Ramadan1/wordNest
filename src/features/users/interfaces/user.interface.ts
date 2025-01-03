@@ -36,9 +36,11 @@ export interface IUser extends Document {
   changeEmailVerificationTokenExpiresAt: Date | undefined;
   changeEmailRequestCount: number;
   lastChangeEmailRequestAt: Date | undefined;
-
+  isChangeEmailRequestConfirmed: boolean;
+  changeEmailRequestConfirmedAt: Date | undefined;
   tempChangedEmail: string | undefined;
   tempChangeEmailVerificationToken: string | undefined;
+  lastTempChangedEmailVerificationTokenSentAt: Date | undefined;
   tempChangedEmailVerificationTokenSentAt: Date | undefined;
   tempChangedEmailVerificationTokenExpiresAt: Date | undefined;
   tempChangedEmailVerificationTokenCount: number;
@@ -92,5 +94,7 @@ export interface IUser extends Document {
   createDeleteAccountRequestToken(): void;
   createChangeEmailRequestToken(): void;
   createTempChangedEmailVerificationToken(): void;
+  resetChangeEmailRequestToken(): void;
+  resetTempChangedEmailVerificationToken(): void;
   comparePassword(candidatePassword: string, userPassword: string): boolean;
 }

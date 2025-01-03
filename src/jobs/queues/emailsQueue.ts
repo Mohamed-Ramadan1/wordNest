@@ -39,7 +39,7 @@ const emailHandlers = {
   [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
   [EmailQueueType.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
   [EmailQueueType.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
-  [EmailQueueType.changeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
+  [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
 };
 
 // Initialize the queue
