@@ -13,3 +13,6 @@
 {"attempts":1,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-01T09:53:25.016Z","type":"deleteUserAccount","user":"mohamedramadan11b@gmail.com"}
 {"attempts":1,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-01T09:56:44.425Z","type":"deleteUserAccount","user":"mohamedramadan11b@gmail.com"}
 {"attempts":5,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-01T10:02:48.331Z","type":"deleteAccountConfirm","user":"mohamedramadan11b@gmail.com"}
+{"attempts":1,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-03T08:00:34.050Z","type":"changeAccountEmailChangeSuccess","user":"mohamedramadanmeray@gmail.com"}
+{"attempts":2,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-03T08:00:39.052Z","type":"changeAccountEmailChangeSuccess","user":"mohamedramadanmeray@gmail.com"}
+{"attempts":3,"event":"email_failed","level":"error","message":"Failed to send email","timestamp":"2025-01-03T08:00:54.058Z","type":"changeAccountEmailChangeSuccess","user":"mohamedramadanmeray@gmail.com"}

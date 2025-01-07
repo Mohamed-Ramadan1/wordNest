@@ -2,24 +2,23 @@ import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 
-export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
+export const sendEmailChangeSuccessEmail = async (
+  user: IUser
+): Promise<void> => {
   try {
     const transport = createMailTransporter();
-
-    // Create verification link using environment variable and the generated token
-    const verificationLink = `${process.env.FRONTEND_URL}/auth/verify-email/${user.emailVerificationToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
       to: user.email,
-      subject: `Welcome to ${siteName} - Please Verify Your Email`,
+      subject: `${siteName} - Email Address Successfully Changed`,
       html: `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to ${siteName}</title>
+            <title>Email Change Successful</title>
             <style>
                 body {
                     margin: 0;
@@ -53,45 +52,40 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     padding: 30px 20px;
                     background-color: #ffffff;
                 }
-                .welcome-message {
+                .message-title {
                     font-size: 24px;
                     color: #2c3e50;
                     margin-bottom: 20px;
                 }
-                .button {
-                    display: inline-block;
-                    padding: 14px 28px;
-                    background-color: #3498db;
-                    color: #ffffff !important;
-                    text-decoration: none;
+                .success-banner {
+                    background-color: #d4edda;
+                    border: 1px solid #c3e6cb;
+                    color: #155724;
+                    padding: 20px;
                     border-radius: 5px;
                     margin: 20px 0;
-                    font-weight: bold;
-                    transition: background-color 0.3s ease;
+                    text-align: center;
                 }
-                .button:hover {
-                    background-color: #2980b9;
+                .success-icon {
+                    font-size: 48px;
+                    color: #28a745;
+                    margin-bottom: 10px;
                 }
-                .verification-link {
-                    background-color: #f8f9fa;
-                    padding: 15px;
-                    border-radius: 5px;
-                    word-break: break-all;
-                    color: #3498db;
-                    margin: 15px 0;
-                }
-                .features-list {
-                    background-color: #f8f9fa;
+                .important-info {
+                    background-color: #e8f5e9;
+                    border: 1px solid #c8e6c9;
+                    color: #2e7d32;
                     padding: 20px;
                     border-radius: 5px;
                     margin: 20px 0;
                 }
-                .features-list ul {
-                    margin: 0;
-                    padding-left: 20px;
-                }
-                .features-list li {
-                    margin: 10px 0;
+                .security-reminder {
+                    background-color: #fff3cd;
+                    border: 1px solid #ffeeba;
+                    color: #856404;
+                    padding: 20px;
+                    border-radius: 5px;
+                    margin: 20px 0;
                 }
                 .footer {
                     text-align: center;
@@ -120,33 +114,37 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
                     <div class="logo">${siteName}</div>
                 </div>
                 <div class="content">
-                    <h2 class="welcome-message">Welcome to ${siteName}, ${user.firstName}!</h2>
+                    <h2 class="message-title">Email Address Successfully Changed</h2>
                     
-                    <p>Thank you for joining our community of writers and readers. We're excited to have you on board!</p>
-                    
-                    <p>To get started, please verify your email address by clicking the button below:</p>
-                    
-                    <div style="text-align: center;">
-                        <a href="${verificationLink}" class="button">Verify Email Address</a>
+                    <div class="success-banner">
+                        <div class="success-icon">✓</div>
+                        <p><strong>Your email address has been successfully updated!</strong></p>
                     </div>
                     
-                    <p>Or copy and paste this link into your browser:</p>
-                    <div class="verification-link">
-                        ${verificationLink}
-                    </div>
+                    <p>Hello ${user.firstName},</p>
                     
-                    <p><strong>Note:</strong> This verification link will expire in 1 hour for security reasons.</p>
+                    <p>This email confirms that your email address for your ${siteName} account has been successfully changed.</p>
                     
-                    <div class="features-list">
-                        <p><strong>With ${siteName}, you can:</strong></p>
+                    <div class="important-info">
+                        <p><strong>What This Means:</strong></p>
                         <ul>
-                            <li>Share your stories with our growing community</li>
-                            <li>Connect with other writers and readers</li>
-                            <li>Customize your profile and start building your following</li>
+                            <li>All future communications from ${siteName} will be sent to this email address</li>
+                            <li>You can continue using all platform features as normal</li>
+                            <li>Your account settings and data remain unchanged</li>
+                            <li>You can request another email change after 100 days</li>
                         </ul>
                     </div>
                     
-                    <p>If you didn't create an account with ${siteName}, please ignore this email.</p>
+                    <div class="security-reminder">
+                        <p><strong>Security Reminder:</strong></p>
+                        <ul>
+                            <li>If you didn't make this change, please contact our support team immediately</li>
+                            <li>We recommend reviewing your recent account activity</li>
+                            <li>Consider updating your password for additional security</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Thank you for keeping your account information up to date.</p>
                 </div>
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
@@ -161,16 +159,19 @@ export const sendWelcomeEmail = async (user: IUser): Promise<void> => {
     return new Promise((resolve, reject) => {
       transport.sendMail(mailOptions, (err: Error | null, info: any) => {
         if (err) {
-          console.error("Error sending welcome email:", err.message);
+          console.error(
+            "Error sending email change success notification:",
+            err.message
+          );
           reject(err);
         } else {
-          console.log("Welcome email sent successfully");
+          console.log("Email change success notification sent successfully");
           resolve();
         }
       });
     });
   } catch (error) {
-    console.error("Error in sendWelcomeEmail:", error);
+    console.error("Error in sendEmailChangeSuccessEmail:", error);
     throw error;
   }
 };

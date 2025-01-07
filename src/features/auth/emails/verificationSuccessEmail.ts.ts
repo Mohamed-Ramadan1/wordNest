@@ -8,7 +8,7 @@ export const sendVerificationSuccessEmail = async (
   try {
     const transport = createMailTransporter();
 
-    const loginLink = `${process.env.FRONTEND_URL}/login`;
+    const loginLink = `${process.env.FRONTEND_URL}/auth/login`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

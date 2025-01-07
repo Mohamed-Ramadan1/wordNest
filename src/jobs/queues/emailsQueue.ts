@@ -15,6 +15,9 @@ import {
   sendReactivationSuccessEmail,
   sendDeletionAccountSuccess,
   sendDeletionConfirmationEmail,
+  sendChangeEmailRequestEmail,
+  sendNewEmailVerificationEmail,
+  sendEmailChangeSuccessEmail,
 } from "@features/users/emails";
 
 import { logFailedEmailSent } from "@logging/index";
@@ -34,6 +37,9 @@ const emailHandlers = {
   [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
   [EmailQueueType.DeleteAccountRequest]: sendDeletionConfirmationEmail,
   [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
+  [EmailQueueType.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
+  [EmailQueueType.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
+  [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
 };
 
 // Initialize the queue

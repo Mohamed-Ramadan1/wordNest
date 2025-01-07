@@ -11,6 +11,7 @@ import { AccountPasswordManagementMiddleware } from "../middlewares/users/accoun
 import { AccountNotificationMiddleware } from "../middlewares/users/accountNotification.middleware";
 import { AccountStatusMiddleware } from "../middlewares/users/accountStatus.middleware";
 import { AccountDeletionMiddleware } from "../middlewares/users/accountDeletion.middleware";
+import { AccountEmailMiddleware } from "../middlewares/users/accountEmail.middleware";
 // controller imports
 import { ProfileController } from "../controllers/users/profile.controller";
 import { AccountNotificationController } from "../controllers/users/accountNotification.controller";
@@ -106,15 +107,35 @@ router.patch(
 );
 
 // Email change
+// Initiate email change process
 router.post(
   "/account/email/change-request",
   protect,
+  AccountEmailMiddleware.validateChangeEmailRequest,
   accountEmailController.requestAccountEmailChange
 );
+
+// Confirm email change with token sent to current email
 router.patch(
-  "/account/email/confirm-change",
-  protect,
+  "/account/email/confirm-change/:token",
+  AccountEmailMiddleware.validateConfirmEmailChange,
   accountEmailController.confirmAccountEmailChange
+);
+
+// Verify ownership of the new email with token
+router.patch(
+  "/account/email/verify-new-email/:token",
+
+  AccountEmailMiddleware.validateVerifyNewEmailOwnership,
+  accountEmailController.verifyNewEmailOwnership
+);
+
+// Resend verification token to the new email
+router.post(
+  "/account/email/resend-new-email-token",
+  protect,
+  AccountEmailMiddleware.validateResendNewEmailVerificationToken,
+  accountEmailController.resendNewEmailVerificationToken
 );
 
 // Data export

@@ -9,7 +9,7 @@ export const sendDeactivationConfirmationEmail = async (
     const transport = createMailTransporter();
 
     // Create confirmation link
-    const confirmationLink = `${process.env.FRONTEND_URL}/confirm-deactivation/${user.deactivationAccountToken}`;
+    const confirmationLink = `${process.env.FRONTEND_URL}/users/account/deactivate-request/${user.deactivationAccountToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

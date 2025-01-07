@@ -5,13 +5,13 @@ export enum ResourceCleanupQueueType {
 }
 
 // Initialize the queue
-export const resourceCleanupQueue: Queue = new Bull("emails", {
+export const resourceCleanupQueue: Queue = new Bull("resourceCleanup", {
   redis: {
     port: 6379,
     host: "localhost",
   },
   defaultJobOptions: {
-    attempts: 3,
+    attempts: 5,
     backoff: {
       type: "exponential",
       delay: 5000,

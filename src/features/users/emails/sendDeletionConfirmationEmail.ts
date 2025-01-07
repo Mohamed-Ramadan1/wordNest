@@ -9,7 +9,7 @@ export const sendDeletionConfirmationEmail = async (
     const transport = createMailTransporter();
 
     // Create confirmation link
-    const confirmationLink = `${process.env.FRONTEND_URL}/confirm-deletion/${user.deleteAccountRequestToken}`;
+    const confirmationLink = `${process.env.FRONTEND_URL}/account/confirm-deletion/${user.deleteAccountRequestToken}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,
