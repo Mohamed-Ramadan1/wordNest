@@ -13,115 +13,322 @@
 					"name": "admin",
 					"item": [
 						{
-							"name": "Get all users ",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwt}}",
-											"type": "string"
-										}
-									]
+							"name": "roles",
+							"item": [
+								{
+									"name": "list user roles",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/roles",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"roles"
+											]
+										},
+										"description": "### GET /admin/users/{userId}/roles\n\nThis endpoint retrieves the roles associated with a specific user.\n\n#### Request\n\nNo request body is required for this endpoint.\n\n- `userId` (path parameter) : The unique identifier of the user for whom the roles are being retrieved.\n    \n\n#### Response\n\nThe response will be in JSON format and will have the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        },\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"userEmail\": {\n                    \"type\": \"string\"\n                },\n                \"roles\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"string\"\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
 								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{URL}}/users",
-									"host": [
-										"{{URL}}"
-									],
-									"path": [
-										"users"
-									]
+								{
+									"name": "assign role to user",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"role\":\"blog-admin\"\n\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/assign-role",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"assign-role"
+											]
+										},
+										"description": "### POST /admin/users/677d737c2ae01046a98cba1e/assign-role\n\nThis endpoint is used to assign a role to a specific user.\n\n#### Request\n\n- Method: POST\n    \n- URL: {{URL}}/admin/users/677d737c2ae01046a98cba1e/assign-role\n    \n- Body:\n    \n    - role (text, required): The role to be assigned to the user.\n        \n\n#### Response\n\nThe response for this request can be represented as a JSON schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "remove user role",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n       \"role\":\"blog-admin\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/remove-role",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"remove-role"
+											]
+										},
+										"description": "This endpoint is used to remove a specific role from a user in the admin panel. The HTTP DELETE request is sent to {{URL}}/admin/users/677d737c2ae01046a98cba1e/remove-role with the role to be removed specified in the request body.\n\n### Request Body\n\n- `role`: The role to be removed from the user.\n    \n\n### Response\n\nUpon successful execution, the endpoint returns a status code of 200 and a JSON response with the following fields:\n\n- `status`: Indicates the status of the operation.\n    \n- `message`: Provides additional information about the operation."
+									},
+									"response": []
+								},
+								{
+									"name": "reset all user roles ",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/reset-roles",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"reset-roles"
+											]
+										},
+										"description": "The HTTP PATCH request is used to reset the roles for a specific user in the admin panel. The request is sent to the endpoint `{{URL}}/admin/users/677d737c2ae01046a98cba1e/reset-roles`.\n\n### Response\n\nThe response returned has a status code of 200 and a content type of `application/json`. The response body follows the JSON schema below:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "Delete user by id ",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwt}}",
-											"type": "string"
-										}
-									]
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "Get all users ",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/users",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users"
+											]
+										},
+										"description": "### GET /admin/users\n\nThis endpoint retrieves a list of all admin users.\n\n#### Request\n\nThere are no request parameters for this endpoint.\n\n#### Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n\n##### Response Body\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"length\": 0,\n    \"data\": {\n        \"users\": [\n            {\n                \"_id\": \"\",\n                \"firstName\": \"\",\n                \"lastName\": \"\",\n                \"bio\": \"\",\n                \"email\": \"\",\n                \"resendVerificationTokenCount\": 0,\n                \"emailVerified\": true,\n                \"isActive\": true,\n                \"deactivationRequestCount\": 0,\n                \"reactivationRequestCount\": 0,\n                \"deleteAccountRequestCount\": 0,\n                \"userAccountToBeDeleted\": true,\n                \"following\": 0,\n                \"followingIds\": [],\n                \"followers\": 0,\n                \"followerIds\": [],\n                \"profilePicture\": \"\",\n                \"profilePictureId\": \"\",\n                \"passwordResetRequestsAttempts\": 0,\n                \"roles\": [\"\"],\n                \"notificationsEnabled\": true,\n                \"emailVerificationToken\": \"\",\n                \"emailVerificationExpires\": \"\",\n                \"createdAt\": \"\",\n                \"updatedAt\": \"\",\n                \"__v\": 0,\n                \"lastVerificationEmailSentAt\": \"\",\n                \"passwordLastResetRequestAttemptDate\": \"\",\n                \"passwordResetToken\": \"\",\n                \"passwordResetTokenExpiredAt\": \"\",\n                \"passwordChangedAt\": \"\",\n                \"deactivationAccountToken\": \"\",\n                \"deactivationAccountTokenExpiredAt\": \"\",\n                \"lastDeactivationRequestAt\": \"\",\n                \"deleteAccountRequestToken\": \"\",\n                \"deleteAccountRequestTokenExpiredAt\": \"\",\n                \"lastDeleteAccountRequestAt\": \"\",\n                \"changeEmailRequestCount\": 0,\n                \"changeEmailRequestToken\": \"\",\n                \"changeEmailVerificationTokenExpiresAt\": \"\",\n                \"isChangeEmailRequestConfirmed\": true,\n                \"lastChangeEmailRequestAt\": \"\",\n                \"previousEmails\": [],\n                \"tempChangedEmail\": \"\",\n                \"tempChangedEmailVerificationTokenCount\": 0\n            }\n        ]\n    }\n}\n\n ```\n\nThis response contains an array of user objects with various attributes such as ID, name, email, account status, profile picture, roles, and other related information."
+									},
+									"response": []
 								},
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{URL}}/users/id",
-									"host": [
-										"{{URL}}"
-									],
-									"path": [
-										"users",
-										"id"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Update user details ",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwt}}",
-											"type": "string"
-										}
-									]
+								{
+									"name": "Delete user by id ",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/users/677e830269c0c10916d2dd7a",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677e830269c0c10916d2dd7a"
+											]
+										},
+										"description": "### Delete User\n\nThis endpoint is used to delete a specific user by their ID.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status: 204\n    \n- Content-Type: text/xml"
+									},
+									"response": []
 								},
-								"method": "PATCH",
-								"header": [],
-								"url": {
-									"raw": "{{URL}}/users/id",
-									"host": [
-										"{{URL}}"
-									],
-									"path": [
-										"users",
-										"id"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Get user by id ",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "{{jwt}}",
-											"type": "string"
-										}
-									]
+								{
+									"name": "Update user details ",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"firstName\":\"kivan\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677e7fe5f5edf036614f54ae",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677e7fe5f5edf036614f54ae"
+											]
+										},
+										"description": "This endpoint is used to update user information by sending an HTTP PATCH request to the specified user's ID in the URL.\n\n### Request Body\n\n- The request body should be in raw format and include the following parameter:\n    \n    - `firstName` (string, required): The updated first name of the user.\n        \n    - all other feailds related to user model\n        \n\n### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"\",\n      \"firstName\": \"\",\n      \"lastName\": \"\",\n      \"bio\": \"\",\n      \"email\": \"\",\n      \"resendVerificationTokenCount\": 0,\n      \"emailVerified\": true,\n      \"isActive\": true,\n      \"deactivationRequestCount\": 0,\n      \"reactivationRequestCount\": 0,\n      \"changeEmailRequestCount\": 0,\n      \"isChangeEmailRequestConfirmed\": true,\n      \"tempChangedEmailVerificationTokenCount\": 0,\n      \"deleteAccountRequestCount\": 0,\n      \"userAccountToBeDeleted\": true,\n      \"following\": 0,\n      \"followingIds\": [],\n      \"followers\": 0,\n      \"followerIds\": [],\n      \"profilePicture\": \"\",\n      \"profilePictureId\": \"\",\n      \"passwordResetRequestsAttempts\": 0,\n      \"roles\": [\"\"],\n      \"notificationsEnabled\": true,\n      \"previousEmails\": [],\n      \"createdAt\": \"\",\n      \"updatedAt\": \"\",\n      \"__v\": 0,\n      \"emailVerifiedAt\": \"\"\n    }\n  }\n}\n\n ```\n\nThe response includes the updated user object with various attributes related to the user's account."
+									},
+									"response": []
 								},
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{URL}}/users/id",
-									"host": [
-										"{{URL}}"
-									],
-									"path": [
-										"users",
-										"id"
-									]
+								{
+									"name": "Get user by id ",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e"
+											]
+										},
+										"description": "This endpoint makes an HTTP GET request to retrieve the details of a specific user with the given ID. The response will be in JSON format and will contain various user-related data.\n\n### Request\n\n- Method: GET\n    \n- URL: {{URL}}/admin/users/677d737c2ae01046a98cba1e\n    \n\n### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n- {\n    \n- status:string,\n    \n- message:string,\n    \n- data:{\n    \n- user:{\n    \n    - user data\n        \n- }\n    \n- }"
+									},
+									"response": []
+								},
+								{
+									"name": "create  user",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"email\":\"mohamedramadanmeray@gmail.com\",\n    \"firstName\":\"123456789\",\n    \"lastName\":\"king\",\n    \"password\":\"123456789\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users"
+											]
+										},
+										"description": "### Create Admin User\n\nThis endpoint allows the admin to create a new user.\n\n#### Request Body\n\n- email (string): The email of the user.\n    \n- firstName (string): The first name of the user.\n    \n- lastName (string): The last name of the user.\n    \n- password (string): The password for the user account.\n    \n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"data\": {\n    \"user\": {\n      \"firstName\": \"\",\n      \"lastName\": \"\",\n      \"bio\": \"\",\n      \"email\": \"\",\n      \"resendVerificationTokenCount\": 0,\n      \"emailVerified\": true,\n      \"isActive\": true,\n      \"deactivationRequestCount\": 0,\n      \"reactivationRequestCount\": 0,\n      \"changeEmailRequestCount\": 0,\n      \"isChangeEmailRequestConfirmed\": true,\n      \"tempChangedEmailVerificationTokenCount\": 0,\n      \"deleteAccountRequestCount\": 0,\n      \"userAccountToBeDeleted\": true,\n      \"following\": 0,\n      \"followingIds\": [],\n      \"followers\": 0,\n      \"followerIds\": [],\n      \"profilePicture\": \"\",\n      \"profilePictureId\": \"\",\n      \"password\": \"\",\n      \"passwordResetRequestsAttempts\": 0,\n      \"roles\": [\"\"],\n      \"notificationsEnabled\": true,\n      \"_id\": \"\",\n      \"previousEmails\": [],\n      \"createdAt\": \"\",\n      \"updatedAt\": \"\",\n      \"__v\": 0,\n      \"emailVerificationToken\": \"\",\n      \"emailVerificationExpires\": \"\"\n    }\n  }\n}\n\n ```"
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						}
 					]
 				},
@@ -149,7 +356,7 @@
 										{
 											"key": "profilePicture",
 											"type": "file",
-											"src": "/home/mohamedramadan/Pictures/Screenshots/Screenshot from 2025-01-02 18-26-40.png"
+											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-07 21-36-07.png"
 										}
 									]
 								},

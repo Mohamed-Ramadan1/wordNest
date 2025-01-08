@@ -6,6 +6,8 @@ export enum Roles {
   BlogAdmin = "blog-admin",
 }
 
+export enum AccountStatus {}
+
 export const defaultProfilePicture: string =
   "https://res.cloudinary.com/deqgzvkxp/image/upload/v1718812055/defaultProileImg_j1ilwv.png";
 
