@@ -51,6 +51,13 @@ export default class AuthMiddleware {
         );
       }
 
+      if (user.isAccountLocked) {
+        throw new AppError(
+          "Your account is locked. Please contact support to unlock your account or create appel request.",
+          401
+        );
+      }
+
       if (!user.isActive) {
         // Check if user has reached max attempts (4) and needs to wait
         if (user.reactivationRequestCount >= 4) {

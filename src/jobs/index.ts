@@ -11,3 +11,8 @@ export {
   DeleteUserAccountQueueType,
   deleteUserAccountQueue,
 } from "./queues/deleteUserAccountQueue";
+
+export {
+  bandAccountsQueue,
+  BandAccountQueueTypes,
+} from "./queues/bandAccountsQueue";

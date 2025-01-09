@@ -5,7 +5,7 @@ import { Request } from "express";
 declare global {
   namespace Express {
     export interface Request {
-      user?: IUser; // Optional, since not all requests have a user
+      user: IUser; // Optional, since not all requests have a user
       headers: {
         authorization?: string; // Optional, since not all requests have an authorization header
       };

@@ -138,6 +138,5 @@ router.post(
   accountEmailController.resendNewEmailVerificationToken
 );
 
-// Data export
 
 export default router;

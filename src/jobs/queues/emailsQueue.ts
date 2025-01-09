@@ -18,6 +18,10 @@ import {
   sendChangeEmailRequestEmail,
   sendNewEmailVerificationEmail,
   sendEmailChangeSuccessEmail,
+  sendAccountLockedEmail,
+  sendAccountUnlockedEmail,
+  sendAccountBannedEmail,
+  sendAccountUnbannedEmail,
 } from "@features/users/emails";
 
 import { logFailedEmailSent } from "@logging/index";
@@ -40,6 +44,10 @@ const emailHandlers = {
   [EmailQueueType.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
   [EmailQueueType.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
   [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
+  [EmailQueueType.LockUserAccount]: sendAccountLockedEmail,
+  [EmailQueueType.UnlockUserAccount]: sendAccountUnlockedEmail,
+  [EmailQueueType.AccountBanned]: sendAccountBannedEmail,
+  [EmailQueueType.AccountUnbanned]: sendAccountUnbannedEmail,
 };
 
 // Initialize the queue

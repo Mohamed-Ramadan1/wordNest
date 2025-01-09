@@ -39,3 +39,7 @@ export {
 } from "./loggers/accountDeletionLogger";
 
 export * as changeAccountEmailLogger from "./loggers/changeAccountEmailLogger";
+
+export * as lockAccountsLogger from "./loggers/lockAccountLogger";
+
+export * as banAccountsLogger from "./loggers/bandAccountsLogger";

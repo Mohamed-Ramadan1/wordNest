@@ -6,6 +6,8 @@ export enum Roles {
   BlogAdmin = "blog-admin",
 }
 
+export enum AccountStatus {}
+
 export const defaultProfilePicture: string =
   "https://res.cloudinary.com/deqgzvkxp/image/upload/v1718812055/defaultProileImg_j1ilwv.png";
 
@@ -75,6 +77,27 @@ export interface IUser extends Document {
   passwordResetTokenExpiredAt: Date;
   passwordResetRequestsAttempts: number;
   passwordLastResetRequestAttemptDate: Date;
+
+  // lock accounts
+  isAccountLocked: boolean | undefined;
+  accountLockedAt: Date | undefined;
+  accountLockedByAdminEmail: string | undefined;
+  accountLockedReason: string | undefined;
+  // un lock accounts attributes
+  accountUnlockedAt: Date | undefined;
+  accountUnlockedBy: string | undefined;
+  accountUnlockedComment: string | undefined;
+
+  // ban user accounts
+  isAccountBanned: boolean | undefined;
+  accountBannedAt: Date | undefined;
+  accountBannedByAdminEmail: string | undefined;
+  accountBannedReason: string | undefined;
+  accountBandPeriodDays: number | undefined;
+
+  accountUnbannedAt: Date | undefined;
+  accountUnbannedBy: string | undefined;
+  accountUnbannedComment: string | undefined;
 
   // Preferences
   notificationsEnabled: boolean;

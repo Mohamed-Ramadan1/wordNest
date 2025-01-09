@@ -10,6 +10,7 @@ declare global {
         currentPassword: string;
       };
       profileInformationToUpdate: IFieldsToBeUpdates;
+      userToBeAssigned: IUser;
     }
   }
 }
