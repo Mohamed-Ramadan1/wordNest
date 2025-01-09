@@ -4,16 +4,19 @@ import { protect, restrictTo } from "@shared/index";
 // middleware imports
 import { RolesManagementMiddleware } from "../middlewares/admin/rolesManagement.middleware";
 import { LockUserAccountMiddleware } from "../middlewares/admin/locAccounts.middleware";
+import { BanUserAccountMiddleware } from "../middlewares/admin/banUsersAccounts.middleware";
 
 // controllers imports
 import { UsersCrudController } from "../controllers/admin/usersCrud.controller";
 import { RolesManagementController } from "../controllers/admin/roleManagement.controller";
 import { LockAccountsController } from "../controllers/admin/locAccounts.controller";
+import { BanUsersAccountsController } from "../controllers/admin/banUsersAccounts.controller";
 
 // Instantiate controller
 const usersCrudController = new UsersCrudController();
 const rolesManagementController = new RolesManagementController();
 const lockAccountsController = new LockAccountsController();
+const banUsersAccountsController = new BanUsersAccountsController();
 
 const router: Router = Router();
 
@@ -82,4 +85,22 @@ router
     lockAccountsController.unlockAccount
   );
 
+// Ban accounts related routes
+// ban user account
+router
+  .route("/:userId/ban-account")
+  .patch(
+    BanUserAccountMiddleware.validateBanUserAccount,
+    banUsersAccountsController.banUserAccount
+  );
+
+// un-ban user account
+router
+  .route("/:userId/unban-account")
+  .patch(
+    BanUserAccountMiddleware.validateUnBanUserAccount,
+    banUsersAccountsController.unBanUserAccount
+  );
+
+// Export the router module
 export default router;

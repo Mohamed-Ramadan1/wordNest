@@ -329,6 +329,176 @@
 									"response": []
 								}
 							]
+						},
+						{
+							"name": "lock accounts",
+							"item": [
+								{
+									"name": "un-Lock user account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"unLockComment\":\"a very good person\"\n}   ",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/unlock-account",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"unlock-account"
+											]
+										},
+										"description": "### Patch Unlock Account\n\nThis endpoint is used to unlock a user account by sending a PATCH request to the specified URL.\n\n#### Request Body\n\n- unLockComment (text, required): A comment describing the reason for unlocking the account.\n    \n\n#### Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "lock user account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"lockReason\":\"he fucing admin\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/lock-account",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"lock-account"
+											]
+										},
+										"description": "### PATCH /admin/users/677d737c2ae01046a98cba1e/lock-account\n\nThis endpoint is used to lock the account of a specific user.\n\n#### Request Body\n\n- `lockReason`: (string) The reason for locking the user's account.\n    \n\n#### Response\n\nThe response for this request can be documented as a JSON schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "band accounts",
+							"item": [
+								{
+									"name": "ban user account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"banAccountReason\":\"un goood user account\",\n    \"banAccountDaysNumber\":4\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/ban-account",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"ban-account"
+											]
+										},
+										"description": "### PATCH /admin/users/677d737c2ae01046a98cba1e/ban-account\n\nThis endpoint is used to ban a user account by providing a reason and the number of days for the ban.\n\n#### Request Body\n\n- banAccountReason (string, required): The reason for banning the user account.\n    \n- banAccountDaysNumber (integer, required): The number of days for the ban.\n    \n\n#### Response\n\nThe response for this request is in JSON format and includes the following fields:\n\n- status (string): The status of the ban operation.\n    \n- message (string): Additional message related to the ban operation.\n    \n\n#### JSON Schema\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\"type\": \"string\"},\n    \"message\": {\"type\": \"string\"}\n  }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "un-ban  user account",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"adminUnbanComment\":\"success completee the mes\"\n\n    \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/users/677d737c2ae01046a98cba1e/unban-account",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"users",
+												"677d737c2ae01046a98cba1e",
+												"unban-account"
+											]
+										},
+										"description": "The HTTP PATCH request is used to unban a user account in the admin panel. The request is sent to {{URL}}/admin/users/677d737c2ae01046a98cba1e/unban-account with a payload in raw request body type. The payload includes the field \"adminUnbanComment\" with a value indicating the admin's comment on the unban action.\n\n### Response\n\nThe response to this request is in JSON format and includes the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								}
+							]
 						}
 					]
 				},

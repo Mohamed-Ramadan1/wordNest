@@ -99,6 +99,15 @@ const userSchema: Schema = new Schema<IUser>(
     accountUnlockedBy: { type: String, default: undefined },
     accountUnlockedComment: { type: String, default: undefined },
 
+    isAccountBanned: { type: Boolean, default: false },
+    accountBannedAt: { type: Date, default: undefined },
+    accountBandPeriodDays: { type: Number, default: undefined },
+    accountBannedByAdminEmail: { type: String, default: undefined },
+    accountBannedReason: { type: String, default: undefined },
+    accountUnbannedAt: { type: Date, default: undefined },
+    accountUnbannedBy: { type: String, default: undefined },
+    accountUnbannedComment: { type: String, default: undefined },
+
     following: { type: Number, default: 0 },
     followingIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
 

@@ -88,6 +88,17 @@ export interface IUser extends Document {
   accountUnlockedBy: string | undefined;
   accountUnlockedComment: string | undefined;
 
+  // ban user accounts
+  isAccountBanned: boolean | undefined;
+  accountBannedAt: Date | undefined;
+  accountBannedByAdminEmail: string | undefined;
+  accountBannedReason: string | undefined;
+  accountBandPeriodDays: number | undefined;
+
+  accountUnbannedAt: Date | undefined;
+  accountUnbannedBy: string | undefined;
+  accountUnbannedComment: string | undefined;
+
   // Preferences
   notificationsEnabled: boolean;
   roles: Roles[];

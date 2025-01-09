@@ -20,6 +20,8 @@ import {
   sendEmailChangeSuccessEmail,
   sendAccountLockedEmail,
   sendAccountUnlockedEmail,
+  sendAccountBannedEmail,
+  sendAccountUnbannedEmail,
 } from "@features/users/emails";
 
 import { logFailedEmailSent } from "@logging/index";
@@ -44,6 +46,8 @@ const emailHandlers = {
   [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
   [EmailQueueType.LockUserAccount]: sendAccountLockedEmail,
   [EmailQueueType.UnlockUserAccount]: sendAccountUnlockedEmail,
+  [EmailQueueType.AccountBanned]: sendAccountBannedEmail,
+  [EmailQueueType.AccountUnbanned]: sendAccountUnbannedEmail,
 };
 
 // Initialize the queue
