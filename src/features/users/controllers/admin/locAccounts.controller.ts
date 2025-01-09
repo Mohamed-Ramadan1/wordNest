@@ -1,22 +1,54 @@
 import { Request, Response } from "express";
 
 // Utils imports
-import { catchAsync } from "@utils/index";
-
+import { catchAsync, sendResponse } from "@utils/index";
+import { LockAccountBody } from "@features/users/interfaces/lockAccountBody.interface";
+// services imports
+import { LockAccountService } from "@features/users/services/admin/locAccounts.service";
+import { ApiResponse } from "@shared/index";
+import { IUser } from "@features/users/interfaces/user.interface";
 export class LockAccountsController {
   /**
    * Locks a user account.
    * Temporarily restricts access to the account for a specified period.
    */
-  static lockAccount = catchAsync(async (req: Request, res: Response) => {
-    // Implementation for locking
-  });
+  public lockAccount = catchAsync(
+    async (req: Request<{}, {}, LockAccountBody>, res: Response) => {
+      const { lockReason, userAccountToBeLocked } = req.body;
+      await LockAccountService.lockAccount(
+        userAccountToBeLocked,
+        lockReason,
+        req.ip,
+        req.user as IUser
+      );
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Account locked successfully",
+      };
+
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Unlocks a user account.
    * Restores access to the account by removing the lock status.
    */
-  static unlockAccount = catchAsync(async (req: Request, res: Response) => {
-    // Implementation for unlocking
-  });
+  public unlockAccount = catchAsync(
+    async (req: Request<{}, {}, LockAccountBody>, res: Response) => {
+      const { unLockComment, userAccountToBeUnLocked } = req.body;
+      await LockAccountService.unlockAccount(
+        userAccountToBeUnLocked,
+        unLockComment,
+        req.ip,
+        req.user as IUser
+      );
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Account unlocked successfully",
+      };
+
+      sendResponse(200, res, response);
+    }
+  );
 }

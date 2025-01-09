@@ -1,3 +1,4 @@
+// express imports
 import { Request, Response } from "express";
 
 // Utils imports
@@ -7,6 +8,8 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { UsersCrudService } from "@features/users/services/admin/usersCrud.service";
 // utils imports
 import { ApiResponse } from "@shared/index";
+
+// interface imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
 export class UsersCrudController {

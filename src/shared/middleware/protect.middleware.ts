@@ -57,6 +57,15 @@ export const protect = catchAsync(
       );
     }
 
+    if (user.isAccountLocked) {
+      return next(
+        new AppError(
+          "User account is  locked you cant preform any actions please contact support or apply for appel.",
+          400
+        )
+      );
+    }
+
     req.user = user;
     next();
   }

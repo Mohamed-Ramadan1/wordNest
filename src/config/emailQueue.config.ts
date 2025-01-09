@@ -14,4 +14,6 @@ export enum EmailQueueType {
   ChangeAccountEmailRequest = "changeAccountEmailRequest",
   NewAccountConfirmationEmail = "newAccountConfirmationEmail",
   ChangeAccountEmailChangeSuccess = "changeAccountEmailChangeSuccess",
+  LockUserAccount = "lockUserAccount",
+  UnlockUserAccount = "unlockUserAccount",
 }

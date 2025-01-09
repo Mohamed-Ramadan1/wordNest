@@ -91,6 +91,14 @@ const userSchema: Schema = new Schema<IUser>(
     userAccountToBeDeleted: { type: Boolean, default: false },
     userAccountDeletedAt: { type: Date, default: undefined },
 
+    isAccountLocked: { type: Boolean, default: false },
+    accountLockedAt: { type: Date, default: undefined },
+    accountLockedByAdminEmail: { type: String, default: undefined },
+    accountLockedReason: { type: String, default: undefined },
+    accountUnlockedAt: { type: Date, default: undefined },
+    accountUnlockedBy: { type: String, default: undefined },
+    accountUnlockedComment: { type: String, default: undefined },
+
     following: { type: Number, default: 0 },
     followingIds: [{ type: Schema.Types.ObjectId, ref: "User" }],
 

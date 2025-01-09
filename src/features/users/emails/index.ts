@@ -7,3 +7,5 @@ export { sendDeletionConfirmationEmail } from "./sendDeletionConfirmationEmail";
 export { sendNewEmailVerificationEmail } from "./sendNewEmailVerificationEmail";
 export { sendChangeEmailRequestEmail } from "./sendChangeEmailRequestEmail";
 export { sendEmailChangeSuccessEmail } from "./sendEmailChangeSuccessEmail";
+export { sendAccountLockedEmail } from "./sendAccountLockedEmail";
+export { sendAccountUnlockedEmail } from "./sendAccountUnlockedEmail";

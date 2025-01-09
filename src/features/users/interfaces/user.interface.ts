@@ -78,6 +78,16 @@ export interface IUser extends Document {
   passwordResetRequestsAttempts: number;
   passwordLastResetRequestAttemptDate: Date;
 
+  // lock accounts
+  isAccountLocked: boolean | undefined;
+  accountLockedAt: Date | undefined;
+  accountLockedByAdminEmail: string | undefined;
+  accountLockedReason: string | undefined;
+  // un lock accounts attributes
+  accountUnlockedAt: Date | undefined;
+  accountUnlockedBy: string | undefined;
+  accountUnlockedComment: string | undefined;
+
   // Preferences
   notificationsEnabled: boolean;
   roles: Roles[];
