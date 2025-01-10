@@ -6,8 +6,12 @@ import morgan from "morgan";
 import path from "path";
 
 // routes imports from features
-import { userRouter, userAdminRouter } from "@features/users";
 import { authRouter } from "@features/auth";
+import { userRouter, userAdminRouter } from "@features/users";
+import {
+  supportTicketRouter,
+  adminSupportTicketsRouter,
+} from "@features/supportTickets";
 
 // error handling middleware
 import { globalError } from "@shared/index";
@@ -37,6 +41,12 @@ app.use("/api/v1/users", userRouter);
 
 // admin user related routes
 app.use("/api/v1/admin/users", userAdminRouter);
+
+// support ticket related routes for users
+app.use("/api/v1/support-tickets", supportTicketRouter);
+
+// support ticket related routes for admins
+app.use("/api/v1/admin/support-tickets", adminSupportTicketsRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
