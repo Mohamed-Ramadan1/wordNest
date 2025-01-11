@@ -1,124 +1,21 @@
-import Bull, { Queue, Job } from "bull";
+import { Queue } from "bull";
+
 import {
-  sendWelcomeEmail,
-  sendNewVerificationEmail,
-  sendVerificationSuccessEmail,
-  sendForgotPasswordEmail,
-  sendPasswordChangedEmail,
-} from "@features/auth/emails";
+  sendEmailsProcessor,
+  emailHandlers,
+} from "@jobs/queueProcessors/emailsQueue/sendEmails.processor";
+import { createQueue } from "../shared/createQueue";
 
-//emails from users feature
-import {
-  sendDeactivationConfirmationEmail,
-  sendDeactivationAccountSuccess,
-  sendReactivationConfirmationEmail,
-  sendReactivationSuccessEmail,
-  sendDeletionAccountSuccess,
-  sendDeletionConfirmationEmail,
-  sendChangeEmailRequestEmail,
-  sendNewEmailVerificationEmail,
-  sendEmailChangeSuccessEmail,
-  sendAccountLockedEmail,
-  sendAccountUnlockedEmail,
-  sendAccountBannedEmail,
-  sendAccountUnbannedEmail,
-} from "@features/users/emails";
+const retryAttempts: number = 5;
+const delayTime: number = 5000;
 
-import { logFailedEmailSent } from "@logging/index";
-import { EmailQueueType } from "@config/emailQueue.config";
-
-// Map email types to their corresponding sending functions
-const emailHandlers = {
-  [EmailQueueType.WelcomeEmail]: sendWelcomeEmail,
-  [EmailQueueType.SendAccountVerifiedEmail]: sendVerificationSuccessEmail,
-  [EmailQueueType.ResendVerificationEmail]: sendNewVerificationEmail,
-  [EmailQueueType.RequestPasswordReset]: sendForgotPasswordEmail,
-  [EmailQueueType.ResetPassword]: sendPasswordChangedEmail,
-  [EmailQueueType.DeactivateAccountRequest]: sendDeactivationConfirmationEmail,
-  [EmailQueueType.DeactivateAccountConfirmation]:
-    sendDeactivationAccountSuccess,
-  [EmailQueueType.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
-  [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
-  [EmailQueueType.DeleteAccountRequest]: sendDeletionConfirmationEmail,
-  [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
-  [EmailQueueType.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
-  [EmailQueueType.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
-  [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
-  [EmailQueueType.LockUserAccount]: sendAccountLockedEmail,
-  [EmailQueueType.UnlockUserAccount]: sendAccountUnlockedEmail,
-  [EmailQueueType.AccountBanned]: sendAccountBannedEmail,
-  [EmailQueueType.AccountUnbanned]: sendAccountUnbannedEmail,
-};
-
-// Initialize the queue
-export const emailQueue: Queue = new Bull("emails", {
-  redis: {
-    port: 6379,
-    host: "localhost",
-  },
-  defaultJobOptions: {
-    attempts: 5,
-    backoff: {
-      type: "exponential",
-      delay: 5000,
-    },
-  },
-});
-
-// Generic email processor function
-const processEmailJob = async (job: Job) => {
-  try {
-    console.log(`Processing Job ID: ${job.id}`);
-    console.log(`Job Data:`, job.data);
-
-    const { user } = job.data;
-    const emailHandler = emailHandlers[job.name as EmailQueueType];
-
-    if (!emailHandler) {
-      throw new Error(`No handler found for email type: ${job.name}`);
-    }
-
-    console.log(`Sending ${job.name} email to: ${user.email}`);
-    await emailHandler(user);
-
-    return `${job.name} email successfully sent to ${user.email}`;
-  } catch (err) {
-    console.error(`Error processing job ID ${job.id}:`, err);
-    throw err;
-  }
-};
+export const emailQueue: Queue = createQueue(
+  "emailsQueue",
+  retryAttempts,
+  delayTime
+);
 
 // Register processors for each email type
 Object.keys(emailHandlers).forEach((emailType) => {
-  emailQueue.process(emailType, 1, processEmailJob);
+  emailQueue.process(emailType, sendEmailsProcessor);
 });
-
-// Queue event handlers
-const setupQueueEvents = (queue: Queue) => {
-  queue.on("completed", (job, result) => {
-    console.log(
-      "---------------------------------------------------------------------"
-    );
-    console.log(`Job ID: ${job.id} completed`);
-    console.log(`Result: ${result}`);
-  });
-
-  queue.on("failed", (job, err) => {
-    console.error(
-      "---------------------------------------------------------------------"
-    );
-    console.error(`Job ID: ${job.id} failed`);
-    console.error(`Error: ${err.message}`);
-    logFailedEmailSent(job.name, job.data.user.email, job.attemptsMade);
-  });
-
-  queue.on("stalled", (job) => {
-    console.warn(
-      "---------------------------------------------------------------------"
-    );
-    console.warn(`Job ID: ${job.id} stalled. Re-attempting...`);
-  });
-};
-
-// Setup queue events
-setupQueueEvents(emailQueue);
