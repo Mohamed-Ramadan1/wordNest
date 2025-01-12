@@ -5,9 +5,9 @@ export interface SupportTicketBody {
   description: string;
   category: SupportTicketCategory;
   priority: string;
-  attachments?: Attachment[];
+  attachments?: Attachment;
 }
 
 export interface SupportTicketParams {
-  ticketId: string; 
+  ticketId: string;
 }

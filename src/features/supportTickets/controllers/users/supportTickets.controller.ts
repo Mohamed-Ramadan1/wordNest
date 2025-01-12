@@ -10,13 +10,34 @@ import { ApiResponse } from "@shared/index";
 // interfaces imports
 import { SupportTicketBody } from "../../interfaces/supportTicketBody.interface";
 
+// services imports
+import { SupportTicketService } from "../../services/users/supportTickets.service";
+
+// interfaces imports
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+
 export class SupportTicketController {
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
    */
   public createSupportTicket = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
+      await SupportTicketService.createSupportTicket(
+        req.body,
+        req.user,
+        req.ip
+      );
+
+      // creating the response object
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Support ticket created successfully.",
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**

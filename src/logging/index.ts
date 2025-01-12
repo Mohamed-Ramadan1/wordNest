@@ -20,6 +20,7 @@ export { logFailedEmailSent } from "./loggers/emailLogger";
 export {
   logFailedImageDelete,
   logFailedImageUpload,
+  logFailedResourceUpload,
 } from "./loggers/cloudinaryLogger";
 
 export {
@@ -43,3 +44,5 @@ export * as changeAccountEmailLogger from "./loggers/changeAccountEmailLogger";
 export * as lockAccountsLogger from "./loggers/lockAccountLogger";
 
 export * as banAccountsLogger from "./loggers/bandAccountsLogger";
+
+export * as supportTicketsLogger from "./loggers/supportTicketsLogger";

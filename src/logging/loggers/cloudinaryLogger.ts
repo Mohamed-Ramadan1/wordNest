@@ -35,3 +35,18 @@ export function logFailedImageDelete(
     timestamp: new Date().toISOString(),
   });
 }
+
+// log fail to upload resource to cloudinary
+export function logFailedResourceUpload(
+  errMessage: string,
+  resourceType: string,
+  filePath?: string
+) {
+  logger.error("Failed to upload resource to cloudinary", {
+    event: "resource_upload_failed",
+    error: errMessage,
+    resourceType: resourceType,
+    filePath: filePath,
+    timestamp: new Date().toISOString(),
+  });
+}

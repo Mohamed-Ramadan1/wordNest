@@ -16,3 +16,8 @@ export {
   bandAccountsQueue,
   BandAccountQueueTypes,
 } from "./queues/bandAccountsQueue";
+
+export {
+  supportTicketQueue,
+  SupportTicketQueueJobs,
+} from "./queues/supportTicketQueue";

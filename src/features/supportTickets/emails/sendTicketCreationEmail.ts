@@ -25,6 +25,19 @@ export const sendTicketCreationEmail = async (
     const transport = createMailTransporter();
     const ticketUrl = `${process.env.FRONTEND_URL}/support/tickets/${ticket._id}`;
 
+    // Format the createdAt date
+    const createdAtDate = new Date(ticket.createdAt);
+    const formattedDate = !isNaN(createdAtDate.getTime())
+      ? createdAtDate.toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "UTC",
+        })
+      : "N/A";
+
     const mailOptions = {
       from: `${siteName} Support <${siteOfficialEmail}>`,
       to: user.email,
@@ -51,19 +64,19 @@ export const sendTicketCreationEmail = async (
                     padding: 20px;
                     background-color: #ffffff;
                     border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 }
                 .header {
                     text-align: center;
                     padding: 20px 0;
-                    background-color: #f8f9fa;
+                    background: linear-gradient(135deg, #007bff, #0056b3);
                     border-radius: 8px 8px 0 0;
-                    border-bottom: 3px solid #e9ecef;
+                    color: #ffffff;
                 }
                 .logo {
                     font-size: 28px;
                     font-weight: bold;
-                    color: #2c3e50;
+                    color: #ffffff;
                 }
                 .content {
                     padding: 30px 20px;
@@ -81,16 +94,22 @@ export const sendTicketCreationEmail = async (
                     color: #ffffff;
                     font-weight: bold;
                     background-color: ${getPriorityColor(ticket.priority)};
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 }
                 .button {
                     display: inline-block;
                     padding: 14px 28px;
-                    background-color: #007bff;
+                    background: linear-gradient(135deg, #007bff, #0056b3);
                     color: #ffffff !important;
                     text-decoration: none;
                     border-radius: 5px;
                     margin: 20px 0;
                     font-weight: bold;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    transition: background 0.3s ease;
+                }
+                .button:hover {
+                    background: linear-gradient(135deg, #0056b3, #007bff);
                 }
                 .footer {
                     text-align: center;
@@ -100,6 +119,13 @@ export const sendTicketCreationEmail = async (
                     background-color: #f8f9fa;
                     border-radius: 0 0 8px 8px;
                     border-top: 1px solid #e9ecef;
+                }
+                .footer a {
+                    color: #007bff;
+                    text-decoration: none;
+                }
+                .footer a:hover {
+                    text-decoration: underline;
                 }
             </style>
         </head>
@@ -120,7 +146,7 @@ export const sendTicketCreationEmail = async (
                         <p><strong>Category:</strong> ${ticket.category}</p>
                         <p><strong>Priority:</strong> <span class="priority-badge">${ticket.priority}</span></p>
                         <p><strong>Status:</strong> ${ticket.status}</p>
-                        <p><strong>Created:</strong> ${ticket.createdAt.toLocaleDateString()}</p>
+                        <p><strong>Created:</strong> ${formattedDate}</p>
                     </div>
                     
                     <div style="text-align: center;">
@@ -134,6 +160,10 @@ export const sendTicketCreationEmail = async (
                 <div class="footer">
                     <p>© ${new Date().getFullYear()} ${siteName}. All rights reserved.</p>
                     <p>If you have any questions, contact us at <a href="mailto:${siteOfficialEmail}">${siteOfficialEmail}</a></p>
+                    <p>Follow us: 
+                        <a href="https://twitter.com/${siteName}" target="_blank">Twitter</a> | 
+                        <a href="https://facebook.com/${siteName}" target="_blank">Facebook</a>
+                    </p>
                 </div>
             </div>
         </body>

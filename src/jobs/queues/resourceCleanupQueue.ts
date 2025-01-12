@@ -8,7 +8,7 @@ export enum ResourceCleanupQueueType {
 }
 
 const retryAttempts: number = 5;
-const delayTime: number = 5000;
+const delayTime: number = 1000;
 
 // Initialize the queue
 export const resourceCleanupQueue: Queue = createQueue(

@@ -27,12 +27,9 @@ export enum SupportTicketPriority {
 
 // Interface for ticket attachments
 export interface Attachment {
-  filename: string;
-  path: string;
-  mimeType: string;
-  size: number;
+  imageLink: string;
+  imagePublicId: string;
   uploadedAt: Date;
-  uploadedBy: ObjectId | IUser;
 }
 
 export interface Response {
@@ -47,7 +44,7 @@ export interface ISupportTicket extends Document {
   user: ObjectId | IUser;
   subject: string;
   description: string;
-  attachments: string[];
+  attachments?: Attachment;
   category: SupportTicketCategory;
   status: SupportTicketStatus;
   priority: SupportTicketPriority;
