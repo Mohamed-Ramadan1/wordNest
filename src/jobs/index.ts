@@ -17,7 +17,5 @@ export {
   BandAccountQueueTypes,
 } from "./queues/bandAccountsQueue";
 
-export {
-  supportTicketQueue,
-  SupportTicketQueueJobs,
-} from "./queues/supportTicketQueue";
+export { supportTicketQueue } from "./queues/supportTicketQueue";
+export { SupportTicketQueueJobs } from "./queueProcessors/supportTicketsQueue/ticketsEmailSender.processor";

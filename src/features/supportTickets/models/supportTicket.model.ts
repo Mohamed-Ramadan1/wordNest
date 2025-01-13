@@ -4,7 +4,8 @@ import {
   SupportTicketCategory,
   SupportTicketPriority,
   SupportTicketStatus,
-  Response,
+  UserResponse,
+  AdminResponse,
   Attachment,
 } from "../interfaces/supportTicket.interface";
 
@@ -17,12 +18,12 @@ const attachmentSchema: Schema = new Schema<Attachment>(
   { _id: false }
 );
 
-const responseSchema: Schema = new Schema<Response>(
+const userResponseSchema: Schema = new Schema<UserResponse>(
   {
     responderId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "response must have a responder"],
+      required: [true, "user response must belong to a user"],
     },
     message: {
       type: String,
@@ -33,7 +34,40 @@ const responseSchema: Schema = new Schema<Response>(
       type: Date,
       default: Date.now,
     },
-    attachments: [attachmentSchema],
+    attachment: attachmentSchema,
+    isFollowUp: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false }
+);
+
+const adminResponseSchema: Schema = new Schema<AdminResponse>(
+  {
+    responderId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "admin response must belong to an admin"],
+    },
+    message: {
+      type: String,
+      required: [true, "response must have a message"],
+      trim: true,
+    },
+    respondedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    attachment: attachmentSchema,
+    internalNotes: {
+      type: String,
+      trim: true,
+    },
+    escalationLevel: {
+      type: Number,
+      default: 1,
+    },
   },
   { _id: false }
 );
@@ -85,7 +119,8 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    responses: [responseSchema],
+    userResponses: [userResponseSchema],
+    adminResponses: [adminResponseSchema],
   },
   {
     timestamps: true,

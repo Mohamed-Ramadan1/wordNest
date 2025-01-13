@@ -11,6 +11,7 @@ import { ApiResponse } from "@shared/index";
 import {
   SupportTicketBody,
   SupportTicketParams,
+  SupportTicketBodyReplay,
 } from "../../interfaces/supportTicketBody.interface";
 
 // services imports
@@ -95,8 +96,24 @@ export class SupportTicketController {
    */
   public replaySupportTicket = catchAsync(
     async (
-      req: Request<SupportTicketParams, {}, SupportTicketBody>,
+      req: Request<SupportTicketParams, {}, SupportTicketBodyReplay>,
       res: Response
-    ) => {}
+    ) => {
+      await SupportTicketService.replaySupportTicket(
+        req.user,
+        req.body.supportTicket,
+        req.body,
+        req.ip
+      );
+
+      // creating the response object
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Support ticket replied successfully.",
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 }

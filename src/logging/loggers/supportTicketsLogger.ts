@@ -43,3 +43,40 @@ export const logTicketCreationFail = (
     message: error.message,
   });
 };
+
+// log success replay ticket
+export const logSuccessReplayTicket = (
+  ip: string | undefined,
+  responderId: ObjectId,
+  ticketId: ObjectId,
+  reply: string
+) => {
+  logger.info("Ticket response replayed ", {
+    ip: ip ? ip : "Unknown IP",
+    responderId,
+    ticketId,
+    reply,
+    timestamp: new Date().toISOString(),
+    service: "supportTicketsService",
+    event: "replay_response_ticket",
+    message: "Ticket response replayed successfully",
+  });
+};
+
+// log fail replay ticket
+export const logFailReplayTicket = (
+  ip: string | undefined,
+  responderId: ObjectId,
+  ticketId: ObjectId,
+  error: Error
+) => {
+  logger.error("Ticket response replay failed ", {
+    ip: ip ? ip : "Unknown IP",
+    responderId,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "supportTicketsService",
+    event: "replay_response_ticket",
+    message: error.message,
+  });
+};

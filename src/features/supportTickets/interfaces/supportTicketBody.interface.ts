@@ -1,5 +1,9 @@
 import { ObjectId } from "mongoose";
-import { Attachment, SupportTicketCategory } from "./supportTicket.interface";
+import {
+  Attachment,
+  ISupportTicket,
+  SupportTicketCategory,
+} from "./supportTicket.interface";
 
 export interface SupportTicketBody {
   subject: string;
@@ -7,6 +11,14 @@ export interface SupportTicketBody {
   category: SupportTicketCategory;
   priority: string;
   attachments?: Attachment;
+}
+
+export interface SupportTicketBodyReplay {
+  message: string;
+  responderId: ObjectId;
+  respondedAt: Date;
+  attachment?: Attachment;
+  supportTicket: ISupportTicket;
 }
 
 export interface SupportTicketParams {

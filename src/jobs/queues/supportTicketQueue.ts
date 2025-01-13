@@ -1,14 +1,9 @@
-import { Queue, Job } from "bull";
-
+// supportTicketQueue.ts
+import { Queue } from "bull";
 import { createQueue } from "@jobs/shared/createQueue";
 
-// processor imports
-import { sendSupportTicketCreationEmailProcessor } from "../queueProcessors/supportTicketsQueue/supportTicketCreation.processor";
-
-export enum SupportTicketQueueJobs {
-  sendTicketCreationEmail = "sendSupportTicketCreationEmail",
-}
-
+import { ticketsEmailSenderProcessor } from "../queueProcessors/supportTicketsQueue/ticketsEmailSender.processor";
+import { SupportTicketQueueJobs } from "../queueProcessors/supportTicketsQueue/ticketsEmailSender.processor";
 const retryAttempts: number = 5;
 const delayTime: number = 5000;
 
@@ -19,8 +14,7 @@ export const supportTicketQueue: Queue = createQueue(
   delayTime
 );
 
-// Add processors to the queue
-supportTicketQueue.process(
-  SupportTicketQueueJobs.sendTicketCreationEmail,
-  sendSupportTicketCreationEmailProcessor
-);
+// Register processors for all job types
+Object.values(SupportTicketQueueJobs).forEach((jobType) => {
+  supportTicketQueue.process(jobType, ticketsEmailSenderProcessor);
+});

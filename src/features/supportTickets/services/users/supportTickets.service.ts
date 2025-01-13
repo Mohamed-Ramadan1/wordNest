@@ -1,5 +1,8 @@
 // interfaces imports
-import { SupportTicketBody } from "@features/supportTickets/interfaces/supportTicketBody.interface";
+import {
+  SupportTicketBody,
+  SupportTicketBodyReplay,
+} from "@features/supportTickets/interfaces/supportTicketBody.interface";
 import { IUser } from "@features/users";
 
 // packages imports
@@ -49,7 +52,7 @@ export class SupportTicketService {
       });
 
       // Add the job to the queue to send an email to the user.
-      supportTicketQueue.add(SupportTicketQueueJobs.sendTicketCreationEmail, {
+      supportTicketQueue.add(SupportTicketQueueJobs.SendTicketCreationEmail, {
         user,
         supportTicket,
       });
@@ -120,7 +123,57 @@ export class SupportTicketService {
    * Allows the user to reply to a support ticket.
    * Enables the user to add a response or update an existing ticket.
    */
-  static async replaySupportTicket() {
-    // Implementation here
+  static async replaySupportTicket(
+    user: IUser,
+    supportTicket: ISupportTicket,
+    responseInfo: SupportTicketBodyReplay,
+    ipAddress: string | undefined
+  ): Promise<void> {
+    try {
+      if (responseInfo.attachment) {
+        const uploadedAttachments: cloudinary.UploadApiResponse =
+          await uploadToCloudinary(
+            responseInfo.attachment.imageLink,
+            "support-ticket-replay-attachments"
+          );
+        // update the attachments with the uploaded imagePublicId.
+        responseInfo.attachment.imagePublicId = uploadedAttachments.public_id;
+        responseInfo.attachment.imageLink = uploadedAttachments.secure_url;
+        responseInfo.attachment.uploadedAt = new Date();
+      }
+
+      // Update the support ticket with the new response.
+      supportTicket.userResponses.push({
+        message: responseInfo.message,
+        responderId: user._id,
+        respondedAt: new Date(),
+        attachment: responseInfo.attachment,
+      });
+      await supportTicket.save();
+      // Add the job to the queue to send an email to the user.
+      supportTicketQueue.add(
+        SupportTicketQueueJobs.SendUserResponseConfirmationEmail,
+        {
+          user,
+          supportTicket,
+        }
+      );
+
+      // log success replay ticket
+      supportTicketsLogger.logSuccessReplayTicket(
+        ipAddress,
+        user._id,
+        supportTicket._id,
+        responseInfo.message
+      );
+    } catch (err: any) {
+      supportTicketsLogger.logFailReplayTicket(
+        ipAddress,
+        user._id,
+        supportTicket._id,
+        err.message
+      );
+      throw new AppError(err.message, 500);
+    }
   }
 }

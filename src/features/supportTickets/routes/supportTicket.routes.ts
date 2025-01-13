@@ -32,9 +32,10 @@ router
 router.route("/:ticketId").get(supportTicketController.getSupportTicketById);
 
 // Route to reply to a specific support ticket
-router.put(
+router.post(
   "/:ticketId/reply",
-
+  upload.single("attachment"),
+  SupportTicketsMiddleware.validateReplaySupportTicket,
   supportTicketController.replaySupportTicket
 );
 
