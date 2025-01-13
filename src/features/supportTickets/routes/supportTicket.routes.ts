@@ -29,7 +29,7 @@ router
   );
 
 // Route to get a specific support ticket by ID
-router.route("/:id").get(supportTicketController.getSupportTicketById);
+router.route("/:ticketId").get(supportTicketController.getSupportTicketById);
 
 // Route to reply to a specific support ticket
 router.put(

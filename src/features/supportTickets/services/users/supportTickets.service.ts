@@ -1,9 +1,11 @@
-import { SupportTicketBody } from "@features/supportTickets/interfaces/supportTicketBody.interface";
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-
 // interfaces imports
+import { SupportTicketBody } from "@features/supportTickets/interfaces/supportTicketBody.interface";
 import { IUser } from "@features/users";
+
+// packages imports
 import cloudinary from "cloudinary";
+import { ObjectId } from "mongoose";
+
 // utils imports
 import { AppError, uploadToCloudinary } from "@utils/index";
 
@@ -12,6 +14,10 @@ import { supportTicketsLogger } from "@logging/index";
 
 // Queues imports
 import { supportTicketQueue, SupportTicketQueueJobs } from "@jobs/index";
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+
+// models imports
+import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 export class SupportTicketService {
   /**
@@ -69,16 +75,45 @@ export class SupportTicketService {
    * Retrieves all support tickets for the current user.
    * Fetches a list of all open or closed tickets submitted by the user.
    */
-  static async getAllUserSupportTickets() {
-    // Implementation here
+  static async getAllUserSupportTickets(
+    user: IUser
+  ): Promise<ISupportTicket[]> {
+    try {
+      const supportTickets: ISupportTicket[] | null = await SupportTicket.find({
+        user: user._id,
+      });
+      return supportTickets;
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Retrieves a specific support ticket by ID.
    * Ensures that the ticket belongs to the current user before displaying it.
    */
-  static async getSupportTicketById() {
+  static async getSupportTicketById(
+    user: IUser,
+    ticketId: ObjectId
+  ): Promise<ISupportTicket> {
     // Implementation here
+    try {
+      const supportTicket: ISupportTicket | null = await SupportTicket.findOne({
+        _id: ticketId,
+        user: user._id,
+      });
+
+      console.log(supportTicket);
+      if (!supportTicket) {
+        throw new AppError(
+          "No support ticket found with this id nad and related to this user.",
+          404
+        );
+      }
+      return supportTicket;
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**

@@ -1230,6 +1230,130 @@
 				}
 			],
 			"description": "**Auth Collection Description:**\n\nThis collection contains all the API endpoints related to user authentication and authorization. It includes routes for user registration, login, password reset, email verification, and token management. The authentication processes are built to ensure secure access to protected resources within the application.\n\nEndpoints:\n\n- **Registration**: Allows new users to create an account.\n    \n- **Login**: Allows users to authenticate and receive a JWT token.\n    \n- **Password Reset**: Handles user requests to reset their passwords.\n    \n- **Email Verification**: Verifies the email address after registration.\n    \n- **Token Refresh**: Allows users to refresh their JWT tokens.\n    \n\nEnsure you have the necessary environment variables and request bodies configured before testing these endpoints."
+		},
+		{
+			"name": "support tickets",
+			"item": [
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "create support ticket",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "attachment",
+											"type": "file",
+											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-13 14-45-31.png"
+										},
+										{
+											"key": "subject",
+											"value": "subject of tecket ",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "descripe your ticket ",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "technical",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URL}}/support-tickets",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets"
+									]
+								},
+								"description": "This endpoint allows you to create a new support ticket by sending an HTTP POST request to {{URL}}/support-tickets. The request should include form-data in the body with the following parameters:\n\n1. attachment (file) - The file attachment for the support ticket.\n    \n2. subject (text) - The subject of the support ticket.\n    \n3. description (text) - The description of the support ticket.\n    \n4. category (text) - The category of the support ticket.\n    \n\nUpon successful execution, the endpoint returns a JSON response with a status code of 200 and the following content:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get all user tickets",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/support-tickets",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets"
+									]
+								},
+								"description": "### GET /support-tickets\n\nThis endpoint retrieves support tickets.\n\n#### Request\n\nNo request body is required for this endpoint.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"string\",\n  \"results\": 0,\n  \"data\": {\n    \"userSupportTickets\": [\n      {\n        \"_id\": \"string\",\n        \"user\": \"string\",\n        \"subject\": \"string\",\n        \"description\": \"string\",\n        \"attachments\": {\n          \"imageLink\": \"string\",\n          \"imagePublicId\": \"string\",\n          \"uploadedAt\": \"string\"\n        },\n        \"category\": \"string\",\n        \"status\": \"string\",\n        \"priority\": \"string\",\n        \"resolvedAt\": \"string\",\n        \"closedAt\": \"string\",\n        \"responses\": [],\n        \"createdAt\": \"string\",\n        \"updatedAt\": \"string\",\n        \"__v\": 0,\n        \"id\": \"string\"\n      }\n    ]\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get user ticket by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/support-tickets/6784fce86251dfba0bd4dfc1",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets",
+										"6784fce86251dfba0bd4dfc1"
+									]
+								},
+								"description": "### Get Support Ticket Details\n\nThis endpoint retrieves the details of a specific support ticket.\n\n#### Request\n\n- Method: GET\n    \n- URL: {{URL}}/support-tickets/6784fce86251dfba0bd4dfc1\n    \n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"data\": {\n        \"userTIcket\": {\n            \"_id\": \"\",\n            \"user\": \"\",\n            \"subject\": \"\",\n            \"description\": \"\",\n            \"attachments\": {\n                \"imageLink\": \"\",\n                \"imagePublicId\": \"\",\n                \"uploadedAt\": \"\"\n            },\n            \"category\": \"\",\n            \"status\": \"\",\n            \"priority\": \"\",\n            \"resolvedAt\": null,\n            \"closedAt\": null,\n            \"responses\": [],\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\",\n            \"__v\": 0,\n            \"id\": \"\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "admin",
+					"item": []
+				}
+			]
 		}
 	],
 	"event": [

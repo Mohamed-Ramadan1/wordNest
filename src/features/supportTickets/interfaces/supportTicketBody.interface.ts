@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { Attachment, SupportTicketCategory } from "./supportTicket.interface";
 
 export interface SupportTicketBody {
@@ -9,5 +10,5 @@ export interface SupportTicketBody {
 }
 
 export interface SupportTicketParams {
-  ticketId: string;
+  ticketId: ObjectId;
 }

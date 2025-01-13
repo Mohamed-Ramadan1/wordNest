@@ -8,7 +8,10 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { ApiResponse } from "@shared/index";
 
 // interfaces imports
-import { SupportTicketBody } from "../../interfaces/supportTicketBody.interface";
+import {
+  SupportTicketBody,
+  SupportTicketParams,
+} from "../../interfaces/supportTicketBody.interface";
 
 // services imports
 import { SupportTicketService } from "../../services/users/supportTickets.service";
@@ -45,7 +48,20 @@ export class SupportTicketController {
    * Fetches a list of all open or closed tickets submitted by the user.
    */
   public getAllUserSupportTickets = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
+      const supportTickets =
+        await SupportTicketService.getAllUserSupportTickets(req.user);
+
+      // creating the response object
+      const response: ApiResponse<ISupportTicket[]> = {
+        status: "success",
+        results: supportTickets.length,
+        data: { userSUpportTickets: supportTickets },
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -53,7 +69,24 @@ export class SupportTicketController {
    * Ensures that the ticket belongs to the current user before displaying it.
    */
   public getSupportTicketById = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (
+      req: Request<SupportTicketParams, {}, SupportTicketBody>,
+      res: Response
+    ) => {
+      const supportTicket = await SupportTicketService.getSupportTicketById(
+        req.user,
+        req.params.ticketId
+      );
+
+      // creating the response object
+      const response: ApiResponse<ISupportTicket> = {
+        status: "success",
+        data: { userTIcket: supportTicket },
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -61,6 +94,9 @@ export class SupportTicketController {
    * Enables the user to add a response or update an existing ticket.
    */
   public replaySupportTicket = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (
+      req: Request<SupportTicketParams, {}, SupportTicketBody>,
+      res: Response
+    ) => {}
   );
 }
