@@ -3,12 +3,20 @@ import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicke
 
 // packages imports
 import { ObjectId } from "mongoose";
+import cloudinary from "cloudinary";
 
 // models imports
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 // utils imports
-import { AppError } from "@utils/index";
+import { AppError, uploadToCloudinary } from "@utils/index";
+import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+
+// logger imports
+import { supportTicketsLogger } from "@logging/index";
+
+// queues imports
+import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 
 export class TicketsCRUDService {
   /**
@@ -52,7 +60,45 @@ export class TicketsCRUDService {
    *
    * @param ticketData - The data for the new ticket, including issue details and other relevant information.
    */
-  static createTicket() {}
+  static async createTicket(
+    ticketInformation: TicketBody,
+    ipAddress: string | undefined
+  ): Promise<void> {
+    try {
+      if (ticketInformation.attachment) {
+        const uploadedAttachment: cloudinary.UploadApiResponse =
+          await uploadToCloudinary(
+            ticketInformation.attachment.imageLink,
+            "support-ticket-attachments"
+          );
+
+        ticketInformation.attachment.imageLink = uploadedAttachment.secure_url;
+        ticketInformation.attachment.imagePublicId =
+          uploadedAttachment.public_id;
+        ticketInformation.attachment.uploadedAt = new Date();
+      }
+      const newTicket = await SupportTicket.create({
+        ...ticketInformation,
+        attachments: ticketInformation.attachment,
+      });
+      supportTicketsLogger.logTicketCreation(
+        ipAddress,
+        ticketInformation.user._id,
+        newTicket._id
+      );
+      supportTicketQueue.add(SupportTicketQueueJobs.SendTicketCreationEmail, {
+        supportTicket: newTicket,
+        user: ticketInformation.user,
+      });
+    } catch (err: any) {
+      supportTicketsLogger.logTicketCreationFail(
+        ipAddress,
+        ticketInformation.user._id,
+        err.message
+      );
+      throw new AppError(err.message, 500);
+    }
+  }
 
   /**
    * Updates a specific ticket by ID.

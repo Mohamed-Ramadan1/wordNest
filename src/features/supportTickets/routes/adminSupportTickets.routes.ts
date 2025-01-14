@@ -1,7 +1,9 @@
 import { Router } from "express";
 import { protect, restrictTo } from "@shared/index";
+import { upload } from "@config/multer.config";
 
 // middleware imports
+import { TicketCRUDMiddleware } from "../middlewares/admin/ticketsCRUD.middleware";
 
 // controller imports
 import { TicketsCRUDController } from "../controllers/admin/ticketsCRUD.controller";
@@ -18,7 +20,11 @@ router.use(restrictTo("admin"));
 router
   .route("/")
   .get(ticketsCRUDController.getAllTickets)
-  .post(ticketsCRUDController.createTicket);
+  .post(
+    upload.single("attachment"),
+    TicketCRUDMiddleware.validateCreateTicket,
+    ticketsCRUDController.createTicket
+  );
 
 router
   .route("/:ticketId")

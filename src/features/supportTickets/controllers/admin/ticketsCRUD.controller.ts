@@ -63,6 +63,15 @@ export class TicketsCRUDController {
   public createTicket = catchAsync(
     async (req: Request<TicketParams>, res: Response) => {
       // Creates a new ticket
+
+      await TicketsCRUDService.createTicket(req.body, req.ip);
+
+      const response: ApiResponse<ISupportTicket> = {
+        status: "success",
+        message:
+          "Ticket created successfully.use will receive an email with more information.",
+      };
+      sendResponse(201, res, response);
     }
   );
 

@@ -2,6 +2,7 @@ import { IUser } from "@features/users";
 import { AppError } from "@utils/appError";
 import { Attachment } from "../../interfaces/supportTicket.interface";
 import { removeLocalFile } from "@utils/index";
+
 export const validateSupportTicketAttachments = (
   file: Express.Multer.File,
   user: IUser
