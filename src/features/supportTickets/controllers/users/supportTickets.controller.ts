@@ -8,7 +8,17 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { ApiResponse } from "@shared/index";
 
 // interfaces imports
-import { SupportTicketBody } from "../../interfaces/supportTicketBody.interface";
+import {
+  SupportTicketBody,
+  SupportTicketParams,
+  SupportTicketBodyReplay,
+} from "../../interfaces/supportTicketBody.interface";
+
+// services imports
+import { SupportTicketService } from "../../services/users/supportTickets.service";
+
+// interfaces imports
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 export class SupportTicketController {
   /**
@@ -16,7 +26,22 @@ export class SupportTicketController {
    * Allows the user to submit a new issue or request for assistance.
    */
   public createSupportTicket = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
+      await SupportTicketService.createSupportTicket(
+        req.body,
+        req.user,
+        req.ip
+      );
+
+      // creating the response object
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Support ticket created successfully.",
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -24,7 +49,20 @@ export class SupportTicketController {
    * Fetches a list of all open or closed tickets submitted by the user.
    */
   public getAllUserSupportTickets = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
+      const supportTickets =
+        await SupportTicketService.getAllUserSupportTickets(req.user);
+
+      // creating the response object
+      const response: ApiResponse<ISupportTicket[]> = {
+        status: "success",
+        results: supportTickets.length,
+        data: { userSUpportTickets: supportTickets },
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -32,7 +70,24 @@ export class SupportTicketController {
    * Ensures that the ticket belongs to the current user before displaying it.
    */
   public getSupportTicketById = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (
+      req: Request<SupportTicketParams, {}, SupportTicketBody>,
+      res: Response
+    ) => {
+      const supportTicket = await SupportTicketService.getSupportTicketById(
+        req.user,
+        req.params.ticketId
+      );
+
+      // creating the response object
+      const response: ApiResponse<ISupportTicket> = {
+        status: "success",
+        data: { userTIcket: supportTicket },
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 
   /**
@@ -40,6 +95,25 @@ export class SupportTicketController {
    * Enables the user to add a response or update an existing ticket.
    */
   public replaySupportTicket = catchAsync(
-    async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {}
+    async (
+      req: Request<SupportTicketParams, {}, SupportTicketBodyReplay>,
+      res: Response
+    ) => {
+      await SupportTicketService.replaySupportTicket(
+        req.user,
+        req.body.supportTicket,
+        req.body,
+        req.ip
+      );
+
+      // creating the response object
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Support ticket replied successfully.",
+      };
+
+      // sending the response.
+      sendResponse(200, res, response);
+    }
   );
 }

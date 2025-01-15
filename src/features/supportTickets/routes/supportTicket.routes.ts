@@ -19,31 +19,23 @@ const router: Router = Router();
 
 router.use(protect);
 
-// Route to create a new support ticket
-router.post(
-  "/tickets",
-  upload.single("attachment"),
-  supportTicketController.createSupportTicket
-);
-
-// Route to get all support tickets for the current user
-router.get(
-  "/tickets",
-
-  supportTicketController.getAllUserSupportTickets
-);
+router
+  .route("/")
+  .get(supportTicketController.getAllUserSupportTickets)
+  .post(
+    upload.single("attachment"),
+    SupportTicketsMiddleware.validateCreateSupportTicket,
+    supportTicketController.createSupportTicket
+  );
 
 // Route to get a specific support ticket by ID
-router.get(
-  "/tickets/:id",
-
-  supportTicketController.getSupportTicketById
-);
+router.route("/:ticketId").get(supportTicketController.getSupportTicketById);
 
 // Route to reply to a specific support ticket
-router.put(
-  "/tickets/:id/reply",
-
+router.post(
+  "/:ticketId/reply",
+  upload.single("attachment"),
+  SupportTicketsMiddleware.validateReplaySupportTicket,
   supportTicketController.replaySupportTicket
 );
 

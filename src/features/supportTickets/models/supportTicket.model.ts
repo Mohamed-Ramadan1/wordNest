@@ -4,46 +4,26 @@ import {
   SupportTicketCategory,
   SupportTicketPriority,
   SupportTicketStatus,
-  Response,
+  UserResponse,
+  AdminResponse,
   Attachment,
 } from "../interfaces/supportTicket.interface";
 
 const attachmentSchema: Schema = new Schema<Attachment>(
   {
-    filename: {
-      type: String,
-      required: [true, "Attachment file must have  name "],
-    },
-    path: { type: String, required: true },
-    mimeType: {
-      type: String,
-      validate: {
-        validator: (v: string) => /^(image|application\/pdf)/.test(v),
-        message: "Attachment must be an image or PDF",
-      },
-      required: [true, "Attachment file type must to be known"],
-    },
-    size: {
-      type: Number,
-      required: [true, "attachment file size must to be known with max 1MB"],
-      max: 1000000,
-    }, // 1MB
+    imageLink: { type: String, required: true },
+    imagePublicId: { type: String, required: true },
     uploadedAt: { type: Date, default: Date.now },
-    uploadedBy: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Attachment must known the uploader of it."],
-    },
   },
   { _id: false }
 );
 
-const responseSchema: Schema = new Schema<Response>(
+const userResponseSchema: Schema = new Schema<UserResponse>(
   {
     responderId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "response must have a responder"],
+      required: [true, "user response must belong to a user"],
     },
     message: {
       type: String,
@@ -54,7 +34,40 @@ const responseSchema: Schema = new Schema<Response>(
       type: Date,
       default: Date.now,
     },
-    attachments: [attachmentSchema],
+    attachment: attachmentSchema,
+    isFollowUp: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false }
+);
+
+const adminResponseSchema: Schema = new Schema<AdminResponse>(
+  {
+    responderId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "admin response must belong to an admin"],
+    },
+    message: {
+      type: String,
+      required: [true, "response must have a message"],
+      trim: true,
+    },
+    respondedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    attachment: attachmentSchema,
+    internalNotes: {
+      type: String,
+      trim: true,
+    },
+    escalationLevel: {
+      type: Number,
+      default: 1,
+    },
   },
   { _id: false }
 );
@@ -76,7 +89,7 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
       required: [true, "support ticket must have a description"],
       trim: true,
     },
-    attachments: [attachmentSchema],
+    attachments: attachmentSchema,
     category: {
       type: String,
       enum: Object.values(SupportTicketCategory),
@@ -98,6 +111,7 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
       type: Date,
       default: null,
     },
+
     closedAt: {
       type: Date,
       default: null,
@@ -105,9 +119,18 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
     resolvedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "resolved ticket must have a resolver"],
     },
-    responses: [responseSchema],
+    reopenedAt: {
+      type: Date,
+      default: null,
+    },
+    reopenedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    userResponses: [userResponseSchema],
+    adminResponses: [adminResponseSchema],
   },
   {
     timestamps: true,

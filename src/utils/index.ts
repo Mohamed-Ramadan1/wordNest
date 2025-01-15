@@ -9,3 +9,7 @@ export { generateAuthToken } from "./generateAuthToken";
 export { generateLogOutToken } from "./generateLogoutToken";
 
 export { validateDto } from "./validate.dto";
+
+export { uploadToCloudinary } from "./uploadToCloudinary";
+
+export { removeLocalFile } from "./deleteLocalFiles";

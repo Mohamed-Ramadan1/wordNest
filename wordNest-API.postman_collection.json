@@ -526,7 +526,7 @@
 										{
 											"key": "profilePicture",
 											"type": "file",
-											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-07 21-36-07.png"
+											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-12 21-25-34.png"
 										}
 									]
 								},
@@ -1230,6 +1230,557 @@
 				}
 			],
 			"description": "**Auth Collection Description:**\n\nThis collection contains all the API endpoints related to user authentication and authorization. It includes routes for user registration, login, password reset, email verification, and token management. The authentication processes are built to ensure secure access to protected resources within the application.\n\nEndpoints:\n\n- **Registration**: Allows new users to create an account.\n    \n- **Login**: Allows users to authenticate and receive a JWT token.\n    \n- **Password Reset**: Handles user requests to reset their passwords.\n    \n- **Email Verification**: Verifies the email address after registration.\n    \n- **Token Refresh**: Allows users to refresh their JWT tokens.\n    \n\nEnsure you have the necessary environment variables and request bodies configured before testing these endpoints."
+		},
+		{
+			"name": "support tickets",
+			"item": [
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "create support ticket",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "attachment",
+											"type": "file",
+											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-13 14-45-31.png"
+										},
+										{
+											"key": "subject",
+											"value": "subject of tecket ",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "descripe your ticket ",
+											"type": "text"
+										},
+										{
+											"key": "category",
+											"value": "technical",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URL}}/support-tickets",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets"
+									]
+								},
+								"description": "This endpoint allows you to create a new support ticket by sending an HTTP POST request to {{URL}}/support-tickets. The request should include form-data in the body with the following parameters:\n\n1. attachment (file) - The file attachment for the support ticket.\n    \n2. subject (text) - The subject of the support ticket.\n    \n3. description (text) - The description of the support ticket.\n    \n4. category (text) - The category of the support ticket.\n    \n\nUpon successful execution, the endpoint returns a JSON response with a status code of 200 and the following content:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get all user tickets",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/support-tickets",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets"
+									]
+								},
+								"description": "### GET /support-tickets\n\nThis endpoint retrieves support tickets.\n\n#### Request\n\nNo request body is required for this endpoint.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"string\",\n  \"results\": 0,\n  \"data\": {\n    \"userSupportTickets\": [\n      {\n        \"_id\": \"string\",\n        \"user\": \"string\",\n        \"subject\": \"string\",\n        \"description\": \"string\",\n        \"attachments\": {\n          \"imageLink\": \"string\",\n          \"imagePublicId\": \"string\",\n          \"uploadedAt\": \"string\"\n        },\n        \"category\": \"string\",\n        \"status\": \"string\",\n        \"priority\": \"string\",\n        \"resolvedAt\": \"string\",\n        \"closedAt\": \"string\",\n        \"responses\": [],\n        \"createdAt\": \"string\",\n        \"updatedAt\": \"string\",\n        \"__v\": 0,\n        \"id\": \"string\"\n      }\n    ]\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get user ticket by id",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/support-tickets/6784fce86251dfba0bd4dfc1",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets",
+										"6784fce86251dfba0bd4dfc1"
+									]
+								},
+								"description": "### Get Support Ticket Details\n\nThis endpoint retrieves the details of a specific support ticket.\n\n#### Request\n\n- Method: GET\n    \n- URL: {{URL}}/support-tickets/6784fce86251dfba0bd4dfc1\n    \n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"data\": {\n        \"userTIcket\": {\n            \"_id\": \"\",\n            \"user\": \"\",\n            \"subject\": \"\",\n            \"description\": \"\",\n            \"attachments\": {\n                \"imageLink\": \"\",\n                \"imagePublicId\": \"\",\n                \"uploadedAt\": \"\"\n            },\n            \"category\": \"\",\n            \"status\": \"\",\n            \"priority\": \"\",\n            \"resolvedAt\": null,\n            \"closedAt\": null,\n            \"responses\": [],\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\",\n            \"__v\": 0,\n            \"id\": \"\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "replay on support ticket response",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "message",
+											"value": "not work yet",
+											"type": "text"
+										},
+										{
+											"key": "attachment",
+											"type": "file",
+											"src": "/home/mohamed/Downloads/WhatsApp Image 2025-01-13 at 4.16.31 PM.jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{URL}}/support-tickets/678539ee7d2224e3b473eab5/reply",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"support-tickets",
+										"678539ee7d2224e3b473eab5",
+										"reply"
+									]
+								},
+								"description": "### POST /support-tickets/678539ee7d2224e3b473eab5/reply\n\nThis endpoint is used to reply to a specific support ticket identified by the ID \"678539ee7d2224e3b473eab5\".\n\n#### Request Body\n\n- `message` (text): The message content for the reply.\n    \n- `attachment` (file): A file attachment, if any.\n    \n\n#### Response\n\nThe response is in JSON format with the following schema:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```\n\n- `status` (string): The status of the response.\n    \n- `message` (string): Any additional message included in the response."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "get support tickets",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets"
+											]
+										},
+										"description": "### GET /admin/support-tickets\n\nThis endpoint retrieves support tickets for the admin.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"string\",\n  \"results\": 0,\n  \"data\": {\n    \"supportTickets\": [\n      {\n        \"_id\": \"string\",\n        \"user\": \"string\",\n        \"subject\": \"string\",\n        \"description\": \"string\",\n        \"category\": \"string\",\n        \"status\": \"string\",\n        \"priority\": \"string\",\n        \"resolvedAt\": \"string\",\n        \"closedAt\": \"string\",\n        \"userResponses\": [\n          {\n            \"responderId\": \"string\",\n            \"message\": \"string\",\n            \"respondedAt\": \"string\",\n            \"attachment\": {\n              \"imageLink\": \"string\",\n              \"imagePublicId\": \"string\",\n              \"uploadedAt\": \"string\"\n            },\n            \"isFollowUp\": true\n          }\n        ],\n        \"adminResponses\": [],\n        \"createdAt\": \"string\",\n        \"updatedAt\": \"string\",\n        \"__v\": 0,\n        \"id\": \"string\"\n      }\n    ]\n  }\n}\n\n ```\n\nThis endpoint retrieves the support tickets for the admin.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n- `status` (string): The status of the response.\n    \n- `results` (number): The number of results returned.\n    \n- `data` (object):\n    \n    - `supportTickets` (array):\n        \n        - `_id` (string): The ID of the support ticket.\n            \n        - `user` (string): The user associated with the support ticket.\n            \n        - `subject` (string): The subject of the support ticket.\n            \n        - `description` (string): The description of the support ticket.\n            \n        - `category` (string): The category of the support ticket.\n            \n        - `status` (string): The status of the support ticket.\n            \n        - `priority` (string): The priority of the support ticket.\n            \n        - `resolvedAt` (string): The date and time when the support ticket was resolved, if applicable.\n            \n        - `closedAt` (string): The date and time when the support ticket was closed, if applicable.\n            \n        - `userResponses` (array):\n            \n            - `responderId` (string): The ID of the responder.\n                \n            - `message` (string): The response message from the user.\n                \n            - `respondedAt` (string): The date and time when the response was made.\n                \n            - `attachment` (object):\n                \n                - `imageLink` (string): The link to the attached image.\n                    \n                - `imagePublicId` (string): The public ID of the attached image.\n                    \n                - `uploadedAt` (string): The date and time when the image was uploaded.\n                    \n            - `isFollowUp` (boolean): Indicates if the response is a follow-up.\n                \n        - `adminResponses` (array): The responses from the admin.\n            \n        - `createdAt` (string): The date and time when the support ticket was created.\n            \n        - `updatedAt` (string): The date and time when the support ticket was last updated.\n            \n        - `__v` (number): Version key.\n            \n        - `id` (string): The ID of the support ticket."
+									},
+									"response": []
+								},
+								{
+									"name": "get support ticket by id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/678539ee7d2224e3b473eab5",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"678539ee7d2224e3b473eab5"
+											]
+										},
+										"description": "# Get Support Ticket Details\n\nThis endpoint retrieves the details of a specific support ticket identified by its unique ID.\n\n## Request\n\n### URL\n\n`GET /admin/support-tickets/678539ee7d2224e3b473eab5`\n\n### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"data\": {\n        \"supportTicket\": {\n            \"_id\": \"\",\n            \"user\": \"\",\n            \"subject\": \"\",\n            \"description\": \"\",\n            \"category\": \"\",\n            \"status\": \"\",\n            \"priority\": \"\",\n            \"resolvedAt\": null,\n            \"closedAt\": null,\n            \"userResponses\": [\n                {\n                    \"responderId\": \"\",\n                    \"message\": \"\",\n                    \"respondedAt\": \"\",\n                    \"attachment\": {\n                        \"imageLink\": \"\",\n                        \"imagePublicId\": \"\",\n                        \"uploadedAt\": \"\"\n                    },\n                    \"isFollowUp\": true\n                }\n            ],\n            \"adminResponses\": [],\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\",\n            \"__v\": 0,\n            \"id\": \"\"\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "Update support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"category\":\"account\",\n    \"status\":\"in_progress\",\n    \"priority\":\"urgent\"\n}       ",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c67c6cfcd02d98a67c7d"
+											]
+										},
+										"description": "### PATCH /admin/support-tickets/{ticket_id}\n\nThis endpoint is used to update a specific support ticket with the given ID.\n\n#### Request Body\n\n- `category`: (string) The category of the support ticket.\n    \n- `status`: (string) The updated status of the support ticket.\n    \n- `priority`: (string) The updated priority of the support ticket.\n    \n\n#### Response\n\nThe response is in JSON format with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "delete support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c6226cfcd02d98a67c79",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c6226cfcd02d98a67c79"
+											]
+										},
+										"description": "This HTTP DELETE request is used to delete a specific support ticket with the ID \"6786c6226cfcd02d98a67c79\" from the admin panel. Upon successful execution, the expected response is a status code of 204, indicating that the request has been processed successfully with no content returned in the response body."
+									},
+									"response": []
+								},
+								{
+									"name": "create support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "subject",
+													"value": "hell i admin and i create ticket",
+													"type": "text"
+												},
+												{
+													"key": "description",
+													"value": "hello now admins can create new tickets.",
+													"type": "text"
+												},
+												{
+													"key": "category",
+													"value": "technical",
+													"type": "text"
+												},
+												{
+													"key": "userEmail",
+													"value": "mohamedramadanmeray@gmail.com",
+													"type": "text"
+												},
+												{
+													"key": "priority",
+													"value": "high",
+													"type": "text"
+												},
+												{
+													"key": "attachment",
+													"type": "file",
+													"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-14 23-08-58.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets"
+											]
+										},
+										"description": "### Add Support Ticket\n\nThis endpoint allows administrators to create a new support ticket.\n\n#### Request Body\n\n- `subject` (text): A brief description of the support ticket subject.\n    \n- `description` (text): Detailed information about the support ticket.\n    \n- `category` (text): The category of the support ticket.\n    \n- `userEmail` (text): The email address of the user raising the support ticket.\n    \n- `priority` (text): The priority level of the support ticket.\n    \n- `attachment` (file): An optional file attachment related to the support ticket.\n    \n\n#### Response\n\nUpon successful creation of the support ticket, the endpoint returns a status code of 201 and a JSON response with the following fields:\n\n- `status`: The status of the request.\n    \n- `message`: A message confirming the successful creation of the support ticket."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "tickets priority",
+							"item": [
+								{
+									"name": "change ticket priorty",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"priority\":\"urgent\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d/priority",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c67c6cfcd02d98a67c7d",
+												"priority"
+											]
+										},
+										"description": "### Update Support Ticket Priority\n\nThis endpoint allows the admin to update the priority of a specific support ticket.\n\n#### Request Body\n\n- `priority` (string, required): The updated priority for the support ticket.\n    \n\nExample:\n\n``` json\n{\n    \"priority\": \"urgent\"\n}\n\n ```\n\n#### Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "tickets status",
+							"item": [
+								{
+									"name": "close support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d/status/close",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c67c6cfcd02d98a67c7d",
+												"status",
+												"close"
+											]
+										},
+										"description": "### Update Support Ticket Status\n\nThis endpoint is used to update the status of a support ticket to \"close\".\n\n**Request Body**\n\n- No request body parameters are required for this endpoint.\n    \n\n**Response**\n\n- Status (string, required): The status of the support ticket after the update.\n    \n- Message (string, required): A message confirming the update.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "reopen support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d/status/reopen",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c67c6cfcd02d98a67c7d",
+												"status",
+												"reopen"
+											]
+										},
+										"description": "### PATCH /admin/support-tickets/6786c67c6cfcd02d98a67c7d/status/reopen\n\nThis endpoint is used to reopen a specific support ticket in the admin panel.\n\n#### Request Body\n\n- No request body is required for this endpoint.\n    \n\n#### Response\n\nThe response for this request will be in JSON format with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```\n\nThe response will include the status and message fields, both of which will be of string type."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "response",
+							"item": [
+								{
+									"name": "response support ticket",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "message",
+													"value": "i am admin and you have to lesign to me ",
+													"type": "text"
+												},
+												{
+													"key": "internalNotes",
+													"value": "you have right to be powrfull",
+													"type": "text"
+												},
+												{
+													"key": "escalationLevel",
+													"value": "1",
+													"type": "text"
+												},
+												{
+													"key": "attachment",
+													"type": "file",
+													"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-15 15-51-26.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d/response",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"admin",
+												"support-tickets",
+												"6786c67c6cfcd02d98a67c7d",
+												"response"
+											]
+										},
+										"description": "### Add Support Ticket Response\n\nThis endpoint allows the admin to add a response to a specific support ticket.\n\n#### Request Body\n\n- `message` (text): The message content for the response.\n    \n- `internalNotes` (text): Internal notes for the response.\n    \n- `escalationLevel` (text): The level of escalation for the response.\n    \n- `attachment` (file): An optional file attachment for the response.\n    \n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n- `status`: The status of the response.\n    \n- `message`: A message indicating the result of the response addition."
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	],
 	"event": [

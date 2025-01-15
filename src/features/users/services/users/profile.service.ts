@@ -1,6 +1,3 @@
-// core module imports
-import fs from "fs";
-
 // models imports
 import UserModel from "../../models/user.model";
 
@@ -16,15 +13,11 @@ import { IUser } from "@features/users/interfaces/user.interface";
 import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
 
 // jobs imports
-import {
-  cloudinaryQueue,
-  resourceCleanupQueue,
-  ResourceCleanupQueueType,
-} from "@jobs/index";
-// logs imports
-import { logFailedImageUpload } from "@logging/index";
+import { cloudinaryQueue } from "@jobs/index";
+
 // dto imports
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
+import { uploadToCloudinary } from "@utils/index";
 
 // queue imports
 
@@ -46,27 +39,18 @@ export class ProfileService {
     // Logic to update profile picture.
 
     try {
+      // upload the image to cloudinary(with removing local image after successful upload.)
       const uploadedImage: cloudinary.UploadApiResponse | null =
-        await cloudinary.v2.uploader.upload(pictureData.path);
-
-      if (!uploadedImage || !uploadedImage.secure_url) {
-        logFailedImageUpload("Failed to upload profile picture", user._id);
-        throw new AppError("Failed to upload profile picture", 500);
-      }
-
-      // add job delete the old image from the local storage to job queue
-      resourceCleanupQueue.add(ResourceCleanupQueueType.DeleteLocalFiles, {
-        resourcePath: pictureData.path,
-        resource: "profile picture",
-      });
+        await uploadToCloudinary(pictureData.path, "profile picture");
 
       // delete the image from the cloudinary storage with queue job
       if (user.profilePictureId) {
         cloudinaryQueue.add(CloudinaryQueueType.DeleteImage, {
-          profilePictureId: user.profilePictureId,
+          publicId: user.profilePictureId,
           userId: user._id,
         });
       }
+
       // update user profile picture and public id
       const updatedUser = (await UserModel.findByIdAndUpdate(
         user._id,
