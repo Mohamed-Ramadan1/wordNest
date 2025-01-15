@@ -10,13 +10,22 @@ import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 // utils imports
 import { AppError, uploadToCloudinary } from "@utils/index";
-import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+import {
+  TicketBody,
+  TicketUPdateBody,
+} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
 
 // queues imports
-import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
+import {
+  SupportTicketQueueJobs,
+  cloudinaryQueue,
+  supportTicketQueue,
+} from "@jobs/index";
+import { IUser } from "@features/users";
+import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
 
 export class TicketsCRUDService {
   /**
@@ -107,7 +116,24 @@ export class TicketsCRUDService {
    * @param ticketId - The unique ID of the ticket to update.
    * @param updateData - The data to update the ticket with, including modified details.
    */
-  static updateTicketById() {}
+  static async updateTicket(
+    ticket: ISupportTicket,
+    updateObject: {
+      category?: string;
+      status?: string;
+      priority?: string;
+    }
+  ): Promise<void> {
+    try {
+      const updateFields = Object.fromEntries(
+        Object.entries(updateObject).filter(([_, value]) => value !== undefined)
+      );
+      ticket.set(updateFields);
+      await ticket.save();
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
+  }
 
   /**
    * Deletes a specific ticket by ID.
@@ -115,5 +141,33 @@ export class TicketsCRUDService {
    *
    * @param ticketId - The unique ID of the ticket to delete.
    */
-  static deleteTicketById() {}
+  static async deleteTicket(
+    ticket: ISupportTicket,
+    ipAddress: string | undefined,
+    user: IUser
+  ): Promise<void> {
+    try {
+      if (ticket.attachments) {
+        await cloudinaryQueue.add(CloudinaryQueueType.DeleteImage, {
+          publicId: ticket.attachments.imagePublicId,
+          userId: user._id,
+        });
+      }
+      await SupportTicket.deleteOne({ _id: ticket._id });
+
+      supportTicketsLogger.logSupportTicketDeletionSuccess(
+        ipAddress,
+        user._id,
+        ticket._id
+      );
+    } catch (err: any) {
+      supportTicketsLogger.logSupportTicketDeletionFail(
+        ipAddress,
+        user._id,
+        ticket._id,
+        err.message
+      );
+      throw new AppError(err.message, 500);
+    }
+  }
 }

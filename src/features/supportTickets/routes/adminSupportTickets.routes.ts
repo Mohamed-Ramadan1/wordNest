@@ -29,7 +29,13 @@ router
 router
   .route("/:ticketId")
   .get(ticketsCRUDController.getTicket)
-  .patch(ticketsCRUDController.updateTicket)
-  .delete(ticketsCRUDController.deleteTicket);
+  .patch(
+    TicketCRUDMiddleware.validateUpdateTicket,
+    ticketsCRUDController.updateTicket
+  )
+  .delete(
+    TicketCRUDMiddleware.validateDeleteTicket,
+    ticketsCRUDController.deleteTicket
+  );
 
 export default router;

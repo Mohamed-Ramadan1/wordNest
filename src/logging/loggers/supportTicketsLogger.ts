@@ -80,3 +80,39 @@ export const logFailReplayTicket = (
     message: error.message,
   });
 };
+
+// support ticket deletion success log
+export const logSupportTicketDeletionSuccess = (
+  ip: string | undefined,
+  userDeletedTicketId: ObjectId,
+
+  ticketId: ObjectId
+) => {
+  logger.info("Support ticket deleted ", {
+    ip: ip ? ip : "Unknown IP",
+    userDeletedTicketId,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "supportTicketsService",
+    event: "delete_ticket",
+    message: "Support ticket deleted successfully",
+  });
+};
+
+// support ticket deletion fail log
+export const logSupportTicketDeletionFail = (
+  ip: string | undefined,
+  userDeletedTicketId: ObjectId,
+  ticketId: ObjectId,
+  error: Error
+) => {
+  logger.error("Support ticket deletion failed ", {
+    ip: ip ? ip : "Unknown IP",
+    userDeletedTicketId,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "supportTicketsService",
+    event: "delete_ticket",
+    message: error.message,
+  });
+};

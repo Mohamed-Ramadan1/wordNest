@@ -20,3 +20,4 @@ export const cloudinaryQueue: Queue = createQueue(
 
 // Process the jobs in the queue (automatically delete images from cloudinary)
 cloudinaryQueue.process(CloudinaryQueueType.DeleteImage, deleteImageProcessor);
+  

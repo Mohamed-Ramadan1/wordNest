@@ -9,7 +9,9 @@ import { ApiResponse } from "@shared/index";
 // interface imports
 import {
   TicketBody,
+  TicketDeletionBody,
   TicketParams,
+  TicketUPdateBody,
 } from "../../interfaces/SupportTicketAdminBody.interface";
 
 // services imports
@@ -59,7 +61,6 @@ export class TicketsCRUDController {
    * Allows the user to submit a new ticket for an issue or request.
    */
 
-  //! in progress
   public createTicket = catchAsync(
     async (req: Request<TicketParams>, res: Response) => {
       // Creates a new ticket
@@ -80,18 +81,40 @@ export class TicketsCRUDController {
    * Allows modifications to the ticket details if the user has permissions.
    */
 
-  //! in progress
-  public updateTicket = catchAsync(async (req: Request, res: Response) => {
-    // Updates a specific ticket
-  });
+  public updateTicket = catchAsync(
+    async (req: Request<{}, {}, TicketUPdateBody>, res: Response) => {
+      const { ticketToUpdate, updateTicketObject } = req.body;
+      // Updates a specific ticket
+      await TicketsCRUDService.updateTicket(ticketToUpdate, updateTicketObject);
+
+      const response: ApiResponse<ISupportTicket> = {
+        status: "success",
+        message: "Ticket updated successfully",
+      };
+
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Deletes a specific ticket by ID.
    * Removes the ticket from the system if the user has permissions.
    */
 
-  //! in progress
-  public deleteTicket = catchAsync(async (req: Request, res: Response) => {
-    // Deletes a specific ticket
-  });
+  public deleteTicket = catchAsync(
+    async (req: Request<{}, {}, TicketDeletionBody>, res: Response) => {
+      await TicketsCRUDService.deleteTicket(
+        req.body.ticketToBeDeleted,
+        req.ip,
+        req.user
+      );
+
+      const response: ApiResponse<ISupportTicket> = {
+        status: "success",
+        message: "Ticket deleted successfully",
+      };
+
+      sendResponse(204, res, response);
+    }
+  );
 }

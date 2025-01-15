@@ -46,7 +46,7 @@ export class ProfileService {
       // delete the image from the cloudinary storage with queue job
       if (user.profilePictureId) {
         cloudinaryQueue.add(CloudinaryQueueType.DeleteImage, {
-          profilePictureId: user.profilePictureId,
+          publicId: user.profilePictureId,
           userId: user._id,
         });
       }
