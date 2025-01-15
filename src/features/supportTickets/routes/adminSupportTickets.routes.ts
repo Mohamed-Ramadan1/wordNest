@@ -73,5 +73,9 @@ router
 // ticket response related routes
 router
   .route("/:ticketId/response")
-  .post(upload.single("attachment"), ticketResponseController.respondToTicket);
+  .post(
+    upload.single("attachment"),
+    TicketResponseMiddleware.validateRespondToTicket,
+    ticketResponseController.respondToTicket
+  );
 export default router;

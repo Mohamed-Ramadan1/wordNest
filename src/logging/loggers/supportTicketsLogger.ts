@@ -205,3 +205,40 @@ export const logFailReopenTicket = (
     message: error.message,
   });
 };
+
+// log success response ticket event
+export const logSuccessAdminResponseTicket = (
+  ip: string | undefined,
+  adminResponder: ObjectId,
+  ticketId: ObjectId,
+  response: string
+) => {
+  logger.info("Ticket responsed successfully", {
+    ip: ip ? ip : "Unknown IP",
+    adminResponder,
+    ticketId,
+    response,
+    timestamp: new Date().toISOString(),
+    service: "ticketResponseService",
+    event: "response_ticket",
+    message: "Ticket responsed successfully",
+  });
+};
+
+// log fail response ticket event
+export const logFailAdminResponseTicket = (
+  ip: string | undefined,
+  adminResponder: ObjectId,
+  ticketId: ObjectId,
+  error: Error
+) => {
+  logger.error("Ticket response failed", {
+    ip: ip ? ip : "Unknown IP",
+    adminResponder,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "ticketResponseService",
+    event: "response_ticket",
+    message: error.message,
+  });
+};

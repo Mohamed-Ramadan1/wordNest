@@ -45,6 +45,23 @@ export interface TicketCloseBody {
   ticketOwner: IUser;
 }
 
+export interface TicketAdminResponseBody {
+  ticket: ISupportTicket;
+  ticketOwner: IUser;
+  message: string;
+  internalNotes?: string;
+  escalationLevel?: number;
+  attachment?: Attachment;
+  ticketResponseObject: {
+    message: string;
+    responderId: ObjectId;
+    respondedAt: Date;
+    attachment?: Attachment;
+    internalNotes?: string;
+    escalationLevel?: number;
+  };
+}
+
 export interface TicketParams {
   ticketId: ObjectId;
 }

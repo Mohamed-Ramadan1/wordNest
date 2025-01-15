@@ -6,7 +6,6 @@ import {
 
 // utils imports
 import { AppError } from "@utils/index";
-import { TicketPriorityChangeBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
