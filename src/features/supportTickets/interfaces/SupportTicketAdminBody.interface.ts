@@ -43,7 +43,6 @@ export interface TicketPriorityChangeBody {
 export interface TicketCloseBody {
   ticket: ISupportTicket;
   ticketOwner: IUser;
-  
 }
 
 export interface TicketParams {

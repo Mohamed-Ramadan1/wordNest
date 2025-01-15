@@ -170,3 +170,38 @@ export const logFailCloseTicket = (
     message: error.message,
   });
 };
+
+// log success reopen ticket event
+export const logSuccessReopenTicket = (
+  ip: string | undefined,
+  userAdmin: ObjectId,
+  ticketId: ObjectId
+) => {
+  logger.info("Ticket reopened successfully", {
+    ip: ip ? ip : "Unknown IP",
+    userAdmin,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "ticketStatusService",
+    event: "reopen_ticket",
+    message: "Ticket reopened successfully",
+  });
+};
+
+// log fail reopen ticket event
+export const logFailReopenTicket = (
+  ip: string | undefined,
+  userAdmin: ObjectId,
+  ticketId: ObjectId,
+  error: Error
+) => {
+  logger.error("Ticket reopen failed", {
+    ip: ip ? ip : "Unknown IP",
+    userAdmin,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "ticketStatusService",
+    event: "reopen_ticket",
+    message: error.message,
+  });
+};

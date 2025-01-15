@@ -58,8 +58,37 @@ export class TicketStatusService {
    * Reopens a ticket.
    * Changes the status of the ticket back to open for further action.
    */
-  static async reopenTicket() {
+  static async reopenTicket(
+    ticketOwner: IUser,
+    userAdmin: IUser,
+    ticket: ISupportTicket,
+    ipAddress: string | undefined
+  ) {
     try {
-    } catch (err: any) {}
+      ticket.status = SupportTicketStatus.OPEN;
+      ticket.reopenedAt = new Date();
+      ticket.reopenedBy = userAdmin._id;
+      await ticket.save();
+      // log reopen event
+      supportTicketsLogger.logSuccessReopenTicket(
+        ipAddress,
+        userAdmin._id,
+        ticket._id
+      );
+      // send notification to ticket owner
+      supportTicketQueue.add(SupportTicketQueueJobs.SendTicketReopenedEmail, {
+        user: ticketOwner,
+        supportTicket: ticket,
+      });
+    } catch (err: any) {
+      // log failed reopen event
+      supportTicketsLogger.logFailReopenTicket(
+        ipAddress,
+        userAdmin._id,
+        ticket._id,
+        err.message
+      );
+      throw new AppError(err.message, 500);
+    }
   }
 }

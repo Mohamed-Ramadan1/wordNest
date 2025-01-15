@@ -26,7 +26,7 @@ export class TicketStatusController {
 
       const response: ApiResponse<null> = {
         status: "success",
-        message: "Ticket closed successfully",
+        message: "Ticket closed successfully.",
       };
       sendResponse(200, res, response);
     }
@@ -36,15 +36,20 @@ export class TicketStatusController {
    * Reopens a ticket.
    * Changes the status of the ticket back to open for further action.
    */
-  public reopenTicket = catchAsync(async (req: Request, res: Response) => {
-    // Reopens the ticket
-    await TicketStatusService.reopenTicket();
+  public reopenTicket = catchAsync(
+    async (req: Request<{}, {}, TicketCloseBody>, res: Response) => {
+      // Reopens the ticket
+      const { ticket, ticketOwner } = req.body;
+      const { user, ip } = req;
+      await TicketStatusService.reopenTicket(ticketOwner, user, ticket, ip);
 
-    const response: ApiResponse<null> = {
-      status: "success",
-      message: "Ticket reopened successfully.",
-    };
+      const response: ApiResponse<null> = {
+        status: "success",
+        message:
+          "Ticket reopened successfully.we send an confirmation email to the user with the new update.",
+      };
 
-    sendResponse(200, res, response);
-  });
+      sendResponse(200, res, response);
+    }
+  );
 }
