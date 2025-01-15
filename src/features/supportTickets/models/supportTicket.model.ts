@@ -111,6 +111,7 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
       type: Date,
       default: null,
     },
+
     closedAt: {
       type: Date,
       default: null,
@@ -119,6 +120,15 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    reopenedAt: {
+      type: Date,
+      default: null,
+    },
+    reopenedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+
     userResponses: [userResponseSchema],
     adminResponses: [adminResponseSchema],
   },

@@ -9,6 +9,7 @@ import {
   sendUserResponseConfirmationEmail,
   sendAdminResponseEmail,
   sendTicketClosedEmail,
+  sendTicketReopenedEmail,
 } from "@features/supportTickets/emails";
 
 export enum SupportTicketQueueJobs {
@@ -16,6 +17,7 @@ export enum SupportTicketQueueJobs {
   SendUserResponseConfirmationEmail = "sendUserResponseConfirmationEmail",
   SendAdminResponseEmail = "sendAdminResponseEmail",
   SendTicketClosedEmail = "sendTicketClosedEmail",
+  SendTicketReopenedEmail = "sendTicketReopenedEmail",
 }
 
 export const supportTicketHandlers = {
@@ -24,6 +26,7 @@ export const supportTicketHandlers = {
     sendUserResponseConfirmationEmail,
   [SupportTicketQueueJobs.SendAdminResponseEmail]: sendAdminResponseEmail,
   [SupportTicketQueueJobs.SendTicketClosedEmail]: sendTicketClosedEmail,
+  [SupportTicketQueueJobs.SendTicketReopenedEmail]: sendTicketReopenedEmail,
 };
 
 export const ticketsEmailSenderProcessor = async (job: Job) => {

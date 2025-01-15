@@ -34,6 +34,18 @@ export interface TicketUPdateBody {
   };
 }
 
+export interface TicketPriorityChangeBody {
+  priority: SupportTicketPriority;
+  ticketToUpdate: ISupportTicket;
+  newPriority: SupportTicketPriority;
+}
+
+export interface TicketCloseBody {
+  ticket: ISupportTicket;
+  ticketOwner: IUser;
+  
+}
+
 export interface TicketParams {
   ticketId: ObjectId;
 }

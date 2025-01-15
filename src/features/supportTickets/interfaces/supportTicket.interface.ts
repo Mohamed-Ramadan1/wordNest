@@ -62,8 +62,11 @@ export interface ISupportTicket extends Document {
   createdAt: Date;
   updatedAt: Date;
   resolvedAt: Date | undefined;
+
   closedAt: Date | undefined;
   resolvedBy: ObjectId | IUser;
+  reopenedAt: Date | undefined;
+  reopenedBy: ObjectId | IUser;
   userResponses: UserResponse[];
   adminResponses: AdminResponse[];
 }

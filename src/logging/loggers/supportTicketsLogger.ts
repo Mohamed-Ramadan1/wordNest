@@ -111,8 +111,62 @@ export const logSupportTicketDeletionFail = (
     userDeletedTicketId,
     ticketId,
     timestamp: new Date().toISOString(),
-    service: "supportTicketsService",
+    service: "ticketCRUDService",
     event: "delete_ticket",
+    message: error.message,
+  });
+};
+
+// support ticket priority change success log
+export const logSupportTicketPriorityChangeSuccess = (
+  ip: string | undefined,
+  userChangedTicketId: ObjectId,
+  ticketId: ObjectId,
+  newPriority: string
+) => {
+  logger.info("Support ticket priority changed ", {
+    ip: ip ? ip : "Unknown IP",
+    userChangedTicketId,
+    ticketId,
+    newPriority,
+    timestamp: new Date().toISOString(),
+    service: "ticketPriorityService",
+    event: "change_priority_ticket",
+    message: "Support ticket priority changed successfully",
+  });
+};
+
+// log success close ticket event
+export const logSuccessCloseTicket = (
+  ip: string | undefined,
+  userAdmin: ObjectId,
+  ticketId: ObjectId
+) => {
+  logger.info("Ticket closed successfully", {
+    ip: ip ? ip : "Unknown IP",
+    userAdmin,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "ticketStatusService",
+    event: "close_ticket",
+    message: "Ticket closed successfully",
+  });
+};
+
+// log fail close ticket event
+export const logFailCloseTicket = (
+  ip: string | undefined,
+  userAdmin: ObjectId,
+  ticketId: ObjectId,
+  error: Error
+) => {
+  logger.error("Ticket close failed", {
+    ip: ip ? ip : "Unknown IP",
+    userAdmin,
+    ticketId,
+    timestamp: new Date().toISOString(),
+    service: "ticketStatusService",
+    event: "close_ticket",
     message: error.message,
   });
 };
