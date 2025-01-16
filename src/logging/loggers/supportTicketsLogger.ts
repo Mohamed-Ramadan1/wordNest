@@ -1,15 +1,9 @@
-import winston, { Logger } from "winston";
-import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
-const logger: Logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/supportTickets-logs.log" }),
-  ],
-});
+// Configure Winston logger
+const supportTicketsLogger: Logger = createLogger("supportTickets");
 
 // log successful ticket creation .
 export const logTicketCreation = (
@@ -17,7 +11,7 @@ export const logTicketCreation = (
   userId: ObjectId,
   ticketId: ObjectId
 ) => {
-  logger.info("Ticket created", {
+  supportTicketsLogger.info("Ticket created", {
     ip: ip ? ip : "Unknown IP",
     userId,
     ticketId,
@@ -34,7 +28,7 @@ export const logTicketCreationFail = (
   userId: ObjectId,
   error: Error
 ) => {
-  logger.error("Ticket creation failed", {
+  supportTicketsLogger.error("Ticket creation failed", {
     ip: ip ? ip : "Unknown IP",
     userId,
     timestamp: new Date().toISOString(),
@@ -51,7 +45,7 @@ export const logSuccessReplayTicket = (
   ticketId: ObjectId,
   reply: string
 ) => {
-  logger.info("Ticket response replayed ", {
+  supportTicketsLogger.info("Ticket response replayed ", {
     ip: ip ? ip : "Unknown IP",
     responderId,
     ticketId,
@@ -70,7 +64,7 @@ export const logFailReplayTicket = (
   ticketId: ObjectId,
   error: Error
 ) => {
-  logger.error("Ticket response replay failed ", {
+  supportTicketsLogger.error("Ticket response replay failed ", {
     ip: ip ? ip : "Unknown IP",
     responderId,
     ticketId,
@@ -88,7 +82,7 @@ export const logSupportTicketDeletionSuccess = (
 
   ticketId: ObjectId
 ) => {
-  logger.info("Support ticket deleted ", {
+  supportTicketsLogger.info("Support ticket deleted ", {
     ip: ip ? ip : "Unknown IP",
     userDeletedTicketId,
     ticketId,
@@ -106,7 +100,7 @@ export const logSupportTicketDeletionFail = (
   ticketId: ObjectId,
   error: Error
 ) => {
-  logger.error("Support ticket deletion failed ", {
+  supportTicketsLogger.error("Support ticket deletion failed ", {
     ip: ip ? ip : "Unknown IP",
     userDeletedTicketId,
     ticketId,
@@ -124,7 +118,7 @@ export const logSupportTicketPriorityChangeSuccess = (
   ticketId: ObjectId,
   newPriority: string
 ) => {
-  logger.info("Support ticket priority changed ", {
+  supportTicketsLogger.info("Support ticket priority changed ", {
     ip: ip ? ip : "Unknown IP",
     userChangedTicketId,
     ticketId,
@@ -142,7 +136,7 @@ export const logSuccessCloseTicket = (
   userAdmin: ObjectId,
   ticketId: ObjectId
 ) => {
-  logger.info("Ticket closed successfully", {
+  supportTicketsLogger.info("Ticket closed successfully", {
     ip: ip ? ip : "Unknown IP",
     userAdmin,
     ticketId,
@@ -160,7 +154,7 @@ export const logFailCloseTicket = (
   ticketId: ObjectId,
   error: Error
 ) => {
-  logger.error("Ticket close failed", {
+  supportTicketsLogger.error("Ticket close failed", {
     ip: ip ? ip : "Unknown IP",
     userAdmin,
     ticketId,
@@ -177,7 +171,7 @@ export const logSuccessReopenTicket = (
   userAdmin: ObjectId,
   ticketId: ObjectId
 ) => {
-  logger.info("Ticket reopened successfully", {
+  supportTicketsLogger.info("Ticket reopened successfully", {
     ip: ip ? ip : "Unknown IP",
     userAdmin,
     ticketId,
@@ -195,7 +189,7 @@ export const logFailReopenTicket = (
   ticketId: ObjectId,
   error: Error
 ) => {
-  logger.error("Ticket reopen failed", {
+  supportTicketsLogger.error("Ticket reopen failed", {
     ip: ip ? ip : "Unknown IP",
     userAdmin,
     ticketId,
@@ -213,7 +207,7 @@ export const logSuccessAdminResponseTicket = (
   ticketId: ObjectId,
   response: string
 ) => {
-  logger.info("Ticket responsed successfully", {
+  supportTicketsLogger.info("Ticket responsed successfully", {
     ip: ip ? ip : "Unknown IP",
     adminResponder,
     ticketId,
@@ -232,7 +226,7 @@ export const logFailAdminResponseTicket = (
   ticketId: ObjectId,
   error: Error
 ) => {
-  logger.error("Ticket response failed", {
+  supportTicketsLogger.error("Ticket response failed", {
     ip: ip ? ip : "Unknown IP",
     adminResponder,
     ticketId,

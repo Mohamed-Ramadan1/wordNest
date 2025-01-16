@@ -1,17 +1,9 @@
-import winston from "winston";
-import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: "logs/changeAccountEmail-logs.log",
-    }),
-  ],
-});
+// Configure Winston logger
+const changeAccountEmailLogger: Logger = createLogger("changeAccountEmail");
 
 // Log successfully request change account email request
 export const logSuccessRequestChangeAccountEmail = (
@@ -20,7 +12,7 @@ export const logSuccessRequestChangeAccountEmail = (
   ipAddress: string,
   requestedAt: Date
 ) => {
-  logger.info({
+  changeAccountEmailLogger.info({
     message: `User requested to change email`,
     userEmail,
     userId,
@@ -39,7 +31,7 @@ export const logFailedRequestChangeAccountEmail = (
   ipAddress: string,
   errorMessage: string
 ) => {
-  logger.error({
+  changeAccountEmailLogger.error({
     message: `Failed to request change email`,
     userEmail,
     userId,
@@ -58,7 +50,7 @@ export const logSuccessConfirmEmailChange = (
   ipAddress: string,
   confirmedAt: Date
 ) => {
-  logger.info({
+  changeAccountEmailLogger.info({
     message: `User confirmed email change`,
     userEmail,
     userId,
@@ -77,7 +69,7 @@ export const logFailedConfirmEmailChange = (
   ipAddress: string,
   errorMessage: string
 ) => {
-  logger.error({
+  changeAccountEmailLogger.error({
     message: `Failed to confirm email change`,
     userEmail,
     userId,
@@ -96,7 +88,7 @@ export const logSuccessChangeUserEmail = (
   ipAddress: string,
   changedAt: Date
 ) => {
-  logger.info({
+  changeAccountEmailLogger.info({
     message: `User changed email address`,
     userEmail,
     userId,
@@ -115,7 +107,7 @@ export const logFailedChangeUserEmail = (
   ipAddress: string,
   errorMessage: string
 ) => {
-  logger.error({
+  changeAccountEmailLogger.error({
     message: `Failed to change email address`,
     userEmail,
     userId,
@@ -134,7 +126,7 @@ export const logSuccessResendEmailVerificationToken = (
   userJoinedAt: Date,
   ipAddress: string
 ) => {
-  logger.info({
+  changeAccountEmailLogger.info({
     message: `User resent email verification token`,
     userEmail,
     userId,
@@ -153,7 +145,7 @@ export const logFailedResendEmailVerificationToken = (
   ipAddress: string,
   errorMessage: string
 ) => {
-  logger.error({
+  changeAccountEmailLogger.error({
     message: `Failed to resend email verification token`,
     userEmail,
     userId,

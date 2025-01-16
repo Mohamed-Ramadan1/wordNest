@@ -1,16 +1,9 @@
-import winston from "winston";
-import { jsonFormatter } from "../formatters/jsonFormatter";
+import { Logger } from "winston";
+import { createLogger } from "@logging/utils/loggerFactory";
 import { ObjectId } from "mongoose";
 
 // Configure Winston logger
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/accountStatus-logs.log" }),
-  ],
-});
+const accountStatusLogger: Logger = createLogger("accountStatus");
 
 // Log a successful account deactivation request
 export function logSuccessfulAccountDeactivationRequest(
@@ -20,17 +13,20 @@ export function logSuccessfulAccountDeactivationRequest(
   userJoinedAt: Date,
   requestedAt: Date
 ) {
-  logger.info("Account deactivation request processed successfully", {
-    event: "account_deactivation_request",
-    status: "success",
-    userEmail,
-    userId,
-    userJoinedAt,
-    requestedAt,
-    ipAddress,
-    service: "AccountService",
-    timestamp: new Date().toISOString(),
-  });
+  accountStatusLogger.info(
+    "Account deactivation request processed successfully",
+    {
+      event: "account_deactivation_request",
+      status: "success",
+      userEmail,
+      userId,
+      userJoinedAt,
+      requestedAt,
+      ipAddress,
+      service: "AccountService",
+      timestamp: new Date().toISOString(),
+    }
+  );
 }
 
 // Log a successful account deactivation confirmation
@@ -41,7 +37,7 @@ export function logSuccessfulAccountDeactivationConfirmation(
   userJoinedAt: Date,
   confirmedAt: Date
 ) {
-  logger.info("Account deactivated successfully", {
+  accountStatusLogger.info("Account deactivated successfully", {
     event: "account_deactivation",
     status: "success",
     userEmail,
@@ -62,7 +58,7 @@ export function logFailedAccountDeactivationRequest(
   userJoinedAt: Date,
   errorMessage: string
 ) {
-  logger.error("Failed to process account deactivation request", {
+  accountStatusLogger.error("Failed to process account deactivation request", {
     event: "account_deactivation_request",
     status: "failed",
     userEmail,
@@ -83,7 +79,7 @@ export function logFailedAccountDeactivationConfirmation(
   userJoinedAt: Date,
   errorMessage: string
 ) {
-  logger.error("Failed to confirm account deactivation", {
+  accountStatusLogger.error("Failed to confirm account deactivation", {
     event: "account_deactivation",
     status: "failed",
     userEmail,
@@ -104,7 +100,7 @@ export function logSuccessfulAccountActivation(
   userJoinedAt: Date,
   activatedAt: Date
 ) {
-  logger.info("Account activated successfully", {
+  accountStatusLogger.info("Account activated successfully", {
     event: "account_activation",
     status: "success",
     ipAddress,
@@ -125,7 +121,7 @@ export function logFailedAccountActivation(
   userJoinedAt: Date,
   errorMessage: string
 ) {
-  logger.error("Failed to activate account", {
+  accountStatusLogger.error("Failed to activate account", {
     event: "account_activation",
     status: "failed",
     ipAddress,

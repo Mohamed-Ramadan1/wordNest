@@ -1,23 +1,16 @@
-import winston from "winston";
-import { jsonFormatter } from "../formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
 // Configure Winston logger
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/auth-logs.log" }),
-  ],
-});
+const authLogger: Logger = createLogger("auth");
 
 //  Log a successful login
 export function logSuccessfulLogin(
   userEmail: string,
   ipAddress: string | undefined
 ) {
-  logger.info("User logged in successfully", {
+  authLogger.info("User logged in successfully", {
     event: "login",
     user: userEmail,
     ip: ipAddress,
@@ -30,7 +23,7 @@ export function logFailedLogin(
   userEmail: string,
   ipAddress: string | undefined
 ) {
-  logger.warn("Failed login attempt", {
+  authLogger.warn("Failed login attempt", {
     event: "login_failed",
     user: userEmail,
     ip: ipAddress,
@@ -43,7 +36,7 @@ export function logSuccessfulRegister(
   userEmail: string,
   ipAddress: string | undefined
 ) {
-  logger.info("User registered successfully", {
+  authLogger.info("User registered successfully", {
     event: "register",
     user: userEmail,
     ip: ipAddress,
@@ -54,7 +47,7 @@ export function logSuccessfulRegister(
 // Log a failed register
 
 export function logFailedRegister(userEmail: string, ipAddress: string) {
-  logger.warn("Failed register attempt", {
+  authLogger.warn("Failed register attempt", {
     event: "register_failed",
     user: userEmail,
     ip: ipAddress,
@@ -67,7 +60,7 @@ export function logSuccessfulLogout(
   userEmail: string,
   ipAddress: string | undefined
 ) {
-  logger.info("User logged out successfully", {
+  authLogger.info("User logged out successfully", {
     event: "logout",
     user: userEmail,
     ip: ipAddress,
@@ -82,7 +75,7 @@ export function logSuccessfulPasswordReset(
 
   ipAddress: string | undefined
 ) {
-  logger.info("User requested password reset successfully", {
+  authLogger.info("User requested password reset successfully", {
     event: "password_reset",
     user: userEmail,
     userID: userId,
@@ -99,7 +92,7 @@ export function logFailedPasswordReset(
   userId: ObjectId,
   errorMessage: string
 ) {
-  logger.warn("Failed password reset attempt", {
+  authLogger.warn("Failed password reset attempt", {
     event: "password_reset_failed",
     user: userEmail,
     userID: userId,

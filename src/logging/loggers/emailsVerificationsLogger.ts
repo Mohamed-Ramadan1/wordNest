@@ -1,18 +1,9 @@
-import winston from "winston";
-
-import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: "logs/emailVerification-logs.log",
-    }),
-  ],
-});
+// Configure Winston logger
+const emailVerificationLogger: Logger = createLogger("emailVerification");
 
 // Log fail attempts to send emails to the users
 export function logFailedEmailVerification(
@@ -21,7 +12,7 @@ export function logFailedEmailVerification(
   userJoinedAt: Date,
   errMessage: string
 ) {
-  logger.error("Failed to verify user  email", {
+  emailVerificationLogger.error("Failed to verify user  email", {
     event: "email_verification_failed",
     user: userEmail,
     user_id: user_id,
@@ -38,7 +29,7 @@ export function logSuccessfulEmailVerification(
   userJoinedAt: Date,
   emailVerifiedAt: Date
 ) {
-  logger.info("User email verified", {
+  emailVerificationLogger.info("User email verified", {
     event: "email_verification_success",
     user: userEmail,
     user_id: user_id,
@@ -54,7 +45,7 @@ export function logSuccessfulEmailResend(
   user_id: ObjectId,
   userJoinedAt: Date
 ) {
-  logger.info("User email verification resend", {
+  emailVerificationLogger.info("User email verification resend", {
     event: "email_verification_resend_success",
     user: userEmail,
     user_id: user_id,
@@ -70,7 +61,7 @@ export function logFailedEmailResend(
   userJoinedAt: Date,
   errMessage: string
 ) {
-  logger.error("Failed to resend verification email", {
+  emailVerificationLogger.error("Failed to resend verification email", {
     event: "email_verification_resend_failed",
     user: userEmail,
     user_id: user_id,
