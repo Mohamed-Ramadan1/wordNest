@@ -21,12 +21,14 @@ export function logSuccessfulLogin(
 //  Log a failed login
 export function logFailedLogin(
   userEmail: string,
-  ipAddress: string | undefined
+  ipAddress: string | undefined,
+  errMessage: string
 ) {
   authLogger.warn("Failed login attempt", {
     event: "login_failed",
     user: userEmail,
     ip: ipAddress,
+    error: errMessage,
     timestamp: new Date().toISOString(),
   });
 }

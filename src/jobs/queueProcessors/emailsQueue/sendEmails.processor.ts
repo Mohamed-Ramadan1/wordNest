@@ -6,6 +6,7 @@ import {
   sendVerificationSuccessEmail,
   sendForgotPasswordEmail,
   sendPasswordChangedEmail,
+  sendFailedLoginAttemptsEmail,
 } from "@features/auth/emails";
 
 //emails from users feature
@@ -49,6 +50,7 @@ export const emailHandlers = {
   [EmailQueueType.UnlockUserAccount]: sendAccountUnlockedEmail,
   [EmailQueueType.AccountBanned]: sendAccountBannedEmail,
   [EmailQueueType.AccountUnbanned]: sendAccountUnbannedEmail,
+  [EmailQueueType.FailedLoginAttempts]: sendFailedLoginAttemptsEmail,
 };
 
 // Generic email processor function

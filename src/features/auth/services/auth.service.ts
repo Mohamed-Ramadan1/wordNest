@@ -4,13 +4,20 @@ import { Response } from "express";
 import { IUser, UserModel } from "@features/users";
 
 // utils imports
-import { generateAuthToken, generateLogOutToken } from "@utils/index";
+import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
 
 //jobs imports
 import { emailQueue } from "@jobs/index";
 
 // config imports
 import { EmailQueueType } from "@config/emailQueue.config";
+
+// logging imports
+import {
+  logSuccessfulLogin,
+  logSuccessfulLogout,
+  logFailedLogin,
+} from "@logging/index";
 
 export default class AuthService {
   static async registerWithEmail(
@@ -43,17 +50,35 @@ export default class AuthService {
 
   static async loginWithEmail(
     user: IUser,
+    ipAddress: string | undefined,
     res: Response
   ): Promise<{ token: string }> {
-    const token: string = generateAuthToken(user, res);
-
-    return { token };
+    try {
+      const token: string = generateAuthToken(user, res);
+      user.lastLoginIP = ipAddress;
+      user.lastLoginAt = new Date();
+      await user.save();
+      logSuccessfulLogin(user.email, ipAddress);
+      return { token };
+    } catch (err: any) {
+      logFailedLogin(user.email, ipAddress, err.message);
+      throw new AppError(err.message, 500);
+    }
   }
 
-  static logout(user: IUser, res: Response): string {
-    const token: string = generateLogOutToken(user, res);
-    res.clearCookie("jwt");
-
-    return token;
+  static logout(
+    user: IUser,
+    ipAddress: string | undefined,
+    res: Response
+  ): string {
+    try {
+      const token: string = generateLogOutToken(user, res);
+      res.clearCookie("jwt");
+      logSuccessfulLogout(user.email as string, ipAddress);
+      return token;
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 }
+ 

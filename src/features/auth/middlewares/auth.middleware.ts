@@ -1,5 +1,5 @@
 // modules / packages imports.
-import { isEmail } from "class-validator";
+
 import { NextFunction, Request, Response } from "express";
 // Models imports
 import { IUser, UserModel } from "@features/users";
@@ -12,14 +12,19 @@ import { RegistrationDto } from "../dtos/registration.dto";
 
 import { LoginDTO } from "../dtos/login.dto";
 import { logFailedLogin } from "@logging/index";
-import { emailQueue } from "@jobs/index";
-import { EmailQueueType } from "@config/emailQueue.config";
-
+import {
+  checkAccountDeletionStatus,
+  checkAccountLockStatus,
+  handleInactiveAccount,
+  checkAccountLoginLockedStatus,
+  lockAccountLogin,
+} from "../helper/accountValidation.helper";
 export default class AuthMiddleware {
   public validateRegistration = [
     validateDto(RegistrationDto), // Step 1: Validate inputs using DTO
     catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       const { email } = req.body;
+
       const existingUser = await UserModel.findOne({ email });
 
       if (existingUser) {
@@ -38,61 +43,40 @@ export default class AuthMiddleware {
         "+password"
       );
 
-      if (!user || !user.comparePassword(password, user.password)) {
-        logFailedLogin(email, req.ip);
+      // If no user is found, log and throw an error
+      if (!user) {
+        logFailedLogin(
+          email,
+          req.ip,
+          `No user existing with email address ${email}`
+        ); // Log failed login attempt
         throw new AppError("Invalid email or password", 401);
       }
+      // Call checkAccountLoginLockedStatus only once before any other checks
+      await checkAccountLoginLockedStatus(user);
 
-      // check if user account is to be deleted
-      if (user.userAccountToBeDeleted) {
-        throw new AppError(
-          "This account is in the grace period for deletion. Please contact support to restore your account.",
-          401
-        );
+      // Validate password
+      const isPasswordValid = await user.comparePassword(
+        password,
+        user.password
+      );
+      if (!isPasswordValid) {
+        // Increment login attempts and potentially lock the account
+        await lockAccountLogin(user);
+        logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
+        throw new AppError("Invalid email or password", 401);
       }
+      // Check account deletion status (if account marked for deletion)
+      checkAccountDeletionStatus(user);
 
-      if (user.isAccountLocked) {
-        throw new AppError(
-          "Your account is locked. Please contact support to unlock your account or create appel request.",
-          401
-        );
-      }
+      // Check account lock status
+      checkAccountLockStatus(user);
 
-      if (!user.isActive) {
-        // Check if user has reached max attempts (4) and needs to wait
-        if (user.reactivationRequestCount >= 4) {
-          const lastRequestDate = user.lastReactivationRequestAt;
-          const hoursElapsed = lastRequestDate
-            ? Math.abs(new Date().getTime() - lastRequestDate.getTime()) /
-              (1000 * 60 * 60)
-            : 0;
-
-          if (hoursElapsed < 48) {
-            throw new AppError(
-              `Your account is inactive. You've reached the maximum reactivation attempts. ` +
-                `Please wait ${Math.ceil(48 - hoursElapsed)} hours before trying again. ` +
-                `If you haven't received the emails, check your spam folder or contact support.`,
-              401
-            );
-          }
-          // Reset counter if 48 hours have passed
-          user.reactivationRequestCount = 0;
-        }
-
-        // Use existing schema method to generate token and update counts
-        user.createReactivationAccountToken();
-        await user.save({ validateBeforeSave: false });
-
-        // Add email to queue
-        await emailQueue.add(EmailQueueType.ReactivateAccountConfirm, { user });
-
-        throw new AppError(
-          "Account is deactivated. We've sent you an email with instructions to reactivate your account.",
-          401
-        );
-      }
+      // Handle inactive account
+      await handleInactiveAccount(user);
 
       req.user = user;
+
       next();
     }),
   ];

@@ -138,6 +138,12 @@ const userSchema: Schema = new Schema<IUser>(
       default: [Roles.User],
       index: true,
     },
+    lastLoginIP: { type: String, default: undefined },
+    lastLoginAt: { type: Date, default: undefined },
+    loginAttempts: { type: Number, default: 0 },
+    loginAttemptsBlockedUntil: { type: Date, default: undefined },
+    loginAttemptsBlocked: { type: Boolean, default: false },
+    lastLoginAttemptAt: { type: Date, default: undefined },
     notificationsEnabled: { type: Boolean, default: true },
   },
   { timestamps: true }

@@ -36,7 +36,7 @@ router
   .route("/verify-email/resend")
   .post(
     protect,
-    AccountRecoveryMiddleware.validateResendEmail,
+    AccountRecoveryMiddleware.validateResendVerificationEmail,
     AccountRecoveryController.resendVerification
   );
 

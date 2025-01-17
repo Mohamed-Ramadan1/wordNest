@@ -18,4 +18,5 @@ export enum EmailQueueType {
   UnlockUserAccount = "unlockUserAccount",
   AccountBanned = "accountBanned",
   AccountUnbanned = "accountUnbanned",
+  FailedLoginAttempts = "FailedLoginAttempts",
 }

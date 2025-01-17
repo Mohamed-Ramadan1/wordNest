@@ -108,6 +108,10 @@ export interface IUser extends Document {
   updatedAt: Date;
   lastLoginAt: Date | undefined;
   lastLoginIP: string | undefined;
+  loginAttempts: number;
+  loginAttemptsBlockedUntil: Date | undefined;
+  loginAttemptsBlocked: boolean;
+  lastLoginAttemptAt: Date | undefined;
 
   // Methods
   createEmailVerificationToken(): string;

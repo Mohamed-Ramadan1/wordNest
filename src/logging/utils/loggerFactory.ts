@@ -1,8 +1,8 @@
-import winston from "winston";
+import winston, { Logger } from "winston";
 import path from "path";
 import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 
-export const createLogger = (moduleName: string, logLevel = "info") => {
+export const createLogger = (moduleName: string, logLevel = "info"): Logger => {
   const { combine, timestamp, printf, errors, json, colorize } = winston.format;
 
   // Custom log format
