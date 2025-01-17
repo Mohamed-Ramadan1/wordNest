@@ -9,11 +9,8 @@ import cloudinary from "cloudinary";
 import { AppError } from "@utils/appError";
 import { IUser } from "@features/users/interfaces/user.interface";
 
-// config imports
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
-
 // jobs imports
-import { cloudinaryQueue } from "@jobs/index";
+import { cloudinaryQueue, CloudinaryQueueJobs } from "@jobs/index";
 
 // dto imports
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
@@ -45,7 +42,7 @@ export class ProfileService {
 
       // delete the image from the cloudinary storage with queue job
       if (user.profilePictureId) {
-        cloudinaryQueue.add(CloudinaryQueueType.DeleteImage, {
+        cloudinaryQueue.add(CloudinaryQueueJobs.DeleteImage, {
           publicId: user.profilePictureId,
           userId: user._id,
         });

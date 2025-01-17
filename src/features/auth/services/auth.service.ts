@@ -7,10 +7,7 @@ import { IUser, UserModel } from "@features/users";
 import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
 
 //jobs imports
-import { emailQueue } from "@jobs/index";
-
-// config imports
-import { EmailQueueType } from "@config/emailQueue.config";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // logging imports
 import {
@@ -43,7 +40,7 @@ export default class AuthService {
     const token: string = generateAuthToken(user, res);
 
     // add welcome email to the emails-queue.
-    emailQueue.add(EmailQueueType.WelcomeEmail, { user });
+    emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
 
     return { user, token };
   }
@@ -81,4 +78,3 @@ export default class AuthService {
     }
   }
 }
- 

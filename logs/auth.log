@@ -81,3 +81,4 @@
 {"error":"Invalid credentials","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-01-17 13:34:09","user":"mohamedramadanmeray@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-01-17 14:23:02","user":"mohamedramadanmeray@gmail.com"}
 {"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","module":"auth","timestamp":"2025-01-17 14:24:19","user":"mohamedramadanmeray@gmail.com","userID":"678956dd14756940b32166bf"}
+{"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","module":"auth","timestamp":"2025-01-17 16:15:50","user":"mohamedramadanmeray@gmail.com","userID":"678a459792c10fb3dd1e8e6a"}

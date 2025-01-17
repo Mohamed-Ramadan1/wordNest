@@ -1,18 +1,16 @@
-// models imports
-import UserModel from "@features/users/models/user.model";
-
 // interfaces imports
-import { IUser, Roles } from "@features/users/interfaces/user.interface";
+import { IUser } from "@features/users/interfaces/user.interface";
 
 // Queues imports
 import {
   emailQueue,
   bandAccountsQueue,
-  BandAccountQueueTypes,
+  BandAccountQueueJobs,
+  EmailQueueJobs,
 } from "@jobs/index";
 
 // Config imports
-import { EmailQueueType } from "@config/emailQueue.config";
+
 // utils imports
 import { AppError } from "@utils/appError";
 // logger imports
@@ -41,14 +39,14 @@ export class BanUserAccountService {
       await userToBeBaned.save();
 
       // add email queue  to notify user by action
-      emailQueue.add(EmailQueueType.AccountBanned, {
+      emailQueue.add(EmailQueueJobs.AccountBanned, {
         user: userToBeBaned,
       });
 
       // add un ban queue to be processed after the ban period
       const banPeriodMs = accountBandedDays * 24 * 60 * 60 * 1000;
       bandAccountsQueue.add(
-        BandAccountQueueTypes.UnBanAccount,
+        BandAccountQueueJobs.UnBanAccount,
         {
           user: userToBeBaned,
         },
@@ -100,7 +98,7 @@ export class BanUserAccountService {
       await userToBeUnBaned.save();
 
       // add email queue  to notify user by action
-      emailQueue.add(EmailQueueType.AccountUnbanned, {
+      emailQueue.add(EmailQueueJobs.AccountUnbanned, {
         user: userToBeUnBaned,
       });
       // log success un-ban user account

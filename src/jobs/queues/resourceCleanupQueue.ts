@@ -1,11 +1,8 @@
 import { Queue } from "bull";
 
-import { createQueue } from "@jobs/shared/createQueue";
+import { createQueue } from "@jobs/common/createQueue";
 import { deleteLocalFilesProcessors } from "@jobs/queueProcessors/resourceCleanupQueue/deleteLocalFiles.processor";
-
-export enum ResourceCleanupQueueType {
-  DeleteLocalFiles = "deleteLocalFiles",
-}
+import { ResourceCleanupQueueJobs } from "@jobs/constants/resourceCleanupQueueJobs";
 
 const retryAttempts: number = 5;
 const delayTime: number = 1000;
@@ -19,6 +16,6 @@ export const resourceCleanupQueue: Queue = createQueue(
 
 // Register processor for each cleanup type
 resourceCleanupQueue.process(
-  ResourceCleanupQueueType.DeleteLocalFiles,
+  ResourceCleanupQueueJobs.DeleteLocalFiles,
   deleteLocalFilesProcessors
 );

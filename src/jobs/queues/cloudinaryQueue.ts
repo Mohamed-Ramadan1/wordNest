@@ -1,10 +1,10 @@
 import { Queue } from "bull";
 
 // import related configurations related to the
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
+import { CloudinaryQueueJobs } from "@jobs/constants/cloudinaryQueueJobs";
 
 // logs imports
-import { createQueue } from "@jobs/shared/createQueue";
+import { createQueue } from "@jobs/common/createQueue";
 
 import { deleteImageProcessor } from "@jobs/queueProcessors/cloudinaryQueue/deleteImage.processor";
 
@@ -19,5 +19,4 @@ export const cloudinaryQueue: Queue = createQueue(
 );
 
 // Process the jobs in the queue (automatically delete images from cloudinary)
-cloudinaryQueue.process(CloudinaryQueueType.DeleteImage, deleteImageProcessor);
-  
+cloudinaryQueue.process(CloudinaryQueueJobs.DeleteImage, deleteImageProcessor);

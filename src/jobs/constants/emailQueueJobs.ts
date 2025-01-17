@@ -1,5 +1,5 @@
 // Enum contains the enum values for the email queue process .
-export enum EmailQueueType {
+export enum EmailQueueJobs {
   WelcomeEmail = "welcomeEmail",
   ResendVerificationEmail = "resendVerificationEmail",
   SendAccountVerifiedEmail = "sendAccountVerifiedEmail",

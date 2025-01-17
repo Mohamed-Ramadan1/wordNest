@@ -1,12 +1,8 @@
 import { deleteUserAccountProcessor } from "@jobs/queueProcessors/deleteUsersQueue/deleteUser.processor";
-import { createQueue } from "@jobs/shared/createQueue";
+import { createQueue } from "@jobs/common/createQueue";
 
 import { Queue } from "bull";
-
-// queue instance
-export enum DeleteUserAccountQueueType {
-  DeleteUserAccount = "deleteUserAccount",
-}
+import { DeleteUserAccountQueueJobs } from "@jobs/constants/deleteUserAccountQueueJobs";
 
 const retryAttempts: number = 5;
 const delayTime: number = 5000;
@@ -20,6 +16,6 @@ export const deleteUserAccountQueue: Queue = createQueue(
 
 // Register processor for delete user account job
 deleteUserAccountQueue.process(
-  DeleteUserAccountQueueType.DeleteUserAccount,
+  DeleteUserAccountQueueJobs.DeleteUserAccount,
   deleteUserAccountProcessor
 );

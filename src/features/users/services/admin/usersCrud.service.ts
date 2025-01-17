@@ -8,8 +8,8 @@ import { IUser } from "@features/users/interfaces/user.interface";
 import { AppError } from "@utils/appError";
 
 // queues imports
-import { EmailQueueType } from "@config/emailQueue.config";
-import { emailQueue } from "@jobs/index";
+
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // CRUD operations for users.
 export class UsersCrudService {
@@ -46,7 +46,7 @@ export class UsersCrudService {
       user.createEmailVerificationToken();
       await user.save();
       // Send welcome email here.
-      emailQueue.add(EmailQueueType.WelcomeEmail, { user });
+      emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
 
       return user;
     } catch (err: any) {

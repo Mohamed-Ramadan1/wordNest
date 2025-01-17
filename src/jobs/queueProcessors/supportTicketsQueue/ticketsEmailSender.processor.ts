@@ -3,6 +3,7 @@ import { Job } from "bull";
 
 import { AppError } from "@utils/appError";
 import { logFailedEmailSent } from "@logging/index";
+import { SupportTicketQueueJobs } from "@jobs/constants/supportTicketQueueJobs";
 
 import {
   sendTicketCreationEmail,
@@ -11,14 +12,6 @@ import {
   sendTicketClosedEmail,
   sendTicketReopenedEmail,
 } from "@features/supportTickets/emails";
-
-export enum SupportTicketQueueJobs {
-  SendTicketCreationEmail = "sendTicketCreationEmail",
-  SendUserResponseConfirmationEmail = "sendUserResponseConfirmationEmail",
-  SendAdminResponseEmail = "sendAdminResponseEmail",
-  SendTicketClosedEmail = "sendTicketClosedEmail",
-  SendTicketReopenedEmail = "sendTicketReopenedEmail",
-}
 
 export const supportTicketHandlers = {
   [SupportTicketQueueJobs.SendTicketCreationEmail]: sendTicketCreationEmail,

@@ -4,9 +4,8 @@ import { AppError } from "@utils/appError";
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
 // jobs imports
-import { emailQueue } from "@jobs/queues/emailsQueue";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 // config imports
-import { EmailQueueType } from "@config/emailQueue.config";
 
 // logger imports
 import { changeAccountEmailLogger } from "@logging/index";
@@ -26,7 +25,7 @@ export class AccountEmailService {
       await user.save();
 
       // add background job to send email notification
-      emailQueue.add(EmailQueueType.ChangeAccountEmailRequest, {
+      emailQueue.add(EmailQueueJobs.ChangeAccountEmailRequest, {
         user,
       });
       // log successful email change request
@@ -66,7 +65,7 @@ export class AccountEmailService {
       user.createTempChangedEmailVerificationToken();
       await user.save();
       // add background job to send email notification
-      emailQueue.add(EmailQueueType.NewAccountConfirmationEmail, {
+      emailQueue.add(EmailQueueJobs.NewAccountConfirmationEmail, {
         user,
       });
 
@@ -102,7 +101,7 @@ export class AccountEmailService {
       user.createTempChangedEmailVerificationToken();
       await user.save();
       // add background job to send email notification
-      emailQueue.add(EmailQueueType.NewAccountConfirmationEmail, {
+      emailQueue.add(EmailQueueJobs.NewAccountConfirmationEmail, {
         user,
       });
       // log successful email change request
@@ -152,7 +151,7 @@ export class AccountEmailService {
 
       await user.save();
       // add background job to send email notification
-      emailQueue.add(EmailQueueType.ChangeAccountEmailChangeSuccess, {
+      emailQueue.add(EmailQueueJobs.ChangeAccountEmailChangeSuccess, {
         user,
       });
       // log successful email change

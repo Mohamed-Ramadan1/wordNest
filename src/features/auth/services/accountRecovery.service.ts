@@ -1,7 +1,3 @@
-// modules / packages imports.
-
-import { startSession, ClientSession } from "mongoose";
-
 // Models imports
 import { IUser } from "@features/users";
 
@@ -9,10 +5,7 @@ import { IUser } from "@features/users";
 import { AppError } from "@utils/index";
 
 //jobs imports
-import { emailQueue } from "@jobs/index";
-
-// config imports t
-import { EmailQueueType } from "@config/emailQueue.config";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 //logging imports
 import {
@@ -38,7 +31,7 @@ export default class AccountRecoveryService {
 
       await user.save();
 
-      emailQueue.add(EmailQueueType.SendAccountVerifiedEmail, { user });
+      emailQueue.add(EmailQueueJobs.SendAccountVerifiedEmail, { user });
       // log the successful email verification attempt.
       logSuccessfulEmailVerification(
         user.email,
@@ -65,7 +58,7 @@ export default class AccountRecoveryService {
       user.lastVerificationEmailSentAt = new Date();
       user.resendVerificationTokenCount++;
       await user.save();
-      emailQueue.add(EmailQueueType.ResendVerificationEmail, { user });
+      emailQueue.add(EmailQueueJobs.ResendVerificationEmail, { user });
       // log the successful email resend attempt.
       logSuccessfulEmailResend(user.email, user._id, user.createdAt);
     } catch (err: any) {
@@ -87,7 +80,7 @@ export default class AccountRecoveryService {
       // Log successful password reset request
       logSuccessfulPasswordReset(user.email, user.id, ip);
 
-      emailQueue.add(EmailQueueType.RequestPasswordReset, { user });
+      emailQueue.add(EmailQueueJobs.RequestPasswordReset, { user });
     } catch (err: any) {
       // Log the failed password reset attempt
       logFailedPasswordReset(
@@ -123,7 +116,7 @@ export default class AccountRecoveryService {
 
       await user.save();
 
-      emailQueue.add(EmailQueueType.ResetPassword, { user });
+      emailQueue.add(EmailQueueJobs.ResetPassword, { user });
       logSuccessfulPasswordReset(user.email, user.id, ip);
     } catch (err: any) {
       logFailedPasswordReset(user.email, ip, user.id, err.message);

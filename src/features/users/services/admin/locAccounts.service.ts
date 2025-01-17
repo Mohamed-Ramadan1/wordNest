@@ -5,10 +5,7 @@ import { IUser } from "@features/users/interfaces/user.interface";
 import { AppError } from "@utils/appError";
 
 // queues imports
-import { emailQueue } from "@jobs/index";
-
-// config imports
-import { EmailQueueType } from "@config/emailQueue.config";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // logging imports
 import { lockAccountsLogger } from "@logging/index";
@@ -30,7 +27,7 @@ export class LockAccountService {
       userToBeLocked.accountLockedByAdminEmail = adminUser.email;
       await userToBeLocked.save();
       // adding locked confirmation email to the email queue
-      emailQueue.add(EmailQueueType.LockUserAccount, {
+      emailQueue.add(EmailQueueJobs.LockUserAccount, {
         user: userToBeLocked,
       });
       // log the successful lock account attempt
@@ -74,7 +71,7 @@ export class LockAccountService {
       await userToBeUnlock.save();
 
       // adding unlocked confirmation email to the email queue
-      emailQueue.add(EmailQueueType.UnlockUserAccount, {
+      emailQueue.add(EmailQueueJobs.UnlockUserAccount, {
         user: userToBeUnlock,
       });
 

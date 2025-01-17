@@ -27,30 +27,30 @@ import {
 } from "@features/users/emails";
 
 import { logFailedEmailSent } from "@logging/index";
-import { EmailQueueType } from "@config/emailQueue.config";
+import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 
 // Map email types to their corresponding sending functions
 export const emailHandlers = {
-  [EmailQueueType.WelcomeEmail]: sendWelcomeEmail,
-  [EmailQueueType.SendAccountVerifiedEmail]: sendVerificationSuccessEmail,
-  [EmailQueueType.ResendVerificationEmail]: sendNewVerificationEmail,
-  [EmailQueueType.RequestPasswordReset]: sendForgotPasswordEmail,
-  [EmailQueueType.ResetPassword]: sendPasswordChangedEmail,
-  [EmailQueueType.DeactivateAccountRequest]: sendDeactivationConfirmationEmail,
-  [EmailQueueType.DeactivateAccountConfirmation]:
+  [EmailQueueJobs.WelcomeEmail]: sendWelcomeEmail,
+  [EmailQueueJobs.SendAccountVerifiedEmail]: sendVerificationSuccessEmail,
+  [EmailQueueJobs.ResendVerificationEmail]: sendNewVerificationEmail,
+  [EmailQueueJobs.RequestPasswordReset]: sendForgotPasswordEmail,
+  [EmailQueueJobs.ResetPassword]: sendPasswordChangedEmail,
+  [EmailQueueJobs.DeactivateAccountRequest]: sendDeactivationConfirmationEmail,
+  [EmailQueueJobs.DeactivateAccountConfirmation]:
     sendDeactivationAccountSuccess,
-  [EmailQueueType.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
-  [EmailQueueType.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
-  [EmailQueueType.DeleteAccountRequest]: sendDeletionConfirmationEmail,
-  [EmailQueueType.DeleteAccountConfirm]: sendDeletionAccountSuccess,
-  [EmailQueueType.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
-  [EmailQueueType.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
-  [EmailQueueType.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
-  [EmailQueueType.LockUserAccount]: sendAccountLockedEmail,
-  [EmailQueueType.UnlockUserAccount]: sendAccountUnlockedEmail,
-  [EmailQueueType.AccountBanned]: sendAccountBannedEmail,
-  [EmailQueueType.AccountUnbanned]: sendAccountUnbannedEmail,
-  [EmailQueueType.FailedLoginAttempts]: sendFailedLoginAttemptsEmail,
+  [EmailQueueJobs.ReactivateAccountConfirm]: sendReactivationConfirmationEmail,
+  [EmailQueueJobs.ReactivateAccountSuccess]: sendReactivationSuccessEmail,
+  [EmailQueueJobs.DeleteAccountRequest]: sendDeletionConfirmationEmail,
+  [EmailQueueJobs.DeleteAccountConfirm]: sendDeletionAccountSuccess,
+  [EmailQueueJobs.ChangeAccountEmailRequest]: sendChangeEmailRequestEmail,
+  [EmailQueueJobs.NewAccountConfirmationEmail]: sendNewEmailVerificationEmail,
+  [EmailQueueJobs.ChangeAccountEmailChangeSuccess]: sendEmailChangeSuccessEmail,
+  [EmailQueueJobs.LockUserAccount]: sendAccountLockedEmail,
+  [EmailQueueJobs.UnlockUserAccount]: sendAccountUnlockedEmail,
+  [EmailQueueJobs.AccountBanned]: sendAccountBannedEmail,
+  [EmailQueueJobs.AccountUnbanned]: sendAccountUnbannedEmail,
+  [EmailQueueJobs.FailedLoginAttempts]: sendFailedLoginAttemptsEmail,
 };
 
 // Generic email processor function
@@ -60,7 +60,7 @@ export const sendEmailsProcessor = async (job: Job) => {
     console.log(`Processing Job ID: ${job.id}`);
     console.log(`Job Data:`, job.data);
 
-    const emailHandler = emailHandlers[job.name as EmailQueueType];
+    const emailHandler = emailHandlers[job.name as EmailQueueJobs];
 
     if (!emailHandler) {
       throw new Error(`No handler found for email type: ${job.name}`);

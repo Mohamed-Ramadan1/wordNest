@@ -19,11 +19,11 @@ import {
 import {
   emailQueue,
   deleteUserAccountQueue,
-  DeleteUserAccountQueueType,
+  DeleteUserAccountQueueJobs,
+  EmailQueueJobs,
 } from "@jobs/index";
 
 // config imports
-import { EmailQueueType } from "@config/emailQueue.config";
 
 export class AccountDeletionService {
   // Account Deletion
@@ -42,7 +42,7 @@ export class AccountDeletionService {
         user.createdAt,
         user.lastDeleteAccountRequestAt as Date
       );
-      emailQueue.add(EmailQueueType.DeleteAccountRequest, { user });
+      emailQueue.add(EmailQueueJobs.DeleteAccountRequest, { user });
     } catch (err: any) {
       logFailedAccountDeletionRequest(
         user.email,
@@ -76,11 +76,11 @@ export class AccountDeletionService {
       await user.save();
 
       // email queue for successful account deletion
-      emailQueue.add(EmailQueueType.DeleteAccountConfirm, { user });
+      emailQueue.add(EmailQueueJobs.DeleteAccountConfirm, { user });
 
       // queue for deleting user account
       deleteUserAccountQueue.add(
-        DeleteUserAccountQueueType.DeleteUserAccount,
+        DeleteUserAccountQueueJobs.DeleteUserAccount,
         {
           user,
         },

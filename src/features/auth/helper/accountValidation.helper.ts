@@ -2,8 +2,7 @@
 
 import { IUser } from "@features/users";
 import { AppError } from "@utils/index";
-import { emailQueue } from "@jobs/index";
-import { EmailQueueType } from "@config/emailQueue.config";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // Constants for reactivation logic
 const MAX_REACTIVATION_ATTEMPTS = 4;
@@ -59,7 +58,7 @@ export const handleInactiveAccount = async (user: IUser): Promise<void> => {
     await user.save({ validateBeforeSave: false });
 
     // Add reactivation email to the queue
-    await emailQueue.add(EmailQueueType.ReactivateAccountConfirm, { user });
+    await emailQueue.add(EmailQueueJobs.ReactivateAccountConfirm, { user });
 
     throw new AppError(
       "Account is deactivated. We've sent you an email with instructions to reactivate your account.",
@@ -104,7 +103,7 @@ export const lockAccountLogin = async (user: IUser): Promise<void> => {
     // Lock the account
     user.loginAttemptsBlocked = true;
     user.loginAttemptsBlockedUntil = new Date(Date.now() + LOGIN_LOCK_DURATION);
-    emailQueue.add(EmailQueueType.FailedLoginAttempts, { user });
+    emailQueue.add(EmailQueueJobs.FailedLoginAttempts, { user });
   } else {
     // Increment login attempts and update the last attempt time
     user.loginAttempts += 1;
