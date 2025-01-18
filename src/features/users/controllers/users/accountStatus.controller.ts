@@ -1,12 +1,6 @@
 // express imports
 import { Request, Response } from "express";
 
-// mongoose imports
-import { ObjectId } from "mongoose";
-
-// models imports
-import UserModel from "../../models/user.model";
-
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 

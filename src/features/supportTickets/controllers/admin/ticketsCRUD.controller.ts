@@ -8,7 +8,6 @@ import { ApiResponse } from "@shared/index";
 
 // interface imports
 import {
-  TicketBody,
   TicketDeletionBody,
   TicketParams,
   TicketUPdateBody,

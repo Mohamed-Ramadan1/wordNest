@@ -1,6 +1,3 @@
-// models imports
-import UserModel from "../../models/user.model";
-
 // utils imports
 import { AppError } from "@utils/appError";
 

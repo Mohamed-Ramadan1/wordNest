@@ -3,14 +3,14 @@ import path from "path";
 import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 
 export const createLogger = (moduleName: string, logLevel = "info"): Logger => {
-  const { combine, timestamp, printf, errors, json, colorize } = winston.format;
+  const { combine, timestamp, printf, errors } = winston.format;
 
   // Custom log format
-  const customFormat = printf(({ level, message, timestamp, stack }) => {
-    return `${timestamp} [${moduleName}] ${level}: ${stack || message}`;
-  });
+  // const customFormat = printf(({ level, message, timestamp, stack }) => {
+  //   return `${timestamp} [${moduleName}] ${level}: ${stack || message}`;
+  // });
 
-  const isProduction = process.env.NODE_ENV === "production";
+  // const isProduction = process.env.NODE_ENV === "production";
   const logDir = process.env.LOG_DIR || "logs";
   return winston.createLogger({
     level: logLevel,

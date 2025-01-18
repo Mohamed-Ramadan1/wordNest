@@ -58,7 +58,7 @@ export default class AccountRecoveryController {
 
   // Reset password.
   static resetPassword = catchAsync(async (req: Request, res: Response) => {
-    const { newPassword, confirmNewPassword } = req.body;
+    const { newPassword } = req.body;
     await AccountRecoveryService.resetPassword(
       req.user as IUser,
       newPassword,

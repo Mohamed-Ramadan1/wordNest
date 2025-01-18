@@ -1,5 +1,7 @@
 export { AppError } from "./appError";
 
+export { APIFeatures } from "./apiKeyFeature";
+
 export { catchAsync } from "./catchAsync";
 
 export { sendResponse } from "./sendResponse";
