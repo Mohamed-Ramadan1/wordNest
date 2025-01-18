@@ -25,14 +25,13 @@ export const supportTicketHandlers = {
 export const ticketsEmailSenderProcessor = async (job: Job) => {
   const { user, supportTicket } = job.data;
 
+  if (!user || !supportTicket) {
+    throw new AppError(
+      "Missing required data to send email (user / supportTicket)",
+      400
+    );
+  }
   try {
-    if (!user || !supportTicket) {
-      throw new AppError(
-        "Missing required data to send email (user / supportTicket)",
-        400
-      );
-    }
-
     // Get the appropriate handler for the job type
     const emailHandler =
       supportTicketHandlers[job.name as keyof typeof supportTicketHandlers];
