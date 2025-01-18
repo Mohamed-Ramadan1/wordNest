@@ -22,9 +22,9 @@ export class RolesManagementMiddleware {
       }
 
       // check if user id is valid and user exists.
-      const userToBeAssigned: IUser | null = await UserModel.findById(userId);
+      const userToHaveNewRole: IUser | null = await UserModel.findById(userId);
 
-      if (!userToBeAssigned) {
+      if (!userToHaveNewRole) {
         return next(
           new AppError(
             "No user existing with this id. please check the target user id.",
@@ -33,7 +33,7 @@ export class RolesManagementMiddleware {
         );
       }
 
-      req.userToBeAssigned = userToBeAssigned;
+      req.userToBeAssigned = userToHaveNewRole;
       next();
     }
   );

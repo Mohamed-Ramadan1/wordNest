@@ -3,7 +3,7 @@ import path from "path";
 import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 
 export const createLogger = (moduleName: string, logLevel = "info"): Logger => {
-  const { combine, timestamp, printf, errors } = winston.format;
+  const { combine, timestamp, errors } = winston.format;
 
   // Custom log format
   // const customFormat = printf(({ level, message, timestamp, stack }) => {
