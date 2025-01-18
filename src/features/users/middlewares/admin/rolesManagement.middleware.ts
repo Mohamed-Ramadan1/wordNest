@@ -22,9 +22,9 @@ export class RolesManagementMiddleware {
       }
 
       // check if user id is valid and user exists.
-      const userToHaveNewRole: IUser | null = await UserModel.findById(userId);
+      const targetedUser: IUser | null = await UserModel.findById(userId);
 
-      if (!userToHaveNewRole) {
+      if (!targetedUser) {
         return next(
           new AppError(
             "No user existing with this id. please check the target user id.",
@@ -33,7 +33,7 @@ export class RolesManagementMiddleware {
         );
       }
 
-      req.userToBeAssigned = userToHaveNewRole;
+      req.userToBeAssigned = targetedUser;
       next();
     }
   );
@@ -42,9 +42,9 @@ export class RolesManagementMiddleware {
   static validateAddRoleToUser = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const role: Roles = req.body.role;
-      const userToBeAssigned: IUser = req.userToBeAssigned;
+      const targetedUser: IUser = req.userToBeAssigned;
       // check if user already has the role assigned
-      if (userToBeAssigned.roles.includes(role)) {
+      if (targetedUser.roles.includes(role)) {
         return next(
           new AppError(
             "User already has this role assigned. please check the role you are trying to assign.",
@@ -52,7 +52,7 @@ export class RolesManagementMiddleware {
           )
         );
       }
-      req.userToBeAssigned = userToBeAssigned;
+      req.userToBeAssigned = targetedUser;
       next();
     }
   );
