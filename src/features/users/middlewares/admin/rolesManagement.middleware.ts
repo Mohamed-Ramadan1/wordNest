@@ -52,7 +52,6 @@ export class RolesManagementMiddleware {
           )
         );
       }
-      req.userToBeAssigned = targetedUser;
       next();
     }
   );
