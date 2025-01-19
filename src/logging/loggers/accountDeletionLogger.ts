@@ -1,17 +1,11 @@
-import winston from "winston";
-import { jsonFormatter } from "../formatters/jsonFormatter";
+import { Logger } from "winston";
+import { createLogger } from "@logging/utils/loggerFactory";
 import { ObjectId } from "mongoose";
 
 // Configure Winston logger
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/accountDeletion-logs.log" }),
-  ],
-});
-// log a successful account deletion requested
+const accountDeletionLogger: Logger = createLogger("accountDeletion");
+
+// log a successf ul account deletion requested
 export function logSuccessfulAccountDeletionRequest(
   ipAddress: string,
   userEmail: string,
@@ -19,17 +13,20 @@ export function logSuccessfulAccountDeletionRequest(
   userJoinedAt: Date,
   requestedAt: Date
 ) {
-  logger.info("Account deletion request processed successfully", {
-    event: "account_deletion_request",
-    status: "success",
-    userEmail,
-    userId,
-    userJoinedAt,
-    requestedAt,
-    ipAddress,
-    service: "AccountService",
-    timestamp: new Date().toISOString(),
-  });
+  accountDeletionLogger.info(
+    "Account deletion request processed successfully",
+    {
+      event: "account_deletion_request",
+      status: "success",
+      userEmail,
+      userId,
+      userJoinedAt,
+      requestedAt,
+      ipAddress,
+      service: "AccountService",
+      timestamp: new Date().toISOString(),
+    }
+  );
 }
 
 // log a failed account deletion request
@@ -39,11 +36,12 @@ export function logFailedAccountDeletionRequest(
   userId: ObjectId,
   error: Error
 ) {
-  logger.error("Account deletion request failed", {
+  accountDeletionLogger.error("Account deletion request failed", {
     event: "account_deletion_request",
     status: "failed",
     userEmail,
     ipAddress,
+    userId,
     service: "AccountService",
     error: error.message,
     timestamp: new Date().toISOString(),
@@ -60,7 +58,7 @@ export function logSuccessfulAccountDeletionConfirmation(
   requestedAt: Date,
   actualDeletionDate: Date
 ) {
-  logger.info("Account deleted successfully", {
+  accountDeletionLogger.info("Account deleted successfully", {
     event: "account_deletion",
     status: "success",
     userEmail,
@@ -85,7 +83,7 @@ export function logFailedAccountDeletionConfirmation(
   confirmedAt: Date,
   errorMessage: string
 ) {
-  logger.error("Failed to delete account", {
+  accountDeletionLogger.error("Failed to delete account", {
     event: "account_deletion",
     status: "failed",
     userEmail,

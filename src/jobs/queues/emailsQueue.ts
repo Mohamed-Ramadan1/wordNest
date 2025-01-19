@@ -4,7 +4,7 @@ import {
   sendEmailsProcessor,
   emailHandlers,
 } from "@jobs/queueProcessors/emailsQueue/sendEmails.processor";
-import { createQueue } from "../shared/createQueue";
+import { createQueue } from "../common/createQueue";
 
 const retryAttempts: number = 5;
 const delayTime: number = 5000;

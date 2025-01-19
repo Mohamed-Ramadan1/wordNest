@@ -1,9 +1,9 @@
 // supportTicketQueue.ts
 import { Queue } from "bull";
-import { createQueue } from "@jobs/shared/createQueue";
+import { createQueue } from "@jobs/common/createQueue";
 
 import { ticketsEmailSenderProcessor } from "../queueProcessors/supportTicketsQueue/ticketsEmailSender.processor";
-import { SupportTicketQueueJobs } from "../queueProcessors/supportTicketsQueue/ticketsEmailSender.processor";
+import { SupportTicketQueueJobs } from "../constants/supportTicketQueueJobs";
 const retryAttempts: number = 5;
 const delayTime: number = 5000;
 

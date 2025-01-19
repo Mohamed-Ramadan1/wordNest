@@ -1,16 +1,9 @@
-import winston from "winston";
-import { jsonFormatter } from "../formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
 // Configure Winston logger
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/bandAccounts-logs.log" }),
-  ],
-});
+const bandAccountsLogger: Logger = createLogger("bandAccounts");
 
 // log success ban user account
 export const logSuccessBanUserAccount = (
@@ -22,7 +15,7 @@ export const logSuccessBanUserAccount = (
   banDays: number,
   ipAddress: string | undefined
 ) => {
-  logger.info({
+  bandAccountsLogger.info({
     message: "User account has been successfully banned ",
     adminUserEmail,
     adminUserId,
@@ -47,7 +40,7 @@ export const logFailedBanUserAccount = (
   ipAddress: string | undefined,
   errorMessage: string
 ) => {
-  logger.error({
+  bandAccountsLogger.error({
     message: "Failed to ban user account",
     adminUserEmail,
     adminUserId,
@@ -71,7 +64,7 @@ export const logSuccessUnbanUserAccount = (
   ipAddress: string | undefined,
   adminUnbanComment: string
 ) => {
-  logger.info({
+  bandAccountsLogger.info({
     message: "User account has been successfully unbanned",
     adminUserEmail,
     adminUserId,
@@ -94,7 +87,7 @@ export const logFailedUnbanUserAccount = (
   adminUnbanComment: string,
   errorMessage: string
 ) => {
-  logger.error({
+  bandAccountsLogger.error({
     message: "Failed to unban user account",
     adminUserEmail,
     adminUserId,

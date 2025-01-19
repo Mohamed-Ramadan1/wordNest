@@ -1,4 +1,4 @@
-import { Document, ObjectId, VirtualType } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 import { IUser } from "@features/users";
 // Support ticket lifecycle states
 export enum SupportTicketStatus {

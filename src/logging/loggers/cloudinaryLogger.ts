@@ -1,19 +1,13 @@
-import winston from "winston";
-import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/cloudinary-logs.log" }),
-  ],
-});
+// Configure Winston logger
+const cloudinaryLogger: Logger = createLogger("cloudinary");
 
 // Log fail attempts to upload images to cloudinary
 export function logFailedImageUpload(errMessage: string, userId: ObjectId) {
-  logger.error("Failed to upload image to cloudinary", {
+  cloudinaryLogger.error("Failed to upload image to cloudinary", {
     event: "image_upload_failed",
     userID: userId,
     error: errMessage,
@@ -27,7 +21,7 @@ export function logFailedImageDelete(
   imageId: string,
   userId: ObjectId
 ) {
-  logger.error("Failed to delete image from cloudinary", {
+  cloudinaryLogger.error("Failed to delete image from cloudinary", {
     event: "image_delete_failed",
     imageId: imageId,
     userID: userId,
@@ -42,7 +36,7 @@ export function logFailedResourceUpload(
   resourceType: string,
   filePath?: string
 ) {
-  logger.error("Failed to upload resource to cloudinary", {
+  cloudinaryLogger.error("Failed to upload resource to cloudinary", {
     event: "resource_upload_failed",
     error: errMessage,
     resourceType: resourceType,

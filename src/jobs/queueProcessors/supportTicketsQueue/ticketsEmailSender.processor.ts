@@ -3,6 +3,7 @@ import { Job } from "bull";
 
 import { AppError } from "@utils/appError";
 import { logFailedEmailSent } from "@logging/index";
+import { SupportTicketQueueJobs } from "@jobs/constants/supportTicketQueueJobs";
 
 import {
   sendTicketCreationEmail,
@@ -11,14 +12,6 @@ import {
   sendTicketClosedEmail,
   sendTicketReopenedEmail,
 } from "@features/supportTickets/emails";
-
-export enum SupportTicketQueueJobs {
-  SendTicketCreationEmail = "sendTicketCreationEmail",
-  SendUserResponseConfirmationEmail = "sendUserResponseConfirmationEmail",
-  SendAdminResponseEmail = "sendAdminResponseEmail",
-  SendTicketClosedEmail = "sendTicketClosedEmail",
-  SendTicketReopenedEmail = "sendTicketReopenedEmail",
-}
 
 export const supportTicketHandlers = {
   [SupportTicketQueueJobs.SendTicketCreationEmail]: sendTicketCreationEmail,
@@ -32,14 +25,13 @@ export const supportTicketHandlers = {
 export const ticketsEmailSenderProcessor = async (job: Job) => {
   const { user, supportTicket } = job.data;
 
+  if (!user || !supportTicket) {
+    throw new AppError(
+      "Missing required data to send email (user / supportTicket)",
+      400
+    );
+  }
   try {
-    if (!user || !supportTicket) {
-      throw new AppError(
-        "Missing required data to send email (user / supportTicket)",
-        400
-      );
-    }
-
     // Get the appropriate handler for the job type
     const emailHandler =
       supportTicketHandlers[job.name as keyof typeof supportTicketHandlers];

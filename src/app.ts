@@ -4,6 +4,12 @@ import express, { Application, NextFunction, Request, Response } from "express";
 // package imports.
 import morgan from "morgan";
 import path from "path";
+import compression from "compression";
+import mongoSanitize from "express-mongo-sanitize";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import hpp from "hpp";
 
 // routes imports from features
 import { authRouter } from "@features/auth";
@@ -20,18 +26,43 @@ import { globalError } from "@shared/index";
 import { AppError } from "@utils/index";
 require("events").setMaxListeners(20);
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: "Too many requests from this IP, please try again later.",
+});
+
 // Initialize express app
 const app: Application = express();
 
 // setup logging middleware for requests.
 app.use(morgan("dev"));
 
-// setup body parser middleware(parse incoming request bodies)
+// Rate limiting
+app.use(limiter);
+
+// Compression
+app.use(compression());
+
+// Security headers
+app.use(helmet());
+
+// CORS
+app.use(cors());
+
+// Body parser
 app.use(express.json());
+
+// NoSQL injection sanitization
+app.use(mongoSanitize());
+
+// HTTP parameter pollution protection
+app.use(hpp());
 
 //serving static files
 app.use(express.static(path.join(__dirname, "public")));
-// setup security and other related middlewares
+
+
 
 // auth related routes
 app.use("/api/v1/auth", authRouter);

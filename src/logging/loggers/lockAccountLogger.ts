@@ -1,15 +1,9 @@
-import winston from "winston";
-import { jsonFormatter } from "@logging/formatters/jsonFormatter";
 import { ObjectId } from "mongoose";
+import { createLogger } from "@logging/utils/loggerFactory";
+import { Logger } from "winston";
 
-const logger = winston.createLogger({
-  level: "info",
-  format: jsonFormatter,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: "logs/lockAccounts-logs.log" }),
-  ],
-});
+// Configure Winston logger
+const lockAccountsLogger: Logger = createLogger("lockAccounts");
 
 // Log fail attempts  to send emails to the users
 export function logFailedLockAccount(
@@ -21,7 +15,7 @@ export function logFailedLockAccount(
   errorMessage: string,
   ipAddress: string | undefined
 ) {
-  logger.error({
+  lockAccountsLogger.error({
     message: `Failed to lock account for user with email: ${lockedEmail}`,
     lockedEmail,
     reason,
@@ -41,7 +35,7 @@ export function logSuccessfulLockAccount(
   lockedById: ObjectId,
   ipAddress: string | undefined
 ) {
-  logger.info({
+  lockAccountsLogger.info({
     message: `Successfully locked account for user with email: ${lockedEmail}`,
     lockedEmail,
     userId,
@@ -59,7 +53,7 @@ export function logSuccessfulUnlockAccount(
   unlockedById: ObjectId,
   ipAddress: string | undefined
 ) {
-  logger.info({
+  lockAccountsLogger.info({
     message: `Successfully unlocked account for user with email: ${email}`,
     email,
     userId,
@@ -78,7 +72,7 @@ export function logFailedUnlockAccount(
   errorMessage: string,
   ipAddress: string | undefined
 ) {
-  logger.error({
+  lockAccountsLogger.error({
     message: `Failed to unlock account for user with email: ${email}`,
     email,
     userId,

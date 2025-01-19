@@ -1,7 +1,7 @@
 import { Job } from "bull";
 import { UserModel } from "@features/users";
 import { banAccountsLogger } from "@logging/index";
-import { EmailQueueType } from "@config/emailQueue.config";
+import { EmailQueueType } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
 import { IUser } from "@features/users";
 import { AppError } from "@utils/appError";

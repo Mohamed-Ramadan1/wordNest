@@ -5,8 +5,8 @@ import { AppError } from "@utils/appError";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // queues imports
-import { emailQueue } from "@jobs/index";
-import { EmailQueueType } from "@config/emailQueue.config";
+import { emailQueue, EmailQueueJobs } from "@jobs/index";
+
 // logs imports
 import {
   logSuccessfulAccountDeactivationConfirmation,
@@ -26,7 +26,7 @@ export class AccountStatusService {
       user.createDeactivationAccountToken();
       await user.save();
 
-      emailQueue.add(EmailQueueType.DeactivateAccountRequest, {
+      emailQueue.add(EmailQueueJobs.DeactivateAccountRequest, {
         user,
       });
       logSuccessfulAccountDeactivationRequest(
@@ -61,7 +61,7 @@ export class AccountStatusService {
       await user.save();
 
       // send email to user to confirm account deactivation.
-      emailQueue.add(EmailQueueType.DeactivateAccountConfirmation, { user });
+      emailQueue.add(EmailQueueJobs.DeactivateAccountConfirmation, { user });
 
       // log success account deactivation confirmation.
       logSuccessfulAccountDeactivationConfirmation(
@@ -98,7 +98,7 @@ export class AccountStatusService {
       await user.save();
 
       // send email to user to confirm account activation.
-      emailQueue.add(EmailQueueType.ReactivateAccountSuccess, { user });
+      emailQueue.add(EmailQueueJobs.ReactivateAccountSuccess, { user });
       // log success account activation.
       logSuccessfulAccountActivation(
         ipAddress ? ipAddress : "unknown ip address",

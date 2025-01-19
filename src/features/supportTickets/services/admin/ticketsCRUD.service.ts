@@ -10,10 +10,7 @@ import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 // utils imports
 import { AppError, uploadToCloudinary } from "@utils/index";
-import {
-  TicketBody,
-  TicketUPdateBody,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
@@ -23,9 +20,9 @@ import {
   SupportTicketQueueJobs,
   cloudinaryQueue,
   supportTicketQueue,
+  CloudinaryQueueJobs,
 } from "@jobs/index";
 import { IUser } from "@features/users";
-import { CloudinaryQueueType } from "@config/cloudinaryQueue.config";
 
 export class TicketsCRUDService {
   /**
@@ -148,7 +145,7 @@ export class TicketsCRUDService {
   ): Promise<void> {
     try {
       if (ticket.attachments) {
-        await cloudinaryQueue.add(CloudinaryQueueType.DeleteImage, {
+        await cloudinaryQueue.add(CloudinaryQueueJobs.DeleteImage, {
           publicId: ticket.attachments.imagePublicId,
           userId: user._id,
         });

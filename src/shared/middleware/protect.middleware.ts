@@ -1,70 +1,29 @@
+// express imports
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import User from "@features/users/models/user.model";
-import { catchAsync, AppError } from "@utils/index";
+
+// package imports
+import { JwtPayload } from "jsonwebtoken";
+
+// utils imports
+import { catchAsync } from "@utils/index";
+
+// helper imports
+import {
+  validateUserAccountStatus,
+  validateHeaderTokenExists,
+  verifyJWTValidity,
+  checkUserExists,
+} from "../helper/protectMiddleware.helper";
 
 export const protect = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    let token: string = "";
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
-    if (!token) {
-      return next(new AppError("You are not logged in! Please log in", 401));
-    }
+    const token: string = validateHeaderTokenExists(req);
 
-    let decoded: JwtPayload | string;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    } catch (error) {
-      return next(new AppError("Invalid token. Please log in again", 401));
-    }
+    const decoded: JwtPayload = verifyJWTValidity(token);
 
-    // Ensure decoded is a JwtPayload and has exp
-    if (typeof decoded === "string" || !decoded.exp) {
-      return next(new AppError("Invalid token. Please log in again", 401));
-    }
+    const user = await checkUserExists(decoded.id);
 
-    // Check if the token has expired
-    if (decoded.exp < Date.now() / 1000) {
-      return next(new AppError("Token expired. Please log in again", 401));
-    }
-
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return next(
-        new AppError("The user belonging to this token no longer exists", 401)
-      );
-    }
-    // check if user account is to be deleted
-    if (user.userAccountToBeDeleted) {
-      throw new AppError(
-        "This account is in the grace period for deletion. Please contact support to restore your account.",
-        401
-      );
-    }
-
-    if (user.isActive === false) {
-      return next(
-        new AppError(
-          "Your account has been deactivated. Please contact support for more information.",
-          401
-        )
-      );
-    }
-
-    if (user.isAccountLocked) {
-      return next(
-        new AppError(
-          "User account is  locked you cant preform any actions please contact support or apply for appel.",
-          400
-        )
-      );
-    }
+    validateUserAccountStatus(user);
 
     req.user = user;
     next();

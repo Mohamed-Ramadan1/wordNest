@@ -1,10 +1,8 @@
 import { Queue } from "bull";
 import { unBanAccountProcessor } from "@jobs/queueProcessors/bandAccountsQueue/unBanAccount.processor";
 
-import { createQueue } from "@jobs/shared/createQueue";
-export enum BandAccountQueueTypes {
-  UnBanAccount = "unBanAccount",
-}
+import { createQueue } from "@jobs/common/createQueue";
+import { BandAccountQueueJobs } from "@jobs/constants/bandAccountQueueJobs";
 
 const retryAttempts: number = 5;
 const delayTime: number = 5000;
@@ -17,6 +15,6 @@ export const bandAccountsQueue: Queue = createQueue(
 
 // Process the jobs in the queue (automatically un ban accounts after the ban period is passed)
 bandAccountsQueue.process(
-  BandAccountQueueTypes.UnBanAccount,
+  BandAccountQueueJobs.UnBanAccount,
   unBanAccountProcessor
 );
