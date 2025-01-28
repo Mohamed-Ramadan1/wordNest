@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 EventEmitter.defaultMaxListeners = 20;
 
-import app from "./app";
+import server from "./app";
 import { v2 as cloudinary } from "cloudinary";
 import { connectDatabase } from "@config/database.config";
 import { port } from "@config/server.config";
@@ -18,6 +18,6 @@ cloudinary.config({
 connectDatabase();
 
 // run server
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

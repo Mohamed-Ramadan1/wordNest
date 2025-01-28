@@ -6,8 +6,6 @@ Blog api project
 
 ## project setup
 
-![image](./public/request_flow_diagram.png)
-
 ```bash
 root/
 ├── auth-logs/              # Directory for storing authentication logs.
@@ -51,3 +49,5 @@ root/
 ├── README.md                # Project overview and instructions.
 
 ```
+
+  
