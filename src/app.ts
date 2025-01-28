@@ -40,7 +40,7 @@ const app: Application = express();
 const server: HttpServer = createServer(app);
 
 // Initialize Socket.IO using the reusable function
-const io = createSocket(server);
+export const io = createSocket(server);
 
 // setup logging middleware for requests.
 app.use(morgan("dev"));
