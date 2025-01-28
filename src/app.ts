@@ -10,6 +10,8 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import hpp from "hpp";
+import { createSocket } from "@config/socketIO.config";
+import { createServer, Server as HttpServer } from "http"; // Import createServer from http
 
 // routes imports from features
 import { authRouter } from "@features/auth";
@@ -34,6 +36,11 @@ const limiter = rateLimit({
 
 // Initialize express app
 const app: Application = express();
+// Create HTTP server
+const server: HttpServer = createServer(app);
+
+// Initialize Socket.IO using the reusable function
+const io = createSocket(server);
 
 // setup logging middleware for requests.
 app.use(morgan("dev"));
@@ -62,8 +69,6 @@ app.use(hpp());
 //serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
-
-
 // auth related routes
 app.use("/api/v1/auth", authRouter);
 
@@ -87,4 +92,4 @@ app.use("*", (req: Request, res: Response, next: NextFunction) => {
 // global error handler
 app.use(globalError);
 
-export default app;
+export default server;
