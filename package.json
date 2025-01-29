@@ -29,6 +29,7 @@
     "express-validator": "^7.2.0",
     "helmet": "^8.0.0",
     "hpp": "^0.2.3",
+    "ioredis": "^5.4.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.3",

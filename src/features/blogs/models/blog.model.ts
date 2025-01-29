@@ -5,7 +5,8 @@ import {
   ScheduleStatus,
   SEOMetadata,
 } from "../interfaces/blog.interface";
-import { model, Model, Schema } from "mongoose";
+
+import { model, Schema } from "mongoose";
 const uploadedImageSchema = new Schema<IUploadedImage>({
   url: { type: String, required: true },
   publicId: { type: String, required: true },
@@ -44,7 +45,6 @@ const blogSchema = new Schema<IBlog>(
     isPrivate: { type: Boolean, default: false },
     uploadedImages: [{ type: uploadedImageSchema }],
     tags: [{ type: String }],
-    // Adding missing fields from the interface
     categories: [
       {
         type: String,

@@ -19,6 +19,8 @@ import {
   adminSupportTicketsRouter,
 } from "@features/supportTickets";
 
+import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
+
 // error handling middleware
 import { globalError } from "@shared/index";
 
@@ -70,6 +72,15 @@ app.use("/api/v1/users", userRouter);
 
 // admin user related routes
 app.use("/api/v1/admin/users", userAdminRouter);
+
+// Blog related routes for all users
+app.use("/api/v1/blogs", blogRouter); // General routes for viewing blogs, commenting, liking, etc.
+
+// Admin blog management routes
+app.use("/api/v1/admin/blogs", adminBlogRouter); // Admin can create, edit, delete any blog, approve blogs
+
+// Blog owner related routes
+app.use("/api/v1/blog-owner/blogs", blogOwnerRouter); // Blog owner actions like create, edit, delete their own blogs
 
 // support ticket related routes for users
 app.use("/api/v1/support-tickets", supportTicketRouter);
