@@ -67,4 +67,5 @@ export interface IBlog extends Document {
   updatedAt: Date;
 
   generateSEOMetadata(): void;
+  calculateEstimatedReadingTime(): void;
 }
