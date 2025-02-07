@@ -7,5 +7,4 @@ import { upload } from "@config/multer.config";
 
 // create  the express router
 const router: Router = Router();
-
 export default router;
