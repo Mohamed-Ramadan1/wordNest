@@ -42,6 +42,7 @@ export interface IBlog extends Document {
   title: string;
   content: string;
   excerpt?: string;
+  uploadedImages: IUploadedImage[];
   author: IUser | ObjectId;
   slug: string;
   readingTime: number;
@@ -55,7 +56,6 @@ export interface IBlog extends Document {
   scheduleStatus?: ScheduleStatus;
   seo?: SEOMetadata;
   isPrivate: boolean;
-  uploadedImages: IUploadedImage[];
   tags: string[];
   categories: BlogCategory[];
   interActionsCount: number;
