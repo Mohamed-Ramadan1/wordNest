@@ -23,7 +23,7 @@ router
   .route("/")
   .get(blogCRUDController.getAllBlogPosts)
   .post(
-    upload.array("blogImages"),
+    upload.array("blogImages", 5),
     BlogOwnerCRUDMiddleware.validateCreateBlogPost,
     blogCRUDController.createBlogPost
   );

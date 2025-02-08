@@ -1,29 +1,52 @@
+// Packages imports
+import { ObjectId } from "mongoose";
+
+// model imports
+import BlogModel from "@features/blogs/models/blog.model";
+
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
+
+//interfaces imports
+import { BlogData } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { ObjectId } from "mongoose";
 import { IUser } from "@features/users";
-import BlogModel from "@features/blogs/models/blog.model";
+
+// logging imports
+import { blogsLogger } from "@logging/index";
+
 export class BlogCRUDService {
   /**
    * Handles the logic for creating a blog post.
    */
-  public static async createBlogPost() {
-    // Business logic for creating a blog post
+  public static async createBlogPost(
+    blogData: BlogData,
+    user: IUser
+  ): Promise<void> {
+    try {
+      const newBlogPost = new BlogModel(blogData);
+      newBlogPost.createBlogSlug();
+      await newBlogPost.save();
+    } catch (err: any) {
+      blogsLogger.logFailedBlogPostCreation(user._id, err.message);
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Handles the logic for updating a blog post.
    */
   public static async updateBlogPost() {
-    // Business logic for updating a blog post
+    try {
+    } catch (err: any) {}
   }
 
   /**
    * Handles the logic for deleting a blog post.
    */
   public static async deleteBlogPost() {
-    // Business logic for deleting a blog post
+    try {
+    } catch (err: any) {}
   }
 
   /**

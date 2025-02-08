@@ -2,7 +2,9 @@ import cloudinary from "cloudinary";
 import { AppError } from "./appError";
 import { logFailedResourceUpload } from "@logging/index";
 import { removeLocalFile } from "./deleteLocalFiles";
+
 // single file upload to cloudinary function
+
 export async function uploadToCloudinary(
   filePath: string,
   resourceName: string

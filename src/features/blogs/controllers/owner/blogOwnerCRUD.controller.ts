@@ -10,20 +10,25 @@ import { ApiResponse } from "@shared/index";
 // service  imports
 import { BlogCRUDService } from "../../services/owner/blogOwnerCRUD.service";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { BlogParams } from "@features/blogs/interfaces/blogOwnerRequest.interface";
+import {
+  BlogParams,
+  CreateBlogBodyRequest,
+} from "@features/blogs/interfaces/blogOwnerRequest.interface";
 export class BlogCRUDController {
   /**
    * Creates a new blog post.
    * Handles the request to add a new post with the provided content.
    */
-  public createBlogPost = catchAsync(async (req: Request, res: Response) => {
-    await BlogCRUDService.createBlogPost();
-    const response: ApiResponse<null> = {
-      status: "success",
-      message: "Blog post created successfully",
-    };
-    sendResponse(201, res, response);
-  });
+  public createBlogPost = catchAsync(
+    async (req: Request<{}, {}, CreateBlogBodyRequest>, res: Response) => {
+      await BlogCRUDService.createBlogPost(req.body.blogData, req.user);
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Blog post created successfully",
+      };
+      sendResponse(201, res, response);
+    }
+  );
 
   /**
    * Updates an existing blog post.

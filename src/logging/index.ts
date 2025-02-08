@@ -46,3 +46,5 @@ export * as lockAccountsLogger from "./loggers/lockAccountLogger";
 export * as banAccountsLogger from "./loggers/bandAccountsLogger";
 
 export * as supportTicketsLogger from "./loggers/supportTicketsLogger";
+
+export * as blogsLogger from "./loggers/blogsLogger";

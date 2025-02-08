@@ -1,7 +1,7 @@
-import { resourceCleanupQueue, ResourceCleanupQueueType } from "@jobs/index";
+import { resourceCleanupQueue, ResourceCleanupQueueJobs } from "@jobs/index";
 
 export function removeLocalFile(filePath: string, resourceName: string): void {
-  resourceCleanupQueue.add(ResourceCleanupQueueType.DeleteLocalFiles, {
+  resourceCleanupQueue.add(ResourceCleanupQueueJobs.DeleteLocalFiles, {
     resourcePath: filePath,
     resource: resourceName,
   });

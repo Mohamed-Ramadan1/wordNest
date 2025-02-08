@@ -10,7 +10,7 @@ interface CustomError extends Error {
   value?: string;
   keyValue?: { [key: string]: string };
   errors?: { [key: string]: { message: string } };
-  code?: number;
+  code?: number | string;
 }
 
 const handleCastErrorDB = (err: CustomError) => {
@@ -34,6 +34,13 @@ const handleJWTError = () => {
   return new AppError("Invalid token. Please log in again", 401);
 };
 
+const handleMulterLimitError = () => {
+  // the error indicates that more files than the expected number of files uplaoly
+  return new AppError(
+    "Too many files.Not expecting this number of files ",
+    400
+  );
+};
 const handleJWTExpiredError = () => {
   return new AppError("Your token has expired. Please log in again", 401);
 };
@@ -79,6 +86,8 @@ export const globalError = (
     if (err.name === "ValidationError") err = handleValidationErrorDB(err);
     if (err.name === "JsonWebTokenError") err = handleJWTError();
     if (err.name === "TokenExpiredError") err = handleJWTExpiredError();
+    if (err.name === "MulterError" && err.code === "LIMIT_UNEXPECTED_FILE")
+      err = handleMulterLimitError();
     sendErrorProd(err, res);
   }
 };

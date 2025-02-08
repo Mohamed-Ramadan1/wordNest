@@ -98,18 +98,15 @@ blogSchema.pre("save", function (next) {
   next();
 });
 
-blogSchema.pre("save", function (next) {
-  if (!this.slug) {
-    const baseSlug = slugify(this.title, { lower: true, strict: true });
-    const hash = crypto
-      .createHash("md5")
-      .update(this.title)
-      .digest("hex")
-      .substring(0, 6);
-    this.slug = `${baseSlug}-${hash}`;
-  }
-  next();
-});
+blogSchema.methods.createBlogSlug = function () {
+  const baseSlug = slugify(this.title, { lower: true, strict: true });
+  const hash = crypto
+    .createHash("md5")
+    .update(this.title)
+    .digest("hex")
+    .substring(0, 6);
+  this.slug = `${baseSlug}-${hash}`;
+};
 
 const BlogModel = model<IBlog>("Blog", blogSchema);
 export default BlogModel;

@@ -64,4 +64,5 @@ export interface IBlog extends Document {
   viewsCount: number;
   createdAt: Date;
   updatedAt: Date;
+  createBlogSlug(): void;
 }
