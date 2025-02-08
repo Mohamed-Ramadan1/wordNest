@@ -22,7 +22,11 @@ router.use(protect);
 router
   .route("/")
   .get(blogCRUDController.getAllBlogPosts)
-  .post(upload.single("image"), blogCRUDController.createBlogPost);
+  .post(
+    upload.array("blogImages"),
+    BlogOwnerCRUDMiddleware.validateCreateBlogPost,
+    blogCRUDController.createBlogPost
+  );
 
 router
   .route("/:id")

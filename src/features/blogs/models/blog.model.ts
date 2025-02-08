@@ -1,3 +1,6 @@
+import slugify from "slugify";
+import crypto from "crypto";
+
 import {
   BlogCategory,
   IBlog,
@@ -28,8 +31,7 @@ const blogSchema = new Schema<IBlog>(
     excerpt: { type: String },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     slug: { type: String, required: true, unique: true },
-    readingTime: { type: Number, required: true },
-    isPublished: { type: Boolean, default: false },
+    isPublished: { type: Boolean, default: true },
     publishedAt: { type: Date },
     drafted: { type: Boolean, default: true },
     isEdited: { type: Boolean, default: false },
@@ -49,7 +51,7 @@ const blogSchema = new Schema<IBlog>(
       {
         type: String,
         enum: Object.values(BlogCategory),
-        default: [],
+        required: [true, "Please provide a category"],
       },
     ],
     interActionsCount: {
@@ -79,6 +81,35 @@ const blogSchema = new Schema<IBlog>(
     toObject: { virtuals: true },
   }
 );
+blogSchema.index({ title: "text", content: "text" });
+blogSchema.index({ slug: 1 }, { unique: true });
+blogSchema.index({ author: 1 });
+blogSchema.index({ publishedAt: -1 });
+
+blogSchema.virtual("estimatedReadingTime").get(function () {
+  return Math.ceil(this.content.split(" ").length / 200); // Assuming 200 words/min reading speed
+});
+
+blogSchema.pre("save", function (next) {
+  if (this.isModified("content")) {
+    this.isEdited = true;
+    this.editedAt = new Date();
+  }
+  next();
+});
+
+blogSchema.pre("save", function (next) {
+  if (!this.slug) {
+    const baseSlug = slugify(this.title, { lower: true, strict: true });
+    const hash = crypto
+      .createHash("md5")
+      .update(this.title)
+      .digest("hex")
+      .substring(0, 6);
+    this.slug = `${baseSlug}-${hash}`;
+  }
+  next();
+});
 
 const BlogModel = model<IBlog>("Blog", blogSchema);
 export default BlogModel;

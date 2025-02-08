@@ -44,8 +44,8 @@ export interface IBlog extends Document {
   excerpt?: string;
   uploadedImages: IUploadedImage[];
   author: IUser | ObjectId;
-  slug: string;
-  readingTime: number;
+  tags: string[];
+  categories: BlogCategory;
   isPublished: boolean;
   publishedAt: Date;
   drafted: boolean;
@@ -54,10 +54,9 @@ export interface IBlog extends Document {
   isScheduled?: boolean;
   scheduledFor?: Date;
   scheduleStatus?: ScheduleStatus;
+  slug: string;
   seo?: SEOMetadata;
   isPrivate: boolean;
-  tags: string[];
-  categories: BlogCategory[];
   interActionsCount: number;
   commentsCount: number;
   allowComments: boolean;
@@ -65,7 +64,4 @@ export interface IBlog extends Document {
   viewsCount: number;
   createdAt: Date;
   updatedAt: Date;
-
-  generateSEOMetadata(): void;
-  calculateEstimatedReadingTime(): void;
 }

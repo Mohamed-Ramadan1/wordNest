@@ -15,5 +15,3 @@ export { validateDto } from "./validate.dto";
 export { uploadToCloudinary } from "./uploadToCloudinary";
 
 export { removeLocalFile } from "./deleteLocalFiles";
-
-export { generateUniqueSlug } from "./generateUniqueSlug";

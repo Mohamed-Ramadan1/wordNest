@@ -1,7 +1,11 @@
 //express imports
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 
 // utils imports
-import { catchAsync, sendResponse } from "@utils/index";
+import { catchAsync } from "@utils/index";
 
-export class BlogOwnerCRUDMiddleware {}
+export class BlogOwnerCRUDMiddleware {
+  public static validateCreateBlogPost = catchAsync(
+    (req: Request, res: Response, next: NextFunction) => {}
+  );
+}
