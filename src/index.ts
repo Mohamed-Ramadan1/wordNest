@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-EventEmitter.defaultMaxListeners = 20;
+EventEmitter.defaultMaxListeners = 50;
 
 import app from "./app";
 import { v2 as cloudinary } from "cloudinary";

@@ -34,7 +34,9 @@ export class BlogOwnerCRUDMiddleware {
         };
 
         if (req.files) {
+     
           const blogImages = filterValidImages(req.files);
+
           const imagesData = await uploadImagesToCloudinary(
             blogImages,
             "blogImages",
@@ -49,4 +51,3 @@ export class BlogOwnerCRUDMiddleware {
     ),
   ];
 }
-

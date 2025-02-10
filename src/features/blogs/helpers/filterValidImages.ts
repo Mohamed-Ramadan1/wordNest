@@ -11,6 +11,7 @@ export const filterValidImages = (
 
   fileArray.forEach((file) => {
     // Check if file is an image based on mimetype
+
     if (file.mimetype.startsWith("image/") && file.size <= maxSizeInBytes) {
       validFiles.push({ path: file.path });
     }

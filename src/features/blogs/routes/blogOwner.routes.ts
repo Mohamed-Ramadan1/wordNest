@@ -29,7 +29,7 @@ router
   );
 
 router
-  .route("/:id")
+  .route("/:blogId")
   .get(blogCRUDController.getBlogPost)
   .patch(upload.single("image"), blogCRUDController.updateBlogPost)
   .delete(blogCRUDController.deleteBlogPost);

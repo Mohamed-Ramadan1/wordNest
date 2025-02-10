@@ -64,7 +64,7 @@ export class BlogCRUDService {
       });
       if (!blogPost) {
         throw new AppError(
-          "No Blog post found with this id and owned by the user",
+          "No Blog post found with this id and owned by current logged in user",
           404
         );
       }

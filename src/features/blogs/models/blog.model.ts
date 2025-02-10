@@ -41,7 +41,6 @@ const blogSchema = new Schema<IBlog>(
     scheduleStatus: {
       type: String,
       enum: Object.values(ScheduleStatus),
-      default: ScheduleStatus.PENDING,
     },
     seo: { type: seoMetadataSchema },
     isPrivate: { type: Boolean, default: false },
@@ -100,12 +99,8 @@ blogSchema.pre("save", function (next) {
 
 blogSchema.methods.createBlogSlug = function () {
   const baseSlug = slugify(this.title, { lower: true, strict: true });
-  const hash = crypto
-    .createHash("md5")
-    .update(this.title)
-    .digest("hex")
-    .substring(0, 6);
-  this.slug = `${baseSlug}-${hash}`;
+  const randomString = Math.random().toString(36).substring(2, 8); // Random 6-character string
+  this.slug = `${baseSlug}-${randomString}`;
 };
 
 const BlogModel = model<IBlog>("Blog", blogSchema);

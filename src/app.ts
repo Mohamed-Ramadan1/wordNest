@@ -26,7 +26,7 @@ import { globalError } from "@shared/index";
 
 // utils imports
 import { AppError } from "@utils/index";
-require("events").setMaxListeners(20);
+require("events").setMaxListeners(50);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
