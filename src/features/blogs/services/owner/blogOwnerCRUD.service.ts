@@ -1,5 +1,6 @@
 // Packages imports
 import { ObjectId } from "mongoose";
+import Redis from "ioredis";
 
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
@@ -14,6 +15,8 @@ import { IUser } from "@features/users";
 
 // logging imports
 import { blogsLogger } from "@logging/index";
+
+const redisClient = new Redis();
 
 export class BlogCRUDService {
   /**
@@ -58,6 +61,13 @@ export class BlogCRUDService {
   ): Promise<IBlog> {
     try {
       // Business logic to fetch a blog post by ID
+      const cacheKey = `blog:${blogId}:${user._id}`;
+
+      // Step 1: Check if data is in Redis cache
+      const cachedBlog = await redisClient.get(cacheKey);
+      if (cachedBlog) {
+        return JSON.parse(cachedBlog); // Return cached response
+      }
       const blogPost = await BlogModel.findOne({
         _id: blogId,
         author: user._id,
@@ -68,6 +78,9 @@ export class BlogCRUDService {
           404
         );
       }
+      //  Store the fetched data in Redis (expires in 1 hour)
+      await redisClient.setex(cacheKey, 3600, JSON.stringify(blogPost));
+
       return blogPost;
     } catch (err: any) {
       throw new AppError(err.message, 500);

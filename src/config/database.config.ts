@@ -10,7 +10,7 @@ export async function connectDatabase() {
     mongoose.connect(DB).then(() => {
       console.log("Database connected");
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error(err.message);
   }
 }
