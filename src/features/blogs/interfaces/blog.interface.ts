@@ -37,6 +37,12 @@ export enum BlogCategory {
   OTHER = "other",
 }
 
+export enum DeletionStatus {
+  PENDING = "pending",
+  INPROGRESS = "inprogress",
+  FAILED = "failed",
+}
+
 export interface IBlog extends Document {
   _id: ObjectId;
   title: string;
@@ -62,6 +68,9 @@ export interface IBlog extends Document {
   allowComments: boolean;
   sharesCount: number;
   viewsCount: number;
+  toBeDeleted: boolean;
+  requestDeleteAt: Date;
+  deletionStatus: DeletionStatus;
   createdAt: Date;
   updatedAt: Date;
   createBlogSlug(): void;

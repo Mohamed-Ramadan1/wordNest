@@ -1,5 +1,4 @@
 import slugify from "slugify";
-import crypto from "crypto";
 
 import {
   BlogCategory,
@@ -7,6 +6,7 @@ import {
   IUploadedImage,
   ScheduleStatus,
   SEOMetadata,
+  DeletionStatus,
 } from "../interfaces/blog.interface";
 
 import { model, Schema } from "mongoose";
@@ -73,6 +73,17 @@ const blogSchema = new Schema<IBlog>(
       type: Number,
       default: 0,
     },
+    toBeDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    requestDeleteAt: {
+      type: Date,
+    },
+    deletionStatus: {
+      type: String,
+      enum: Object.values(DeletionStatus),
+    },
   },
   {
     timestamps: true,
@@ -102,6 +113,8 @@ blogSchema.methods.createBlogSlug = function () {
   const randomString = Math.random().toString(36).substring(2, 8); // Random 6-character string
   this.slug = `${baseSlug}-${randomString}`;
 };
+
+//! missing the SEO metadata Generation
 
 const BlogModel = model<IBlog>("Blog", blogSchema);
 export default BlogModel;

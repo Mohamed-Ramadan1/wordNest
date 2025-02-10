@@ -32,6 +32,9 @@ router
   .route("/:blogId")
   .get(blogCRUDController.getBlogPost)
   .patch(upload.single("image"), blogCRUDController.updateBlogPost)
-  .delete(blogCRUDController.deleteBlogPost);
+  .delete(
+    BlogOwnerCRUDMiddleware.validateDeleteBlogPost,
+    blogCRUDController.deleteBlogPost
+  );
 
 export default router;

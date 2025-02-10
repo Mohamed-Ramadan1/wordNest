@@ -2,7 +2,7 @@
 
 import { IUser } from "@features/users";
 import { ObjectId } from "mongoose";
-import { BlogCategory, IUploadedImage } from "./blog.interface";
+import { BlogCategory, IBlog, IUploadedImage } from "./blog.interface";
 
 export interface BlogData {
   title: string;
@@ -20,6 +20,10 @@ export interface CreateBlogBodyRequest {
   tags: string[];
   blogImages: IUploadedImage[];
   blogData: BlogData;
+}
+
+export interface DeleteBlogBodyRequest {
+  blogToBeDeleted: IBlog;
 }
 
 export interface BlogParams {

@@ -10,7 +10,10 @@ import { APIFeatures, AppError } from "@utils/index";
 
 //interfaces imports
 import { BlogData } from "@features/blogs/interfaces/blogOwnerRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  IBlog,
+  DeletionStatus,
+} from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
 
 // logging imports
@@ -47,9 +50,22 @@ export class BlogCRUDService {
   /**
    * Handles the logic for deleting a blog post.
    */
-  public static async deleteBlogPost() {
+  public static async deleteBlogPost(blogToBeDeleted: IBlog, user: IUser) {
     try {
-    } catch (err: any) {}
+      const cacheKey = `blog:${blogToBeDeleted._id}:${user._id}`;
+
+      blogToBeDeleted.toBeDeleted = true;
+      blogToBeDeleted.requestDeleteAt = new Date();
+      blogToBeDeleted.deletionStatus = DeletionStatus.PENDING;
+      await blogToBeDeleted.save();
+      // check if it at the cash memory and delete it
+      await redisClient.del(cacheKey);
+
+      // register the deletion in queue to move allow complete deletion in background
+    } catch (err: any) {
+      // logging the failed deletion
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**

@@ -2,10 +2,14 @@
 import { Response, Request, NextFunction } from "express";
 
 // utils imports
-import { catchAsync, validateDto } from "@utils/index";
+import { catchAsync, validateDto, AppError } from "@utils/index";
+
+// interfaces imports
 import {
   BlogData,
+  BlogParams,
   CreateBlogBodyRequest,
+  DeleteBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 
 // helpers imports (feature specific)
@@ -14,7 +18,10 @@ import { filterValidImages } from "@features/blogs/helpers/filterValidImages";
 // DTO imports
 import { CreateBlogPostDTO } from "../../dtos/createBlogPost.dto";
 import { uploadImagesToCloudinary } from "@utils/uploadImagesToCloudinary";
+import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import BlogModel from "@features/blogs/models/blog.model";
 export class BlogOwnerCRUDMiddleware {
+  // validate the create blog post request
   public static validateCreateBlogPost = [
     validateDto(CreateBlogPostDTO),
     catchAsync(
@@ -34,7 +41,6 @@ export class BlogOwnerCRUDMiddleware {
         };
 
         if (req.files) {
-     
           const blogImages = filterValidImages(req.files);
 
           const imagesData = await uploadImagesToCloudinary(
@@ -50,4 +56,41 @@ export class BlogOwnerCRUDMiddleware {
       }
     ),
   ];
+
+  // validate the delete blog post request
+  public static validateDeleteBlogPost = catchAsync(
+    async (
+      req: Request<BlogParams, {}, DeleteBlogBodyRequest>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const blogToBeDeleted: IBlog | null = await BlogModel.findOne({
+        _id: req.params.blogId,
+        author: req.user._id,
+      });
+
+      if (!blogToBeDeleted) {
+        return next(
+          new AppError(
+            "Blog not found with given id and related to this user.",
+            404
+          )
+        );
+      }
+
+      // check if its already mark as to be deleted
+      if (blogToBeDeleted.toBeDeleted) {
+        return next(
+          new AppError(
+            "This blog has already been marked for deletion.no farther actions are required by you.",
+            400
+          )
+        );
+      }
+
+      req.body.blogToBeDeleted = blogToBeDeleted;
+
+      next();
+    }
+  );
 }

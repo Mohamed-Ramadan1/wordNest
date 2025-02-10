@@ -13,6 +13,7 @@ import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import {
   BlogParams,
   CreateBlogBodyRequest,
+  DeleteBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 export class BlogCRUDController {
   /**
@@ -47,14 +48,16 @@ export class BlogCRUDController {
    * Deletes a blog post.
    * Handles the request to remove a specified blog post permanently from the system.
    */
-  public deleteBlogPost = catchAsync(async (req: Request, res: Response) => {
-    await BlogCRUDService.deleteBlogPost();
-    const response: ApiResponse<null> = {
-      status: "success",
-      message: "Blog post deleted successfully",
-    };
-    sendResponse(200, res, response);
-  });
+  public deleteBlogPost = catchAsync(
+    async (req: Request<{}, {}, DeleteBlogBodyRequest>, res: Response) => {
+      await BlogCRUDService.deleteBlogPost(req.body.blogToBeDeleted, req.user);
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Blog post deleted successfully",
+      };
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Retrieves a single blog post.
