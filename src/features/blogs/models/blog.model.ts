@@ -30,7 +30,7 @@ const blogSchema = new Schema<IBlog>(
     content: { type: String, required: true },
     excerpt: { type: String },
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, required: true },
     isPublished: { type: Boolean, default: true },
     publishedAt: { type: Date },
     drafted: { type: Boolean, default: true },

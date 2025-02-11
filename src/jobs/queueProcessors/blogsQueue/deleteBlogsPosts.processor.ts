@@ -1,14 +1,15 @@
 import { Job } from "bull";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { BlogModel } from "@features/blogs";
+import BlogModel from "@features/blogs/models/blog.model";
 import { AppError } from "@utils/appError";
 import { ClientSession, startSession } from "mongoose";
 import { blogQueueLogger } from "@logging/index";
+// const BlogModel = returnBlogModel();
 // Define the job data structure
 export interface DeleteBlogJobData {
   blog: IBlog;
 }
-
+// console.log(BlogModel);
 export const deleteBlogsPostsProcessor = async (
   job: Job<DeleteBlogJobData>
 ) => {
@@ -21,12 +22,15 @@ export const deleteBlogsPostsProcessor = async (
         "the blog data is not passed correctly please ensure that passing the blog data."
       );
     }
+
+    console.log(BlogModel);
     const deletedBlog = await BlogModel.findByIdAndDelete(blog._id, {
       session,
     });
-    // if (!deletedBlog) {
-    //   throw new Error(`Failed to delete blog with ID: ${blog._id}`);
-    // }
+
+    if (!deletedBlog) {
+      throw new Error(`Failed to delete blog with ID: ${blog._id}`);
+    }
 
     //! here the logic of deleting the interactions related to this blog (will be added later since its collection not added yet).
 

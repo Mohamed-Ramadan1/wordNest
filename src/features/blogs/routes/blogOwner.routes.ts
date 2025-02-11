@@ -15,7 +15,8 @@ const router: Router = Router();
 
 // controllers instances
 const blogCRUDController = new BlogCRUDController();
-console.log(protect);
+
+// console.log(protect);
 router.use(protect);
 // blogs CRUD related routes
 router
