@@ -19,6 +19,10 @@ import { IUser } from "@features/users";
 // logging imports
 import { blogsLogger } from "@logging/index";
 
+// queues imports
+import { BlogsQueueJobs, blogQueue } from "@jobs/index";
+
+// redis client instance creation.
 const redisClient = new Redis();
 
 export class BlogCRUDService {
@@ -60,10 +64,20 @@ export class BlogCRUDService {
       await blogToBeDeleted.save();
       // check if it at the cash memory and delete it
       await redisClient.del(cacheKey);
+      blogQueue.add(BlogsQueueJobs.DeleteBlog, {
+        blog: blogToBeDeleted,
+      });
 
       // register the deletion in queue to move allow complete deletion in background
     } catch (err: any) {
       // logging the failed deletion
+      blogsLogger.logFailedBlogDeletion(
+        user._id,
+        err.message,
+        blogToBeDeleted._id,
+        true,
+        false
+      );
       throw new AppError(err.message, 500);
     }
   }

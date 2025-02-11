@@ -100,13 +100,13 @@ blogSchema.virtual("estimatedReadingTime").get(function () {
   return Math.ceil(this.content.split(" ").length / 200); // Assuming 200 words/min reading speed
 });
 
-blogSchema.pre("save", function (next) {
-  if (this.isModified("content")) {
-    this.isEdited = true;
-    this.editedAt = new Date();
-  }
-  next();
-});
+// blogSchema.pre("save", function (next) {
+//   if (this.isModified("content")) {
+//     this.isEdited = true;
+//     this.editedAt = new Date();
+//   }
+//   next();
+// });
 
 blogSchema.methods.createBlogSlug = function () {
   const baseSlug = slugify(this.title, { lower: true, strict: true });

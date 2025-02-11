@@ -21,7 +21,6 @@ cloudinary.config({
   api_secret: cloudConfig.API_SECRET,
   timeout: 60000,
 });
-
 // connect database.
 connectDatabase();
 

@@ -1,7 +1,7 @@
 import { Job } from "bull";
 import { UserModel } from "@features/users";
 import { banAccountsLogger } from "@logging/index";
-import { EmailQueueType } from "@jobs/constants/emailQueueJobs";
+import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
 import { IUser } from "@features/users";
 import { AppError } from "@utils/appError";
@@ -21,7 +21,7 @@ export const unBanAccountProcessor = async (job: Job) => {
     await user.save();
 
     // add email queue  to notify user by action
-    emailQueue.add(EmailQueueType.AccountUnbanned, {
+    emailQueue.add(EmailQueueJobs.AccountUnbanned, {
       user,
     });
 

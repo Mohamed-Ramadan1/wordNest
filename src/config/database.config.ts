@@ -7,10 +7,9 @@ const DB = process.env.DATABASE as string;
 // connect to  database function
 export async function connectDatabase() {
   try {
-    mongoose.connect(DB).then(() => {
-      console.log("Database connected");
-    });
+    await mongoose.connect(DB);
+    console.log("Database connected");
   } catch (err: any) {
-    console.error(err.message);
+    console.error("Error connecting to database:", err.message);
   }
 }
