@@ -1,19 +1,22 @@
 import { Job } from "bull";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  DeletionStatus,
+  IBlog,
+} from "@features/blogs/interfaces/blog.interface";
 import BlogModel from "@features/blogs/models/blog.model";
 import { AppError } from "@utils/appError";
 import { ClientSession, startSession } from "mongoose";
 import { blogQueueLogger } from "@logging/index";
-// const BlogModel = returnBlogModel();
-// Define the job data structure
+import { retryAttempts } from "@jobs/queues/blogQueue";
 export interface DeleteBlogJobData {
   blog: IBlog;
 }
-// console.log(BlogModel);
+
 export const deleteBlogsPostsProcessor = async (
   job: Job<DeleteBlogJobData>
 ) => {
   const { blog } = job.data;
+
   const session: ClientSession = await startSession();
   try {
     session.startTransaction();
@@ -23,7 +26,6 @@ export const deleteBlogsPostsProcessor = async (
       );
     }
 
-    console.log(BlogModel);
     const deletedBlog = await BlogModel.findByIdAndDelete(blog._id, {
       session,
     });
@@ -39,6 +41,11 @@ export const deleteBlogsPostsProcessor = async (
     // Commit the transaction
     await session.commitTransaction();
   } catch (err: any) {
+    if (blog && job.attemptsMade === retryAttempts - 1) {
+      await BlogModel.findByIdAndUpdate(blog._id, {
+        deletionStatus: DeletionStatus.FAILED,
+      });
+    }
     await session.abortTransaction(); // Rollback if an error occurs
     blogQueueLogger.logFailedBlogDeletion(
       err.message,

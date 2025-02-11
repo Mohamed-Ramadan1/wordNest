@@ -21,3 +21,15 @@ export const logFailedBlogDeletion = (
     errorLocation: "BlogQueueProcessor",
   });
 };
+
+// log failed corn job for collect all failed jobs and read them to the delete queue again
+export const logFailedCollectFailedDeletionBlogs = (errorMessage: string) => {
+  blogsQueueLogger.error({
+    message:
+      "Failed to collectFailedDeletionBlogsProcessor and register them again to the delete queue",
+    errorMessage,
+
+    timestamp: new Date().toISOString(),
+    errorLocation: "collectFailedDeletionBlogsProcessor",
+  });
+};

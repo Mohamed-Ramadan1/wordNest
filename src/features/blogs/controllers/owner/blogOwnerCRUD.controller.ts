@@ -55,7 +55,7 @@ export class BlogCRUDController {
         status: "success",
         message: "Blog post deleted successfully",
       };
-      sendResponse(200, res, response);
+      sendResponse(204, res, response);
     }
   );
 

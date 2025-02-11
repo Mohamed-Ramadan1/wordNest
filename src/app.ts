@@ -26,6 +26,10 @@ import { globalError } from "@shared/index";
 
 // utils imports
 import { AppError } from "@utils/index";
+
+// jobs imports
+import { blogQueue, BlogsQueueJobs } from "@jobs/index";
+
 require("events").setMaxListeners(50);
 
 const limiter = rateLimit({
