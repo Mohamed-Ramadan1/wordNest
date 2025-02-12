@@ -1,7 +1,6 @@
 import { ObjectId } from "mongoose";
 import { createLogger } from "@logging/utils/loggerFactory";
 import { Logger } from "winston";
-import { IUser } from "@features/users";
 
 // Configure Winston logger
 const blogsQueueLogger: Logger = createLogger("blogsQueue");

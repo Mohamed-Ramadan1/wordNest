@@ -21,6 +21,7 @@ blogQueue.process(
   collectFailedDeletionBlogsProcessor
 );
 
+//! This IFE functionality will be moved to its own file later.
 (async () => {
   console.log("Clearing all repeatable jobs...");
 
@@ -41,7 +42,7 @@ blogQueue.process(
   await blogQueue.add(
     BlogsQueueJobs.CollectFailedDeletionBlogs,
     {},
-    { repeat: { cron: "*/3 * * * *" } } // Runs every 3 minutes
+    { repeat: { cron: "0 0 * * *" } } // Runs every 3 minutes
   );
 
   console.log("Job scheduled successfully.");
