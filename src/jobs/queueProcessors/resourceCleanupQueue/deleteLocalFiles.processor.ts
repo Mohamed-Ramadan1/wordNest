@@ -12,6 +12,5 @@ export const deleteLocalFilesProcessors = async (job: Job) => {
     return `Resource cleanup job completed for ${job.data.resource}`;
   } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
-    throw err;
   }
 };

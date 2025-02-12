@@ -1,7 +1,7 @@
 // Packages imports
-import { ObjectId } from "mongoose";
+import { ObjectId, Query } from "mongoose";
 import Redis from "ioredis";
-
+import { Request } from "express";
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
 
@@ -20,7 +20,12 @@ import { IUser } from "@features/users";
 import { blogsLogger } from "@logging/index";
 
 // queues imports
-import { BlogsQueueJobs, blogQueue } from "@jobs/index";
+import {
+  BlogsQueueJobs,
+  blogQueue,
+  CloudinaryQueueJobs,
+  cloudinaryQueue,
+} from "@jobs/index";
 
 // redis client instance creation.
 const redisClient = new Redis();
@@ -36,8 +41,17 @@ export class BlogCRUDService {
     try {
       const newBlogPost = new BlogModel(blogData);
       newBlogPost.createBlogSlug();
+      newBlogPost.generateSEOMetadata(blogData);
       await newBlogPost.save();
     } catch (err: any) {
+      if (blogData.uploadedImages && blogData.uploadedImages.length > 0) {
+        blogData.uploadedImages.forEach((image) => {
+          // delete the uploaded images
+          cloudinaryQueue.add(CloudinaryQueueJobs.DeleteImage, {
+            publicId: image.publicId,
+          });
+        });
+      }
       blogsLogger.logFailedBlogPostCreation(user._id, err.message);
       throw new AppError(err.message, 500);
     }
@@ -48,7 +62,9 @@ export class BlogCRUDService {
    */
   public static async updateBlogPost() {
     try {
-    } catch (err: any) {}
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
@@ -120,9 +136,28 @@ export class BlogCRUDService {
   /**
    * Retrieves all blog posts.
    */
-  public static async getAllBlogPosts(): Promise<IBlog[]> {
+  public static async getAllBlogPosts(
+    user: IUser,
+    req: Request
+  ): Promise<IBlog[]> {
     // Business logic to fetch a blog post by ID
-    const blogs = [{}] as IBlog[];
-    return blogs;
+    try {
+      // Apply APIFeatures for filtering, sorting, pagination, etc.
+      const features = new APIFeatures(
+        BlogModel.find({
+          author: user._id,
+          toBeDeleted: false,
+        }),
+        req.query
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const blogs: IBlog[] = await features.execute();
+      return blogs;
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 }

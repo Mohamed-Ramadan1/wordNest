@@ -1,5 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 import { IUser } from "@features/users";
+import { BlogData } from "../interfaces/blogOwnerRequest.interface";
 export interface IUploadedImage {
   url: string;
   publicId: string;
@@ -13,11 +14,11 @@ export enum ScheduleStatus {
 }
 
 export interface SEOMetadata {
-  metaTitle?: string;
-  metaDescription?: string;
-  canonicalUrl?: string;
-  keywords?: string[];
-  ogImage?: string;
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  keywords: string[];
+  ogImage: string;
 }
 
 export enum BlogCategory {
@@ -61,7 +62,7 @@ export interface IBlog extends Document {
   scheduledFor?: Date;
   scheduleStatus?: ScheduleStatus;
   slug: string;
-  seo?: SEOMetadata;
+  seo: SEOMetadata;
   isPrivate: boolean;
   interActionsCount: number;
   commentsCount: number;
@@ -74,4 +75,5 @@ export interface IBlog extends Document {
   createdAt: Date;
   updatedAt: Date;
   createBlogSlug(): void;
+  generateSEOMetadata(blogData: BlogData): void;
 }

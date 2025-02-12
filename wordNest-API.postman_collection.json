@@ -164,6 +164,9 @@
 							"item": [
 								{
 									"name": "Get all users ",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
 									"request": {
 										"auth": {
 											"type": "bearer",
@@ -177,6 +180,10 @@
 										},
 										"method": "GET",
 										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": []
+										},
 										"url": {
 											"raw": "{{URL}}/admin/users",
 											"host": [
@@ -185,6 +192,43 @@
 											"path": [
 												"admin",
 												"users"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "limit",
+													"value": "10",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "name",
+													"disabled": true
+												},
+												{
+													"key": "createdAt[gte]",
+													"value": "2023-01-01",
+													"disabled": true
+												},
+												{
+													"key": "likes[gt]",
+													"value": "100",
+													"disabled": true
+												},
+												{
+													"key": "fields",
+													"value": "title,createdAt",
+													"disabled": true
+												},
+												{
+													"key": "search",
+													"value": "mohamedramadan11b@gmail.com",
+													"disabled": true
+												}
 											]
 										},
 										"description": "### GET /admin/users\n\nThis endpoint retrieves a list of all admin users.\n\n#### Request\n\nThere are no request parameters for this endpoint.\n\n#### Response\n\n- Status: 200 OK\n    \n- Content-Type: application/json\n    \n\n##### Response Body\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"length\": 0,\n    \"data\": {\n        \"users\": [\n            {\n                \"_id\": \"\",\n                \"firstName\": \"\",\n                \"lastName\": \"\",\n                \"bio\": \"\",\n                \"email\": \"\",\n                \"resendVerificationTokenCount\": 0,\n                \"emailVerified\": true,\n                \"isActive\": true,\n                \"deactivationRequestCount\": 0,\n                \"reactivationRequestCount\": 0,\n                \"deleteAccountRequestCount\": 0,\n                \"userAccountToBeDeleted\": true,\n                \"following\": 0,\n                \"followingIds\": [],\n                \"followers\": 0,\n                \"followerIds\": [],\n                \"profilePicture\": \"\",\n                \"profilePictureId\": \"\",\n                \"passwordResetRequestsAttempts\": 0,\n                \"roles\": [\"\"],\n                \"notificationsEnabled\": true,\n                \"emailVerificationToken\": \"\",\n                \"emailVerificationExpires\": \"\",\n                \"createdAt\": \"\",\n                \"updatedAt\": \"\",\n                \"__v\": 0,\n                \"lastVerificationEmailSentAt\": \"\",\n                \"passwordLastResetRequestAttemptDate\": \"\",\n                \"passwordResetToken\": \"\",\n                \"passwordResetTokenExpiredAt\": \"\",\n                \"passwordChangedAt\": \"\",\n                \"deactivationAccountToken\": \"\",\n                \"deactivationAccountTokenExpiredAt\": \"\",\n                \"lastDeactivationRequestAt\": \"\",\n                \"deleteAccountRequestToken\": \"\",\n                \"deleteAccountRequestTokenExpiredAt\": \"\",\n                \"lastDeleteAccountRequestAt\": \"\",\n                \"changeEmailRequestCount\": 0,\n                \"changeEmailRequestToken\": \"\",\n                \"changeEmailVerificationTokenExpiresAt\": \"\",\n                \"isChangeEmailRequestConfirmed\": true,\n                \"lastChangeEmailRequestAt\": \"\",\n                \"previousEmails\": [],\n                \"tempChangedEmail\": \"\",\n                \"tempChangedEmailVerificationTokenCount\": 0\n            }\n        ]\n    }\n}\n\n ```\n\nThis response contains an array of user objects with various attributes such as ID, name, email, account status, profile picture, roles, and other related information."
@@ -989,7 +1033,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"mohamedramadan11b@gmail.com\",\n    \"firstName\":\"Mohamed \",\n    \"lastName\":\"Ramadan\",\n    \"password\":\"123456789\"\n}",
+							"raw": "{\n    \"email\":\"mohamedramadanmeray@gmail.com\",\n    \"firstName\":\"Mohamed \",\n    \"lastName\":\"Ramadan\",\n    \"password\":\"123456789\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1031,7 +1075,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"mohamedramadan11b@gmail.com\",\n    \"password\":\"Aa!123456\"\n}",
+							"raw": "{\n    \"email\": \"mohamedramadanmeray@gmail.com\",\n    \"password\":\"123456789\"\n}   ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1164,7 +1208,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"mohamedramadan11b@gmail.com\"\n}",
+							"raw": "{\n    \"email\":\"mohamedramadanmeray@gmail.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1258,7 +1302,7 @@
 										{
 											"key": "attachment",
 											"type": "file",
-											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-13 14-45-31.png"
+											"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-01-15 23-10-03.png"
 										},
 										{
 											"key": "subject",
@@ -1423,6 +1467,38 @@
 											"path": [
 												"admin",
 												"support-tickets"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "limit",
+													"value": "2",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "subject",
+													"disabled": true
+												},
+												{
+													"key": "",
+													"value": "",
+													"disabled": true
+												},
+												{
+													"key": "",
+													"value": "",
+													"disabled": true
+												},
+												{
+													"key": "",
+													"value": "",
+													"disabled": true
+												}
 											]
 										},
 										"description": "### GET /admin/support-tickets\n\nThis endpoint retrieves support tickets for the admin.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"status\": \"string\",\n  \"results\": 0,\n  \"data\": {\n    \"supportTickets\": [\n      {\n        \"_id\": \"string\",\n        \"user\": \"string\",\n        \"subject\": \"string\",\n        \"description\": \"string\",\n        \"category\": \"string\",\n        \"status\": \"string\",\n        \"priority\": \"string\",\n        \"resolvedAt\": \"string\",\n        \"closedAt\": \"string\",\n        \"userResponses\": [\n          {\n            \"responderId\": \"string\",\n            \"message\": \"string\",\n            \"respondedAt\": \"string\",\n            \"attachment\": {\n              \"imageLink\": \"string\",\n              \"imagePublicId\": \"string\",\n              \"uploadedAt\": \"string\"\n            },\n            \"isFollowUp\": true\n          }\n        ],\n        \"adminResponses\": [],\n        \"createdAt\": \"string\",\n        \"updatedAt\": \"string\",\n        \"__v\": 0,\n        \"id\": \"string\"\n      }\n    ]\n  }\n}\n\n ```\n\nThis endpoint retrieves the support tickets for the admin.\n\n#### Request\n\nNo request body is required for this request.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n- `status` (string): The status of the response.\n    \n- `results` (number): The number of results returned.\n    \n- `data` (object):\n    \n    - `supportTickets` (array):\n        \n        - `_id` (string): The ID of the support ticket.\n            \n        - `user` (string): The user associated with the support ticket.\n            \n        - `subject` (string): The subject of the support ticket.\n            \n        - `description` (string): The description of the support ticket.\n            \n        - `category` (string): The category of the support ticket.\n            \n        - `status` (string): The status of the support ticket.\n            \n        - `priority` (string): The priority of the support ticket.\n            \n        - `resolvedAt` (string): The date and time when the support ticket was resolved, if applicable.\n            \n        - `closedAt` (string): The date and time when the support ticket was closed, if applicable.\n            \n        - `userResponses` (array):\n            \n            - `responderId` (string): The ID of the responder.\n                \n            - `message` (string): The response message from the user.\n                \n            - `respondedAt` (string): The date and time when the response was made.\n                \n            - `attachment` (object):\n                \n                - `imageLink` (string): The link to the attached image.\n                    \n                - `imagePublicId` (string): The public ID of the attached image.\n                    \n                - `uploadedAt` (string): The date and time when the image was uploaded.\n                    \n            - `isFollowUp` (boolean): Indicates if the response is a follow-up.\n                \n        - `adminResponses` (array): The responses from the admin.\n            \n        - `createdAt` (string): The date and time when the support ticket was created.\n            \n        - `updatedAt` (string): The date and time when the support ticket was last updated.\n            \n        - `__v` (number): Version key.\n            \n        - `id` (string): The ID of the support ticket."
@@ -1698,6 +1774,15 @@
 										},
 										"method": "PATCH",
 										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
 										"url": {
 											"raw": "{{URL}}/admin/support-tickets/6786c67c6cfcd02d98a67c7d/status/reopen",
 											"host": [
@@ -1779,6 +1864,199 @@
 							]
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "blogs",
+			"item": [
+				{
+					"name": "admin",
+					"item": []
+				},
+				{
+					"name": "blog owner",
+					"item": [
+						{
+							"name": "CRUD",
+							"item": [
+								{
+									"name": "create new blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "The Future of Artificial Intelligence in 2024",
+													"description": "the title of the blog",
+													"type": "text"
+												},
+												{
+													"key": "content",
+													"value": "Artificial Intelligence (AI) is transforming industries at an unprecedented pace. From healthcare to finance, AI is enabling businesses to make smarter decisions, automate processes, and deliver personalized experiences. In this blog, we explore the latest trends in AI and what the future holds for this groundbreaking technology...\",\n  excerpt: \"Explore the latest trends in AI and what the future holds for this groundbreaking technology in 2024.",
+													"description": "the blog content",
+													"type": "text"
+												},
+												{
+													"key": "categories",
+													"value": "technology",
+													"description": "categoryes of the blog",
+													"type": "text"
+												},
+												{
+													"key": "tags",
+													"value": "[teck,kissing]",
+													"description": "array contains all tags for the blog",
+													"type": "text"
+												},
+												{
+													"key": "blogImages",
+													"description": "images for the blog ",
+													"type": "file",
+													"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 14-53-27.png"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs"
+											]
+										},
+										"description": "### Create New Blog Entry\n\nThis endpoint allows the blog owner to create a new blog entry.\n\n#### Request Body\n\n- `title` (text): The title of the blog.\n    \n- `content` (text): The content of the blog.\n    \n- `categories` (text): The categories to which the blog belongs.\n    \n- `tags` (text): The tags associated with the blog.\n    \n- `blogImages` (file): The image file for the blog.\n    \n\n#### Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    },\n    \"blogId\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message indicating the result of the request.\n    \n- `blogId` (string): The unique identifier of the newly created blog entry."
+									},
+									"response": []
+								},
+								{
+									"name": "get all user blogs",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs"
+											]
+										},
+										"description": "The endpoint retrieves a list of blogs owned by the blog owner. The response is in JSON format and has the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": { \"type\": \"string\" },\n        \"message\": { \"type\": \"string\" },\n        \"results\": { \"type\": \"integer\" },\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"blogs\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"_id\": { \"type\": \"string\" },\n                            \"title\": { \"type\": \"string\" },\n                            \"content\": { \"type\": \"string\" },\n                            \"author\": { \"type\": \"string\" },\n                            \"isPublished\": { \"type\": \"boolean\" },\n                            \"drafted\": { \"type\": \"boolean\" },\n                            \"isEdited\": { \"type\": \"boolean\" },\n                            \"isScheduled\": { \"type\": \"boolean\" },\n                            \"isPrivate\": { \"type\": \"boolean\" },\n                            \"uploadedImages\": {\n                                \"type\": \"array\",\n                                \"items\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"url\": { \"type\": \"string\" },\n                                        \"publicId\": { \"type\": \"string\" },\n                                        \"_id\": { \"type\": \"string\" }\n                                    }\n                                }\n                            },\n                            \"tags\": {\n                                \"type\": \"array\",\n                                \"items\": { \"type\": \"string\" }\n                            },\n                            \"categories\": {\n                                \"type\": \"array\",\n                                \"items\": { \"type\": \"string\" }\n                            },\n                            \"interActionsCount\": { \"type\": \"integer\" },\n                            \"commentsCount\": { \"type\": \"integer\" },\n                            \"allowComments\": { \"type\": \"boolean\" },\n                            \"sharesCount\": { \"type\": \"integer\" },\n                            \"viewsCount\": { \"type\": \"integer\" },\n                            \"toBeDeleted\": { \"type\": \"boolean\" },\n                            \"slug\": { \"type\": \"string\" },\n                            \"seo\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"metaTitle\": { \"type\": \"string\" },\n                                    \"metaDescription\": { \"type\": \"string\" },\n                                    \"canonicalUrl\": { \"type\": \"string\" },\n                                    \"keywords\": {\n                                        \"type\": \"array\",\n                                        \"items\": { \"type\": \"string\" }\n                                    },\n                                    \"ogImage\": { \"type\": \"string\" },\n                                    \"_id\": { \"type\": \"string\" }\n                                }\n                            },\n                            \"createdAt\": { \"type\": \"string\" },\n                            \"updatedAt\": { \"type\": \"string\" },\n                            \"estimatedReadingTime\": { \"type\": \"integer\" },\n                            \"id\": { \"type\": \"string\" }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "get blog post by id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67a907b0f21d9b04551c4446",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67a907b0f21d9b04551c4446"
+											]
+										},
+										"description": "The endpoint retrieves the details of a specific blog owned by the blog owner.\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\"type\": \"string\"},\n        \"message\": {\"type\": \"string\"},\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"blog\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"_id\": {\"type\": \"string\"},\n                        \"title\": {\"type\": \"string\"},\n                        \"content\": {\"type\": \"string\"},\n                        \"author\": {\"type\": \"string\"},\n                        \"isPublished\": {\"type\": \"boolean\"},\n                        \"drafted\": {\"type\": \"boolean\"},\n                        \"isEdited\": {\"type\": \"boolean\"},\n                        \"isScheduled\": {\"type\": \"boolean\"},\n                        \"scheduleStatus\": {\"type\": \"string\"},\n                        \"isPrivate\": {\"type\": \"boolean\"},\n                        \"uploadedImages\": {\n                            \"type\": \"array\",\n                            \"items\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"url\": {\"type\": \"string\"},\n                                    \"publicId\": {\"type\": \"string\"},\n                                    \"_id\": {\"type\": \"string\"}\n                                }\n                            }\n                        },\n                        \"tags\": {\n                            \"type\": \"array\",\n                            \"items\": {\"type\": \"string\"}\n                        },\n                        \"categories\": {\n                            \"type\": \"array\",\n                            \"items\": {\"type\": \"string\"}\n                        },\n                        \"interActionsCount\": {\"type\": \"integer\"},\n                        \"commentsCount\": {\"type\": \"integer\"},\n                        \"allowComments\": {\"type\": \"boolean\"},\n                        \"sharesCount\": {\"type\": \"integer\"},\n                        \"viewsCount\": {\"type\": \"integer\"},\n                        \"slug\": {\"type\": \"string\"},\n                        \"createdAt\": {\"type\": \"string\"},\n                        \"updatedAt\": {\"type\": \"string\"},\n                        \"editedAt\": {\"type\": \"string\"},\n                        \"__v\": {\"type\": \"integer\"},\n                        \"estimatedReadingTime\": {\"type\": \"integer\"},\n                        \"id\": {\"type\": \"string\"}\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "delete blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67ab85cb1d05bfc69d86ef5c",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67ab85cb1d05bfc69d86ef5c"
+											]
+										},
+										"description": "### Delete Blog\n\nThis endpoint is used to delete a specific blog owned by the blog owner.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status (string): Indicates the status of the operation.\n    \n- Message (string): Provides additional information about the operation.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "scheduled blogs",
+							"item": []
+						},
+						{
+							"name": "blogs status",
+							"item": []
+						}
+					]
+				},
+				{
+					"name": "user",
+					"item": []
 				}
 			]
 		}

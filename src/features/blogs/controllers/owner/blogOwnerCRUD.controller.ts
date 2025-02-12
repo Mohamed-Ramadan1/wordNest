@@ -85,10 +85,11 @@ export class BlogCRUDController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogPosts = await BlogCRUDService.getAllBlogPosts();
+    const blogPosts = await BlogCRUDService.getAllBlogPosts(req.user, req);
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog posts retrieved successfully",
+      results: blogPosts.length,
       data: {
         blogs: blogPosts,
       },

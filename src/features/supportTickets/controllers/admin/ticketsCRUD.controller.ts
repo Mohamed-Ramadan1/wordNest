@@ -24,7 +24,7 @@ export class TicketsCRUDController {
    */
   public getAllTickets = catchAsync(async (req: Request, res: Response) => {
     // Retrieves all tickets
-    const tickets = await TicketsCRUDService.getAllTickets();
+    const tickets = await TicketsCRUDService.getAllTickets(req);
 
     const response: ApiResponse<ISupportTicket[]> = {
       status: "success",

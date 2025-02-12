@@ -1,5 +1,5 @@
 import slugify from "slugify";
-
+import { BlogData } from "../interfaces/blogOwnerRequest.interface";
 import {
   BlogCategory,
   IBlog,
@@ -100,21 +100,33 @@ blogSchema.virtual("estimatedReadingTime").get(function () {
   return Math.ceil(this.content.split(" ").length / 200); // Assuming 200 words/min reading speed
 });
 
-// blogSchema.pre("save", function (next) {
-//   if (this.isModified("content")) {
-//     this.isEdited = true;
-//     this.editedAt = new Date();
-//   }
-//   next();
-// });
-
 blogSchema.methods.createBlogSlug = function () {
   const baseSlug = slugify(this.title, { lower: true, strict: true });
   const randomString = Math.random().toString(36).substring(2, 8); // Random 6-character string
   this.slug = `${baseSlug}-${randomString}`;
 };
 
-//! missing the SEO metadata Generation
+blogSchema.methods.generateSEOMetadata = function (blogData: BlogData): void {
+  this.seo = {
+    metaTitle:
+      blogData.title.length > 60
+        ? `${blogData.title.slice(0, 57)}...`
+        : blogData.title,
+
+    metaDescription:
+      blogData.content.length > 160
+        ? `${blogData.content.slice(0, 157)}...`
+        : blogData.content,
+
+    canonicalUrl: `https://yourwebsite.com/blog/${slugify(blogData.title, { lower: true, strict: true })}`,
+
+    keywords: [...blogData.tags, blogData.categories.toLowerCase()],
+
+    ogImage: blogData.uploadedImages?.length
+      ? blogData.uploadedImages[0].url
+      : undefined,
+  };
+};
 
 const BlogModel = model<IBlog>("Blog", blogSchema);
 export default BlogModel;

@@ -15,7 +15,7 @@ import { IUser } from "@features/users/interfaces/user.interface";
 export class UsersCrudController {
   // get all users
   public getUsers = catchAsync(async (req: Request, res: Response) => {
-    const users = await UsersCrudService.getUsers();
+    const users = await UsersCrudService.getUsers(req);
     console.log(req.headers["user-agent"]);
     const response: ApiResponse<IUser[]> = {
       status: "success",
