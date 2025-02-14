@@ -10,8 +10,6 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import hpp from "hpp";
-import { createSocket } from "@config/socketIO.config";
-import { createServer, Server as HttpServer } from "http"; // Import createServer from http
 
 // routes imports from features
 import { authRouter } from "@features/auth";
@@ -21,12 +19,18 @@ import {
   adminSupportTicketsRouter,
 } from "@features/supportTickets";
 
+import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
+
 // error handling middleware
 import { globalError } from "@shared/index";
 
 // utils imports
 import { AppError } from "@utils/index";
-require("events").setMaxListeners(20);
+
+// jobs imports
+import { blogQueue, BlogsQueueJobs } from "@jobs/index";
+
+require("events").setMaxListeners(50);
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -36,11 +40,6 @@ const limiter = rateLimit({
 
 // Initialize express app
 const app: Application = express();
-// Create HTTP server
-const server: HttpServer = createServer(app);
-
-// Initialize Socket.IO using the reusable function
-export const io = createSocket(server);
 
 // setup logging middleware for requests.
 app.use(morgan("dev"));
@@ -78,6 +77,15 @@ app.use("/api/v1/users", userRouter);
 // admin user related routes
 app.use("/api/v1/admin/users", userAdminRouter);
 
+// Blog related routes for all users
+app.use("/api/v1/blogs", blogRouter); // General routes for viewing blogs, commenting, liking, etc.
+
+// Admin blog management routes
+app.use("/api/v1/admin/blogs", adminBlogRouter); // Admin can create, edit, delete any blog, approve blogs
+
+// Blog owner related routes
+app.use("/api/v1/blog-owner/blogs", blogOwnerRouter); // Blog owner actions like create, edit, delete their own blogs
+
 // support ticket related routes for users
 app.use("/api/v1/support-tickets", supportTicketRouter);
 
@@ -92,4 +100,4 @@ app.use("*", (req: Request, res: Response, next: NextFunction) => {
 // global error handler
 app.use(globalError);
 
-export default server;
+export default app;

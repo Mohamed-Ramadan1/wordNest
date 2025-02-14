@@ -1,3 +1,6 @@
+//express imports
+import { Request } from "express";
+
 // models imports
 import UserModel from "@features/users/models/user.model";
 
@@ -5,7 +8,7 @@ import UserModel from "@features/users/models/user.model";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError } from "@utils/appError";
+import { AppError, APIFeatures } from "@utils/index";
 
 // queues imports
 
@@ -14,9 +17,14 @@ import { emailQueue, EmailQueueJobs } from "@jobs/index";
 // CRUD operations for users.
 export class UsersCrudService {
   // get all users
-  static getUsers = async (): Promise<IUser[]> => {
+  static getUsers = async (req: Request): Promise<IUser[]> => {
     try {
-      const users: IUser[] = await UserModel.find();
+      const features = new APIFeatures(UserModel.find({}), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const users: IUser[] = await features.execute();
       return users;
     } catch (err: any) {
       throw new AppError(err.message, 500);

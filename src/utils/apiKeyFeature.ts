@@ -88,10 +88,9 @@ export class APIFeatures<T extends Document>
   async execute(): Promise<T[]> {
     try {
       return await this.query;
-    } catch (error) {
-      console.error("Error executing query:", error);
-      throw new Error("Failed to execute query");
+    } catch (error: any) {
+      console.error("Database Query Execution Error:", error.message);
+      throw new Error(error.message || "Failed to execute query");
     }
   }
 }
-

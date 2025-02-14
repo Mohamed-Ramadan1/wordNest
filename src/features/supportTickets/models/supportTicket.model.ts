@@ -139,7 +139,8 @@ const supportTicketSchema: Schema<ISupportTicket> = new Schema(
   }
 );
 supportTicketSchema.index({ user: 1 });
-supportTicketSchema.index({ status: 1, priority: 1 });
+supportTicketSchema.index({ status: 1 });
+supportTicketSchema.index({ priority: 1 });
 
 // Create the model
 const SupportTicket: Model<ISupportTicket> = model(

@@ -1,3 +1,6 @@
+//express imports
+import { Request } from "express";
+
 // interfaces imports
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
@@ -9,7 +12,7 @@ import cloudinary from "cloudinary";
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 // utils imports
-import { AppError, uploadToCloudinary } from "@utils/index";
+import { AppError, uploadToCloudinary, APIFeatures } from "@utils/index";
 import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 // logger imports
@@ -29,9 +32,14 @@ export class TicketsCRUDService {
    * Retrieves all tickets.
    * Fetches a list of all tickets, optionally filtered by certain criteria (e.g., user or status).
    */
-  static async getAllTickets(): Promise<ISupportTicket[]> {
+  static async getAllTickets(req: Request): Promise<ISupportTicket[]> {
     try {
-      const allTickets: ISupportTicket[] = await SupportTicket.find();
+      const features = new APIFeatures(SupportTicket.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const allTickets: ISupportTicket[] = await features.execute();
       return allTickets;
     } catch (err: any) {
       throw new AppError(err.message, 500);
