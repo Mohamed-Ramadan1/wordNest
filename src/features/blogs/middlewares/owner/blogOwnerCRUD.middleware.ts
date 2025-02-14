@@ -10,6 +10,7 @@ import {
   BlogParams,
   CreateBlogBodyRequest,
   DeleteBlogBodyRequest,
+  UpdatesBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 
 // helpers imports (feature specific)
@@ -90,6 +91,29 @@ export class BlogOwnerCRUDMiddleware {
 
       req.body.blogToBeDeleted = blogToBeDeleted;
 
+      next();
+    }
+  );
+
+  public static validateUpdateBlogPost = catchAsync(
+    async (
+      req: Request<BlogParams, {}, UpdatesBlogBodyRequest>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const blogPost: IBlog | null = await BlogModel.findOne({
+        _id: req.params.blogId,
+        author: req.user._id,
+      });
+      if (!blogPost) {
+        return next(
+          new AppError(
+            "Blog not found with given id and related to this user.",
+            404
+          )
+        );
+      }
+      req.body.blogPost = blogPost;
       next();
     }
   );

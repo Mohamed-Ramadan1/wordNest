@@ -1,5 +1,5 @@
 // Packages imports
-import { ObjectId, Query } from "mongoose";
+import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 import { Request } from "express";
 // model imports
@@ -9,7 +9,10 @@ import BlogModel from "@features/blogs/models/blog.model";
 import { APIFeatures, AppError } from "@utils/index";
 
 //interfaces imports
-import { BlogData } from "@features/blogs/interfaces/blogOwnerRequest.interface";
+import {
+  BlogData,
+  UpdatesBlogBodyRequest,
+} from "@features/blogs/interfaces/blogOwnerRequest.interface";
 import {
   IBlog,
   DeletionStatus,
@@ -60,8 +63,24 @@ export class BlogCRUDService {
   /**
    * Handles the logic for updating a blog post.
    */
-  public static async updateBlogPost() {
+  public static async updateBlogPost(
+    blogPost: IBlog,
+    updatedBlogData: UpdatesBlogBodyRequest,
+    user: IUser
+  ): Promise<void> {
+    const cacheKey = `blog:${blogPost._id}:${user._id}`;
+
     try {
+      // update the blog post
+      if (updatedBlogData.title) blogPost.title = updatedBlogData.title;
+      if (updatedBlogData.content) blogPost.content = updatedBlogData.content;
+      if (updatedBlogData.tags) blogPost.tags = updatedBlogData.tags;
+      if (updatedBlogData.categories)
+        blogPost.categories = updatedBlogData.categories;
+      blogPost.isEdited = true;
+      blogPost.editedAt = new Date();
+      await blogPost.save();
+      await redisClient.del(cacheKey);
     } catch (err: any) {
       throw new AppError(err.message, 500);
     }
@@ -71,9 +90,8 @@ export class BlogCRUDService {
    * Handles the logic for deleting a blog post.
    */
   public static async deleteBlogPost(blogToBeDeleted: IBlog, user: IUser) {
+    const cacheKey = `blog:${blogToBeDeleted._id}:${user._id}`;
     try {
-      const cacheKey = `blog:${blogToBeDeleted._id}:${user._id}`;
-
       blogToBeDeleted.toBeDeleted = true;
       blogToBeDeleted.requestDeleteAt = new Date();
       blogToBeDeleted.deletionStatus = DeletionStatus.PENDING;

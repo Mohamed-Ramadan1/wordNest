@@ -22,6 +22,14 @@ export interface CreateBlogBodyRequest {
   blogData: BlogData;
 }
 
+export interface UpdatesBlogBodyRequest {
+  blogPost: IBlog;
+  title?: string;
+  content?: string;
+  categories?: BlogCategory;
+  tags?: string[];
+}
+
 export interface DeleteBlogBodyRequest {
   blogToBeDeleted: IBlog;
 }

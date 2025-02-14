@@ -31,7 +31,11 @@ router
 router
   .route("/:blogId")
   .get(blogCRUDController.getBlogPost)
-  .patch(upload.single("image"), blogCRUDController.updateBlogPost)
+  .patch(
+    upload.single("image"),
+    BlogOwnerCRUDMiddleware.validateUpdateBlogPost,
+    blogCRUDController.updateBlogPost
+  )
   .delete(
     BlogOwnerCRUDMiddleware.validateDeleteBlogPost,
     blogCRUDController.deleteBlogPost

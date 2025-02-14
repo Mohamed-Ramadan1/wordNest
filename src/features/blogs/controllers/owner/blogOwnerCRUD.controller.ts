@@ -14,6 +14,7 @@ import {
   BlogParams,
   CreateBlogBodyRequest,
   DeleteBlogBodyRequest,
+  UpdatesBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 export class BlogCRUDController {
   /**
@@ -35,14 +36,20 @@ export class BlogCRUDController {
    * Updates an existing blog post.
    * Processes the request to modify the content, title, or other details of an existing post.
    */
-  public updateBlogPost = catchAsync(async (req: Request, res: Response) => {
-    await BlogCRUDService.updateBlogPost();
-    const response: ApiResponse<null> = {
-      status: "success",
-      message: "Blog post updated successfully",
-    };
-    sendResponse(200, res, response);
-  });
+  public updateBlogPost = catchAsync(
+    async (req: Request<{}, {}, UpdatesBlogBodyRequest>, res: Response) => {
+      await BlogCRUDService.updateBlogPost(
+        req.body.blogPost,
+        req.body,
+        req.user
+      );
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Blog post updated successfully",
+      };
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Deletes a blog post.
