@@ -57,9 +57,17 @@ const blogSchema = new Schema<IBlog>(
       type: Number,
       default: 0,
     },
+
     commentsCount: {
       type: Number,
       default: 0,
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
+    archivedAt: {
+      type: Date,
     },
     allowComments: {
       type: Boolean,

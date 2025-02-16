@@ -64,6 +64,8 @@ export interface IBlog extends Document {
   slug: string;
   seo: SEOMetadata;
   isPrivate: boolean;
+  isArchived: boolean;
+  archivedAt: Date;
   interActionsCount: number;
   commentsCount: number;
   allowComments: boolean;

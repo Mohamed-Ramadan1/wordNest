@@ -7,14 +7,17 @@ import { upload } from "@config/multer.config";
 
 // middleware imports
 import { BlogOwnerCRUDMiddleware } from "../middlewares/owner/blogOwnerCRUD.middleware";
+import { BlogStatusMiddleware } from "../middlewares/owner/blogStatus.middleware";
 
 // controllers imports
 import { BlogCRUDController } from "../controllers/owner/blogOwnerCRUD.controller";
+import { BlogStatusController } from "../controllers/owner/blogStatus.controller";
 // create  the express router
 const router: Router = Router();
 
 // controllers instances
 const blogCRUDController = new BlogCRUDController();
+const blogStatusController = new BlogStatusController();
 
 // console.log(protect);
 router.use(protect);
@@ -41,4 +44,38 @@ router
     blogCRUDController.deleteBlogPost
   );
 
+// blog status related routes
+router
+  .route("/:blogId/private")
+  .patch(
+    BlogStatusMiddleware.validateBlogExists,
+    BlogStatusMiddleware.validateConvertToPrivate,
+    blogStatusController.convertBlogToPrivate
+  );
+
+router
+  .route("/:blogId/public")
+  .patch(
+    BlogStatusMiddleware.validateBlogExists,
+    BlogStatusMiddleware.validateConvertToPublic,
+    blogStatusController.convertBlogToPublic
+  );
+
+// archive the blog
+router
+  .route("/:blogId/archive")
+  .patch(
+    BlogStatusMiddleware.validateBlogExists,
+    BlogStatusMiddleware.validateArchiveBlogPost,
+    blogStatusController.archiveBlogPost
+  );
+
+// restore the archived blog
+router
+  .route("/:blogId/unarchive")
+  .patch(
+    BlogStatusMiddleware.validateBlogExists,
+    BlogStatusMiddleware.validateUneArchivedBlogPost,
+    blogStatusController.restoreArchivedBlogPost
+  );
 export default router;
