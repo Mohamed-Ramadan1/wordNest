@@ -43,12 +43,13 @@ export class BlogOwnerCRUDMiddleware {
 
         if (req.files) {
           const blogImages = filterValidImages(req.files);
-
+          console.time("image upload");
           const imagesData = await uploadImagesToCloudinary(
             blogImages,
             "blogImages",
             "blogs-images"
           );
+          console.timeEnd("image upload");
           blogReadyData.uploadedImages = imagesData;
         }
 

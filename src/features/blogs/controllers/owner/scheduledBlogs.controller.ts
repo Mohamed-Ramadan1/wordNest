@@ -13,7 +13,9 @@ export class ScheduledBlogsController {
    * Handles the request to add a blog post that will be published at a later date.
    */
   public createScheduledBlogPost = catchAsync(
-    async (req: Request, res: Response) => {}
+    async (req: Request, res: Response) => {
+      
+    }
   );
 
   /**

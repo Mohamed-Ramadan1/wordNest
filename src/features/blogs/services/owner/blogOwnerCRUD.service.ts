@@ -135,6 +135,7 @@ export class BlogCRUDService {
       const blogPost = await BlogModel.findOne({
         _id: blogId,
         author: user._id,
+        isScheduled: false,
       });
       if (!blogPost) {
         throw new AppError(
@@ -165,6 +166,7 @@ export class BlogCRUDService {
         BlogModel.find({
           author: user._id,
           toBeDeleted: false,
+          isScheduled: false,
         }),
         req.query
       )
