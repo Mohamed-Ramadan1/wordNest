@@ -8,16 +8,19 @@ import { upload } from "@config/multer.config";
 // middleware imports
 import { BlogOwnerCRUDMiddleware } from "../middlewares/owner/blogOwnerCRUD.middleware";
 import { BlogStatusMiddleware } from "../middlewares/owner/blogStatus.middleware";
+import { ScheduledBlogsMiddleware } from "../middlewares/owner/scheduledBlogs.middleware";
 
 // controllers imports
 import { BlogCRUDController } from "../controllers/owner/blogOwnerCRUD.controller";
 import { BlogStatusController } from "../controllers/owner/blogStatus.controller";
+import { ScheduledBlogsController } from "../controllers/owner/scheduledBlogs.controller";
 // create  the express router
 const router: Router = Router();
 
 // controllers instances
 const blogCRUDController = new BlogCRUDController();
 const blogStatusController = new BlogStatusController();
+const scheduledBlogsController = new ScheduledBlogsController();
 
 // console.log(protect);
 router.use(protect);
@@ -78,4 +81,25 @@ router
     BlogStatusMiddleware.validateUneArchivedBlogPost,
     blogStatusController.restoreArchivedBlogPost
   );
+
+// schedule posts related routes
+
+router
+  .route("/scheduled")
+  .get(scheduledBlogsController.getAllScheduledBlogPosts)
+  .post(
+    ScheduledBlogsMiddleware.validateCreateScheduledBlogPost,
+    scheduledBlogsController.createScheduledBlogPost
+  );
+
+router
+  .route("/scheduled/:blogId")
+  .get(scheduledBlogsController.getScheduledBlogPost)
+  .delete(scheduledBlogsController.deleteScheduledBlogPost)
+  .patch(scheduledBlogsController.updateScheduledBlogPost);
+
+// reschedule the blog post
+router
+  .route("/scheduled/:blogId/reschedule")
+  .patch(scheduledBlogsController.rescheduleBlogPost);
 export default router;

@@ -1,17 +1,5 @@
 export class BlogCRUDController {
   /**
-   * Creates a new blog post.
-   * Handles the request to add a new post with the provided content.
-   */
-  public createBlogPost() {}
-
-  /**
-   * Updates an existing blog post.
-   * Processes the request to modify the content, title, or other details of an existing post.
-   */
-  public updateBlogPost() {}
-
-  /**
    * Deletes a blog post.
    * Handles the request to remove a specified blog post permanently from the system.
    */
@@ -28,4 +16,19 @@ export class BlogCRUDController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts() {}
+
+  /**
+   * un publish a blog post.
+   * Handles the request to un publish a specified blog post
+   * no longer appear to users  until been reviewed and deleted or republished again .
+   */
+  public unPublishBlogPost() {}
+
+  /**
+   * republish a blog post.
+   * Handles the request to republish a specified blog post
+   * that has been previously unpublished and now is available to users to see and interact.
+   *
+   */
+  public rePublishBlogPost() {}
 }

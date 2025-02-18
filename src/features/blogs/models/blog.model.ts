@@ -41,6 +41,7 @@ const blogSchema = new Schema<IBlog>(
     scheduleStatus: {
       type: String,
       enum: Object.values(ScheduleStatus),
+      
     },
     seo: { type: seoMetadataSchema },
     isPrivate: { type: Boolean, default: false },

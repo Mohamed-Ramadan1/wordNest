@@ -16,43 +16,10 @@ export class ScheduledBlogsService {
   /**
    * Creates a new scheduled blog post.
    */
+  //! IN PROGRESS
   public static async createScheduledBlogPost() {
     // Logic to save the scheduled blog post to the database
   }
-
-  /**
-   * Updates an existing scheduled blog post.
-   */
-  public static async updateScheduledBlogPost() {
-    // Logic to update the scheduled blog post
-  }
-
-  /**
-   * Deletes a scheduled blog post.
-   */
-  public static async deleteScheduledBlogPost(blogId: ObjectId, user: IUser) {
-    try {
-      const deletedPost: IBlog | null = await BlogModel.findOneAndDelete({
-        _id: blogId,
-        author: user._id,
-        isScheduled: true,
-      });
-
-      // If no post was deleted, throw a 404
-      if (!deletedPost) {
-        throw new AppError(
-          "Scheduled blog post not found or unauthorized.",
-          404
-        );
-      }
-    } catch (err: any) {
-      throw new AppError(
-        err.message || "Failed to delete scheduled blog post",
-        500
-      );
-    }
-  }
-
   /**
    * Retrieves all scheduled blog posts.
    */
@@ -107,8 +74,43 @@ export class ScheduledBlogsService {
   }
 
   /**
+   * Updates an existing scheduled blog post.
+   */
+  //! IN PROGRESS
+  public static async updateScheduledBlogPost() {
+    // Logic to update the scheduled blog post
+  }
+
+  /**
+   * Deletes a scheduled blog post.
+   */
+  public static async deleteScheduledBlogPost(blogId: ObjectId, user: IUser) {
+    try {
+      const deletedPost: IBlog | null = await BlogModel.findOneAndDelete({
+        _id: blogId,
+        author: user._id,
+        isScheduled: true,
+      });
+
+      // If no post was deleted, throw a 404
+      if (!deletedPost) {
+        throw new AppError(
+          "Scheduled blog post not found or unauthorized.",
+          404
+        );
+      }
+    } catch (err: any) {
+      throw new AppError(
+        err.message || "Failed to delete scheduled blog post",
+        500
+      );
+    }
+  }
+
+  /**
    * Reschedules a blog post.
    */
+  //! IN PROGRESS
   public static async rescheduleBlogPost() {
     // Logic to update the scheduled publish date
   }
