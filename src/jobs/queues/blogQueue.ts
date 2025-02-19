@@ -1,10 +1,20 @@
+// packages imports
 import { Queue } from "bull";
+
+// constants imports
 import { BlogsQueueJobs } from "../constants/blogsQueueJobs";
+
+// common imports
 import { createQueue } from "@jobs/common/createQueue";
+
+// processors imports
 import { deleteBlogsPostsProcessor } from "../queueProcessors/blogsQueue/deleteBlogsPosts.processor";
 import { collectFailedDeletionBlogsProcessor } from "../queueProcessors/blogsQueue/CollectFailedDeletionBlogs.processor";
+import { publishScheduledBlogProcessor } from "../queueProcessors/blogsQueue/publishScheduledBlog.processor";
+
 export const retryAttempts: number = 5;
 const delayTime: number = 5000;
+
 // Initialize the queue
 export const blogQueue: Queue = createQueue(
   "blogQueue",
@@ -19,6 +29,12 @@ blogQueue.process(BlogsQueueJobs.DeleteBlog, deleteBlogsPostsProcessor);
 blogQueue.process(
   BlogsQueueJobs.CollectFailedDeletionBlogs,
   collectFailedDeletionBlogsProcessor
+);
+
+// publish scheduled blog post
+blogQueue.process(
+  BlogsQueueJobs.PublishScheduledBlog,
+  publishScheduledBlogProcessor
 );
 
 //! This IFE functionality will be moved to its own file later.

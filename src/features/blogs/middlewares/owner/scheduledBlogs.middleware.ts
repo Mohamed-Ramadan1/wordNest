@@ -1,6 +1,7 @@
 //express imports
 import { Response, Request, NextFunction } from "express";
-
+// packages imports
+import { isValid, parse } from "date-fns";
 // utils imports
 import {
   catchAsync,
@@ -40,12 +41,32 @@ export class ScheduledBlogsMiddleware {
         }
         const { title, content, categories, scheduledFor } = req.body;
 
+        // Convert '21/10/2025 14:30' (DD/MM/YYYY HH:mm) to a valid Date object
+        const parsedDate = parse(scheduledFor, "dd/MM/yyyy HH:mm", new Date());
+
+        if (!isValid(parsedDate)) {
+          return next(
+            new AppError("Invalid date format. Use DD/MM/YYYY HH:mm.", 400)
+          );
+        }
+
+        // Ensure the scheduled date is in the future
+        const now = new Date();
+        if (parsedDate < now) {
+          return next(
+            new AppError("Scheduled date should be in the future.", 400)
+          );
+        }
+
+        // Normalize the date to remove seconds & milliseconds
+        parsedDate.setSeconds(0, 0);
+
         const blogReadyData: BlogData = {
           title,
           content,
           categories,
           author: req.user,
-          scheduledFor,
+          scheduledFor: parsedDate, // Now includes only hours and minutes
           tags: req.body.tags || [],
         };
 

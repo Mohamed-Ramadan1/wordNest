@@ -16,7 +16,7 @@ export interface CreateScheduleBlogsRequestBody {
   author: ObjectId | IUser;
   categories: BlogCategory;
   tags?: string[];
-  scheduledFor: Date;
+  scheduledFor: string;
   uploadedImages: IUploadedImage[];
   blogData: BlogData;
 }

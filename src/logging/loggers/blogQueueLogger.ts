@@ -32,3 +32,19 @@ export const logFailedCollectFailedDeletionBlogs = (errorMessage: string) => {
     errorLocation: "collectFailedDeletionBlogsProcessor",
   });
 };
+
+// log failed publish scheduled blog post events
+export const logFailedPublishScheduledBlog = (
+  errorMessage: string,
+  jobAttempt: number,
+  blogId: ObjectId | undefined = undefined
+) => {
+  blogsQueueLogger.error({
+    message: "Failed to publish a scheduled blog post",
+    blogId: blogId ? blogId : "unknown blog id",
+    errorMessage,
+    jobAttempt,
+    timestamp: new Date().toISOString(),
+    errorLocation: "publishScheduledBlogProcessor",
+  });
+};

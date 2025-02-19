@@ -85,9 +85,13 @@ router
 // schedule posts related routes
 
 router
+  .route("/:userId/scheduled")
+  .get(scheduledBlogsController.getAllScheduledBlogPosts);
+router
   .route("/scheduled")
   .get(scheduledBlogsController.getAllScheduledBlogPosts)
   .post(
+    upload.array("blogImages", 5),
     ScheduledBlogsMiddleware.validateCreateScheduledBlogPost,
     scheduledBlogsController.createScheduledBlogPost
   );

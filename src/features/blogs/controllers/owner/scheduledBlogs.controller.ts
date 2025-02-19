@@ -11,7 +11,10 @@ import { ApiResponse } from "@shared/index";
 import { ScheduledBlogsService } from "../../services/owner/scheduledBlogs.service";
 
 // interfaces imports
-import { ScheduleBlogsParams } from "../../interfaces/scheduledBlogsRequest.interface";
+import {
+  CreateScheduleBlogsRequestBody,
+  ScheduleBlogsParams,
+} from "../../interfaces/scheduledBlogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 export class ScheduledBlogsController {
   /**
@@ -19,8 +22,11 @@ export class ScheduledBlogsController {
    * Handles the request to add a blog post that will be published at a later date.
    */
   public createScheduledBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await ScheduledBlogsService.createScheduledBlogPost();
+    async (
+      req: Request<{}, {}, CreateScheduleBlogsRequestBody>,
+      res: Response
+    ) => {
+      await ScheduledBlogsService.createScheduledBlogPost(req.body.blogData);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Scheduled blog post created successfully",

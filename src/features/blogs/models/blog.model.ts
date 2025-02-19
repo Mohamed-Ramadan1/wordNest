@@ -33,7 +33,7 @@ const blogSchema = new Schema<IBlog>(
     slug: { type: String, required: true },
     isPublished: { type: Boolean, default: true },
     publishedAt: { type: Date },
-    drafted: { type: Boolean, default: true },
+    drafted: { type: Boolean, default: false },
     isEdited: { type: Boolean, default: false },
     editedAt: { type: Date },
     isScheduled: { type: Boolean, default: false },
@@ -41,7 +41,6 @@ const blogSchema = new Schema<IBlog>(
     scheduleStatus: {
       type: String,
       enum: Object.values(ScheduleStatus),
-      
     },
     seo: { type: seoMetadataSchema },
     isPrivate: { type: Boolean, default: false },

@@ -1,24 +1,60 @@
 // express imports
 import { Request } from "express";
 
+// redis import
+import Redis from "ioredis";
 // mongoose imports
 import { ObjectId } from "mongoose";
 // models imports
 import BlogModel from "@features/blogs/models/blog.model";
 
 // interfaces imports
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  IBlog,
+  ScheduleStatus,
+} from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
 
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
+import { BlogData } from "@features/blogs/interfaces/scheduledBlogsRequest.interface";
+import { blogQueue, BlogsQueueJobs } from "@jobs/index";
+
+// redis client instance creation.
+const redisClient = new Redis();
+
 export class ScheduledBlogsService {
   /**
    * Creates a new scheduled blog post.
    */
-  //! IN PROGRESS
-  public static async createScheduledBlogPost() {
-    // Logic to save the scheduled blog post to the database
+
+  public static async createScheduledBlogPost(blogData: BlogData) {
+    try {
+      const scheduledBlogPost: IBlog = new BlogModel(blogData);
+      scheduledBlogPost.isPublished = false;
+      scheduledBlogPost.isScheduled = true;
+      scheduledBlogPost.scheduleStatus = ScheduleStatus.PENDING;
+      scheduledBlogPost.createBlogSlug();
+      scheduledBlogPost.generateSEOMetadata(blogData);
+      await scheduledBlogPost.save();
+
+      // adding job queue for publishing the blog post in the scheduler date range
+      blogQueue.add(
+        BlogsQueueJobs.PublishScheduledBlog,
+        {
+          blogId: scheduledBlogPost._id,
+        },
+        {
+          delay:
+            new Date(blogData.scheduledFor).getTime() - new Date().getTime(),
+        }
+      );
+    } catch (err: any) {
+      throw new AppError(
+        err.message || "Failed to create scheduled blog post",
+        500
+      );
+    }
   }
   /**
    * Retrieves all scheduled blog posts.
@@ -50,7 +86,13 @@ export class ScheduledBlogsService {
    * Retrieves a single scheduled blog post.
    */
   public static async getScheduledBlogPost(blogId: ObjectId, user: IUser) {
+    const cacheKey = `blog:${blogId}:${user._id}`;
     try {
+      // Step 1: Check if data is in Redis cache
+      const cachedBlog = await redisClient.get(cacheKey);
+      if (cachedBlog) {
+        return JSON.parse(cachedBlog); // Return cached response
+      }
       const blogPost: IBlog | null = await BlogModel.findOne({
         _id: blogId,
         author: user._id,
@@ -63,9 +105,14 @@ export class ScheduledBlogsService {
           404
         );
       }
+      //  Store the fetched data in Redis (expires in 1 hour)
+      await redisClient.setex(cacheKey, 3600, JSON.stringify(blogPost));
 
       return blogPost;
     } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
       throw new AppError(
         err.message || "Failed to retrieve scheduled blog post",
         500
@@ -78,13 +125,21 @@ export class ScheduledBlogsService {
    */
   //! IN PROGRESS
   public static async updateScheduledBlogPost() {
-    // Logic to update the scheduled blog post
+    try {
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message || "Failed to update blog post.", 500);
+    }
   }
 
   /**
    * Deletes a scheduled blog post.
    */
   public static async deleteScheduledBlogPost(blogId: ObjectId, user: IUser) {
+    const cacheKey = `blog:${blogId}:${user._id}`;
+
     try {
       const deletedPost: IBlog | null = await BlogModel.findOneAndDelete({
         _id: blogId,
@@ -99,6 +154,8 @@ export class ScheduledBlogsService {
           404
         );
       }
+      // check if it at the cash memory and delete it
+      await redisClient.del(cacheKey);
     } catch (err: any) {
       throw new AppError(
         err.message || "Failed to delete scheduled blog post",
@@ -112,6 +169,12 @@ export class ScheduledBlogsService {
    */
   //! IN PROGRESS
   public static async rescheduleBlogPost() {
-    // Logic to update the scheduled publish date
+    try {
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message || "Failed to reschedule blog post", 500);
+    }
   }
 }
