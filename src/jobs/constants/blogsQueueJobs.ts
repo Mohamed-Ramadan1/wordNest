@@ -4,4 +4,11 @@ export enum BlogsQueueJobs {
   CollectFailedDeletionBlogs = "collectFailedDeletionBlogs",
   // publish scheduled blog post
   PublishScheduledBlog = "publishScheduledBlog",
+
+  // send delete blog email
+  SendDeleteBlogEmail = "sendDeleteBlogEmail",
+  // send blog un published post email
+  SendUnPublishedBlogEmail = "sendUnPublishedBlogEmail",
+  // send blog republished post email
+  SendRepublishedBlogEmail = "sendRepublishedBlogEmail",
 }

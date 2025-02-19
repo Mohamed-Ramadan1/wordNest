@@ -48,3 +48,57 @@ export const logFailedPublishScheduledBlog = (
     errorLocation: "publishScheduledBlogProcessor",
   });
 };
+
+//log failed send deletion email to the user
+export const logFailedSendDeleteBlogEmail = (
+  errorMessage: string,
+  jobAttempt: number,
+  blogId: ObjectId | undefined = undefined,
+  userEmail: string
+) => {
+  blogsQueueLogger.error({
+    message: "Failed to send delete blog email",
+    blogId: blogId ? blogId : "unknown blog id",
+    userEmail,
+    errorMessage,
+    jobAttempt,
+    timestamp: new Date().toISOString(),
+    errorLocation: "sendDeleteBlogEmailProcessor",
+  });
+};
+
+// log failed send unpublished blog email to the user
+export const logFailedSendUnPublishedBlogEmail = (
+  errorMessage: string,
+  jobAttempt: number,
+  blogId: ObjectId | undefined = undefined,
+  userEmail: string
+) => {
+  blogsQueueLogger.error({
+    message: "Failed to send unpublished blog email",
+    blogId: blogId ? blogId : "unknown blog id",
+    userEmail,
+    errorMessage,
+    jobAttempt,
+    timestamp: new Date().toISOString(),
+    errorLocation: "sendUnPublishedBlogEmailProcessor",
+  });
+};
+
+// log failed send republished blog email to the user
+export const logFailedSendRepublishedBlogEmail = (
+  errorMessage: string,
+  jobAttempt: number,
+  blogId: ObjectId | undefined = undefined,
+  userEmail: string
+) => {
+  blogsQueueLogger.error({
+    message: "Failed to send republished blog email",
+    blogId: blogId ? blogId : "unknown blog id",
+    userEmail,
+    errorMessage,
+    jobAttempt,
+    timestamp: new Date().toISOString(),
+    errorLocation: "sendRepublishedBlogEmailProcessor",
+  });
+};

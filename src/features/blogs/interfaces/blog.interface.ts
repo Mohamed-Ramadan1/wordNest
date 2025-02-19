@@ -37,6 +37,11 @@ export enum BlogCategory {
   TRAVEL = "travel",
   OTHER = "other",
 }
+export enum ReviewContentStatus {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
 
 export enum DeletionStatus {
   PENDING = "pending",
@@ -74,6 +79,11 @@ export interface IBlog extends Document {
   toBeDeleted: boolean;
   requestDeleteAt: Date;
   deletionStatus: DeletionStatus;
+  underReview: boolean;
+  addToUnderReviewAt: Date;
+  reviewStatus: ReviewContentStatus;
+  reviewedBy: IUser | ObjectId;
+  reviewedAt: Date;
   createdAt: Date;
   updatedAt: Date;
   createBlogSlug(): void;

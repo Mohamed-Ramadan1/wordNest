@@ -11,6 +11,9 @@ import { createQueue } from "@jobs/common/createQueue";
 import { deleteBlogsPostsProcessor } from "../queueProcessors/blogsQueue/deleteBlogsPosts.processor";
 import { collectFailedDeletionBlogsProcessor } from "../queueProcessors/blogsQueue/CollectFailedDeletionBlogs.processor";
 import { publishScheduledBlogProcessor } from "../queueProcessors/blogsQueue/publishScheduledBlog.processor";
+import { sendDeleteBlogEmailProcessor } from "../queueProcessors/blogsQueue/sendDeleteBlogEmail.processor";
+import { sendUnPublishedBlogEmailProcessor } from "../queueProcessors/blogsQueue/sendUnPublishedBlogEmail.processor";
+import { sendRepublishedBlogEmailProcessor } from "../queueProcessors/blogsQueue/sendRepublishedBlogEmail.processor";
 
 export const retryAttempts: number = 5;
 const delayTime: number = 5000;
@@ -36,6 +39,26 @@ blogQueue.process(
   BlogsQueueJobs.PublishScheduledBlog,
   publishScheduledBlogProcessor
 );
+
+// send deletion email
+blogQueue.process(
+  BlogsQueueJobs.SendDeleteBlogEmail,
+  sendDeleteBlogEmailProcessor
+);
+
+// send unpublished blog email
+blogQueue.process(
+  BlogsQueueJobs.SendUnPublishedBlogEmail,
+  sendUnPublishedBlogEmailProcessor
+);
+
+// send republished blog email
+blogQueue.process(
+  BlogsQueueJobs.SendRepublishedBlogEmail,
+  sendRepublishedBlogEmailProcessor
+);
+
+// Clear all repeatable jobs using IIFE (Immediately Invoked Function Expression)
 
 //! This IFE functionality will be moved to its own file later.
 (async () => {
