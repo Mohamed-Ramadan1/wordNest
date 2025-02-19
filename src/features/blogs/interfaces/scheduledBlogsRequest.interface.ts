@@ -1,6 +1,15 @@
 import { ObjectId } from "mongoose";
-import { BlogCategory, IUploadedImage } from "../interfaces/blog.interface";
+import {
+  BlogCategory,
+  IBlog,
+  IUploadedImage,
+} from "../interfaces/blog.interface";
 import { IUser } from "@features/users";
+
+export interface validateScheduleDateFormatRequestBody {
+  scheduledFor: string;
+  parsedDate: Date;
+}
 export interface BlogData {
   title: string;
   content: string;
@@ -19,6 +28,11 @@ export interface CreateScheduleBlogsRequestBody {
   scheduledFor: string;
   uploadedImages: IUploadedImage[];
   blogData: BlogData;
+}
+
+export interface RescheduleBlogRequestBody {
+  rescheduleFormatDate: Date;
+  blog: IBlog;
 }
 export interface ScheduleBlogsParams {
   blogId: ObjectId;

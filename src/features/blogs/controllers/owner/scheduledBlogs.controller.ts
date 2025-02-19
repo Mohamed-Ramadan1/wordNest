@@ -14,6 +14,7 @@ import { ScheduledBlogsService } from "../../services/owner/scheduledBlogs.servi
 import {
   CreateScheduleBlogsRequestBody,
   ScheduleBlogsParams,
+  RescheduleBlogRequestBody,
 } from "../../interfaces/scheduledBlogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 export class ScheduledBlogsController {
@@ -115,8 +116,11 @@ export class ScheduledBlogsController {
    * Allows updating the scheduled time of an existing scheduled blog post.
    */
   public rescheduleBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await ScheduledBlogsService.rescheduleBlogPost();
+    async (req: Request<{}, {}, RescheduleBlogRequestBody>, res: Response) => {
+      await ScheduledBlogsService.rescheduleBlogPost(
+        req.body.blog,
+        req.body.rescheduleFormatDate
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Scheduled blog post rescheduled successfully",

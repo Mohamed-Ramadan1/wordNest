@@ -92,6 +92,7 @@ router
   .get(scheduledBlogsController.getAllScheduledBlogPosts)
   .post(
     upload.array("blogImages", 5),
+    ScheduledBlogsMiddleware.validateScheduleDateFormat,
     ScheduledBlogsMiddleware.validateCreateScheduledBlogPost,
     scheduledBlogsController.createScheduledBlogPost
   );
@@ -105,5 +106,9 @@ router
 // reschedule the blog post
 router
   .route("/scheduled/:blogId/reschedule")
-  .patch(scheduledBlogsController.rescheduleBlogPost);
+  .patch(
+    ScheduledBlogsMiddleware.validateScheduleDateFormat,
+    ScheduledBlogsMiddleware.validateRescheduleBlogPost,
+    scheduledBlogsController.rescheduleBlogPost
+  );
 export default router;

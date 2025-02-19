@@ -47,6 +47,7 @@ export class ScheduledBlogsService {
         {
           delay:
             new Date(blogData.scheduledFor).getTime() - new Date().getTime(),
+          jobId: scheduledBlogPost._id.toString(),
         }
       );
     } catch (err: any) {
@@ -101,7 +102,7 @@ export class ScheduledBlogsService {
 
       if (!blogPost) {
         throw new AppError(
-          "Scheduled blog post not found with this id and related to this user.",
+          "Scheduled blog post not found with this id and related to this user. or it not a scheduled blog post.",
           404
         );
       }
@@ -167,9 +168,28 @@ export class ScheduledBlogsService {
   /**
    * Reschedules a blog post.
    */
-  //! IN PROGRESS
-  public static async rescheduleBlogPost() {
+  public static async rescheduleBlogPost(
+    blog: IBlog,
+    rescheduleDate: Date
+  ): Promise<void> {
     try {
+      blog.scheduledFor = rescheduleDate;
+      await blog.save();
+      const scheduledJob = await blogQueue.getJob(blog._id.toString());
+      if (scheduledJob) {
+        await scheduledJob.remove();
+      }
+      // adding job queue for publishing the blog post in the scheduler date range
+      blogQueue.add(
+        BlogsQueueJobs.PublishScheduledBlog,
+        {
+          blogId: blog._id,
+        },
+        {
+          delay: new Date(rescheduleDate).getTime() - new Date().getTime(),
+          jobId: blog._id.toString(),
+        }
+      );
     } catch (err: any) {
       if (err instanceof AppError) {
         throw err;

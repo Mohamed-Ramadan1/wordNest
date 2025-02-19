@@ -18,48 +18,71 @@ import { filterValidImages } from "@features/blogs/helpers/filterValidImages";
 
 // interfaces imports
 import {
+  validateScheduleDateFormatRequestBody,
   CreateScheduleBlogsRequestBody,
   BlogData,
+  ScheduleBlogsParams,
+  RescheduleBlogRequestBody,
 } from "@features/blogs/interfaces/scheduledBlogsRequest.interface";
+import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import BlogModel from "@features/blogs/models/blog.model";
 export class ScheduledBlogsMiddleware {
+  public static validateScheduleDateFormat = catchAsync(
+    async (
+      req: Request<{}, {}, validateScheduleDateFormatRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { scheduledFor } = req.body;
+
+      // check existing of scheduled  for data
+      if (!scheduledFor) {
+        return next(
+          new AppError(
+            "You have to define the date that the blog post will be published at.",
+            400
+          )
+        );
+      }
+      // Convert '21/10/2025 14:30' (DD/MM/YYYY HH:mm) to a valid Date object
+      const parsedDate = parse(scheduledFor, "dd/MM/yyyy HH:mm", new Date());
+
+      if (!isValid(parsedDate)) {
+        return next(
+          new AppError("Invalid date format. Use DD/MM/YYYY HH:mm.", 400)
+        );
+      }
+
+      // Ensure the scheduled date is in the future
+      const now = new Date();
+      if (parsedDate < now) {
+        return next(
+          new AppError("Scheduled date should be in the future.", 400)
+        );
+      }
+
+      // Normalize the date to remove seconds & milliseconds
+      parsedDate.setSeconds(0, 0);
+      req.body.parsedDate = parsedDate;
+
+      next();
+    }
+  );
+
   public static validateCreateScheduledBlogPost = [
     validateDto(CreateBlogPostDTO),
     catchAsync(
       async (
-        req: Request<{}, {}, CreateScheduleBlogsRequestBody>,
+        req: Request<
+          {},
+          {},
+          CreateScheduleBlogsRequestBody & validateScheduleDateFormatRequestBody
+        >,
         res: Response,
         next: NextFunction
       ) => {
-        // check existing of scheduled  for data
-        if (!req.body.scheduledFor) {
-          return next(
-            new AppError(
-              "You have to define the date that the blog post will be published at.",
-              400
-            )
-          );
-        }
-        const { title, content, categories, scheduledFor } = req.body;
-
-        // Convert '21/10/2025 14:30' (DD/MM/YYYY HH:mm) to a valid Date object
-        const parsedDate = parse(scheduledFor, "dd/MM/yyyy HH:mm", new Date());
-
-        if (!isValid(parsedDate)) {
-          return next(
-            new AppError("Invalid date format. Use DD/MM/YYYY HH:mm.", 400)
-          );
-        }
-
-        // Ensure the scheduled date is in the future
-        const now = new Date();
-        if (parsedDate < now) {
-          return next(
-            new AppError("Scheduled date should be in the future.", 400)
-          );
-        }
-
-        // Normalize the date to remove seconds & milliseconds
-        parsedDate.setSeconds(0, 0);
+        const { title, content, categories, scheduledFor, parsedDate } =
+          req.body;
 
         const blogReadyData: BlogData = {
           title,
@@ -87,4 +110,32 @@ export class ScheduledBlogsMiddleware {
       }
     ),
   ];
+  public static validateRescheduleBlogPost = catchAsync(
+    async (
+      req: Request<
+        ScheduleBlogsParams,
+        {},
+        RescheduleBlogRequestBody & validateScheduleDateFormatRequestBody
+      >,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const blogPost: IBlog | null = await BlogModel.findOne({
+        _id: req.params.blogId,
+        author: req.user._id,
+        isScheduled: true,
+      });
+      if (!blogPost) {
+        return next(
+          new AppError(
+            "Blog not found with given id and related to this user, or blog is not scheduled.",
+            404
+          )
+        );
+      }
+      req.body.blog = blogPost;
+      req.body.rescheduleFormatDate = req.body.parsedDate;
+      next();
+    }
+  );
 }
