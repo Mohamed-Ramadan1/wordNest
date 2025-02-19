@@ -15,6 +15,7 @@ import {
   CreateScheduleBlogsRequestBody,
   ScheduleBlogsParams,
   RescheduleBlogRequestBody,
+  UpdateScheduleBlogBodyRequestBody,
 } from "../../interfaces/scheduledBlogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 export class ScheduledBlogsController {
@@ -41,8 +42,11 @@ export class ScheduledBlogsController {
    * Processes the request to modify the content, title, scheduled time, or other details.
    */
   public updateScheduledBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await ScheduledBlogsService.updateScheduledBlogPost();
+    async (
+      req: Request<{}, {}, UpdateScheduleBlogBodyRequestBody>,
+      res: Response
+    ) => {
+      await ScheduledBlogsService.updateScheduledBlogPost(req.body, req.user);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Scheduled blog post updated successfully",

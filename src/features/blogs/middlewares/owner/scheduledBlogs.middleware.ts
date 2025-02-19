@@ -23,6 +23,7 @@ import {
   BlogData,
   ScheduleBlogsParams,
   RescheduleBlogRequestBody,
+  UpdateScheduleBlogBodyRequestBody,
 } from "@features/blogs/interfaces/scheduledBlogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import BlogModel from "@features/blogs/models/blog.model";
@@ -110,6 +111,7 @@ export class ScheduledBlogsMiddleware {
       }
     ),
   ];
+
   public static validateRescheduleBlogPost = catchAsync(
     async (
       req: Request<
@@ -135,6 +137,30 @@ export class ScheduledBlogsMiddleware {
       }
       req.body.blog = blogPost;
       req.body.rescheduleFormatDate = req.body.parsedDate;
+      next();
+    }
+  );
+
+  public static validateUpdateScheduledBlogPost = catchAsync(
+    async (
+      req: Request<ScheduleBlogsParams, {}, UpdateScheduleBlogBodyRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const blogPost: IBlog | null = await BlogModel.findOne({
+        _id: req.params.blogId,
+        author: req.user._id,
+        isScheduled: true,
+      });
+      if (!blogPost) {
+        return next(
+          new AppError(
+            "Blog not found with given id and related to this user.or is not a scheduled blog post.",
+            404
+          )
+        );
+      }
+      req.body.blog = blogPost;
       next();
     }
   );

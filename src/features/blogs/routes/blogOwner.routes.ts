@@ -101,7 +101,10 @@ router
   .route("/scheduled/:blogId")
   .get(scheduledBlogsController.getScheduledBlogPost)
   .delete(scheduledBlogsController.deleteScheduledBlogPost)
-  .patch(scheduledBlogsController.updateScheduledBlogPost);
+  .patch(
+    ScheduledBlogsMiddleware.validateUpdateScheduledBlogPost,
+    scheduledBlogsController.updateScheduledBlogPost
+  );
 
 // reschedule the blog post
 router

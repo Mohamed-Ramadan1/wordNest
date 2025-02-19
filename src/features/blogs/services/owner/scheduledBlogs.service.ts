@@ -14,6 +14,7 @@ import {
   ScheduleStatus,
 } from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
+import { UpdateScheduleBlogBodyRequestBody } from "../../interfaces/scheduledBlogsRequest.interface";
 
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
@@ -124,9 +125,21 @@ export class ScheduledBlogsService {
   /**
    * Updates an existing scheduled blog post.
    */
-  //! IN PROGRESS
-  public static async updateScheduledBlogPost() {
+  public static async updateScheduledBlogPost(
+    reqBody: UpdateScheduleBlogBodyRequestBody,
+    user: IUser
+  ) {
+    const cacheKey = `blog:${reqBody.blog._id}:${user._id}`;
+
     try {
+      if (reqBody.title) reqBody.blog.title = reqBody.title;
+      if (reqBody.content) reqBody.blog.content = reqBody.content;
+      if (reqBody.tags) reqBody.blog.tags = reqBody.tags;
+      if (reqBody.categories) reqBody.blog.categories = reqBody.categories;
+      reqBody.blog.isEdited = true;
+      reqBody.blog.editedAt = new Date();
+      await reqBody.blog.save();
+      await redisClient.del(cacheKey);
     } catch (err: any) {
       if (err instanceof AppError) {
         throw err;

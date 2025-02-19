@@ -34,6 +34,14 @@ export interface RescheduleBlogRequestBody {
   rescheduleFormatDate: Date;
   blog: IBlog;
 }
+
+export interface UpdateScheduleBlogBodyRequestBody {
+  blog: IBlog;
+  title?: string;
+  content?: string;
+  categories?: BlogCategory;
+  tags?: string[];
+}
 export interface ScheduleBlogsParams {
   blogId: ObjectId;
 }
