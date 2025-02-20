@@ -2,7 +2,7 @@
 import { Response, Request } from "express";
 
 // utils imports
-import { catchAsync, sendResponse, APIFeatures } from "@utils/index";
+import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
 import { ApiResponse } from "@shared/index";
@@ -81,13 +81,17 @@ export class BlogManagementController {
    */
   public getAllBlogPostsByUser = catchAsync(
     async (req: Request<BlogsManagementRequestParams>, res: Response) => {
-      await BlogManagementService.getAllBlogPostsByUser(
+      const blogsData = await BlogManagementService.getAllBlogPostsByUser(
         req.params.userId,
         req.query
       );
-      const response: ApiResponse<null> = {
+      const response: ApiResponse<IBlog[]> = {
         status: "success",
         message: "Blog posts retrieved successfully.",
+        results: blogsData.length,
+        data: {
+          blogs: blogsData,
+        },
       };
       sendResponse(200, res, response);
     }
