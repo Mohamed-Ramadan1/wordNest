@@ -19,7 +19,7 @@ export class UsersCrudService {
   // get all users
   static getUsers = async (req: Request): Promise<IUser[]> => {
     try {
-      const features = new APIFeatures(UserModel.find({}), req.query)
+      const features = new APIFeatures(UserModel.find(), req.query)
         .filter()
         .sort()
         .limitFields()

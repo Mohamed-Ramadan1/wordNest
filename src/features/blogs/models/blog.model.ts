@@ -7,6 +7,7 @@ import {
   ScheduleStatus,
   SEOMetadata,
   DeletionStatus,
+  ReviewContentStatus,
 } from "../interfaces/blog.interface";
 
 import { model, Schema } from "mongoose";
@@ -33,7 +34,7 @@ const blogSchema = new Schema<IBlog>(
     slug: { type: String, required: true },
     isPublished: { type: Boolean, default: true },
     publishedAt: { type: Date },
-    drafted: { type: Boolean, default: true },
+    drafted: { type: Boolean, default: false },
     isEdited: { type: Boolean, default: false },
     editedAt: { type: Date },
     isScheduled: { type: Boolean, default: false },
@@ -57,9 +58,17 @@ const blogSchema = new Schema<IBlog>(
       type: Number,
       default: 0,
     },
+
     commentsCount: {
       type: Number,
       default: 0,
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
+    archivedAt: {
+      type: Date,
     },
     allowComments: {
       type: Boolean,
@@ -83,6 +92,28 @@ const blogSchema = new Schema<IBlog>(
     deletionStatus: {
       type: String,
       enum: Object.values(DeletionStatus),
+    },
+    underReview: {
+      type: Boolean,
+      default: false,
+    },
+    addToUnderReviewAt: {
+      type: Date,
+    },
+    addToUnderReviewBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviewStatus: {
+      type: String,
+      enum: Object.values(ReviewContentStatus),
+    },
+    reviewedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviewedAt: {
+      type: Date,
     },
   },
   {

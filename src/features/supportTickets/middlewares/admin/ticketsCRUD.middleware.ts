@@ -47,9 +47,7 @@ export class TicketCRUDMiddleware {
       }
       // validate attachments if provided
       if (req.file) {
-        console.log(
-          "-----------------------------------------------------------------------------------------------------------------------------"
-        );
+   
         const attachment = validateSupportTicketAttachments(
           req.file,
           ticketOwner

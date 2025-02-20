@@ -1,58 +1,51 @@
-import { APIFeatures, AppError } from "@utils/index";
+import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import { AppError } from "@utils/index";
 export class BlogStatusService {
   /**
    * Converts a blog post to private.
    */
-  public async convertBlogToPrivate() {
-    // Logic to convert a blog post to private
+  public static async convertBlogToPrivate(blogPost: IBlog) {
+    try {
+      blogPost.isPrivate = true;
+      await blogPost.save();
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Converts a blog post to public.
    */
-  public async convertBlogToPublic() {
-    // Logic to convert a blog post to public
-  }
-
-  /**
-   * Retrieves the current status (public/private) of a blog post.
-   */
-  public async getBlogStatus() {
-    // Logic to retrieve the current status of a blog post
+  public static async convertBlogToPublic(blogPost: IBlog) {
+    try {
+      blogPost.isPrivate = false;
+      await blogPost.save();
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Archives a blog post instead of deleting it.
    */
-  public async archiveBlogPost() {
-    // Logic to archive the blog post
+  public static async archiveBlogPost(blogPost: IBlog) {
+    try {
+      blogPost.isArchived = true;
+      await blogPost.save();
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Restores an archived blog post back to active status.
    */
-  public async restoreArchivedBlogPost() {
-    // Logic to restore the archived blog post
-  }
-
-  /**
-   * Schedules a future status change for a blog post.
-   */
-  public async scheduleStatusChange() {
-    // Logic to schedule the status change for a future date/time
-  }
-
-  /**
-   * Retrieves all public blog posts.
-   */
-  public async getAllPublicBlogs() {
-    // Logic to fetch all public blog posts
-  }
-
-  /**
-   * Retrieves all private blog posts.
-   */
-  public async getAllPrivateBlogs() {
-    // Logic to fetch all private blog posts
+  public static async unArchiveBlogPost(blogPost: IBlog) {
+    try {
+      blogPost.isArchived = false;
+      await blogPost.save();
+    } catch (err: any) {
+      throw new AppError(err.message, 500);
+    }
   }
 }

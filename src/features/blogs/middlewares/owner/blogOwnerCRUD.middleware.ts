@@ -2,7 +2,12 @@
 import { Response, Request, NextFunction } from "express";
 
 // utils imports
-import { catchAsync, validateDto, AppError } from "@utils/index";
+import {
+  catchAsync,
+  validateDto,
+  AppError,
+  uploadImagesToCloudinary,
+} from "@utils/index";
 
 // interfaces imports
 import {
@@ -18,8 +23,9 @@ import { filterValidImages } from "@features/blogs/helpers/filterValidImages";
 
 // DTO imports
 import { CreateBlogPostDTO } from "../../dtos/createBlogPost.dto";
-import { uploadImagesToCloudinary } from "@utils/uploadImagesToCloudinary";
+// interfaces imports
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
+// models imports
 import BlogModel from "@features/blogs/models/blog.model";
 export class BlogOwnerCRUDMiddleware {
   // validate the create blog post request
@@ -43,12 +49,12 @@ export class BlogOwnerCRUDMiddleware {
 
         if (req.files) {
           const blogImages = filterValidImages(req.files);
-
           const imagesData = await uploadImagesToCloudinary(
             blogImages,
             "blogImages",
             "blogs-images"
           );
+
           blogReadyData.uploadedImages = imagesData;
         }
 

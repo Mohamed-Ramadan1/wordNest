@@ -1033,7 +1033,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"mohamedramadanmeray@gmail.com\",\n    \"firstName\":\"Mohamed \",\n    \"lastName\":\"Ramadan\",\n    \"password\":\"123456789\"\n}",
+							"raw": "{\n    \"email\":\"mohamedramadan11b@gmail.com\",\n    \"firstName\":\"Mohamed \",\n    \"lastName\":\"Ramadan\",\n    \"password\":\"123456789\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1872,7 +1872,178 @@
 			"item": [
 				{
 					"name": "admin",
-					"item": []
+					"item": [
+						{
+							"name": "delete blog post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/admin/blogs/67b750c1f8d39e4febdafa56",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"admin",
+										"blogs",
+										"67b750c1f8d39e4febdafa56"
+									]
+								},
+								"description": "The API endpoint sends an HTTP DELETE request to delete a specific blog with the given ID. Upon successful deletion, the server returns a 204 status code with no content in the response body.\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {}\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get blog post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/admin/blogs/67b74a7e215f13ac29036963",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"admin",
+										"blogs",
+										"67b74a7e215f13ac29036963"
+									]
+								},
+								"description": "### GET /admin/blogs/{blogId}\n\nThis endpoint retrieves a specific blog post by its ID.\n\n#### Request\n\nNo request body is required for this endpoint.\n\n- `blogId` (path parameter) : The unique identifier of the blog post.\n    \n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\"type\": \"string\"},\n        \"message\": {\"type\": \"string\"},\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"blog\": {\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"_id\": {\"type\": \"string\"},\n                        \"title\": {\"type\": \"string\"},\n                        \"content\": {\"type\": \"string\"},\n                        \"author\": {\"type\": \"string\"},\n                        \"isPublished\": {\"type\": \"boolean\"},\n                        \"drafted\": {\"type\": \"boolean\"},\n                        \"isEdited\": {\"type\": \"boolean\"},\n                        \"isScheduled\": {\"type\": \"boolean\"},\n                        \"isPrivate\": {\"type\": \"boolean\"},\n                        \"uploadedImages\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"tags\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"categories\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                        \"interActionsCount\": {\"type\": \"integer\"},\n                        \"commentsCount\": {\"type\": \"integer\"},\n                        \"isArchived\": {\"type\": \"boolean\"},\n                        \"allowComments\": {\"type\": \"boolean\"},\n                        \"sharesCount\": {\"type\": \"integer\"},\n                        \"viewsCount\": {\"type\": \"integer\"},\n                        \"toBeDeleted\": {\"type\": \"boolean\"},\n                        \"underReview\": {\"type\": \"boolean\"},\n                        \"slug\": {\"type\": \"string\"},\n                        \"seo\": {\n                            \"type\": \"object\",\n                            \"properties\": {\n                                \"metaTitle\": {\"type\": \"string\"},\n                                \"metaDescription\": {\"type\": \"string\"},\n                                \"canonicalUrl\": {\"type\": \"string\"},\n                                \"keywords\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n                                \"_id\": {\"type\": \"string\"}\n                            }\n                        },\n                        \"createdAt\": {\"type\": \"string\", \"format\": \"date-time\"},\n                        \"updatedAt\": {\"type\": \"string\", \"format\": \"date-time\"},\n                        \"__v\": {\"type\": \"integer\"},\n                        \"estimatedReadingTime\": {\"type\": \"integer\"},\n                        \"id\": {\"type\": \"string\"}\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get blogs",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/admin/blogs?page=1&limit=2",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"admin",
+										"blogs"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "2"
+										}
+									]
+								},
+								"description": "### GET /admin/blogs\n\nThis endpoint retrieves a list of blog posts with pagination.\n\n#### Request Parameters\n\n- `page` (integer) - The page number for pagination.\n    \n- `limit` (integer) - The maximum number of blog posts to be returned.\n    \n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"results\": 0,\n    \"data\": {\n        \"blogs\": [\n            {\n                \"_id\": \"\",\n                \"title\": \"\",\n                \"content\": \"\",\n                \"author\": \"\",\n                \"isPublished\": true,\n                \"drafted\": true,\n                \"isEdited\": true,\n                \"isScheduled\": true,\n                \"isPrivate\": true,\n                \"uploadedImages\": [],\n                \"tags\": [\"\"],\n                \"categories\": [\"\"],\n                \"interActionsCount\": 0,\n                \"commentsCount\": 0,\n                \"isArchived\": true,\n                \"allowComments\": true,\n                \"sharesCount\": 0,\n                \"viewsCount\": 0,\n                \"toBeDeleted\": true,\n                \"underReview\": true,\n                \"slug\": \"\",\n                \"seo\": {\n                    \"metaTitle\": \"\",\n                    \"metaDescription\": \"\",\n                    \"canonicalUrl\": \"\",\n                    \"keywords\": [\"\"],\n                    \"_id\": \"\"\n                },\n                \"createdAt\": \"\",\n                \"updatedAt\": \"\",\n                \"estimatedReadingTime\": 0,\n                \"id\": \"\"\n            }\n        ]\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "re-publish blog post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/admin/blogs/67b74a79215f13ac2903694f/publish",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"admin",
+										"blogs",
+										"67b74a79215f13ac2903694f",
+										"publish"
+									]
+								},
+								"description": "The HTTP PATCH request is used to update the status of a specific blog to \"publish\" in the admin panel. The request should be sent to /admin/blogs/67b74a79215f13ac2903694f/publish.\n\n### Response\n\nThe response will be in JSON format with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "un-publish blog post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/admin/blogs/67b74a79215f13ac2903694f/un-publish",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"admin",
+										"blogs",
+										"67b74a79215f13ac2903694f",
+										"un-publish"
+									]
+								},
+								"description": "### Update Blog Unpublish Status\n\nThis endpoint is used to update the unpublish status of a specific blog.\n\n#### Request Body\n\n- No request body parameters are required for this request.\n    \n\n#### Response\n\n- **status** (string, optional): Indicates the status of the operation.\n    \n- **message** (string, optional): Provides additional information about the operation.\n    \n\nExample Response:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "blog owner",
@@ -1900,7 +2071,7 @@
 											"formdata": [
 												{
 													"key": "title",
-													"value": "The Future of Artificial Intelligence in 2024",
+													"value": "enc serach test",
 													"description": "the title of the blog",
 													"type": "text"
 												},
@@ -1926,7 +2097,19 @@
 													"key": "blogImages",
 													"description": "images for the blog ",
 													"type": "file",
-													"src": "/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 14-53-27.png"
+													"src": [
+														"/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 16-17-15.png",
+														"/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 16-01-29.png",
+														"/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 14-54-20.png",
+														"/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 14-53-27.png",
+														"/home/mohamed/Pictures/Screenshots/Screenshot from 2025-02-11 09-28-04.png"
+													]
+												},
+												{
+													"key": "",
+													"value": "",
+													"type": "text",
+													"disabled": true
 												}
 											]
 										},
@@ -1967,6 +2150,38 @@
 											"path": [
 												"blog-owner",
 												"blogs"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "limit",
+													"value": "10",
+													"disabled": true
+												},
+												{
+													"key": "sort",
+													"value": "title",
+													"disabled": true
+												},
+												{
+													"key": "createdAt[gte]",
+													"value": "2023-01-01",
+													"disabled": true
+												},
+												{
+													"key": "likes[gt]",
+													"value": "100",
+													"disabled": true
+												},
+												{
+													"key": "fields",
+													"value": "title,createdAt\n",
+													"disabled": true
+												}
 											]
 										},
 										"description": "The endpoint retrieves a list of blogs owned by the blog owner. The response is in JSON format and has the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": { \"type\": \"string\" },\n        \"message\": { \"type\": \"string\" },\n        \"results\": { \"type\": \"integer\" },\n        \"data\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"blogs\": {\n                    \"type\": \"array\",\n                    \"items\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"_id\": { \"type\": \"string\" },\n                            \"title\": { \"type\": \"string\" },\n                            \"content\": { \"type\": \"string\" },\n                            \"author\": { \"type\": \"string\" },\n                            \"isPublished\": { \"type\": \"boolean\" },\n                            \"drafted\": { \"type\": \"boolean\" },\n                            \"isEdited\": { \"type\": \"boolean\" },\n                            \"isScheduled\": { \"type\": \"boolean\" },\n                            \"isPrivate\": { \"type\": \"boolean\" },\n                            \"uploadedImages\": {\n                                \"type\": \"array\",\n                                \"items\": {\n                                    \"type\": \"object\",\n                                    \"properties\": {\n                                        \"url\": { \"type\": \"string\" },\n                                        \"publicId\": { \"type\": \"string\" },\n                                        \"_id\": { \"type\": \"string\" }\n                                    }\n                                }\n                            },\n                            \"tags\": {\n                                \"type\": \"array\",\n                                \"items\": { \"type\": \"string\" }\n                            },\n                            \"categories\": {\n                                \"type\": \"array\",\n                                \"items\": { \"type\": \"string\" }\n                            },\n                            \"interActionsCount\": { \"type\": \"integer\" },\n                            \"commentsCount\": { \"type\": \"integer\" },\n                            \"allowComments\": { \"type\": \"boolean\" },\n                            \"sharesCount\": { \"type\": \"integer\" },\n                            \"viewsCount\": { \"type\": \"integer\" },\n                            \"toBeDeleted\": { \"type\": \"boolean\" },\n                            \"slug\": { \"type\": \"string\" },\n                            \"seo\": {\n                                \"type\": \"object\",\n                                \"properties\": {\n                                    \"metaTitle\": { \"type\": \"string\" },\n                                    \"metaDescription\": { \"type\": \"string\" },\n                                    \"canonicalUrl\": { \"type\": \"string\" },\n                                    \"keywords\": {\n                                        \"type\": \"array\",\n                                        \"items\": { \"type\": \"string\" }\n                                    },\n                                    \"ogImage\": { \"type\": \"string\" },\n                                    \"_id\": { \"type\": \"string\" }\n                                }\n                            },\n                            \"createdAt\": { \"type\": \"string\" },\n                            \"updatedAt\": { \"type\": \"string\" },\n                            \"estimatedReadingTime\": { \"type\": \"integer\" },\n                            \"id\": { \"type\": \"string\" }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}\n\n ```"
@@ -2028,17 +2243,57 @@
 											}
 										},
 										"url": {
-											"raw": "{{URL}}/blog-owner/blogs/67ab85cb1d05bfc69d86ef5c",
+											"raw": "{{URL}}/blog-owner/blogs/67acb0935194e535e3b951a8",
 											"host": [
 												"{{URL}}"
 											],
 											"path": [
 												"blog-owner",
 												"blogs",
-												"67ab85cb1d05bfc69d86ef5c"
+												"67acb0935194e535e3b951a8"
 											]
 										},
 										"description": "### Delete Blog\n\nThis endpoint is used to delete a specific blog owned by the blog owner.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status (string): Indicates the status of the operation.\n    \n- Message (string): Provides additional information about the operation.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "update blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"title\":\"the heven of the sky engile \",\n    \"content\":\"while you tray to flay anther one was traying to swiming\"\n\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/scheduled/67b5cb71da07f260277e4fe6",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"scheduled",
+												"67b5cb71da07f260277e4fe6"
+											]
+										},
+										"description": "### PATCH /blog-owner/blogs/67b1faa499cb0bc727da7c29\n\nThis endpoint is used to update a specific blog owned by the authenticated user.\n\n#### Request Body\n\n- title (string, required): The updated title of the blog.\n    \n- content (string, required): The updated content of the blog.\n    \n\nExample:\n\n``` json\n{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated Content\"\n}\n\n ```\n\n#### Response\n\nThe response for this request is in JSON format with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\n      \"type\": \"string\"\n    },\n    \"message\": {\n      \"type\": \"string\"\n    }\n  }\n}\n\n ```"
 									},
 									"response": []
 								}
@@ -2046,17 +2301,425 @@
 						},
 						{
 							"name": "scheduled blogs",
-							"item": []
+							"item": [
+								{
+									"name": "create scheduled blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "title",
+													"value": "hello i am scheduledsdgdfgsdfgdf",
+													"type": "text"
+												},
+												{
+													"key": "content",
+													"value": "very scheduled content of the blog post of athinafdgdfgfsdf",
+													"type": "text"
+												},
+												{
+													"key": "categories",
+													"value": "technology",
+													"type": "text"
+												},
+												{
+													"key": "tags",
+													"value": "it tech",
+													"type": "text"
+												},
+												{
+													"key": "blogImages",
+													"type": "file",
+													"src": [],
+													"disabled": true
+												},
+												{
+													"key": "scheduledFor",
+													"value": "19/2/2025 16:00",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/scheduled",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"scheduled"
+											]
+										},
+										"description": "### Create Scheduled Blog\n\nThis endpoint allows the blog owner to schedule a new blog post.\n\n#### Request Body\n\n- title (text, required): The title of the blog post.\n    \n- content (text, required): The content of the blog post.\n    \n- categories (text, required): The categories the blog post belongs to.\n    \n- tags (text, required): The tags associated with the blog post.\n    \n- scheduledFor (text, required): The date and time for scheduling the blog post.\n    \n\n#### Response\n\nThe response is in JSON format with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "get all  scheduled blog posts",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67ad03b11fea7cf11573f7f9/scheduled",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67ad03b11fea7cf11573f7f9",
+												"scheduled"
+											]
+										},
+										"description": "### GET /blog-owner/blogs/67ad03b11fea7cf11573f7f9/scheduled\n\nThis endpoint retrieves the scheduled posts for a specific blog.\n\n#### Request Body\n\nThis request does not require a request body.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"results\": 0,\n    \"data\": {\n        \"scheduledPosts\": [\n            {\n                \"_id\": \"\",\n                \"title\": \"\",\n                \"content\": \"\",\n                \"author\": \"\",\n                \"isPublished\": true,\n                \"drafted\": true,\n                \"isEdited\": true,\n                \"isScheduled\": true,\n                \"scheduledFor\": \"\",\n                \"isPrivate\": true,\n                \"uploadedImages\": [],\n                \"tags\": [\"\"],\n                \"categories\": [\"\"],\n                \"interActionsCount\": 0,\n                \"commentsCount\": 0,\n                \"isArchived\": true,\n                \"allowComments\": true,\n                \"sharesCount\": 0,\n                \"viewsCount\": 0,\n                \"toBeDeleted\": true,\n                \"scheduleStatus\": \"\",\n                \"slug\": \"\",\n                \"seo\": {\n                    \"metaTitle\": \"\",\n                    \"metaDescription\": \"\",\n                    \"canonicalUrl\": \"\",\n                    \"keywords\": [\"\"],\n                    \"_id\": \"\"\n                },\n                \"createdAt\": \"\",\n                \"updatedAt\": \"\",\n                \"estimatedReadingTime\": 0,\n                \"id\": \"\"\n            }\n        ]\n    }\n}\n\n ```\n\nThis response contains an array of scheduled posts for the specified blog, with details such as post title, content, author, publication status, scheduled date, and other related information."
+									},
+									"response": []
+								},
+								{
+									"name": "get scheduled blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/scheduled/67b5c52f02c6fb41c7b2af93",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"scheduled",
+												"67b5c52f02c6fb41c7b2af93"
+											]
+										},
+										"description": "### Get Scheduled Blog Details\n\nThis endpoint retrieves the details of a scheduled blog post with the specified ID.\n\n#### Request\n\n- Method: GET\n    \n- URL: {{URL}}/blog-owner/blogs/scheduled/67b581289e7b18389b027d0a\n    \n\n#### Response\n\nThe response will be in JSON format and will include the following fields:\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `data` (object): An object containing details of the scheduled blog post, including:\n    \n    - `scheduledPost` (object): Details of the scheduled blog post, including:\n        \n        - `_id` (string): The ID of the blog post.\n            \n        - `title` (string): The title of the blog post.\n            \n        - `content` (string): The content of the blog post.\n            \n        - `author` (string): The author of the blog post.\n            \n        - `isPublished` (boolean): Indicates if the blog post is published.\n            \n        - `drafted` (boolean): Indicates if the blog post is in draft status.\n            \n        - `isEdited` (boolean): Indicates if the blog post has been edited.\n            \n        - `isScheduled` (boolean): Indicates if the blog post is scheduled.\n            \n        - `scheduledFor` (string): The scheduled date and time for the blog post.\n            \n        - `isPrivate` (boolean): Indicates if the blog post is private.\n            \n        - `uploadedImages` (array): An array of uploaded images for the blog post.\n            \n        - `tags` (array): An array of tags associated with the blog post.\n            \n        - `categories` (array): An array of categories associated with the blog post.\n            \n        - `interActionsCount` (number): The count of interactions for the blog post.\n            \n        - `commentsCount` (number): The count of comments on the blog post.\n            \n        - `isArchived` (boolean): Indicates if the blog post is archived.\n            \n        - `allowComments` (boolean): Indicates if comments are allowed on the blog post.\n            \n        - `sharesCount` (number): The count of shares for the blog post.\n            \n        - `viewsCount` (number): The count of views for the blog post.\n            \n        - `toBeDeleted` (boolean): Indicates if the blog post is marked for deletion.\n            \n        - `scheduleStatus` (string): The status of the scheduling for the blog post.\n            \n        - `slug` (string): The slug of the blog post.\n            \n        - `seo` (object): An object containing SEO details for the blog post, including:\n            \n            - `metaTitle` (string): The meta title for SEO.\n                \n            - `metaDescription` (string): The meta description for SEO.\n                \n            - `canonicalUrl` (string): The canonical URL for SEO.\n                \n            - `keywords` (array): An array of keywords for SEO.\n                \n            - `_id` (string): The ID of the SEO details.\n                \n        - `createdAt` (string): The creation date of the blog post.\n            \n        - `updatedAt` (string): The last update date of the blog post.\n            \n        - `__v` (number): Version control field.\n            \n        - `estimatedReadingTime` (number): The estimated reading time for the blog post.\n            \n        - `id` (string): The ID of the blog post."
+									},
+									"response": []
+								},
+								{
+									"name": "delete scheduled blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/scheduled/67b581289e7b18389b027d0a",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"scheduled",
+												"67b581289e7b18389b027d0a"
+											]
+										},
+										"description": "The HTTP DELETE request is used to delete a scheduled blog with the specified ID. Upon successful deletion, the API returns a response with a status code of 204 and a Content-Type of text/xml. As per the user's request, the response can be documented as a JSON schema."
+									},
+									"response": []
+								},
+								{
+									"name": "reschedule blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"scheduledFor\": \"19/2/2025 14:53\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/scheduled/67b5c52f02c6fb41c7b2af93/reschedule",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"scheduled",
+												"67b5c52f02c6fb41c7b2af93",
+												"reschedule"
+											]
+										},
+										"description": "### Update Blog Reschedule\n\nThis endpoint allows the blog owner to reschedule a scheduled blog by sending an HTTP PATCH request to the specified URL.\n\n#### Request Body\n\n- `scheduledFor` (string): The new date and time for the blog to be rescheduled.\n    \n\nExample:\n\n``` json\n{\n  \"scheduledFor\": \"19/2/2025 14:53\"\n}\n\n ```\n\n#### Response\n\n- `status` (string): The status of the rescheduling process.\n    \n- `message` (string): Any additional message related to the rescheduling.\n    \n\nExample:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "update scheduled blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"title\":\"the heven of the sky engile \",\n    \"content\":\"while you tray to flay anther one was traying to swiming\"\n\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67af43de94c1c31ffaf2bd18",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67af43de94c1c31ffaf2bd18"
+											]
+										}
+									},
+									"response": []
+								}
+							]
 						},
 						{
 							"name": "blogs status",
-							"item": []
+							"item": [
+								{
+									"name": "convert blog to private",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67b1851a105189b405286e5f/private",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67b1851a105189b405286e5f",
+												"private"
+											]
+										},
+										"description": "### Update Blog Privacy\n\nThis endpoint is used to update the privacy settings of a specific blog.\n\n#### Request Body Parameters\n\n- `status` (string, optional): The new status of the blog's privacy.\n    \n\n#### Response\n\n- `status` (string): Indicates the status of the request.\n    \n- `message` (string): Provides additional information about the request status.\n    \n\nExample:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```"
+									},
+									"response": []
+								},
+								{
+									"name": "convert blog post to public",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67b1851a105189b405286e5f/public",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67b1851a105189b405286e5f",
+												"public"
+											]
+										},
+										"description": "This endpoint allows the blog owner to update the visibility of a specific blog by sending an HTTP PATCH request to the specified URL. The request should include the blog ID and the desired visibility status in the request body. The response will have a status code of 200 and a JSON object with the updated status and a message indicating the success of the operation.\n\n### Request Body\n\n- blogId (string): The unique identifier of the blog to be updated.\n    \n- visibility (string): The desired visibility status of the blog.\n    \n\n### Response\n\n- status (string): The updated status of the blog visibility.\n    \n- message (string): A message indicating the success of the operation."
+									},
+									"response": []
+								},
+								{
+									"name": "archive blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67b1851a105189b405286e5f/archive",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67b1851a105189b405286e5f",
+												"archive"
+											]
+										},
+										"description": "This endpoint allows the blog owner to archive a specific blog by sending an HTTP PATCH request to the specified URL. The request should include the blog ID in the URL path.\n\n### Request Body\n\nNo request body is required for this PATCH request.\n\n### Response\n\nUpon successful execution, the server responds with a status code of 200 and a JSON object in the response body. The JSON object contains the following fields:\n\n- `status`: Indicates the status of the operation.\n    \n- `message`: Provides additional information or a message related to the operation."
+									},
+									"response": []
+								},
+								{
+									"name": "un-archive blog post",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{jwt}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{URL}}/blog-owner/blogs/67b1851a105189b405286e5f/unarchive",
+											"host": [
+												"{{URL}}"
+											],
+											"path": [
+												"blog-owner",
+												"blogs",
+												"67b1851a105189b405286e5f",
+												"unarchive"
+											]
+										},
+										"description": "This endpoint allows the blog owner to unarchive a specific blog by sending an HTTP PATCH request to the specified URL. The request should include the blog ID in the URL path. Upon successful execution, the server will respond with a status code of 200 and a JSON object in the response body containing the status and message fields.\n\n### Request Body\n\nThis PATCH request does not require a request body.\n\n### Response\n\n- Status (string): Indicates the status of the operation.\n    \n- Message (string): Provides additional information or a message related to the operation."
+									},
+									"response": []
+								}
+							]
 						}
 					]
 				},
 				{
 					"name": "user",
-					"item": []
+					"item": [
+						{
+							"name": "get blog by id",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/blogs/67b74a79215f13ac2903694f",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"blogs",
+										"67b74a79215f13ac2903694f"
+									]
+								},
+								"description": "# Get Blog Details\n\nThis endpoint retrieves the details of a specific blog by its ID.\n\n## Request\n\n### Endpoint\n\n`GET /blogs/67b74a79215f13ac2903694f`\n\n## Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"data\": {\n        \"blog\": {\n            \"_id\": \"\",\n            \"title\": \"\",\n            \"content\": \"\",\n            \"author\": \"\",\n            \"isPublished\": true,\n            \"drafted\": true,\n            \"isEdited\": true,\n            \"isScheduled\": true,\n            \"isPrivate\": true,\n            \"uploadedImages\": [],\n            \"tags\": [\"\"],\n            \"categories\": [\"\"],\n            \"interActionsCount\": 0,\n            \"commentsCount\": 0,\n            \"isArchived\": true,\n            \"allowComments\": true,\n            \"sharesCount\": 0,\n            \"viewsCount\": 0,\n            \"toBeDeleted\": true,\n            \"underReview\": true,\n            \"slug\": \"\",\n            \"seo\": {\n                \"metaTitle\": \"\",\n                \"metaDescription\": \"\",\n                \"canonicalUrl\": \"\",\n                \"keywords\": [\"\"],\n                \"_id\": \"\"\n            },\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\",\n            \"__v\": 0,\n            \"addToUnderReviewBy\": \"\",\n            \"reviewStatus\": \"\",\n            \"reviewedAt\": \"\",\n            \"reviewedBy\": \"\",\n            \"estimatedReadingTime\": 0,\n            \"id\": \"\"\n        }\n    }\n}\n\n ```\n\nThe response contains the details of the blog including its title, content, author, publication status, draft status, editing status, scheduling status, privacy status, interaction counts, comments count, archiving status, comments allowance, share count, view count, deletion status, under review status, slug, SEO details, creation and update timestamps, review information, estimated reading time, and ID."
+							},
+							"response": []
+						},
+						{
+							"name": "get blogs ",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/blogs",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"blogs"
+									]
+								},
+								"description": "### Get Blogs\n\nThis endpoint retrieves a list of blog posts.\n\n#### Request\n\n- Method: GET\n    \n- URL: `{{URL}}/blogs`\n    \n\n#### Response\n\nThe response will be in JSON format with the following fields:\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `results` (number): The number of results returned.\n    \n- `data` (object): An object containing the list of blog posts.\n    \n    - `blogs` (array): An array of blog post objects with the following properties:\n        \n        - `_id` (string): The unique identifier of the blog post.\n            \n        - `title` (string): The title of the blog post.\n            \n        - `content` (string): The content of the blog post.\n            \n        - `author` (string): The author of the blog post.\n            \n        - `isPublished` (boolean): Indicates if the blog post is published.\n            \n        - `drafted` (boolean): Indicates if the blog post is in draft status.\n            \n        - `isEdited` (boolean): Indicates if the blog post has been edited.\n            \n        - `isScheduled` (boolean): Indicates if the blog post is scheduled for publishing.\n            \n        - `isPrivate` (boolean): Indicates if the blog post is private.\n            \n        - `uploadedImages` (array): An array of uploaded images for the blog post.\n            \n        - `tags` (array): An array of tags associated with the blog post.\n            \n        - `categories` (array): An array of categories associated with the blog post.\n            \n        - `interActionsCount` (number): The count of interactions for the blog post.\n            \n        - `commentsCount` (number): The count of comments on the blog post.\n            \n        - `isArchived` (boolean): Indicates if the blog post is archived.\n            \n        - `allowComments` (boolean): Indicates if comments are allowed on the blog post.\n            \n        - `sharesCount` (number): The count of shares for the blog post.\n            \n        - `viewsCount` (number): The count of views for the blog post.\n            \n        - `toBeDeleted` (boolean): Indicates if the blog post is marked for deletion.\n            \n        - `underReview` (boolean): Indicates if the blog post is under review.\n            \n        - `slug` (string): The slug of the blog post.\n            \n        - `seo` (object): An object containing SEO-related information for the blog post.\n            \n            - `metaTitle` (string): The meta title for SEO.\n                \n            - `metaDescription` (string): The meta description for SEO.\n                \n            - `canonicalUrl` (string): The canonical URL for SEO.\n                \n            - `keywords` (array): An array of keywords for SEO.\n                \n            - `_id` (string): The unique identifier for SEO-related data.\n                \n        - `createdAt` (string): The date and time of creation of the blog post.\n            \n        - `updatedAt` (string): The date and time of the last update to the blog post.\n            \n        - `estimatedReadingTime` (number): The estimated reading time for the blog post.\n            \n        - `id` (string): The identifier of the blog post."
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
