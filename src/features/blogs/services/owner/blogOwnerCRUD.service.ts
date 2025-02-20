@@ -43,6 +43,7 @@ export class BlogCRUDService {
   ): Promise<void> {
     try {
       const newBlogPost = new BlogModel(blogData);
+      newBlogPost.publishedAt = new Date();
       newBlogPost.createBlogSlug();
       newBlogPost.generateSEOMetadata(blogData);
       await newBlogPost.save();

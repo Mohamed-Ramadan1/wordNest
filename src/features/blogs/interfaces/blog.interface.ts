@@ -80,7 +80,8 @@ export interface IBlog extends Document {
   requestDeleteAt: Date;
   deletionStatus: DeletionStatus;
   underReview: boolean;
-  addToUnderReviewAt: Date;
+  addToUnderReviewAt: Date | undefined;
+  addToUnderReviewBy: IUser | ObjectId;
   reviewStatus: ReviewContentStatus;
   reviewedBy: IUser | ObjectId;
   reviewedAt: Date;

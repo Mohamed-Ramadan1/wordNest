@@ -100,6 +100,10 @@ const blogSchema = new Schema<IBlog>(
     addToUnderReviewAt: {
       type: Date,
     },
+    addToUnderReviewBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     reviewStatus: {
       type: String,
       enum: Object.values(ReviewContentStatus),

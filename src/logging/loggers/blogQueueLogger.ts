@@ -102,3 +102,48 @@ export const logFailedSendRepublishedBlogEmail = (
     errorLocation: "sendRepublishedBlogEmailProcessor",
   });
 };
+
+// log blogPost deletion action (the data about the deletion process who deleted the blog post and when)
+export const logBlogPostDeletion = (
+  blogId: ObjectId,
+  userEmail: string,
+  deletionDate: Date
+) => {
+  blogsQueueLogger.info({
+    message: "Blog deletion action information",
+    blogId,
+    deletedBy: userEmail,
+    deletionDate,
+    timestamp: new Date().toISOString(),
+  });
+};
+
+// log blog post un published action
+export const logBlogPostUnPublishedAction = (
+  blogId: ObjectId,
+  unPublishedDate: Date,
+  unPublishedByAdminEmail: string
+) => {
+  blogsQueueLogger.info({
+    message: "Blog unpublished action information",
+    blogId,
+    unpublishedBy: unPublishedByAdminEmail,
+    unPublishedDate,
+    timestamp: new Date().toISOString(),
+  });
+};
+
+// log blog post republished action
+export const logBlogPostRepublishedAction = (
+  blogId: ObjectId,
+  republishedDate: Date,
+  republishedByAdminEmail: string
+) => {
+  blogsQueueLogger.info({
+    message: "Blog republished action information",
+    blogId,
+    republishedBy: republishedByAdminEmail,
+    republishedDate,
+    timestamp: new Date().toISOString(),
+  });
+};

@@ -16,4 +16,31 @@ const blogManagementController = new BlogManagementController();
 const router: Router = Router();
 router.use(protect);
 router.use(restrictTo("admin"));
+
+router.route("/").get(blogManagementController.getAllBlogPosts);
+
+router
+  .route("/:blogId")
+  .get(blogManagementController.getBlogPost)
+  .delete(
+    BlogsManagementMiddleware.validateBlogPostManagementRequest,
+    blogManagementController.deleteBlogPost
+  );
+
+router
+  .route("/:blogId/un-publish")
+  .patch(
+    BlogsManagementMiddleware.validateBlogPostManagementRequest,
+    BlogsManagementMiddleware.validateUnPublishBlogStatus,
+    blogManagementController.unPublishBlogPost
+  );
+
+router
+  .route("/:blogId/publish")
+  .patch(
+    BlogsManagementMiddleware.validateBlogPostManagementRequest,
+    BlogsManagementMiddleware.validatePublishBlogStatus,
+    blogManagementController.rePublishBlogPost
+  );
+
 export default router;
