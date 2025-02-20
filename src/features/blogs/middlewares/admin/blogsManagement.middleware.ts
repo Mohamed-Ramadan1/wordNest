@@ -5,12 +5,7 @@ import { Response, Request, NextFunction } from "express";
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import {
-  catchAsync,
-  validateDto,
-  AppError,
-  uploadImagesToCloudinary,
-} from "@utils/index";
+import { catchAsync, AppError } from "@utils/index";
 
 // interfaces imports
 import {

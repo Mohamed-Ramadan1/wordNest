@@ -82,8 +82,7 @@ export class ScheduledBlogsMiddleware {
         res: Response,
         next: NextFunction
       ) => {
-        const { title, content, categories, scheduledFor, parsedDate } =
-          req.body;
+        const { title, content, categories, parsedDate } = req.body;
 
         const blogReadyData: BlogData = {
           title,
