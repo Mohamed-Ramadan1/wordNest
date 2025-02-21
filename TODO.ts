@@ -1,19 +1,17 @@
 /*
-
-=> complete all blogs routes 
 => create comments feature
 => create interactions feature
 => create content Reports feature
+=> favorite feature
+=> following/follower feature
 
+-----------------------------------------------------------------------------------
 => swagger integration for all routes
 => DI(Dependency Injection) for features  with refactoring any necessary code.
 => testing the project (unite tests , integration tests, E2E tests)S
-=> following/follower feature
 => thinking of adding notifications with sockits to the project
-=> Implementing search functionality
-=> favorite feature
 
-
+-------------------------------------------------------------------------------------
  !!Ideas that may be added to the project 
  => auto localization with using ai
  => content enhancement suggestion from AI based models
