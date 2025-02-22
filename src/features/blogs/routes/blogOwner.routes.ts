@@ -22,8 +22,8 @@ const blogCRUDController = new BlogCRUDController();
 const blogStatusController = new BlogStatusController();
 const scheduledBlogsController = new ScheduledBlogsController();
 
-// console.log(protect);
 router.use(protect);
+
 // blogs CRUD related routes
 router
   .route("/")
