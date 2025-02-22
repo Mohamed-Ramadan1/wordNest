@@ -26,6 +26,11 @@ readingListSchema.index({ user: 1, blogPost: 1 }, { unique: true }); // Prevent 
 readingListSchema.index({ user: 1, addedAt: -1 }); // Optimize queries fetching a user's reading list sorted by newest first
 readingListSchema.index({ user: 1, status: 1 }); // Optimize queries filtering by user and status
 
+readingListSchema.pre<IReadingList>(/^find/, function (next) {
+  this.populate({ path: "blogPost" });
+  next();
+});
+
 export const ReadingListModel: Model<IReadingList> = model<IReadingList>(
   "ReadingList",
   readingListSchema

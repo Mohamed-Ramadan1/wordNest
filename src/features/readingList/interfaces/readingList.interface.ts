@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { ObjectId,Document } from "mongoose";
 import { IUser } from "@features/users";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
@@ -8,7 +8,7 @@ export enum ReadingStatus {
   COMPLETED = "completed",
 }
 
-export interface IReadingList {
+export interface IReadingList extends Document {
   _id: ObjectId;
   user: IUser | ObjectId;
   blogPost: IBlog | ObjectId;
