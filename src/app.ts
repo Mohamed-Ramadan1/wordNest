@@ -19,6 +19,7 @@ import {
   adminSupportTicketsRouter,
 } from "@features/supportTickets";
 import { favoritesRouter } from "@features/favorites";
+import { readingListRouter } from "@features/readingList";
 import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
 
 // error handling middleware
@@ -91,6 +92,9 @@ app.use("/api/v1/admin/support-tickets", adminSupportTicketsRouter);
 
 // favorites related routes
 app.use("/api/v1/favorites", favoritesRouter);
+
+// reading list related routes
+app.use("/api/v1/reading-list", readingListRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
