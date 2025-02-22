@@ -5,7 +5,6 @@ import { protect } from "@shared/index";
 
 // middleware imports
 import { ReadingListCRUDMiddleware } from "../middlewares/readingListCRUD.middleware";
-import { ReadingListManagementMiddleware } from "../middlewares/readingListManagement.middleware";
 import { ReadingListSettingsMiddleware } from "../middlewares/readingListSettings.middleware";
 
 // controllers imports
@@ -36,5 +35,23 @@ router
   .route("/:id")
   .get(readingListCRUDController.getReadingListItem)
   .delete(readingListCRUDController.deleteReadingListItem);
+
+// Management related routes
+router.patch(
+  "/items/:itemId/unread",
+  readingListManagementController.markListItemAsUnread
+);
+
+router.patch(
+  "/items/:itemId/completed",
+  readingListManagementController.markListItemAsCompleted
+);
+
+router.patch(
+  "/items/:itemId/reading",
+  readingListManagementController.markListItemAsReading
+);
+
+router.delete("/", readingListManagementController.clearReadingList);
 
 export default router;
