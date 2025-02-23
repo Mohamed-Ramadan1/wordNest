@@ -19,6 +19,8 @@ const readingListSchema = new Schema({
   notes: { type: String },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  reminderAlert: { type: Boolean, default: false },
+  reminderAlertTime: { type: Date },
 });
 
 // indexes

@@ -29,7 +29,8 @@ router
   .post(
     ReadingListCRUDMiddleware.validateCreateReadingListItem,
     readingListCRUDController.createReadingListItem
-  );
+  )
+  .delete(readingListManagementController.clearReadingList);
 
 router
   .route("/:id")
@@ -52,6 +53,37 @@ router.patch(
   readingListManagementController.markListItemAsReading
 );
 
-router.delete("/", readingListManagementController.clearReadingList);
+// Settings related routes
+router.post(
+  "/items/:itemId/reminder-alert",
+  ReadingListSettingsMiddleware.validateCreateReminderAlert,
+  ReadingListSettingsMiddleware.validateAlertTimeFormateDate,
+  ReadingListSettingsMiddleware.createReadingReminderAlert,
+  readingListSettingsController.setReminderAlert
+);
+
+router.patch(
+  "/items/:itemId/reminder-reschedule",
+  ReadingListSettingsMiddleware.validateReScheduleReminderAlert,
+  ReadingListSettingsMiddleware.validateAlertTimeFormateDate,
+  ReadingListSettingsMiddleware.createReadingReminderAlert,
+  readingListSettingsController.reScheduleReminderAlert
+);
+
+router.delete(
+  "/items/:itemId/reminder-delete",
+  ReadingListSettingsMiddleware.validateDeleteReminderAlert,
+  readingListSettingsController.deleteReminderAlert
+);
+
+router.patch(
+  "/items/:itemId/auto-remove",
+  readingListSettingsController.allowAutoRemoveReadingListItem
+);
+
+router.patch(
+  "/items/:itemId/auto-remove-disable",
+  readingListSettingsController.disableAutoRemoveReadingListItem
+);
 
 export default router;

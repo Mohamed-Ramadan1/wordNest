@@ -1,4 +1,4 @@
-import { ObjectId,Document } from "mongoose";
+import { ObjectId, Document } from "mongoose";
 import { IUser } from "@features/users";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
@@ -17,6 +17,8 @@ export interface IReadingList extends Document {
   addedAt: Date;
   lastInteractedAt?: Date; // Last time user engaged with the post
   completedAt?: Date; // Timestamp when user finished reading
+  reminderAlert?: boolean; // Optional reminder alert flag
+  reminderAlertTime?: Date; // Time to send reminder
   notes?: string; // Optional user notes
   createdAt: Date;
   updatedAt: Date;

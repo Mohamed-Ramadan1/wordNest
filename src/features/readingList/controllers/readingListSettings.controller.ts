@@ -7,30 +7,50 @@ import { catchAsync, sendResponse } from "@utils/index";
 // Shared interface imports
 import { ApiResponse } from "@shared/index";
 
+// interfaces imports
+import {
+  ReadingListSettingsRequestParams,
+  ReadingListSettingsRequestBody,
+} from "../interfaces/readingListSettingsRequest.interface";
 // service imports
 import { ReadingListSettingsService } from "../services/readingListSettings.service";
 export class ReadingListSettingsController {
   /**
    * Sets a reminder alert for a specific reading list item.
    */
-  public setReminderAlert = catchAsync(async (req: Request, res: Response) => {
-    await ReadingListSettingsService.setReminderAlert();
+  public setReminderAlert = catchAsync(
+    async (
+      req: Request<{}, {}, ReadingListSettingsRequestBody>,
+      res: Response
+    ) => {
+      await ReadingListSettingsService.setReminderAlert(req.body.alertInfo);
 
-    const response: ApiResponse<null> = {
-      status: "success",
-      message:
-        "Reminder alert set successfully.you will receive notifications email on the time you set.",
-    };
+      const response: ApiResponse<null> = {
+        status: "success",
+        message:
+          "Reminder alert set successfully.you will receive notifications email on the time you set.",
+      };
 
-    sendResponse(200, res, response);
-  });
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Re-schedules an existing reminder alert for a reading list item.
    */
   public reScheduleReminderAlert = catchAsync(
-    async (req: Request, res: Response) => {
-      await ReadingListSettingsService.reScheduleReminderAlert();
+    async (
+      req: Request<
+        ReadingListSettingsRequestParams,
+        {},
+        ReadingListSettingsRequestBody
+      >,
+      res: Response
+    ) => {
+      await ReadingListSettingsService.reScheduleReminderAlert(
+        req.body.alertInfo,
+        req.params.itemId.toString()
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Reminder alert rescheduled successfully.",
@@ -43,8 +63,11 @@ export class ReadingListSettingsController {
    * Deletes a scheduled reminder alert for a reading list item.
    */
   public deleteReminderAlert = catchAsync(
-    async (req: Request, res: Response) => {
-      await ReadingListSettingsService.deleteReminderAlert();
+    async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
+      await ReadingListSettingsService.deleteReminderAlert(
+        req.params.itemId,
+        req.user._id
+      );
 
       const response: ApiResponse<null> = {
         status: "success",
@@ -58,8 +81,11 @@ export class ReadingListSettingsController {
    * Enables auto-removal of a reading list item when marked as "read."
    */
   public allowAutoRemoveReadingListItem = catchAsync(
-    async (req: Request, res: Response) => {
-      await ReadingListSettingsService.allowAutoRemoveReadingListItem();
+    async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
+      await ReadingListSettingsService.allowAutoRemoveReadingListItem(
+        req.params.itemId,
+        req.user._id
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message:
@@ -73,8 +99,11 @@ export class ReadingListSettingsController {
    * Disables auto-removal of a reading list item after being marked as "read."
    */
   public disableAutoRemoveReadingListItem = catchAsync(
-    async (req: Request, res: Response) => {
-      await ReadingListSettingsService.disableAutoRemoveReadingListItem();
+    async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
+      await ReadingListSettingsService.disableAutoRemoveReadingListItem(
+        req.params.itemId,
+        req.user._id
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message:
