@@ -13,6 +13,8 @@ export { supportTicketQueue } from "./queues/supportTicketQueue";
 
 export { blogQueue } from "./queues/blogQueue";
 
+export { readingListQueue } from "./queues/readingListQueue";
+
 // Constants exports
 export { BandAccountQueueJobs } from "./constants/bandAccountQueueJobs";
 export { CloudinaryQueueJobs } from "./constants/cloudinaryQueueJobs";
@@ -21,3 +23,4 @@ export { EmailQueueJobs } from "./constants/emailQueueJobs";
 export { ResourceCleanupQueueJobs } from "./constants/resourceCleanupQueueJobs";
 export { SupportTicketQueueJobs } from "./constants/supportTicketQueueJobs";
 export { BlogsQueueJobs } from "./constants/blogsQueueJobs";
+export { ReadingListQueueJobs } from "./constants/readingListQueueJobs";
