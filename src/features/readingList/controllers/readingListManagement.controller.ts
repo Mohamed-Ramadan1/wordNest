@@ -7,7 +7,6 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { ApiResponse } from "@shared/index";
 
 // interfaces imports
-import { IReadingList } from "../interfaces/readingList.interface";
 import { ReadingListManagementRequestParams } from "../interfaces/readingListManagementRequest.interface";
 // service imports
 import { ReadingListManagementService } from "../services/readingListManagement.service";
