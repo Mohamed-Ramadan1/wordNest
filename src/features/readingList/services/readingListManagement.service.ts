@@ -50,6 +50,9 @@ export class ReadingListManagementService {
       if (!updatedListItem) {
         throw new AppError("Reading list item not found.", 404);
       }
+      if (updatedListItem.autoRemove) {
+        await ReadingListModel.deleteOne({ _id: listItemId });
+      }
     } catch (err: any) {
       if (err instanceof AppError) {
         throw Error;

@@ -1,5 +1,4 @@
 /*
-=> reading list feature.
 => create comments feature.
 => create interactions feature.
 => improve the DTO Usage across the project.

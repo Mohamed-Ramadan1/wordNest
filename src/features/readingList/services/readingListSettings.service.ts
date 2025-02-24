@@ -49,7 +49,6 @@ export class ReadingListSettingsService {
   /**
    * Re-schedules an existing reminder alert for a reading list item.
    */
-  //! in progress
   public static async reScheduleReminderAlert(
     alertData: ReminderAlertData,
     oldJobId: string
