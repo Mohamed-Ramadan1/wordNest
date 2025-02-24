@@ -41,6 +41,7 @@ interactionSchema.pre<IInteraction>(/^find/, function (next) {
   this.populate({
     path: "user",
   });
+  this.populate({ path: "blogPost" });
   next();
 });
 // Create interaction model

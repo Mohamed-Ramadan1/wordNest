@@ -21,7 +21,10 @@ import {
 import { favoritesRouter } from "@features/favorites";
 import { readingListRouter } from "@features/readingList";
 import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
-import { interactionsRouter } from "@features/interactions";
+import {
+  interactionsRouter,
+  interactionsAdminRouter,
+} from "@features/interactions";
 
 // error handling middleware
 import { globalError } from "@shared/index";
@@ -93,6 +96,9 @@ app.use("/api/v1/admin/support-tickets", adminSupportTicketsRouter);
 
 // interactions related routes
 app.use("/api/v1/interactions", interactionsRouter);
+
+// interactions related routes for admins
+app.use("/api/v1/admin/interactions", interactionsAdminRouter);
 
 // favorites related routes
 app.use("/api/v1/favorites", favoritesRouter);
