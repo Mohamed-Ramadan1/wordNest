@@ -1,40 +1,70 @@
 // Packages imports
-import { ParsedQs } from "qs";
 import { ObjectId } from "mongoose";
-import Redis from "ioredis";
-// model imports
+import { injectable } from "inversify";
 
+// model imports
+import { InteractionModel } from "../models/interactions.model";
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
 
-import { IUser } from "@features/users";
+// interfaces imports
+import { IInteractionsService } from "../interfaces/interactionsService.interface";
+import { IInteraction } from "../interfaces/interaction.interface";
+import { InteractionData } from "../interfaces/interactionsRequest.interface";
 
-export class InteractionsService {
+@injectable()
+export class InteractionsService implements IInteractionsService {
   /**
    * Handles interaction with a blog post, such as liking or disliking.
    */
-  public async interactWithBlogPost() {
-    // Implement logic
+  public async interactWithBlogPost(
+    interactionData: InteractionData
+  ): Promise<void> {
+    try {
+      //  const interaction = await
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Deletes the user's interaction with a blog post.
    */
   public async deleteMyInteractionWithBlogPost() {
-    // Implement logic
+    try {
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message, 500);
+    }
   }
 
   /**
    * Updates the user's interaction with a blog post.
    */
   public async updateMyInteractionWithBlogPost() {
-    // Implement logic
+    try {
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message, 500);
+    }
   }
-
   /**
    * Retrieves all interactions for a specific blog post.
    */
   public async getAllInteractionsWithBlogPost() {
-    // Implement logic
+    try {
+    } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
+      throw new AppError(err.message, 500);
+    }
   }
 }
