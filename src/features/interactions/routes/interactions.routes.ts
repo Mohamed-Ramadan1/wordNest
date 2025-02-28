@@ -7,7 +7,7 @@ import { protect } from "@shared/index";
 import { InteractionsMiddleware } from "../middlewares/interactions.middleware";
 
 // config imports
-import { container } from "@config/container.config";
+import { container } from "@config/inversify.config";
 import { TYPES } from "@config/containerTypes.config";
 // controllers imports
 import { InteractionsController } from "../controllers/interactions.controller";

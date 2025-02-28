@@ -51,7 +51,7 @@ export class InteractionsController {
         status: "success",
         message: "Interaction with blog post deleted successfully.",
       };
-      sendResponse(200, res, response);
+      sendResponse(204, res, response);
     }
   );
 

@@ -2,4 +2,5 @@
 export const TYPES = {
   InteractionService: Symbol.for("InteractionService"),
   InteractionsController: Symbol.for("InteractionsController"),
+  InteractionsRepository: Symbol.for("InteractionsRepository"),
 };
