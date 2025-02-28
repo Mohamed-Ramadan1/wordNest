@@ -17,3 +17,5 @@ export { uploadToCloudinary } from "./uploadToCloudinary";
 export { removeLocalFile } from "./deleteLocalFiles";
 
 export { uploadImagesToCloudinary } from "./uploadImagesToCloudinary";
+
+export { handleServiceError } from "./handleServiceError";

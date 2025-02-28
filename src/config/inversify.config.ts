@@ -22,6 +22,7 @@ featureCategories.forEach((category) => {
         // Dynamically load the module and register bindings
         const { default: module } = require(modulePath);
         container.load(module);
+        console.log(`Loaded module: ${moduleFile}`);
       }
     });
   }

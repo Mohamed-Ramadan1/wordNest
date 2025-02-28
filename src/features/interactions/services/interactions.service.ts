@@ -1,34 +1,41 @@
 // Packages imports
 import { ObjectId } from "mongoose";
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 
 // model imports
 import { InteractionModel } from "../models/interactions.model";
+
 // utils imports
-import { APIFeatures, AppError } from "@utils/index";
+import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+
+// config imports
+import { TYPES } from "@config/containerTypes.config";
 
 // interfaces imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";
 import { IInteraction } from "../interfaces/interaction.interface";
 import { InteractionData } from "../interfaces/interactionsRequest.interface";
-
+import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
 @injectable()
 export class InteractionsService implements IInteractionsService {
-  private handleError(error: any): never {
-    
-    if (error instanceof AppError) throw error;
-    throw new AppError(error.message || "An unexpected error occurred", 500);
+  private interactionsRepository: IInteractionsRepository;
+
+  constructor(
+    @inject(TYPES.InteractionsRepository)
+    interactionsRepository: IInteractionsRepository
+  ) {
+    this.interactionsRepository = interactionsRepository;
   }
+
   /**
    * Handles interaction with a blog post, such as liking or disliking.
    */
   public async interactWithBlogPost(): Promise<void> {
     try {
+      // await this.interactionsRepository.createInteraction();
       //  const interaction = await
     } catch (err: any) {
-      if (err instanceof AppError) throw err;
-
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -38,9 +45,7 @@ export class InteractionsService implements IInteractionsService {
   public async deleteMyInteractionWithBlogPost() {
     try {
     } catch (err: any) {
-      if (err instanceof AppError) throw err;
-
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -50,9 +55,7 @@ export class InteractionsService implements IInteractionsService {
   public async updateMyInteractionWithBlogPost() {
     try {
     } catch (err: any) {
-      if (err instanceof AppError) throw err;
-
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
   /**
@@ -61,9 +64,7 @@ export class InteractionsService implements IInteractionsService {
   public async getAllInteractionsWithBlogPost() {
     try {
     } catch (err: any) {
-      if (err instanceof AppError) throw err;
-
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }
