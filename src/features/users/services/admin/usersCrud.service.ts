@@ -11,8 +11,12 @@ import { IUser } from "@features/users/interfaces/user.interface";
 import { AppError, APIFeatures } from "@utils/index";
 
 // queues imports
-
-import { emailQueue, EmailQueueJobs } from "@jobs/index";
+import {
+  emailQueue,
+  EmailQueueJobs,
+  deleteUserAccountQueue,
+  DeleteUserAccountQueueJobs,
+} from "@jobs/index";
 
 // CRUD operations for users.
 export class UsersCrudService {
@@ -86,8 +90,18 @@ export class UsersCrudService {
   // delete user
   static deleteUser = async (id: string): Promise<void> => {
     try {
-      await UserModel.findByIdAndDelete(id);
+      const user: IUser | null = await UserModel.findById(id);
+      if (!user) {
+        throw new AppError("No user exist with this id.", 404);
+      }
+      // Add delete user account job to queue to handle deletion of user account and related data.
+      deleteUserAccountQueue.add(DeleteUserAccountQueueJobs.DeleteUserAccount, {
+        user,
+      });
     } catch (err: any) {
+      if (err instanceof AppError) {
+        throw err;
+      }
       throw new AppError(err.message, 500);
     }
   };

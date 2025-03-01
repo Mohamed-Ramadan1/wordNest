@@ -7,7 +7,7 @@ import { ObjectId } from "mongoose";
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import { APIFeatures, AppError } from "@utils/index";
+import { APIFeatures, AppError, handleServiceError } from "@utils/index";
 
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
@@ -31,10 +31,7 @@ export class BlogsService {
       }
       return blogPost;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get blog post", 500);
+      handleServiceError(err);
     }
   }
 
@@ -61,10 +58,7 @@ export class BlogsService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get blog posts", 500);
+      handleServiceError(err);
     }
   }
 
@@ -94,10 +88,7 @@ export class BlogsService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get user blogs posts", 500);
+      handleServiceError(err);
     }
   }
 }

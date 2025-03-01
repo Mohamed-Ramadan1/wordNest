@@ -3,8 +3,10 @@ import { Request } from "express";
 
 // redis import
 import Redis from "ioredis";
+
 // mongoose imports
 import { ObjectId } from "mongoose";
+
 // models imports
 import BlogModel from "@features/blogs/models/blog.model";
 
@@ -14,11 +16,15 @@ import {
   ScheduleStatus,
 } from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
-import { UpdateScheduleBlogBodyRequestBody } from "../../interfaces/scheduledBlogsRequest.interface";
+import {
+  UpdateScheduleBlogBodyRequestBody,
+  BlogData,
+} from "../../interfaces/scheduledBlogsRequest.interface";
 
 // utils imports
-import { APIFeatures, AppError } from "@utils/index";
-import { BlogData } from "@features/blogs/interfaces/scheduledBlogsRequest.interface";
+import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+
+// jobs imports
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
 
 // redis client instance creation.
@@ -52,10 +58,7 @@ export class ScheduledBlogsService {
         }
       );
     } catch (err: any) {
-      throw new AppError(
-        err.message || "Failed to create scheduled blog post",
-        500
-      );
+      handleServiceError(err);
     }
   }
   /**
@@ -77,10 +80,7 @@ export class ScheduledBlogsService {
       const scheduledBlogPosts: IBlog[] = await features.execute();
       return scheduledBlogPosts;
     } catch (err: any) {
-      throw new AppError(
-        err.message || "Failed to retrieve scheduled blog posts",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -112,13 +112,7 @@ export class ScheduledBlogsService {
 
       return blogPost;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(
-        err.message || "Failed to retrieve scheduled blog post",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -141,10 +135,7 @@ export class ScheduledBlogsService {
       await reqBody.blog.save();
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to update blog post.", 500);
+      handleServiceError(err);
     }
   }
 
@@ -171,10 +162,7 @@ export class ScheduledBlogsService {
       // check if it at the cash memory and delete it
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      throw new AppError(
-        err.message || "Failed to delete scheduled blog post",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -204,10 +192,7 @@ export class ScheduledBlogsService {
         }
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to reschedule blog post", 500);
+      handleServiceError(err);
     }
   }
 }
