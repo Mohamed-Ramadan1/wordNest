@@ -13,10 +13,10 @@ import AuthService from "../services/auth.service";
 import { catchAsync, sendResponse } from "@utils/index";
 
 // interfaces imports
-import { IAuthController } from "../interfaces/authController.interface";
+
 import { ApiResponse } from "@shared/index";
 
-export default class AuthController implements IAuthController {
+export default class AuthController {
   // !Register a new user with Google account.(Not implemented)
   socialRegister = catchAsync(async (req: Request, res: Response) => {});
 
@@ -30,13 +30,13 @@ export default class AuthController implements IAuthController {
       password,
       res
     );
-    const re: ApiResponse<IUser> = {
+    const response: ApiResponse<IUser> = {
       status: "success",
       token,
       data: { user },
     };
 
-    sendResponse(201, res, re);
+    sendResponse(201, res, response);
   });
 
   // Login a user with email address.

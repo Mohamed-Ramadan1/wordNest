@@ -4,7 +4,11 @@ import { Response } from "express";
 import { IUser, UserModel } from "@features/users";
 
 // utils imports
-import { AppError, generateAuthToken, generateLogOutToken } from "@utils/index";
+import {
+  generateAuthToken,
+  generateLogOutToken,
+  handleServiceError,
+} from "@utils/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -25,24 +29,28 @@ export default class AuthService {
     res: Response
   ): Promise<{ user: IUser; token: string }> {
     // create a new user with the provided details.
-    const user: IUser = new UserModel({
-      email,
-      firstName,
-      lastName,
-      password,
-    });
-    // generate verification token
-    user.emailVerificationToken = user.createEmailVerificationToken();
+    try {
+      const user: IUser = new UserModel({
+        email,
+        firstName,
+        lastName,
+        password,
+      });
+      // generate verification token
+      user.emailVerificationToken = user.createEmailVerificationToken();
 
-    // save the user to the database.
-    await user.save();
+      // save the user to the database.
+      await user.save();
 
-    const token: string = generateAuthToken(user, res);
+      const token: string = generateAuthToken(user, res);
 
-    // add welcome email to the emails-queue.
-    emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
+      // add welcome email to the emails-queue.
+      emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
 
-    return { user, token };
+      return { user, token };
+    } catch (err: any) {
+      handleServiceError(err);
+    }
   }
 
   static async loginWithEmail(
@@ -59,7 +67,7 @@ export default class AuthService {
       return { token };
     } catch (err: any) {
       logFailedLogin(user.email, ipAddress, err.message);
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -74,7 +82,7 @@ export default class AuthService {
       logSuccessfulLogout(user.email as string, ipAddress);
       return token;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

@@ -2,7 +2,7 @@
 import { IUser } from "@features/users";
 
 // utils imports
-import { AppError } from "@utils/index";
+import { handleServiceError } from "@utils/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -47,7 +47,7 @@ export default class AccountRecoveryService {
         user.createdAt,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -64,7 +64,7 @@ export default class AccountRecoveryService {
     } catch (err: any) {
       // log the failed email resend attempt.
       logFailedEmailResend(user.email, user._id, user.createdAt, err.message);
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -91,10 +91,7 @@ export default class AccountRecoveryService {
       );
 
       // Throw a meaningful error
-      throw new AppError(
-        "Password reset request failed. Please try again later.",
-        500
-      );
+      handleServiceError(err);
     }
   };
 
@@ -121,7 +118,7 @@ export default class AccountRecoveryService {
     } catch (err: any) {
       logFailedPasswordReset(user.email, ip, user.id, err.message);
       // If transaction failed, re-throw the error
-      throw new AppError("Password reset failed. Please try again later.", 500);
+      handleServiceError(err);
     }
   };
 }

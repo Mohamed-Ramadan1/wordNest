@@ -7,7 +7,7 @@ import * as fs from "fs";
 const container = new Container();
 
 // features existing on the application (if new feature added add it to the lest).
-const featureCategories = ["interactions"];
+const featureCategories = ["auth", "interactions"];
 
 // Dynamically load and register modules
 featureCategories.forEach((category) => {
