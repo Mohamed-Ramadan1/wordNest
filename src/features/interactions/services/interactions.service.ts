@@ -30,10 +30,11 @@ export class InteractionsService implements IInteractionsService {
   /**
    * Handles interaction with a blog post, such as liking or disliking.
    */
-  public async interactWithBlogPost(): Promise<void> {
+  public async interactWithBlogPost(
+    interactionInfo: InteractionData
+  ): Promise<void> {
     try {
-      // await this.interactionsRepository.createInteraction();
-      //  const interaction = await
+      await this.interactionsRepository.createInteraction(interactionInfo);
     } catch (err: any) {
       handleServiceError(err);
     }

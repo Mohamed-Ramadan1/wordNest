@@ -4,7 +4,7 @@ export interface IInteractionsService {
   /**
    * Handles interaction with a blog post, such as liking or disliking.
    */
-  interactWithBlogPost(): Promise<void>;
+  interactWithBlogPost(interactionInfo: InteractionData): Promise<void>;
 
   /**
    * Deletes the user's interaction with a blog post.

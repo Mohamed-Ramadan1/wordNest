@@ -1,5 +1,5 @@
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { AppError } from "@utils/index";
+import { AppError, handleServiceError } from "@utils/index";
 export class BlogStatusService {
   /**
    * Converts a blog post to private.
@@ -21,7 +21,7 @@ export class BlogStatusService {
       blogPost.isPrivate = false;
       await blogPost.save();
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -33,7 +33,7 @@ export class BlogStatusService {
       blogPost.isArchived = true;
       await blogPost.save();
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -45,7 +45,7 @@ export class BlogStatusService {
       blogPost.isArchived = false;
       await blogPost.save();
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

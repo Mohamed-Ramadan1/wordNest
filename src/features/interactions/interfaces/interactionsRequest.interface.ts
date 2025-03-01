@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import { InteractionType } from "./interaction.interface";
 
 export interface InteractionData {
-  interactionType: InteractionType;
+  type: InteractionType;
   user: ObjectId;
   blogPost: ObjectId;
   interactedAt?: Date;
@@ -10,7 +10,6 @@ export interface InteractionData {
 
 export interface CreateInteractionRequestBody {
   interactionType: InteractionType;
-  userId: ObjectId;
   blogPostId: ObjectId;
   newInteractionData: InteractionData;
 }

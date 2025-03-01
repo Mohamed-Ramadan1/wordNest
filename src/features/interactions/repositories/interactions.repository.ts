@@ -1,11 +1,13 @@
 // Interface imports
+import { IInteraction } from "../interfaces/interaction.interface";
 import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
+import { InteractionData } from "../interfaces/interactionsRequest.interface";
 
 // Models imports
 import { InteractionModel } from "../models/interactions.model";
 
 export class InteractionsRepository implements IInteractionsRepository {
-  async createInteraction(data: any): Promise<any> {
+  async createInteraction(data: InteractionData): Promise<IInteraction> {
     try {
       const interaction = new InteractionModel(data);
       return await interaction.save();

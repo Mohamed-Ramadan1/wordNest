@@ -1,10 +1,13 @@
+// interfaces imports
+import { InteractionData } from "./interactionsRequest.interface";
+
 export interface IInteractionsRepository {
   /**
    * Creates a new interaction (like, dislike, etc.) on a blog post.
    * @param data - Interaction data including user, post, and type of interaction.
    * @returns The created interaction document.
    */
-  createInteraction(data: any): Promise<any>;
+  createInteraction(data: InteractionData): Promise<any>;
 
   /**
    * Deletes a specific interaction by its ID.

@@ -17,6 +17,8 @@ import { IInteractionsService } from "../interfaces/interactionsService.interfac
 // config imports
 import { TYPES } from "@config/containerTypes.config";
 
+// interface imports
+import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
 @injectable()
 export class InteractionsController {
   private interactionService: IInteractionsService;
@@ -30,8 +32,13 @@ export class InteractionsController {
    * This includes liking, disliking, or any other form of engagement.
    */
   public interactWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.interactWithBlogPost();
+    async (
+      req: Request<{}, {}, CreateInteractionRequestBody>,
+      res: Response
+    ) => {
+      await this.interactionService.interactWithBlogPost(
+        req.body.newInteractionData
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Successfully interacted with blog post",

@@ -7,7 +7,7 @@ import { ObjectId } from "mongoose";
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import { APIFeatures, AppError } from "@utils/index";
+import { APIFeatures, AppError, handleServiceError } from "@utils/index";
 
 import {
   IBlog,
@@ -51,10 +51,7 @@ export class BlogManagementService {
         new Date()
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to delete blog post", 500);
+      handleServiceError(err);
     }
   }
 
@@ -70,10 +67,7 @@ export class BlogManagementService {
       }
       return blogPost;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get blog post", 500);
+      handleServiceError(err);
     }
   }
 
@@ -91,10 +85,7 @@ export class BlogManagementService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get blog posts", 500);
+      handleServiceError(err);
     }
   }
 
@@ -117,10 +108,7 @@ export class BlogManagementService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to get user blogs posts", 500);
+      handleServiceError(err);
     }
   }
 
@@ -153,10 +141,7 @@ export class BlogManagementService {
         userAdmin.email
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to unpublish blog post.", 500);
+      handleServiceError(err);
     }
   }
 
@@ -190,10 +175,7 @@ export class BlogManagementService {
         userAdmin.email
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message || "Failed to re-publish blog post.", 500);
+      handleServiceError(err);
     }
   }
 }

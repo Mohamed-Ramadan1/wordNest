@@ -1,12 +1,13 @@
 // Packages imports
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
+
 import { Request } from "express";
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import { APIFeatures, AppError } from "@utils/index";
+import { APIFeatures, AppError, handleServiceError } from "@utils/index";
 
 //interfaces imports
 import {
@@ -57,7 +58,7 @@ export class BlogCRUDService {
         });
       }
       blogsLogger.logFailedBlogPostCreation(user._id, err.message);
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -83,7 +84,7 @@ export class BlogCRUDService {
       await blogPost.save();
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -113,7 +114,7 @@ export class BlogCRUDService {
         true,
         false
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -149,7 +150,7 @@ export class BlogCRUDService {
 
       return blogPost;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -178,7 +179,7 @@ export class BlogCRUDService {
       const blogs: IBlog[] = await features.execute();
       return blogs;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }
