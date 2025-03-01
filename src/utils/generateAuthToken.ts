@@ -1,11 +1,18 @@
-import { Secret, sign } from "jsonwebtoken";
+import { Secret, sign, SignOptions } from "jsonwebtoken";
 import { IUser } from "@features/users";
 import { jwtConfig, Environment } from "@config/jwt.config";
 import { Response, CookieOptions } from "express";
+
 export const generateAuthToken = (user: IUser, res: Response) => {
-  const userToken: string = sign({ id: user._id }, jwtConfig.secret as Secret, {
-    expiresIn: jwtConfig.expiresIn,
-  });
+  const signOptions: SignOptions = {
+    expiresIn: jwtConfig.expiresIn as any,
+  };
+
+  const userToken: string = sign(
+    { id: user._id },
+    jwtConfig.secret as Secret,
+    signOptions
+  );
 
   const cookieOptions: CookieOptions = {
     expires: new Date(
