@@ -1,4 +1,5 @@
-// Purpose: Auth controller for handling authentication requests.
+//packages imports
+import { inject, injectable } from "inversify";
 
 // Import necessary modules and packages  .
 import { Request, Response } from "express";
@@ -6,24 +7,31 @@ import { Request, Response } from "express";
 // Models imports
 import { IUser } from "@features/users";
 
-// services imports
-import AuthService from "../services/auth.service";
-
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
-// interfaces imports
-
+// shard imports
 import { ApiResponse } from "@shared/index";
 
+// config imports
+import { TYPES } from "@config/containerTypes.config";
+
+// interface imports
+import { IAuthService } from "../interfaces";
+
+@injectable()
 export default class AuthController {
+  private authService: IAuthService;
+  constructor(@inject(TYPES.AuthService) authService: IAuthService) {
+    this.authService = authService;
+  }
   // !Register a new user with Google account.(Not implemented)
   socialRegister = catchAsync(async (req: Request, res: Response) => {});
 
   // Register a new user with email address.
-  emailRegister = catchAsync(async (req: Request, res: Response) => {
+  public emailRegister = catchAsync(async (req: Request, res: Response) => {
     const { email, firstName, lastName, password } = req.body;
-    const { user, token } = await AuthService.registerWithEmail(
+    const { user, token } = await this.authService.registerWithEmail(
       email,
       firstName,
       lastName,
@@ -40,8 +48,12 @@ export default class AuthController {
   });
 
   // Login a user with email address.
-  emailLogin = catchAsync(async (req: Request, res: Response) => {
-    const { token } = await AuthService.loginWithEmail(req.user, req.ip, res);
+  public emailLogin = catchAsync(async (req: Request, res: Response) => {
+    const { token } = await this.authService.loginWithEmail(
+      req.user,
+      req.ip,
+      res
+    );
 
     const re: ApiResponse<IUser> = {
       status: "success",
@@ -53,8 +65,8 @@ export default class AuthController {
   });
 
   // Logout a user.
-  logout = catchAsync(async (req: Request, res: Response) => {
-    const token: string = AuthService.logout(req.user, req.ip, res);
+  public logout = catchAsync(async (req: Request, res: Response) => {
+    const token: string = this.authService.logout(req.user, req.ip, res);
 
     const re: ApiResponse<string> = {
       status: "success ",

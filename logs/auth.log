@@ -131,3 +131,4 @@
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-01 14:25:37","user":"mohamedramadanmeray@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-01 14:26:23","user":"mohamedramadanmeray@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-01 14:26:25","user":"mohamedramadanmeray@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-03 00:39:02","user":"mohamedramadanmeray@gmail.com"}

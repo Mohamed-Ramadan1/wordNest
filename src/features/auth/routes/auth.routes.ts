@@ -1,11 +1,31 @@
+// express imports
 import { Router } from "express";
+
+// configuration imports
+import { container } from "@config/inversify.config";
+import { TYPES } from "@config/containerTypes.config";
+
+// controllers imports
 import AuthController from "../controllers/auth.controller";
 import AccountRecoveryController from "../controllers/accountRecovery.controller";
+
+// middleware imports
 import AuthMiddleware from "../middlewares/auth.middleware";
 import { AccountRecoveryMiddleware } from "../middlewares/accountRecovery.middleware";
+
+// shared imports
 import { protect } from "@shared/index";
-const authController = new AuthController();
+
+// controllers instances (dependency injection)
+const authController = container.get<AuthController>(TYPES.AuthController);
+const accountRecoveryController = container.get<AccountRecoveryController>(
+  TYPES.AccountRecoveryController
+);
+
+// middleware instances
 const authMiddleware = new AuthMiddleware();
+
+// Router instance
 const router = Router();
 
 // Register a new user with email address.
@@ -29,7 +49,7 @@ router
   .route("/verify-email/:token")
   .get(
     AccountRecoveryMiddleware.validateVerifyEMails,
-    AccountRecoveryController.verifyEmail
+    accountRecoveryController.verifyEmail
   );
 // Resend verification email. (this route user must be authenticated)
 router
@@ -37,7 +57,7 @@ router
   .post(
     protect,
     AccountRecoveryMiddleware.validateResendVerificationEmail,
-    AccountRecoveryController.resendVerification
+    accountRecoveryController.resendVerification
   );
 
 // forgot password request.
@@ -45,7 +65,7 @@ router
   .route("/password/forgot")
   .post(
     AccountRecoveryMiddleware.validateRequestResetPassword,
-    AccountRecoveryController.requestPasswordReset
+    accountRecoveryController.requestPasswordReset
   );
 
 // Reset password.
@@ -53,7 +73,7 @@ router
   .route("/password/reset/:token")
   .post(
     AccountRecoveryMiddleware.validateResetPassword,
-    AccountRecoveryController.resetPassword
+    accountRecoveryController.resetPassword
   );
 
 export default router;

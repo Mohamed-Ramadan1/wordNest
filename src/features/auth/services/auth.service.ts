@@ -20,8 +20,11 @@ import {
   logFailedLogin,
 } from "@logging/index";
 
-export default class AuthService {
-  static async registerWithEmail(
+// interfaces imports
+import { IAuthService } from "../interfaces";
+
+export default class AuthService implements IAuthService {
+  public async registerWithEmail(
     email: string,
     firstName: string,
     lastName: string,
@@ -53,7 +56,7 @@ export default class AuthService {
     }
   }
 
-  static async loginWithEmail(
+  public async loginWithEmail(
     user: IUser,
     ipAddress: string | undefined,
     res: Response
@@ -71,7 +74,7 @@ export default class AuthService {
     }
   }
 
-  static logout(
+  public logout(
     user: IUser,
     ipAddress: string | undefined,
     res: Response

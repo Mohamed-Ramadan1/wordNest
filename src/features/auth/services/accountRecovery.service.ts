@@ -17,10 +17,12 @@ import {
   logSuccessfulPasswordReset,
 } from "@logging/index";
 
+// interface imports
+import { IAccountRecoveryService } from "../interfaces";
 // Account recovery class
-export default class AccountRecoveryService {
+export default class AccountRecoveryService implements IAccountRecoveryService {
   // Verify user's email address.
-  static verifyEmail = async (user: IUser): Promise<void> => {
+  public verifyEmail = async (user: IUser): Promise<void> => {
     try {
       user.set({
         emailVerified: true,
@@ -52,7 +54,7 @@ export default class AccountRecoveryService {
   };
 
   // Resend verification email.
-  static resendVerification = async (user: IUser) => {
+  public resendVerification = async (user: IUser) => {
     try {
       user.createEmailVerificationToken();
       user.lastVerificationEmailSentAt = new Date();
@@ -69,7 +71,7 @@ export default class AccountRecoveryService {
   };
 
   // Forgot password.
-  static requestPasswordReset = async (user: IUser, ip: string | undefined) => {
+  public requestPasswordReset = async (user: IUser, ip: string | undefined) => {
     try {
       // Generate password reset token
       user.createPasswordResetToken();
@@ -96,7 +98,7 @@ export default class AccountRecoveryService {
   };
 
   // Reset password.
-  static resetPassword = async (
+  public resetPassword = async (
     user: IUser,
     newPassword: string,
     ip: string | undefined
