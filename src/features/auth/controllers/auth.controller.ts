@@ -11,10 +11,7 @@ import { IUser } from "@features/users";
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shard imports
-import { ApiResponse } from "@shared/index";
-
-// config imports
-import { TYPES } from "@config/containerTypes.config";
+import { ApiResponse, TYPES } from "@shared/index";
 
 // interface imports
 import { IAuthService } from "../interfaces";

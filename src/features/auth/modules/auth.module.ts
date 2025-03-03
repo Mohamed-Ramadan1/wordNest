@@ -1,5 +1,5 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@config/containerTypes.config";
+import { TYPES } from "@shared/types/containerTypes";
 import {
   IAuthRepository,
   IAccountRecoveryService,

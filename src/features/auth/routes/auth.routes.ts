@@ -3,7 +3,9 @@ import { Router } from "express";
 
 // configuration imports
 import { container } from "@config/inversify.config";
-import { TYPES } from "@config/containerTypes.config";
+
+// shared imports
+import { TYPES } from "@shared/index";
 
 // controllers imports
 import AuthController from "../controllers/auth.controller";

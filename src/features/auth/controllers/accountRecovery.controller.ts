@@ -11,13 +11,10 @@ import { IUser } from "@features/users";
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, TYPES } from "@shared/index";
 
 // interface imports
 import { IAccountRecoveryService } from "../interfaces";
-
-// config imports
-import { TYPES } from "@config/containerTypes.config";
 
 @injectable()
 export default class AccountRecoveryController {

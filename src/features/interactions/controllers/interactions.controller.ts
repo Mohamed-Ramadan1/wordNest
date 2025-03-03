@@ -9,13 +9,10 @@ import { injectable, inject } from "inversify";
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, TYPES } from "@shared/index";
 
 // services imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";
-
-// config imports
-import { TYPES } from "@config/containerTypes.config";
 
 // interface imports
 import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";

@@ -7,3 +7,6 @@ export { ApiResponse } from "./interfaces/apiResponse.interface";
 
 // controllers exports
 export { globalError } from "./controller/error.Controller";
+
+// types exports
+export { TYPES } from "./types/containerTypes";
