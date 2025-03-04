@@ -12,13 +12,16 @@ import { supportTicketsLogger } from "@logging/index";
 
 import { IUser } from "@features/users";
 
-export class TicketPriorityService {
+// interfaces imports
+import { ITicketPriorityService } from "../../interfaces/index";
+
+export class TicketPriorityService implements ITicketPriorityService {
   /**
    * Changes the priority of a ticket.
    * Sends or skips notifications based on the priority level.
    * Only an admin can perform this operation based on their judgment.
    */
-  static async changePriority(
+  async changePriority(
     ipAddress: string | undefined,
     ticket: ISupportTicket,
     userAdmin: IUser,

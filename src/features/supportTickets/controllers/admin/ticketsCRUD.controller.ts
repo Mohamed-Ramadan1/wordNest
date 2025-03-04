@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
 
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";
@@ -14,17 +16,27 @@ import {
 } from "../../interfaces/SupportTicketAdminBody.interface";
 
 // services imports
-import { TicketsCRUDService } from "../../services/admin/ticketsCRUD.service";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ITicketsCRUDService } from "../../interfaces/index";
 
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+@injectable()
 export class TicketsCRUDController {
+  private ticketsCRUDService: ITicketsCRUDService;
+  constructor(
+    @inject(TYPES.TicketsCRUDService)
+    ticketsCRUDService: ITicketsCRUDService
+  ) {
+    this.ticketsCRUDService = ticketsCRUDService;
+  }
   /**
    * Retrieves all tickets.
    * Fetches a list of all tickets in the system, optionally filtered by user or status.
    */
   public getAllTickets = catchAsync(async (req: Request, res: Response) => {
     // Retrieves all tickets
-    const tickets = await TicketsCRUDService.getAllTickets(req);
+    const tickets = await this.ticketsCRUDService.getAllTickets(req);
 
     const response: ApiResponse<ISupportTicket[]> = {
       status: "success",
@@ -45,7 +57,7 @@ export class TicketsCRUDController {
     async (req: Request<TicketParams>, res: Response) => {
       // Retrieves a specific ticket by ID
       const ticketId = req.params.ticketId;
-      const ticket = await TicketsCRUDService.getTicketById(ticketId);
+      const ticket = await this.ticketsCRUDService.getTicketById(ticketId);
       const response: ApiResponse<ISupportTicket> = {
         status: "success",
         message: "Ticket retrieved successfully",
@@ -64,7 +76,7 @@ export class TicketsCRUDController {
     async (req: Request<TicketParams>, res: Response) => {
       // Creates a new ticket
 
-      await TicketsCRUDService.createTicket(req.body, req.ip);
+      await this.ticketsCRUDService.createTicket(req.body, req.ip);
 
       const response: ApiResponse<ISupportTicket> = {
         status: "success",
@@ -84,7 +96,10 @@ export class TicketsCRUDController {
     async (req: Request<{}, {}, TicketUPdateBody>, res: Response) => {
       const { ticketToUpdate, updateTicketObject } = req.body;
       // Updates a specific ticket
-      await TicketsCRUDService.updateTicket(ticketToUpdate, updateTicketObject);
+      await this.ticketsCRUDService.updateTicket(
+        ticketToUpdate,
+        updateTicketObject
+      );
 
       const response: ApiResponse<ISupportTicket> = {
         status: "success",
@@ -102,10 +117,10 @@ export class TicketsCRUDController {
 
   public deleteTicket = catchAsync(
     async (req: Request<{}, {}, TicketDeletionBody>, res: Response) => {
-      await TicketsCRUDService.deleteTicket(
+      await this.ticketsCRUDService.deleteTicket(
         req.body.ticketToBeDeleted,
-        req.ip,
-        req.user
+        req.user,
+        req.ip
       );
 
       const response: ApiResponse<ISupportTicket> = {

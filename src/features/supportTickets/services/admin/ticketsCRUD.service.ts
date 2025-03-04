@@ -27,12 +27,15 @@ import {
 } from "@jobs/index";
 import { IUser } from "@features/users";
 
-export class TicketsCRUDService {
+// interfaces imports
+import { ITicketsCRUDService } from "../../interfaces/index";
+
+export class TicketsCRUDService implements ITicketsCRUDService {
   /**
    * Retrieves all tickets.
    * Fetches a list of all tickets, optionally filtered by certain criteria (e.g., user or status).
    */
-  static async getAllTickets(req: Request): Promise<ISupportTicket[]> {
+  async getAllTickets(req: Request): Promise<ISupportTicket[]> {
     try {
       const features = new APIFeatures(SupportTicket.find(), req.query)
         .filter()
@@ -52,7 +55,7 @@ export class TicketsCRUDService {
    *
    * @param ticketId - The unique ID of the ticket to retrieve.
    */
-  static async getTicketById(ticketId: ObjectId): Promise<ISupportTicket> {
+  async getTicketById(ticketId: ObjectId): Promise<ISupportTicket> {
     try {
       const ticket: ISupportTicket | null =
         await SupportTicket.findById(ticketId);
@@ -74,7 +77,7 @@ export class TicketsCRUDService {
    *
    * @param ticketData - The data for the new ticket, including issue details and other relevant information.
    */
-  static async createTicket(
+  async createTicket(
     ticketInformation: TicketBody,
     ipAddress: string | undefined
   ): Promise<void> {
@@ -121,7 +124,7 @@ export class TicketsCRUDService {
    * @param ticketId - The unique ID of the ticket to update.
    * @param updateData - The data to update the ticket with, including modified details.
    */
-  static async updateTicket(
+  async updateTicket(
     ticket: ISupportTicket,
     updateObject: {
       category?: string;
@@ -146,10 +149,10 @@ export class TicketsCRUDService {
    *
    * @param ticketId - The unique ID of the ticket to delete.
    */
-  static async deleteTicket(
+  public async deleteTicket(
     ticket: ISupportTicket,
-    ipAddress: string | undefined,
-    user: IUser
+    user: IUser,
+    ipAddress?: string
   ): Promise<void> {
     try {
       if (ticket.attachments) {

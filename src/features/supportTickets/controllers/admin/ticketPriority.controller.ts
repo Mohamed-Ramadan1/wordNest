@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
 
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";
@@ -6,9 +8,20 @@ import { catchAsync, sendResponse } from "@utils/index";
 // Shared imports
 import { ApiResponse } from "@shared/index";
 import { TicketPriorityChangeBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { TicketPriorityService } from "@features/supportTickets/services/admin/ticketPriority.service";
+import { ITicketPriorityService } from "../../interfaces/index";
 
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
+@injectable()
 export class TicketPriorityController {
+  private ticketPriorityService: ITicketPriorityService;
+  constructor(
+    @inject(TYPES.TicketPriorityService)
+    ticketPriorityService: ITicketPriorityService
+  ) {
+    this.ticketPriorityService = ticketPriorityService;
+  }
   /**
    * Changes the priority of a ticket.
    * Sends or skips notifications based on the priority level.
@@ -19,7 +32,7 @@ export class TicketPriorityController {
       const { ticketToUpdate, newPriority } = req.body;
       const { user, ip } = req;
 
-      await TicketPriorityService.changePriority(
+      await this.ticketPriorityService.changePriority(
         ip,
         ticketToUpdate,
         user,

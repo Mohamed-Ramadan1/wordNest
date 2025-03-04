@@ -3,6 +3,8 @@ import { INTERACTIONS_TYPES } from "../constants/injectionContainerTypes/interac
 import { USERS_TYPES } from "../constants/injectionContainerTypes/usersTypes";
 import { FAVORITES_TYPES } from "../constants/injectionContainerTypes/favoritesTypes";
 import { READING_LIST_TYPES } from "../constants/injectionContainerTypes/readingListTypes";
+import { SUPPORT_TICKETS_TYPES } from "../constants/injectionContainerTypes/supportTicketTypes";
+
 // Define identifiers for bindings
 export const TYPES = {
   // auth types
@@ -14,4 +16,6 @@ export const TYPES = {
   ...FAVORITES_TYPES,
   // Interactions types
   ...INTERACTIONS_TYPES,
+  // Support tickets types
+  ...SUPPORT_TICKETS_TYPES,
 };

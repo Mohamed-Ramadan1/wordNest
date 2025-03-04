@@ -6,6 +6,8 @@ import authModule from "@features/auth/modules/auth.module";
 import interactionsModule from "@features/interactions/modules/interactions.module";
 import usersModule from "@features/users/modules/users.module";
 import readingListModule from "@features/readingList/modules/readingList.module";
+import supportTicketModule from "@features/supportTickets/module/supportTicket.module";
+
 // Create an IoC container
 const container = new Container();
 
@@ -14,7 +16,8 @@ container.load(
   authModule,
   interactionsModule,
   usersModule,
-  readingListModule
+  readingListModule,
+  supportTicketModule
 );
 
 export { container };

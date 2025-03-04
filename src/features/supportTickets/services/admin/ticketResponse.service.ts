@@ -18,12 +18,15 @@ import { uploadToCloudinary } from "@utils/index";
 import cloudinary from "cloudinary";
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
-export class TicketResponseService {
+
+// interfaces imports
+import { ITicketResponseService } from "../../interfaces/index";
+export class TicketResponseService implements ITicketResponseService {
   /**
    * Allows an admin to respond to a ticket.
    * Admins can provide a reply to address user concerns or issues in a ticket.
    */
-  static async respondToTicket(
+  async respondToTicket(
     ticket: ISupportTicket,
     ticketOwner: IUser,
     ipAddress: string | undefined,

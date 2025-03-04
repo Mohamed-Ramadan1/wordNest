@@ -14,12 +14,15 @@ import { supportTicketsLogger } from "@logging/index";
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 import { IUser } from "@features/users";
 
-export class TicketStatusService {
+// interfaces imports
+import { ITicketStatusService } from "../../interfaces/index";
+
+export class TicketStatusService implements ITicketStatusService {
   /**
    * Marks a ticket as closed.
    * Indicates that the ticket has been resolved or is no longer active.
    */
-  static async closeTicket(
+  async closeTicket(
     ticketOwner: IUser,
     userAdmin: IUser,
     ticket: ISupportTicket,
@@ -58,7 +61,7 @@ export class TicketStatusService {
    * Reopens a ticket.
    * Changes the status of the ticket back to open for further action.
    */
-  static async reopenTicket(
+  async reopenTicket(
     ticketOwner: IUser,
     userAdmin: IUser,
     ticket: ISupportTicket,
