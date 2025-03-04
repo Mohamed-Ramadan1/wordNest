@@ -133,3 +133,5 @@
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-01 14:26:25","user":"mohamedramadanmeray@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-03 00:39:02","user":"mohamedramadanmeray@gmail.com"}
 {"error":"No user existing with email address kingSalman@gmail.com","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-03 23:52:32","user":"kingSalman@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-04 00:27:47","user":"mohamedramadanmeray@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-04 12:51:32","user":"mohamedramadanmeray@gmail.com"}

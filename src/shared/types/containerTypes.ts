@@ -6,7 +6,7 @@ import { USERS_TYPES } from "../constants/injectionContainerTypes/usersTypes";
 export const TYPES = {
   // auth types
   ...AUTH_TYPES,
-  // users types
+  // User types
   ...USERS_TYPES,
   // Interactions types
   ...INTERACTIONS_TYPES,
