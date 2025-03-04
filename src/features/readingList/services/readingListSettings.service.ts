@@ -13,14 +13,12 @@ import { ReadingListModel } from "../models/readingList.model";
 
 // interfaces imports
 import { ReminderAlertData } from "../interfaces/readingListSettingsRequest.interface";
-
-export class ReadingListSettingsService {
+import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+export class ReadingListSettingsService implements IReadingListSettingsService {
   /**
    * Sets a reminder alert for a specific reading list item.
    */
-  public static async setReminderAlert(
-    alertData: ReminderAlertData
-  ): Promise<void> {
+  public async setReminderAlert(alertData: ReminderAlertData): Promise<void> {
     try {
       alertData.readingItem.lastInteractedAt = new Date();
       alertData.readingItem.reminderAlert = true;
@@ -49,7 +47,7 @@ export class ReadingListSettingsService {
   /**
    * Re-schedules an existing reminder alert for a reading list item.
    */
-  public static async reScheduleReminderAlert(
+  public async reScheduleReminderAlert(
     alertData: ReminderAlertData,
     oldJobId: string
   ): Promise<void> {
@@ -83,7 +81,7 @@ export class ReadingListSettingsService {
    * Deletes a scheduled reminder alert for a reading list item.
    */
 
-  public static async deleteReminderAlert(
+  public async deleteReminderAlert(
     itemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
@@ -115,7 +113,7 @@ export class ReadingListSettingsService {
   /**
    * Enables auto-removal of a reading list item when marked as "read."
    */
-  public static async allowAutoRemoveReadingListItem(
+  public async allowAutoRemoveReadingListItem(
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
@@ -145,7 +143,7 @@ export class ReadingListSettingsService {
   /**
    * Disables auto-removal of a reading list item after being marked as "read."
    */
-  public static async disableAutoRemoveReadingListItem(
+  public async disableAutoRemoveReadingListItem(
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {

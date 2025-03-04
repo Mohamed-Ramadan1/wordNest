@@ -1,5 +1,7 @@
 // Express imports
 import { Response, Request } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
 
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";
@@ -12,9 +14,23 @@ import {
   ReadingListSettingsRequestParams,
   ReadingListSettingsRequestBody,
 } from "../interfaces/readingListSettingsRequest.interface";
-// service imports
-import { ReadingListSettingsService } from "../services/readingListSettings.service";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
+// interfaces imports
+import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+
+@injectable()
 export class ReadingListSettingsController {
+  private readingListSettingsService: IReadingListSettingsService;
+  constructor(
+    @inject(TYPES.ReadingListSettingsService)
+    readingListSettingsService: IReadingListSettingsService
+  ) {
+    this.readingListSettingsService = readingListSettingsService;
+  }
+
   /**
    * Sets a reminder alert for a specific reading list item.
    */
@@ -23,7 +39,9 @@ export class ReadingListSettingsController {
       req: Request<{}, {}, ReadingListSettingsRequestBody>,
       res: Response
     ) => {
-      await ReadingListSettingsService.setReminderAlert(req.body.alertInfo);
+      await this.readingListSettingsService.setReminderAlert(
+        req.body.alertInfo
+      );
 
       const response: ApiResponse<null> = {
         status: "success",
@@ -47,7 +65,7 @@ export class ReadingListSettingsController {
       >,
       res: Response
     ) => {
-      await ReadingListSettingsService.reScheduleReminderAlert(
+      await this.readingListSettingsService.reScheduleReminderAlert(
         req.body.alertInfo,
         req.params.itemId.toString()
       );
@@ -64,7 +82,7 @@ export class ReadingListSettingsController {
    */
   public deleteReminderAlert = catchAsync(
     async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
-      await ReadingListSettingsService.deleteReminderAlert(
+      await this.readingListSettingsService.deleteReminderAlert(
         req.params.itemId,
         req.user._id
       );
@@ -82,7 +100,7 @@ export class ReadingListSettingsController {
    */
   public allowAutoRemoveReadingListItem = catchAsync(
     async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
-      await ReadingListSettingsService.allowAutoRemoveReadingListItem(
+      await this.readingListSettingsService.allowAutoRemoveReadingListItem(
         req.params.itemId,
         req.user._id
       );
@@ -100,7 +118,7 @@ export class ReadingListSettingsController {
    */
   public disableAutoRemoveReadingListItem = catchAsync(
     async (req: Request<ReadingListSettingsRequestParams>, res: Response) => {
-      await ReadingListSettingsService.disableAutoRemoveReadingListItem(
+      await this.readingListSettingsService.disableAutoRemoveReadingListItem(
         req.params.itemId,
         req.user._id
       );

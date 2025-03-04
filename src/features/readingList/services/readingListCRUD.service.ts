@@ -11,14 +11,15 @@ import { IReadingList } from "../interfaces/readingList.interface";
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
+import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
 
 // redis client instance creation.
 const redisClient = new Redis();
-export class ReadingListCRUDService {
+export class ReadingListCRUDService implements IReadingListCRUDService {
   /**
    * Retrieves all reading list items.
    */
-  public static async getAllReadingListItems(
+  public async getAllReadingListItems(
     userId: ObjectId,
     reqQuery: ParsedQs
   ): Promise<IReadingList[]> {
@@ -40,7 +41,7 @@ export class ReadingListCRUDService {
   /**
    * Retrieves a specific reading list item.
    */
-  public static async getReadingListItem(
+  public async getReadingListItem(
     readingListItemId: ObjectId,
     userId: ObjectId
   ): Promise<IReadingList> {
@@ -74,7 +75,7 @@ export class ReadingListCRUDService {
    * Creates a new reading list item.
    */
 
-  public static async createReadingListItem(
+  public async createReadingListItem(
     useId: ObjectId,
     blogPostId: ObjectId,
     notes: string | undefined
@@ -101,7 +102,7 @@ export class ReadingListCRUDService {
    * Deletes a reading list item.
    */
 
-  public static async deleteReadingListItem(
+  public async deleteReadingListItem(
     readingListItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {

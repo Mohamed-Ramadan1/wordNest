@@ -1,4 +1,6 @@
 import { Response, Request } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
 
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
@@ -9,16 +11,26 @@ import { ApiResponse } from "@shared/index";
 // interfaces imports
 import { ReadingListManagementRequestParams } from "../interfaces/readingListManagementRequest.interface";
 // service imports
-import { ReadingListManagementService } from "../services/readingListManagement.service";
+import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
 
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+@injectable()
 export class ReadingListManagementController {
+  private readingListManagementService: IReadingListManagementService;
+  constructor(
+    @inject(TYPES.ReadingListManagementService)
+    readingListManagementService: IReadingListManagementService
+  ) {
+    this.readingListManagementService = readingListManagementService;
+  }
   /**
    * Marks a reading list item as unread.
    * This function updates the status of a specific item in the reading list to "unread".
    */
   public markListItemAsUnread = catchAsync(
     async (req: Request<ReadingListManagementRequestParams>, res: Response) => {
-      await ReadingListManagementService.markListItemAsUnread(
+      await this.readingListManagementService.markListItemAsUnread(
         req.params.itemId,
         req.user._id
       );
@@ -38,7 +50,7 @@ export class ReadingListManagementController {
    */
   public markListItemAsCompleted = catchAsync(
     async (req: Request<ReadingListManagementRequestParams>, res: Response) => {
-      await ReadingListManagementService.markListItemAsCompleted(
+      await this.readingListManagementService.markListItemAsCompleted(
         req.params.itemId,
         req.user._id
       );
@@ -58,7 +70,7 @@ export class ReadingListManagementController {
    */
   public markListItemAsReading = catchAsync(
     async (req: Request<ReadingListManagementRequestParams>, res: Response) => {
-      await ReadingListManagementService.markListItemAsReading(
+      await this.readingListManagementService.markListItemAsReading(
         req.params.itemId,
         req.user._id
       );
@@ -78,7 +90,7 @@ export class ReadingListManagementController {
    * This function removes all items from the reading list.
    */
   public clearReadingList = catchAsync(async (req: Request, res: Response) => {
-    await ReadingListManagementService.clearReadingList(req.user._id);
+    await this.readingListManagementService.clearReadingList(req.user._id);
 
     const response: ApiResponse<null> = {
       status: "success",
