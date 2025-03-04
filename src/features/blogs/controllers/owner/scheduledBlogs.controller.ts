@@ -1,14 +1,17 @@
 //express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
 import { ApiResponse } from "@shared/index";
-
-// services imports
-import { ScheduledBlogsService } from "../../services/owner/scheduledBlogs.service";
 
 // interfaces imports
 import {
@@ -18,7 +21,19 @@ import {
   UpdateScheduleBlogBodyRequestBody,
 } from "../../interfaces/scheduledBlogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
+
+import { IScheduledBlogsService } from "../../interfaces/index";
+
+@injectable()
 export class ScheduledBlogsController {
+  private scheduledBlogsService: IScheduledBlogsService;
+  constructor(
+    @inject(TYPES.ScheduledBlogsService)
+    scheduledBlogsService: IScheduledBlogsService
+  ) {
+    this.scheduledBlogsService = scheduledBlogsService;
+  }
+
   /**
    * Creates a new scheduled blog post.
    * Handles the request to add a blog post that will be published at a later date.
@@ -28,7 +43,9 @@ export class ScheduledBlogsController {
       req: Request<{}, {}, CreateScheduleBlogsRequestBody>,
       res: Response
     ) => {
-      await ScheduledBlogsService.createScheduledBlogPost(req.body.blogData);
+      await this.scheduledBlogsService.createScheduledBlogPost(
+        req.body.blogData
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Scheduled blog post created successfully",
@@ -46,7 +63,10 @@ export class ScheduledBlogsController {
       req: Request<{}, {}, UpdateScheduleBlogBodyRequestBody>,
       res: Response
     ) => {
-      await ScheduledBlogsService.updateScheduledBlogPost(req.body, req.user);
+      await this.scheduledBlogsService.updateScheduledBlogPost(
+        req.body,
+        req.user
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Scheduled blog post updated successfully",
@@ -61,7 +81,7 @@ export class ScheduledBlogsController {
    */
   public deleteScheduledBlogPost = catchAsync(
     async (req: Request<ScheduleBlogsParams>, res: Response) => {
-      await ScheduledBlogsService.deleteScheduledBlogPost(
+      await this.scheduledBlogsService.deleteScheduledBlogPost(
         req.params.blogId,
         req.user
       );
@@ -80,7 +100,10 @@ export class ScheduledBlogsController {
   public getAllScheduledBlogPosts = catchAsync(
     async (req: Request, res: Response) => {
       const scheduledBlogPosts =
-        await ScheduledBlogsService.getAllScheduledBlogPosts(req.user, req);
+        await this.scheduledBlogsService.getAllScheduledBlogPosts(
+          req.user,
+          req
+        );
       const response: ApiResponse<IBlog[]> = {
         status: "success",
         message: "Scheduled blog posts retrieved successfully",
@@ -100,7 +123,7 @@ export class ScheduledBlogsController {
   public getScheduledBlogPost = catchAsync(
     async (req: Request<ScheduleBlogsParams>, res: Response) => {
       const scheduledBlogPost =
-        await ScheduledBlogsService.getScheduledBlogPost(
+        await this.scheduledBlogsService.getScheduledBlogPost(
           req.params.blogId,
           req.user
         );
@@ -121,7 +144,7 @@ export class ScheduledBlogsController {
    */
   public rescheduleBlogPost = catchAsync(
     async (req: Request<{}, {}, RescheduleBlogRequestBody>, res: Response) => {
-      await ScheduledBlogsService.rescheduleBlogPost(
+      await this.scheduledBlogsService.rescheduleBlogPost(
         req.body.blog,
         req.body.rescheduleFormatDate
       );

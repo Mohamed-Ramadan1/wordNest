@@ -1,14 +1,20 @@
-import { AUTH_TYPES } from "../constants/injectionContainerTypes/authTypes";
-import { INTERACTIONS_TYPES } from "../constants/injectionContainerTypes/interactionsTypes";
-import { USERS_TYPES } from "../constants/injectionContainerTypes/usersTypes";
-import { FAVORITES_TYPES } from "../constants/injectionContainerTypes/favoritesTypes";
-import { READING_LIST_TYPES } from "../constants/injectionContainerTypes/readingListTypes";
-import { SUPPORT_TICKETS_TYPES } from "../constants/injectionContainerTypes/supportTicketTypes";
+import {
+  AUTH_TYPES,
+  INTERACTIONS_TYPES,
+  USERS_TYPES,
+  FAVORITES_TYPES,
+  READING_LIST_TYPES,
+  SUPPORT_TICKETS_TYPES,
+  BLOGS_TYPES,
+} from "../constants/index";
 
 // Define identifiers for bindings
 export const TYPES = {
   // auth types
   ...AUTH_TYPES,
+  // Blog types
+  ...BLOGS_TYPES,
+  // Users types
   ...USERS_TYPES,
   // Reading list types
   ...READING_LIST_TYPES,

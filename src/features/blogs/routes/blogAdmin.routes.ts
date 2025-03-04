@@ -1,17 +1,19 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, restrictTo } from "@shared/index";
+import { protect, restrictTo, TYPES } from "@shared/index";
+// config imports
+import { container } from "@config/inversify.config";
 
 // middleware imports
 import { BlogsManagementMiddleware } from "../middlewares/admin/blogsManagement.middleware";
 
 // controller imports
 import { BlogManagementController } from "../controllers/admin/blogsManagement.controller";
-
 // controllers initialization
-const blogManagementController = new BlogManagementController();
-
+const blogManagementController = container.get<BlogManagementController>(
+  TYPES.BlogManagementController
+);
 // create  the express router
 const router: Router = Router();
 router.use(protect);

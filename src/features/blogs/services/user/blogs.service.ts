@@ -11,12 +11,14 @@ import { APIFeatures, AppError, handleServiceError } from "@utils/index";
 
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
-export class BlogsService {
+// interfaces imports
+import { IBlogsService } from "../../interfaces/index";
+export class BlogsService implements IBlogsService {
   /**
    * Retrieves a single blog post by its ID.
    */
 
-  public static async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
+  public async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
     try {
       const blogPost = await BlogModel.findOne({
         _id: blogPostId,
@@ -39,7 +41,7 @@ export class BlogsService {
    * Retrieves all blog posts.
    */
 
-  public static async getAllBlogPosts(requestQuery: ParsedQs) {
+  public async getAllBlogPosts(requestQuery: ParsedQs) {
     try {
       const feature = new APIFeatures(
         BlogModel.find({
@@ -65,7 +67,7 @@ export class BlogsService {
   /**
    * Retrieves all blog posts by a specific user.
    */
-  public static async getAllBlogPostsByUser(
+  public async getAllBlogPostsByUser(
     userId: ObjectId,
     requestQuery: ParsedQs
   ): Promise<IBlog[]> {

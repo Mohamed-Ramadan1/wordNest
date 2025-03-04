@@ -1,14 +1,17 @@
 //express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
 import { ApiResponse } from "@shared/index";
-
-// services imports
-import { BlogManagementService } from "../../services/admin/blogsManagement.service";
 
 // interfaces imports
 import {
@@ -16,8 +19,17 @@ import {
   BlogManagementRequestBody,
 } from "../../interfaces/blogsManagementRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import { IBlogManagementService } from "../../interfaces/index";
 
+@injectable()
 export class BlogManagementController {
+  private blogManagementService: IBlogManagementService;
+  constructor(
+    @inject(TYPES.BlogManagementService)
+    blogManagementService: IBlogManagementService
+  ) {
+    this.blogManagementService = blogManagementService;
+  }
   /**
    * Deletes a blog post.
    * Handles the request to remove a specified blog post permanently from the system.
@@ -25,7 +37,7 @@ export class BlogManagementController {
   public deleteBlogPost = catchAsync(
     async (req: Request<{}, {}, BlogManagementRequestBody>, res: Response) => {
       const { blogOwner, blogPost, userAdmin } = req.body;
-      await BlogManagementService.deleteBlogPost(
+      await this.blogManagementService.deleteBlogPost(
         blogOwner,
         blogPost,
         userAdmin
@@ -44,7 +56,7 @@ export class BlogManagementController {
    */
   public getBlogPost = catchAsync(
     async (req: Request<BlogsManagementRequestParams>, res: Response) => {
-      const blogPost = await BlogManagementService.getBlogPost(
+      const blogPost = await this.blogManagementService.getBlogPost(
         req.params.blogId
       );
       const response: ApiResponse<IBlog> = {
@@ -63,7 +75,9 @@ export class BlogManagementController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogsData = await BlogManagementService.getAllBlogPosts(req.query);
+    const blogsData = await this.blogManagementService.getAllBlogPosts(
+      req.query
+    );
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog post retrieved successfully",
@@ -81,7 +95,7 @@ export class BlogManagementController {
    */
   public getAllBlogPostsByUser = catchAsync(
     async (req: Request<BlogsManagementRequestParams>, res: Response) => {
-      const blogsData = await BlogManagementService.getAllBlogPostsByUser(
+      const blogsData = await this.blogManagementService.getAllBlogPostsByUser(
         req.params.userId,
         req.query
       );
@@ -105,7 +119,7 @@ export class BlogManagementController {
   public unPublishBlogPost = catchAsync(
     async (req: Request<{}, {}, BlogManagementRequestBody>, res: Response) => {
       const { blogOwner, blogPost, userAdmin } = req.body;
-      await BlogManagementService.unPublishBlogPost(
+      await this.blogManagementService.unPublishBlogPost(
         blogPost,
         blogOwner,
         userAdmin
@@ -127,7 +141,7 @@ export class BlogManagementController {
   public rePublishBlogPost = catchAsync(
     async (req: Request<{}, {}, BlogManagementRequestBody>, res: Response) => {
       const { blogOwner, blogPost, userAdmin } = req.body;
-      await BlogManagementService.rePublishBlogPost(
+      await this.blogManagementService.rePublishBlogPost(
         blogPost,
         blogOwner,
         userAdmin

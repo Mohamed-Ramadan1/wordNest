@@ -1,9 +1,11 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
+// config imports
+import { container } from "@config/inversify.config";
 
 // middleware imports
 import { BlogOwnerCRUDMiddleware } from "../middlewares/owner/blogOwnerCRUD.middleware";
@@ -18,9 +20,15 @@ import { ScheduledBlogsController } from "../controllers/owner/scheduledBlogs.co
 const router: Router = Router();
 
 // controllers instances
-const blogCRUDController = new BlogCRUDController();
-const blogStatusController = new BlogStatusController();
-const scheduledBlogsController = new ScheduledBlogsController();
+const blogCRUDController = container.get<BlogCRUDController>(
+  TYPES.BlogOwnerCRUDController
+);
+const blogStatusController = container.get<BlogStatusController>(
+  TYPES.BlogStatusController
+);
+const scheduledBlogsController = container.get<ScheduledBlogsController>(
+  TYPES.ScheduledBlogsController
+);
 
 router.use(protect);
 

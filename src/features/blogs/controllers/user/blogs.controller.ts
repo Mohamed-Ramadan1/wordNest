@@ -1,6 +1,12 @@
 //express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
@@ -8,22 +14,24 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { ApiResponse } from "@shared/index";
 
 // services imports
-import { BlogManagementService } from "../../services/admin/blogsManagement.service";
 
 // interfaces imports
 import { BlogsRequestParams } from "../../interfaces/blogsRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-
+import { IBlogsService } from "../../interfaces/index";
+@injectable()
 export class BlogsController {
+  private blogsService: IBlogsService;
+  constructor(@inject(TYPES.BlogsService) blogsService: IBlogsService) {
+    this.blogsService = blogsService;
+  }
   /**
    * Retrieves a single blog post.
    * Fetches a specific blog post by its ID for viewing or editing.
    */
   public getBlogPost = catchAsync(
     async (req: Request<BlogsRequestParams>, res: Response) => {
-      const blogPost = await BlogManagementService.getBlogPost(
-        req.params.blogId
-      );
+      const blogPost = await this.blogsService.getBlogPost(req.params.blogId);
       const response: ApiResponse<IBlog> = {
         status: "success",
         message: "Blog post retrieved successfully",
@@ -40,7 +48,7 @@ export class BlogsController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogsData = await BlogManagementService.getAllBlogPosts(req.query);
+    const blogsData = await this.blogsService.getAllBlogPosts(req.query);
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog post retrieved successfully",
@@ -58,7 +66,7 @@ export class BlogsController {
    */
   public getAllBlogPostsByUser = catchAsync(
     async (req: Request<BlogsRequestParams>, res: Response) => {
-      const blogsData = await BlogManagementService.getAllBlogPostsByUser(
+      const blogsData = await this.blogsService.getAllBlogPostsByUser(
         req.params.userId,
         req.query
       );
