@@ -7,7 +7,7 @@ import { FavoriteModel } from "../models/favorites.model";
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
 
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { IFavorite } from "../interfaces/favorites.interface";
 import { IFavoritesService } from "../interfaces/favoritesService.interface";
 // redis client instance creation.

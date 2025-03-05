@@ -13,7 +13,9 @@ export const restrictTo = (...roles: string[]) => {
     }
 
     // Check if the user has at least one of the required roles
-    const userHasRole = req.user.roles.some((role) => roles.includes(role));
+    const userHasRole = req.user.roles.some((role: any) =>
+      roles.includes(role)
+    );
 
     if (!userHasRole) {
       return next(

@@ -1,9 +1,9 @@
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { AppError } from "@utils/index";
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 import { JwtPayload } from "jsonwebtoken";
-import { UserModel } from "@features/users";
+import { UserModel } from "@features/users_feature";
 
 export const validateUserAccountStatus = (user: IUser): void => {
   // check if user account is to be deleted

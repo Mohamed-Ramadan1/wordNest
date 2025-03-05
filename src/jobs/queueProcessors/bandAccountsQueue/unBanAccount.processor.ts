@@ -1,9 +1,9 @@
 import { Job } from "bull";
-import { UserModel } from "@features/users";
+import { UserModel } from "@features/users_feature";
 import { banAccountsLogger } from "@logging/index";
 import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { AppError } from "@utils/appError";
 
 export const unBanAccountProcessor = async (job: Job) => {

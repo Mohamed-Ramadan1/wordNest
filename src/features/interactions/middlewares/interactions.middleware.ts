@@ -4,7 +4,7 @@ import { Response, Request, NextFunction } from "express";
 // models imports
 
 // utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+import { catchAsync, validateDto } from "@utils/index";
 
 // interfaces imports
 import {

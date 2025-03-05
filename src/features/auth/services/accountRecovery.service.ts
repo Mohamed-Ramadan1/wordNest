@@ -1,5 +1,5 @@
 // Models imports
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // utils imports
 import { handleServiceError } from "@utils/index";

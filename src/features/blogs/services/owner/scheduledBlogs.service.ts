@@ -15,7 +15,7 @@ import {
   IBlog,
   ScheduleStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import {
   UpdateScheduleBlogBodyRequestBody,
   BlogData,

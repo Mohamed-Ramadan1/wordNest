@@ -12,7 +12,7 @@ import { supportTicketsLogger } from "@logging/index";
 
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // interfaces imports
 import { ITicketStatusService } from "../../interfaces/index";

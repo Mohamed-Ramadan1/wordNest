@@ -25,7 +25,7 @@ import {
   supportTicketQueue,
   CloudinaryQueueJobs,
 } from "@jobs/index";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // interfaces imports
 import { ITicketsCRUDService } from "../../interfaces/index";

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 /**
  * Interface for the AuthService that defines the available authentication-related operations.

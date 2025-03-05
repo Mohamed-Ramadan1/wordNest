@@ -5,7 +5,7 @@ import {
   TicketAdminResponseBody,
   TicketParams,
 } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { IUser, UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users_feature";
 import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";

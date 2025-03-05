@@ -1,6 +1,6 @@
 // src/features/auth/helper/accountValidation.helper.ts
 
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { AppError } from "@utils/index";
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 

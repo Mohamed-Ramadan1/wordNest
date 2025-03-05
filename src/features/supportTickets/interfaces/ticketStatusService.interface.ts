@@ -1,4 +1,4 @@
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { ISupportTicket } from "./supportTicket.interface";
 /**
  * Interface for the TicketStatusService class.

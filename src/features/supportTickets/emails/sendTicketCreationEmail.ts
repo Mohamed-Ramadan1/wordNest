@@ -2,7 +2,7 @@ import {
   ISupportTicket,
   SupportTicketPriority,
 } from "../interfaces/supportTicket.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 

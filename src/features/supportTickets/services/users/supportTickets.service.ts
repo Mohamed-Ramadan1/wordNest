@@ -3,7 +3,7 @@ import {
   SupportTicketBody,
   SupportTicketBodyReplay,
 } from "@features/supportTickets/interfaces/supportTicketBody.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // packages imports
 import cloudinary from "cloudinary";

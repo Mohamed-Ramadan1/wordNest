@@ -1,4 +1,4 @@
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 /**
  * Interface defining the contract for account recovery services.

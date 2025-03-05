@@ -1,0 +1,10 @@
+note related to the routes 
+
+while tray convert the application to support the DI(dependency injection) a wired problem start to appear only at the users feature 
+the container that coming from config directory is start to be undefined in only the users feature its work normally in the other features
+and the entire application i did a many changes across the application to tray to solve the problem but i didn't find any solution
+i tray to change the way of the import the container in the users feature but the problem still exist. i convert import to dynamic imports also the problem still exist
+so i decide after spending around 6 days in this problem and after tray every possible solution to move the route files out of the feature to complete DI Integration where the feature is a 
+very important feature in the application  and later if found solution for this problem then i will refactor the application to working with this problem.
+
+now after moving the routes files out of the feature the application is working normally and the problem is solved.

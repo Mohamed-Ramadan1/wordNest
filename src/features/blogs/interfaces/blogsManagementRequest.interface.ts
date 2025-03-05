@@ -1,4 +1,4 @@
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { ObjectId } from "mongoose";
 import { IBlog } from "./blog.interface";
 

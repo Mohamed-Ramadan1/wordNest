@@ -1,7 +1,7 @@
 import { ParsedQs } from "qs";
 import { ObjectId } from "mongoose";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 /**
  * Interface representing the Blog Management Service.
