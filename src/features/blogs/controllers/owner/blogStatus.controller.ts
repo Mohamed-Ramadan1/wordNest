@@ -1,6 +1,12 @@
 //express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
@@ -9,15 +15,24 @@ import { ApiResponse } from "@shared/index";
 
 // interfaces imports
 import { BlogStatusRequestBody } from "../../interfaces/blogStatusRequest.interface";
-// services imports
-import { BlogStatusService } from "../../services/owner/blogStatus.service";
+
+import { IBlogStatusService } from "../../interfaces/index";
+
+@injectable()
 export class BlogStatusController {
+  private blogStatusService: IBlogStatusService;
+  constructor(
+    @inject(TYPES.BlogStatusService)
+    blogStatusService: IBlogStatusService
+  ) {
+    this.blogStatusService = blogStatusService;
+  }
   /**
    * Converts a blog post to private.
    */
   public convertBlogToPrivate = catchAsync(
     async (req: Request<{}, {}, BlogStatusRequestBody>, res: Response) => {
-      await BlogStatusService.convertBlogToPrivate(req.body.blogPost);
+      await this.blogStatusService.convertBlogToPrivate(req.body.blogPost);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post converted to private successfully.",
@@ -32,7 +47,7 @@ export class BlogStatusController {
    */
   public convertBlogToPublic = catchAsync(
     async (req: Request<{}, {}, BlogStatusRequestBody>, res: Response) => {
-      await BlogStatusService.convertBlogToPublic(req.body.blogPost);
+      await this.blogStatusService.convertBlogToPublic(req.body.blogPost);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post converted to public successfully.",
@@ -47,7 +62,7 @@ export class BlogStatusController {
    */
   public archiveBlogPost = catchAsync(
     async (req: Request<{}, {}, BlogStatusRequestBody>, res: Response) => {
-      await BlogStatusService.archiveBlogPost(req.body.blogPost);
+      await this.blogStatusService.archiveBlogPost(req.body.blogPost);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post archived successfully.",
@@ -63,7 +78,7 @@ export class BlogStatusController {
 
   public restoreArchivedBlogPost = catchAsync(
     async (req: Request<{}, {}, BlogStatusRequestBody>, res: Response) => {
-      await BlogStatusService.unArchiveBlogPost(req.body.blogPost);
+      await this.blogStatusService.unArchiveBlogPost(req.body.blogPost);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post un-archived successfully.",

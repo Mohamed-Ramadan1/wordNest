@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
@@ -9,10 +12,21 @@ import { ApiResponse } from "@shared/index";
 // interfaces imports
 import { TicketCloseBody } from "../../interfaces/SupportTicketAdminBody.interface";
 
-// services imports
-import { TicketStatusService } from "@features/supportTickets/services/admin/ticketStatus.service";
+//interfaces imports
+import { ITicketStatusService } from "../../interfaces/index";
 
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+@injectable()
 export class TicketStatusController {
+  private ticketStatusService: ITicketStatusService;
+  constructor(
+    @inject(TYPES.TicketStatusService)
+    ticketStatusService: ITicketStatusService
+  ) {
+    this.ticketStatusService = ticketStatusService;
+  }
+
   /**
    * Marks a ticket as closed.
    * Indicates that the ticket has been resolved or is no longer active.
@@ -22,7 +36,7 @@ export class TicketStatusController {
       // Marks the ticket as closed
       const { ticket, ticketOwner } = req.body;
       const { user, ip } = req;
-      await TicketStatusService.closeTicket(ticketOwner, user, ticket, ip);
+      await this.ticketStatusService.closeTicket(ticketOwner, user, ticket, ip);
 
       const response: ApiResponse<null> = {
         status: "success",
@@ -41,7 +55,12 @@ export class TicketStatusController {
       // Reopens the ticket
       const { ticket, ticketOwner } = req.body;
       const { user, ip } = req;
-      await TicketStatusService.reopenTicket(ticketOwner, user, ticket, ip);
+      await this.ticketStatusService.reopenTicket(
+        ticketOwner,
+        user,
+        ticket,
+        ip
+      );
 
       const response: ApiResponse<null> = {
         status: "success",

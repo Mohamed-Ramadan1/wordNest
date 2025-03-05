@@ -1,6 +1,5 @@
-// Define identifiers for bindings
-export const TYPES = {
-  InteractionService: Symbol.for("InteractionService"),
+export const INTERACTIONS_TYPES = {
   InteractionsController: Symbol.for("InteractionsController"),
+  InteractionService: Symbol.for("InteractionService"),
   InteractionsRepository: Symbol.for("InteractionsRepository"),
 };

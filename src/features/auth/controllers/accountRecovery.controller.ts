@@ -1,23 +1,34 @@
-// Purpose: Auth controller for handling authentication requests.
-
 // Import necessary modules and packages  .
 import { Request, Response } from "express";
+
+// package imports
+import { inject, injectable } from "inversify";
 
 // Models imports
 import { IUser } from "@features/users";
 
 // Utils imports
-import { catchAsync } from "@utils/index";
+import { catchAsync, sendResponse } from "@utils/index";
 
-// services imports
-import AccountRecoveryService from "../services/accountRecovery.service";
-import { ApiResponse } from "@shared/index";
-import { sendResponse } from "@utils/index";
+// shared imports
+import { ApiResponse, TYPES } from "@shared/index";
 
+// interface imports
+import { IAccountRecoveryService } from "../interfaces";
+
+@injectable()
 export default class AccountRecoveryController {
+  accountRecoveryService: IAccountRecoveryService;
+
+  constructor(
+    @inject(TYPES.AccountRecoveryService)
+    accountRecoveryService: IAccountRecoveryService
+  ) {
+    this.accountRecoveryService = accountRecoveryService;
+  }
   // Verify user's email address.
-  static verifyEmail = catchAsync(async (req: Request, res: Response) => {
-    await AccountRecoveryService.verifyEmail(req.user as IUser);
+  public verifyEmail = catchAsync(async (req: Request, res: Response) => {
+    await this.accountRecoveryService.verifyEmail(req.user as IUser);
 
     const response: ApiResponse<null> = {
       status: "success",
@@ -27,9 +38,9 @@ export default class AccountRecoveryController {
   });
 
   // Resend verification email.
-  static resendVerification = catchAsync(
+  public resendVerification = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountRecoveryService.resendVerification(req.user as IUser);
+      await this.accountRecoveryService.resendVerification(req.user as IUser);
 
       const response: ApiResponse<null> = {
         status: "success",
@@ -40,9 +51,9 @@ export default class AccountRecoveryController {
   );
 
   // Forgot password.
-  static requestPasswordReset = catchAsync(
+  public requestPasswordReset = catchAsync(
     async (req: Request, res: Response) => {
-      await AccountRecoveryService.requestPasswordReset(
+      await this.accountRecoveryService.requestPasswordReset(
         req.user as IUser,
         req.ip
       );
@@ -57,9 +68,9 @@ export default class AccountRecoveryController {
   );
 
   // Reset password.
-  static resetPassword = catchAsync(async (req: Request, res: Response) => {
+  public resetPassword = catchAsync(async (req: Request, res: Response) => {
     const { newPassword } = req.body;
-    await AccountRecoveryService.resetPassword(
+    await this.accountRecoveryService.resetPassword(
       req.user as IUser,
       newPassword,
       req.ip

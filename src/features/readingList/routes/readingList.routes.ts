@@ -2,7 +2,8 @@
 import { Router } from "express";
 // shared imports
 import { protect } from "@shared/index";
-
+import { container } from "@config/inversify.config";
+import { TYPES } from "@shared/types/containerTypes";
 // middleware imports
 import { ReadingListCRUDMiddleware } from "../middlewares/readingListCRUD.middleware";
 import { ReadingListSettingsMiddleware } from "../middlewares/readingListSettings.middleware";
@@ -13,10 +14,18 @@ import { ReadingListManagementController } from "../controllers/readingListManag
 import { ReadingListSettingsController } from "../controllers/readingListSettings.controller";
 
 // initialize the controllers
-const readingListCRUDController = new ReadingListCRUDController();
-const readingListManagementController = new ReadingListManagementController();
-const readingListSettingsController = new ReadingListSettingsController();
+const readingListCRUDController = container.get<ReadingListCRUDController>(
+  TYPES.ReadingListCRUDController
+);
+const readingListManagementController =
+  container.get<ReadingListManagementController>(
+    TYPES.ReadingListManagementController
+  );
 
+const readingListSettingsController =
+  container.get<ReadingListSettingsController>(
+    TYPES.ReadingListSettingsController
+  );
 // create  the express router
 const router: Router = Router();
 

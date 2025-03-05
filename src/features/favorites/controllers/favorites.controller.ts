@@ -1,6 +1,8 @@
 //express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { injectable, inject } from "inversify";
 // interface imports
 import {
   FavoriteRequestBody,
@@ -10,18 +12,26 @@ import {
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, TYPES } from "@shared/index";
 
 // services imports
 import { FavoritesService } from "../services/favorites.service";
 import { IFavorite } from "../interfaces/favorites.interface";
+import { IFavoritesService } from "../interfaces/favoritesService.interface";
+@injectable()
 export class FavoritesController {
+  private favoritesService: FavoritesService;
+  constructor(
+    @inject(TYPES.FavoritesService) favoritesService: IFavoritesService
+  ) {
+    this.favoritesService = favoritesService;
+  }
   /**
    * Handles the logic for adding a blog post to the user's favorites list.
    */
   public addToFavorites = catchAsync(
     async (req: Request<{}, {}, FavoriteRequestBody>, res: Response) => {
-      await FavoritesService.addToFavorites(req.body.blogPostId, req.user);
+      await this.favoritesService.addToFavorites(req.body.blogPostId, req.user);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post added to favorites successfully.",
@@ -35,7 +45,7 @@ export class FavoritesController {
    */
   public removeFromFavorites = catchAsync(
     async (req: Request<FavoriteRequestParams>, res: Response) => {
-      await FavoritesService.removeFromFavorites(
+      await this.favoritesService.removeFromFavorites(
         req.params.favoriteId,
         req.user
       );
@@ -52,7 +62,7 @@ export class FavoritesController {
    */
   public getFavorites = catchAsync(
     async (req: Request<FavoriteRequestParams>, res: Response) => {
-      const favoritesBlogs = await FavoritesService.getFavorites(
+      const favoritesBlogs = await this.favoritesService.getFavorites(
         req.user,
         req.query
       );
@@ -73,7 +83,7 @@ export class FavoritesController {
    */
   public getFavorite = catchAsync(
     async (req: Request<{}, {}, FavoriteRequestBody>, res: Response) => {
-      const blogPost = await FavoritesService.getFavorite(
+      const blogPost = await this.favoritesService.getFavorite(
         req.body.blogPostId,
         req.user
       );

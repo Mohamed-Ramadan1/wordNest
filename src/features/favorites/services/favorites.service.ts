@@ -9,15 +9,15 @@ import { APIFeatures, AppError } from "@utils/index";
 
 import { IUser } from "@features/users";
 import { IFavorite } from "../interfaces/favorites.interface";
-
+import { IFavoritesService } from "../interfaces/favoritesService.interface";
 // redis client instance creation.
 const redisClient = new Redis();
 // const cacheKey = `blog:${blogId}:${user._id}`;
-export class FavoritesService {
+export class FavoritesService implements IFavoritesService {
   /**
    * Adds a blog post to the user's favorites list.
    */
-  public static addToFavorites = async (blogPostId: ObjectId, user: IUser) => {
+  public addToFavorites = async (blogPostId: ObjectId, user: IUser) => {
     try {
       await FavoriteModel.create({
         blogPost: blogPostId,
@@ -31,10 +31,7 @@ export class FavoritesService {
   /**
    * Removes a blog post from the user's favorites list.
    */
-  public static removeFromFavorites = async (
-    favoriteId: ObjectId,
-    user: IUser
-  ) => {
+  public removeFromFavorites = async (favoriteId: ObjectId, user: IUser) => {
     const cacheKey = `favoriteItem:${favoriteId}:${user._id}`;
     try {
       const deletedFavorite = await FavoriteModel.findOneAndDelete({
@@ -60,7 +57,7 @@ export class FavoritesService {
   /**
    * Retrieves all the blog posts in the user's favorites list.
    */
-  public static getFavorite = async (
+  public getFavorite = async (
     favoriteId: ObjectId,
     user: IUser
   ): Promise<IFavorite> => {
@@ -91,7 +88,7 @@ export class FavoritesService {
   /**
    * Retrieves a specific blog post from the user's favorites list.
    */
-  public static getFavorites = async (
+  public getFavorites = async (
     user: IUser,
     reqQuery: ParsedQs
   ): Promise<IFavorite[]> => {

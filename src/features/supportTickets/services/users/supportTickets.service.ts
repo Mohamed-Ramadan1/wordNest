@@ -22,12 +22,14 @@ import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicke
 // models imports
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-export class SupportTicketService {
+// interfaces imports
+import { ISupportTicketService } from "../../interfaces/index";
+export class SupportTicketService implements ISupportTicketService {
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
    */
-  static async createSupportTicket(
+  async createSupportTicket(
     ticketInfo: SupportTicketBody,
     user: IUser,
     ipAddress: string | undefined
@@ -78,9 +80,7 @@ export class SupportTicketService {
    * Retrieves all support tickets for the current user.
    * Fetches a list of all open or closed tickets submitted by the user.
    */
-  static async getAllUserSupportTickets(
-    user: IUser
-  ): Promise<ISupportTicket[]> {
+  async getAllUserSupportTickets(user: IUser): Promise<ISupportTicket[]> {
     try {
       const supportTickets: ISupportTicket[] | null = await SupportTicket.find({
         user: user._id,
@@ -95,7 +95,7 @@ export class SupportTicketService {
    * Retrieves a specific support ticket by ID.
    * Ensures that the ticket belongs to the current user before displaying it.
    */
-  static async getSupportTicketById(
+  async getSupportTicketById(
     user: IUser,
     ticketId: ObjectId
   ): Promise<ISupportTicket> {
@@ -123,7 +123,7 @@ export class SupportTicketService {
    * Allows the user to reply to a support ticket.
    * Enables the user to add a response or update an existing ticket.
    */
-  static async replaySupportTicket(
+  async replaySupportTicket(
     user: IUser,
     supportTicket: ISupportTicket,
     responseInfo: SupportTicketBodyReplay,

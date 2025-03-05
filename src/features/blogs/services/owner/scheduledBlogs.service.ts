@@ -30,12 +30,15 @@ import { blogQueue, BlogsQueueJobs } from "@jobs/index";
 // redis client instance creation.
 const redisClient = new Redis();
 
-export class ScheduledBlogsService {
+// interfaces imports
+import { IScheduledBlogsService } from "../../interfaces/index";
+
+export class ScheduledBlogsService implements IScheduledBlogsService {
   /**
    * Creates a new scheduled blog post.
    */
 
-  public static async createScheduledBlogPost(blogData: BlogData) {
+  public async createScheduledBlogPost(blogData: BlogData) {
     try {
       const scheduledBlogPost: IBlog = new BlogModel(blogData);
       scheduledBlogPost.isPublished = false;
@@ -64,7 +67,7 @@ export class ScheduledBlogsService {
   /**
    * Retrieves all scheduled blog posts.
    */
-  public static async getAllScheduledBlogPosts(user: IUser, request: Request) {
+  public async getAllScheduledBlogPosts(user: IUser, request: Request) {
     try {
       const features = new APIFeatures(
         BlogModel.find({
@@ -87,7 +90,7 @@ export class ScheduledBlogsService {
   /**
    * Retrieves a single scheduled blog post.
    */
-  public static async getScheduledBlogPost(blogId: ObjectId, user: IUser) {
+  public async getScheduledBlogPost(blogId: ObjectId, user: IUser) {
     const cacheKey = `blog:${blogId}:${user._id}`;
     try {
       // Step 1: Check if data is in Redis cache
@@ -119,7 +122,7 @@ export class ScheduledBlogsService {
   /**
    * Updates an existing scheduled blog post.
    */
-  public static async updateScheduledBlogPost(
+  public async updateScheduledBlogPost(
     reqBody: UpdateScheduleBlogBodyRequestBody,
     user: IUser
   ) {
@@ -142,7 +145,7 @@ export class ScheduledBlogsService {
   /**
    * Deletes a scheduled blog post.
    */
-  public static async deleteScheduledBlogPost(blogId: ObjectId, user: IUser) {
+  public async deleteScheduledBlogPost(blogId: ObjectId, user: IUser) {
     const cacheKey = `blog:${blogId}:${user._id}`;
 
     try {
@@ -169,7 +172,7 @@ export class ScheduledBlogsService {
   /**
    * Reschedules a blog post.
    */
-  public static async rescheduleBlogPost(
+  public async rescheduleBlogPost(
     blog: IBlog,
     rescheduleDate: Date
   ): Promise<void> {

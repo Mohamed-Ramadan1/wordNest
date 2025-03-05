@@ -1,10 +1,14 @@
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { AppError, handleServiceError } from "@utils/index";
-export class BlogStatusService {
+
+// interfaces imports
+import { IBlogStatusService } from "../../interfaces/index";
+
+export class BlogStatusService implements IBlogStatusService {
   /**
    * Converts a blog post to private.
    */
-  public static async convertBlogToPrivate(blogPost: IBlog) {
+  public async convertBlogToPrivate(blogPost: IBlog) {
     try {
       blogPost.isPrivate = true;
       await blogPost.save();
@@ -16,7 +20,7 @@ export class BlogStatusService {
   /**
    * Converts a blog post to public.
    */
-  public static async convertBlogToPublic(blogPost: IBlog) {
+  public async convertBlogToPublic(blogPost: IBlog) {
     try {
       blogPost.isPrivate = false;
       await blogPost.save();
@@ -28,7 +32,7 @@ export class BlogStatusService {
   /**
    * Archives a blog post instead of deleting it.
    */
-  public static async archiveBlogPost(blogPost: IBlog) {
+  public async archiveBlogPost(blogPost: IBlog) {
     try {
       blogPost.isArchived = true;
       await blogPost.save();
@@ -40,7 +44,7 @@ export class BlogStatusService {
   /**
    * Restores an archived blog post back to active status.
    */
-  public static async unArchiveBlogPost(blogPost: IBlog) {
+  public async unArchiveBlogPost(blogPost: IBlog) {
     try {
       blogPost.isArchived = false;
       await blogPost.save();

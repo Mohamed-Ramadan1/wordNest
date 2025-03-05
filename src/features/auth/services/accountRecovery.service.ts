@@ -2,7 +2,7 @@
 import { IUser } from "@features/users";
 
 // utils imports
-import { AppError } from "@utils/index";
+import { handleServiceError } from "@utils/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -17,10 +17,12 @@ import {
   logSuccessfulPasswordReset,
 } from "@logging/index";
 
+// interface imports
+import { IAccountRecoveryService } from "../interfaces";
 // Account recovery class
-export default class AccountRecoveryService {
+export default class AccountRecoveryService implements IAccountRecoveryService {
   // Verify user's email address.
-  static verifyEmail = async (user: IUser): Promise<void> => {
+  public verifyEmail = async (user: IUser): Promise<void> => {
     try {
       user.set({
         emailVerified: true,
@@ -47,12 +49,12 @@ export default class AccountRecoveryService {
         user.createdAt,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
   // Resend verification email.
-  static resendVerification = async (user: IUser) => {
+  public resendVerification = async (user: IUser) => {
     try {
       user.createEmailVerificationToken();
       user.lastVerificationEmailSentAt = new Date();
@@ -64,12 +66,12 @@ export default class AccountRecoveryService {
     } catch (err: any) {
       // log the failed email resend attempt.
       logFailedEmailResend(user.email, user._id, user.createdAt, err.message);
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
   // Forgot password.
-  static requestPasswordReset = async (user: IUser, ip: string | undefined) => {
+  public requestPasswordReset = async (user: IUser, ip: string | undefined) => {
     try {
       // Generate password reset token
       user.createPasswordResetToken();
@@ -91,15 +93,12 @@ export default class AccountRecoveryService {
       );
 
       // Throw a meaningful error
-      throw new AppError(
-        "Password reset request failed. Please try again later.",
-        500
-      );
+      handleServiceError(err);
     }
   };
 
   // Reset password.
-  static resetPassword = async (
+  public resetPassword = async (
     user: IUser,
     newPassword: string,
     ip: string | undefined
@@ -121,7 +120,7 @@ export default class AccountRecoveryService {
     } catch (err: any) {
       logFailedPasswordReset(user.email, ip, user.id, err.message);
       // If transaction failed, re-throw the error
-      throw new AppError("Password reset failed. Please try again later.", 500);
+      handleServiceError(err);
     }
   };
 }

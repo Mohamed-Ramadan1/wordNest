@@ -9,7 +9,7 @@ import { InteractionModel } from "../models/interactions.model";
 import { APIFeatures, AppError, handleServiceError } from "@utils/index";
 
 // config imports
-import { TYPES } from "@config/containerTypes.config";
+import { TYPES } from "@shared/index";
 
 // interfaces imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";

@@ -34,14 +34,14 @@ import {
 // redis client instance creation.
 const redisClient = new Redis();
 
-export class BlogCRUDService {
+// interfaces imports
+import { IBlogOwnerCRUDService } from "../../interfaces/index";
+
+export class BlogCRUDService implements IBlogOwnerCRUDService {
   /**
    * Handles the logic for creating a blog post.
    */
-  public static async createBlogPost(
-    blogData: BlogData,
-    user: IUser
-  ): Promise<void> {
+  public async createBlogPost(blogData: BlogData, user: IUser): Promise<void> {
     try {
       const newBlogPost = new BlogModel(blogData);
       newBlogPost.publishedAt = new Date();
@@ -65,7 +65,7 @@ export class BlogCRUDService {
   /**
    * Handles the logic for updating a blog post.
    */
-  public static async updateBlogPost(
+  public async updateBlogPost(
     blogPost: IBlog,
     updatedBlogData: UpdatesBlogBodyRequest,
     user: IUser
@@ -91,7 +91,7 @@ export class BlogCRUDService {
   /**
    * Handles the logic for deleting a blog post.
    */
-  public static async deleteBlogPost(blogToBeDeleted: IBlog, user: IUser) {
+  public async deleteBlogPost(blogToBeDeleted: IBlog, user: IUser) {
     const cacheKey = `blog:${blogToBeDeleted._id}:${user._id}`;
     try {
       blogToBeDeleted.toBeDeleted = true;
@@ -121,10 +121,7 @@ export class BlogCRUDService {
   /**
    * Retrieves a single blog post.
    */
-  public static async getBlogPost(
-    blogId: ObjectId,
-    user: IUser
-  ): Promise<IBlog> {
+  public async getBlogPost(blogId: ObjectId, user: IUser): Promise<IBlog> {
     try {
       // Business logic to fetch a blog post by ID
       const cacheKey = `blog:${blogId}:${user._id}`;
@@ -157,10 +154,7 @@ export class BlogCRUDService {
   /**
    * Retrieves all blog posts.
    */
-  public static async getAllBlogPosts(
-    user: IUser,
-    req: Request
-  ): Promise<IBlog[]> {
+  public async getAllBlogPosts(user: IUser, req: Request): Promise<IBlog[]> {
     // Business logic to fetch a blog post by ID
     try {
       // Apply APIFeatures for filtering, sorting, pagination, etc.

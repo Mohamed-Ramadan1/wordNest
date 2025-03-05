@@ -21,12 +21,16 @@ import { BlogsQueueJobs, blogQueue } from "@jobs/index";
 
 // logger
 import { blogQueueLogger } from "@logging/index";
-export class BlogManagementService {
+
+// interfaces imports
+import { IBlogManagementService } from "../../interfaces/index";
+
+export class BlogManagementService implements IBlogManagementService {
   /**
    * Deletes a blog post permanently.
    */
 
-  public static async deleteBlogPost(
+  public async deleteBlogPost(
     blogAuthor: IUser,
     blogPost: IBlog,
     userAdmin: IUser
@@ -59,7 +63,7 @@ export class BlogManagementService {
    * Retrieves a single blog post by its ID.
    */
 
-  public static async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
+  public async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
     try {
       const blogPost = await BlogModel.findById(blogPostId);
       if (!blogPost) {
@@ -75,7 +79,7 @@ export class BlogManagementService {
    * Retrieves all blog posts.
    */
 
-  public static async getAllBlogPosts(requestQuery: ParsedQs) {
+  public async getAllBlogPosts(requestQuery: ParsedQs) {
     try {
       const feature = new APIFeatures(BlogModel.find(), requestQuery)
         .filter()
@@ -92,7 +96,7 @@ export class BlogManagementService {
   /**
    * Retrieves all blog posts by a specific user.
    */
-  public static async getAllBlogPostsByUser(
+  public async getAllBlogPostsByUser(
     userId: ObjectId,
     requestQuery: ParsedQs
   ): Promise<IBlog[]> {
@@ -116,7 +120,7 @@ export class BlogManagementService {
    * Unpublishes a blog post, making it invisible to users.
    */
 
-  public static async unPublishBlogPost(
+  public async unPublishBlogPost(
     blogPost: IBlog,
     blogAuthor: IUser,
     userAdmin: IUser
@@ -149,7 +153,7 @@ export class BlogManagementService {
    * Republishes a previously unpublished blog post.
    */
 
-  public static async rePublishBlogPost(
+  public async rePublishBlogPost(
     blogPost: IBlog,
     blogAuthor: IUser,
     userAdmin: IUser

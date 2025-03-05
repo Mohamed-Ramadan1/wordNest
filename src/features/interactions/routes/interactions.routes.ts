@@ -8,7 +8,10 @@ import { InteractionsMiddleware } from "../middlewares/interactions.middleware";
 
 // config imports
 import { container } from "@config/inversify.config";
-import { TYPES } from "@config/containerTypes.config";
+
+// shared imports
+import { TYPES } from "@shared/index";
+
 // controllers imports
 import { InteractionsController } from "../controllers/interactions.controller";
 

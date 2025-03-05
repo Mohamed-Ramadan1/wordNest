@@ -7,12 +7,18 @@ import { ReadingStatus } from "../interfaces/readingList.interface";
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
-export class ReadingListManagementService {
+
+// interfaces imports
+import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
+
+export class ReadingListManagementService
+  implements IReadingListManagementService
+{
   /**
    * Marks a specific reading list item as unread.
    */
 
-  public static async markListItemAsUnread(
+  public async markListItemAsUnread(
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
@@ -37,7 +43,7 @@ export class ReadingListManagementService {
    * Marks a specific reading list item as completed.
    */
 
-  public static async markListItemAsCompleted(
+  public async markListItemAsCompleted(
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
@@ -65,7 +71,7 @@ export class ReadingListManagementService {
    * Marks a specific reading list item as currently being read.
    */
 
-  public static async markListItemAsReading(
+  public async markListItemAsReading(
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
@@ -90,7 +96,7 @@ export class ReadingListManagementService {
    * Clears the entire reading list by removing all items.
    */
 
-  public static async clearReadingList(userId: ObjectId): Promise<void> {
+  public async clearReadingList(userId: ObjectId): Promise<void> {
     try {
       const deletedItems = await ReadingListModel.deleteMany({ user: userId });
       if (!deletedItems.acknowledged) {

@@ -1,6 +1,9 @@
 // express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
@@ -14,20 +17,28 @@ import {
   SupportTicketBodyReplay,
 } from "../../interfaces/supportTicketBody.interface";
 
-// services imports
-import { SupportTicketService } from "../../services/users/supportTickets.service";
-
 // interfaces imports
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicketService } from "../../interfaces/index";
 
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
+@injectable()
 export class SupportTicketController {
+  private supportTicketService: ISupportTicketService;
+  constructor(
+    @inject(TYPES.SupportTicketService)
+    supportTicketService: ISupportTicketService
+  ) {
+    this.supportTicketService = supportTicketService;
+  }
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
    */
   public createSupportTicket = catchAsync(
     async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
-      await SupportTicketService.createSupportTicket(
+      await this.supportTicketService.createSupportTicket(
         req.body,
         req.user,
         req.ip
@@ -51,7 +62,7 @@ export class SupportTicketController {
   public getAllUserSupportTickets = catchAsync(
     async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
       const supportTickets =
-        await SupportTicketService.getAllUserSupportTickets(req.user);
+        await this.supportTicketService.getAllUserSupportTickets(req.user);
 
       // creating the response object
       const response: ApiResponse<ISupportTicket[]> = {
@@ -74,10 +85,11 @@ export class SupportTicketController {
       req: Request<SupportTicketParams, {}, SupportTicketBody>,
       res: Response
     ) => {
-      const supportTicket = await SupportTicketService.getSupportTicketById(
-        req.user,
-        req.params.ticketId
-      );
+      const supportTicket =
+        await this.supportTicketService.getSupportTicketById(
+          req.user,
+          req.params.ticketId
+        );
 
       // creating the response object
       const response: ApiResponse<ISupportTicket> = {
@@ -99,7 +111,7 @@ export class SupportTicketController {
       req: Request<SupportTicketParams, {}, SupportTicketBodyReplay>,
       res: Response
     ) => {
-      await SupportTicketService.replaySupportTicket(
+      await this.supportTicketService.replaySupportTicket(
         req.user,
         req.body.supportTicket,
         req.body,

@@ -1,14 +1,14 @@
 // express imports
 import { Response, Request } from "express";
 
+// packages imports
+import { inject, injectable } from "inversify";
+
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
-import { ApiResponse } from "@shared/index";
-
-// service imports
-import { ReadingListCRUDService } from "../services/readingListCRUD.service";
+import { ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { IReadingList } from "../interfaces/readingList.interface";
@@ -16,7 +16,18 @@ import {
   ReadingListCRUDRequestParams,
   CreateReadingListItemRequestBody,
 } from "../interfaces/readingListCRUDRequest.interface";
+
+// interfaces imports
+import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
+@injectable()
 export class ReadingListCRUDController {
+  private readingListCRUDService: IReadingListCRUDService;
+  constructor(
+    @inject(TYPES.ReadingListCRUDService)
+    readingListCRUDService: IReadingListCRUDService
+  ) {
+    this.readingListCRUDService = readingListCRUDService;
+  }
   /**
    * Retrieves all reading list items.
    * Handles the request to get all items in the reading list.
@@ -24,10 +35,11 @@ export class ReadingListCRUDController {
   public getAllReadingListItems = catchAsync(
     async (req: Request, res: Response) => {
       const { query, user } = req;
-      const listItems = await ReadingListCRUDService.getAllReadingListItems(
-        user._id,
-        query
-      );
+      const listItems =
+        await this.readingListCRUDService.getAllReadingListItems(
+          user._id,
+          query
+        );
 
       const response: ApiResponse<IReadingList[]> = {
         status: "success",
@@ -48,7 +60,7 @@ export class ReadingListCRUDController {
    */
   public getReadingListItem = catchAsync(
     async (req: Request<ReadingListCRUDRequestParams>, res: Response) => {
-      const listItem = await ReadingListCRUDService.getReadingListItem(
+      const listItem = await this.readingListCRUDService.getReadingListItem(
         req.params.id,
         req.user._id
       );
@@ -74,7 +86,7 @@ export class ReadingListCRUDController {
       res: Response
     ) => {
       const notes = req.body.notes;
-      await ReadingListCRUDService.createReadingListItem(
+      await this.readingListCRUDService.createReadingListItem(
         req.user._id,
         req.body.blogPostId,
         notes ? notes : undefined
@@ -94,7 +106,7 @@ export class ReadingListCRUDController {
    */
   public deleteReadingListItem = catchAsync(
     async (req: Request<ReadingListCRUDRequestParams>, res: Response) => {
-      await ReadingListCRUDService.deleteReadingListItem(
+      await this.readingListCRUDService.deleteReadingListItem(
         req.params.id,
         req.user._id
       );

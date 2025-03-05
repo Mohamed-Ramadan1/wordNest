@@ -1,5 +1,10 @@
 //express imports
 import { Response, Request } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { TYPES } from "@shared/types/containerTypes";
 
 // utils imports
 import { catchAsync, sendResponse } from "@utils/index";
@@ -8,7 +13,6 @@ import { catchAsync, sendResponse } from "@utils/index";
 import { ApiResponse } from "@shared/index";
 
 // service  imports
-import { BlogCRUDService } from "../../services/owner/blogOwnerCRUD.service";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import {
   BlogParams,
@@ -16,14 +20,23 @@ import {
   DeleteBlogBodyRequest,
   UpdatesBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
+import { IBlogOwnerCRUDService } from "../../interfaces/index";
+@injectable()
 export class BlogCRUDController {
+  private blogCRUDService: IBlogOwnerCRUDService;
+  constructor(
+    @inject(TYPES.BlogOwnerCRUDService)
+    blogCRUDService: IBlogOwnerCRUDService
+  ) {
+    this.blogCRUDService = blogCRUDService;
+  }
   /**
    * Creates a new blog post.
    * Handles the request to add a new post with the provided content.
    */
   public createBlogPost = catchAsync(
     async (req: Request<{}, {}, CreateBlogBodyRequest>, res: Response) => {
-      await BlogCRUDService.createBlogPost(req.body.blogData, req.user);
+      await this.blogCRUDService.createBlogPost(req.body.blogData, req.user);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post created successfully",
@@ -38,7 +51,7 @@ export class BlogCRUDController {
    */
   public updateBlogPost = catchAsync(
     async (req: Request<{}, {}, UpdatesBlogBodyRequest>, res: Response) => {
-      await BlogCRUDService.updateBlogPost(
+      await this.blogCRUDService.updateBlogPost(
         req.body.blogPost,
         req.body,
         req.user
@@ -57,7 +70,10 @@ export class BlogCRUDController {
    */
   public deleteBlogPost = catchAsync(
     async (req: Request<{}, {}, DeleteBlogBodyRequest>, res: Response) => {
-      await BlogCRUDService.deleteBlogPost(req.body.blogToBeDeleted, req.user);
+      await this.blogCRUDService.deleteBlogPost(
+        req.body.blogToBeDeleted,
+        req.user
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Blog post deleted successfully",
@@ -72,7 +88,7 @@ export class BlogCRUDController {
    */
   public getBlogPost = catchAsync(
     async (req: Request<BlogParams>, res: Response) => {
-      const blogPost = await BlogCRUDService.getBlogPost(
+      const blogPost = await this.blogCRUDService.getBlogPost(
         req.params.blogId,
         req.user
       );
@@ -92,7 +108,7 @@ export class BlogCRUDController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogPosts = await BlogCRUDService.getAllBlogPosts(req.user, req);
+    const blogPosts = await this.blogCRUDService.getAllBlogPosts(req.user, req);
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog posts retrieved successfully",

@@ -1,10 +1,17 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@config/containerTypes.config";
+import { TYPES } from "@shared/index";
 
+// Interface imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";
-import { InteractionsService } from "../services/interactions.service";
-import { InteractionsController } from "../controllers/interactions.controller";
 import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
+
+// Service  imports
+import { InteractionsService } from "../services/interactions.service";
+
+// Controller imports
+import { InteractionsController } from "../controllers/interactions.controller";
+
+// Repository imports
 import { InteractionsRepository } from "../repositories/interactions.repository";
 
 /**
