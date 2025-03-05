@@ -1,6 +1,6 @@
 import { Job } from "bull";
 import { sendReadingReminderEmail } from "@features/readingList/emails";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { IReadingList } from "@features/readingList/interfaces/readingList.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { readingListLogger } from "@logging/index";

@@ -18,7 +18,7 @@ import {
   IBlog,
   DeletionStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // logging imports
 import { blogsLogger } from "@logging/index";

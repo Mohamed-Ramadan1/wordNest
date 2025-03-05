@@ -4,7 +4,8 @@ import { Router } from "express";
 import { protect } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
-
+import { container } from "@config/inversify.config";
+import { TYPES } from "@shared/index";
 // middleware imports
 import { SupportTicketsMiddleware } from "../middlewares/users/supportTickets.middleware";
 
@@ -12,7 +13,9 @@ import { SupportTicketsMiddleware } from "../middlewares/users/supportTickets.mi
 import { SupportTicketController } from "../controllers/users/supportTickets.controller";
 
 // instantiate the support ticket controller
-const supportTicketController = new SupportTicketController();
+const supportTicketController = container.get<SupportTicketController>(
+  TYPES.SupportTicketController
+);
 
 // create  the express router
 const router: Router = Router();

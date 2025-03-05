@@ -1,5 +1,5 @@
 import { Document, ObjectId } from "mongoose";
-import { IUser } from "@features/users/interfaces/user.interface";
+import { IUser } from "@features/users_feature/interfaces/user.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 export interface IFavorite extends Document {
   _id: ObjectId;

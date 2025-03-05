@@ -1,6 +1,6 @@
 import { ParsedQs } from "qs";
 import { ObjectId } from "mongoose";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { IFavorite } from "../interfaces/favorites.interface";
 
 export interface IFavoritesService {

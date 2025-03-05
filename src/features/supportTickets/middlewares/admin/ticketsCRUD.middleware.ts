@@ -11,8 +11,8 @@ import { SupportTicketPriority } from "@features/supportTickets/interfaces/suppo
 import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 import { AppError } from "@utils/index";
-import User from "@features/users/models/user.model";
-import { IUser } from "@features/users";
+import User from "@features/users_feature/models/user.model";
+import { IUser } from "@features/users_feature";
 
 export class TicketCRUDMiddleware {
   // validate create support ticket
@@ -47,7 +47,6 @@ export class TicketCRUDMiddleware {
       }
       // validate attachments if provided
       if (req.file) {
-   
         const attachment = validateSupportTicketAttachments(
           req.file,
           ticketOwner

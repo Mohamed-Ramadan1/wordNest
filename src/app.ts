@@ -13,7 +13,10 @@ import hpp from "hpp";
 
 // routes imports from features
 import { authRouter } from "@features/auth";
-import { userRouter, userAdminRouter } from "@features/users";
+// import { userRouter, userAdminRouter } from "@features/users";
+// import userRouter from "./features/users_feature/routes/user.routes";
+import userAdminRouter from "./userFeatureRoutes/usersAdmin";
+import userRouter from "./userFeatureRoutes/users";
 import {
   supportTicketRouter,
   adminSupportTicketsRouter,
@@ -70,9 +73,6 @@ app.use(hpp());
 //serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// auth related routes
-app.use("/api/v1/auth", authRouter);
-
 // user related routes
 app.use("/api/v1/users", userRouter);
 
@@ -105,6 +105,9 @@ app.use("/api/v1/favorites", favoritesRouter);
 
 // reading list related routes
 app.use("/api/v1/reading-list", readingListRouter);
+
+// auth related routes
+app.use("/api/v1/auth", authRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {

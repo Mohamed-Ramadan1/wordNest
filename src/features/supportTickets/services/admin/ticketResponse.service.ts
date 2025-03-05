@@ -10,7 +10,7 @@ import { AppError } from "@utils/index";
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
 
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 import { ObjectId } from "mongoose";
 import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";

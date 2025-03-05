@@ -1,7 +1,7 @@
 // modules / packages imports.
 import { NextFunction, Request, Response } from "express";
 // Models imports
-import { IUser, UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users_feature";
 
 // utils imports
 import { AppError, catchAsync, validateDto } from "@utils/index";

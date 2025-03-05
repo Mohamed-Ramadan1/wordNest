@@ -7,7 +7,7 @@ import Redis from "ioredis";
 // utils imports
 import { APIFeatures, AppError } from "@utils/index";
 
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 export class InteractionsAdminManagementService {
   /**

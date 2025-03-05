@@ -24,7 +24,7 @@ import {
   sendAccountUnlockedEmail,
   sendAccountBannedEmail,
   sendAccountUnbannedEmail,
-} from "@features/users/emails";
+} from "@features/users_feature/emails";
 
 import { logFailedEmailSent } from "@logging/index";
 import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";

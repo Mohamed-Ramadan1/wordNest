@@ -1,6 +1,6 @@
 // contains all body request interfaces for blog owner
 
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { ObjectId } from "mongoose";
 import { BlogCategory, IBlog, IUploadedImage } from "./blog.interface";
 

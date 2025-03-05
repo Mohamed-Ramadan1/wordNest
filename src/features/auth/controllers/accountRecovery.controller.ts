@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Models imports
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // Utils imports
 import { catchAsync, sendResponse } from "@utils/index";

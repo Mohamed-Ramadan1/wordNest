@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { protect, restrictTo } from "@shared/index";
 import { upload } from "@config/multer.config";
-
+import { container } from "@config/inversify.config";
+import { TYPES } from "@shared/index";
 // middleware imports
 import { TicketCRUDMiddleware } from "../middlewares/admin/ticketsCRUD.middleware";
 import { TicketPriorityMiddleware } from "../middlewares/admin/ticketPriority.middleware";
@@ -15,10 +16,18 @@ import { TicketPriorityController } from "../controllers/admin/ticketPriority.co
 import { TicketResponseController } from "../controllers/admin/ticketResponse.controller";
 
 // instantiate the controllers
-const ticketsCRUDController = new TicketsCRUDController();
-const ticketStatusController = new TicketStatusController();
-const ticketPriorityController = new TicketPriorityController();
-const ticketResponseController = new TicketResponseController();
+const ticketsCRUDController = container.get<TicketsCRUDController>(
+  TYPES.TicketsCRUDController
+);
+const ticketStatusController = container.get<TicketStatusController>(
+  TYPES.TicketStatusController
+);
+const ticketPriorityController = container.get<TicketPriorityController>(
+  TYPES.TicketPriorityController
+);
+const ticketResponseController = container.get<TicketResponseController>(
+  TYPES.TicketResponseController
+);
 
 // create  the express router
 const router: Router = Router();

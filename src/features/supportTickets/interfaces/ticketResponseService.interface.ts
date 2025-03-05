@@ -1,5 +1,5 @@
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { ObjectId } from "mongoose";
 import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";
 

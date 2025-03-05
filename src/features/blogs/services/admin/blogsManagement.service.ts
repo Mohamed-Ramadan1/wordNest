@@ -14,7 +14,7 @@ import {
   DeletionStatus,
   ReviewContentStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 
 // queues imports
 import { BlogsQueueJobs, blogQueue } from "@jobs/index";

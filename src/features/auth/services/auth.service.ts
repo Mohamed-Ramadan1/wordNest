@@ -1,7 +1,7 @@
 // modules / packages imports.
 import { Response } from "express";
 // Models imports
-import { IUser, UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users_feature";
 
 // utils imports
 import {

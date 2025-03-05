@@ -1,5 +1,5 @@
 import { Document, ObjectId } from "mongoose";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { BlogData } from "../interfaces/blogOwnerRequest.interface";
 export interface IUploadedImage {
   url: string;

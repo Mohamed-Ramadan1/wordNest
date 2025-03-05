@@ -1,5 +1,5 @@
 import { Secret, sign } from "jsonwebtoken";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import { Response } from "express";
 import { jwtConfig } from "@config/jwt.config";
 

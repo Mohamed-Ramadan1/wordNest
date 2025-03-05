@@ -13,7 +13,7 @@ import {
   BlogsManagementRequestParams,
 } from "../../interfaces/blogsManagementRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser, UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users_feature";
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
 export class BlogsManagementMiddleware {
   public static validateBlogPostManagementRequest = catchAsync(

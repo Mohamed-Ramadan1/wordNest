@@ -11,7 +11,7 @@ import {
 
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 import { AppError } from "@utils/index";
-import { IUser, UserModel } from "@features/users";
+import { IUser, UserModel } from "@features/users_feature";
 export class TicketStatusMiddleware {
   // validate close support ticket
   static validateCloseTicket = catchAsync(

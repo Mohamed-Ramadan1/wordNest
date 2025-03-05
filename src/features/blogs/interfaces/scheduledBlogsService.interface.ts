@@ -3,7 +3,7 @@ import { Request } from "express";
 import Redis from "ioredis";
 import { ObjectId } from "mongoose";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users";
+import { IUser } from "@features/users_feature";
 import {
   UpdateScheduleBlogBodyRequestBody,
   BlogData,
