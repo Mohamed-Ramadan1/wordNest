@@ -1,5 +1,5 @@
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { ObjectId } from "mongoose";
 import { IReadingList } from "./readingList.interface";
 

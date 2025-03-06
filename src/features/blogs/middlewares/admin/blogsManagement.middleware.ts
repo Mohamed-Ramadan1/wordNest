@@ -4,8 +4,8 @@ import { Response, Request, NextFunction } from "express";
 // models imports
 import BlogModel from "@features/blogs/models/blog.model";
 
-// utils imports
-import { catchAsync, AppError } from "@utils/index";
+// shard imports
+import { catchAsync, AppError } from "@shared/index";
 
 // interfaces imports
 import {
@@ -13,7 +13,7 @@ import {
   BlogsManagementRequestParams,
 } from "../../interfaces/blogsManagementRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser, UserModel } from "@features/users_feature";
+import { IUser, UserModel } from "@features/users";
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
 export class BlogsManagementMiddleware {
   public static validateBlogPostManagementRequest = catchAsync(

@@ -1,5 +1,5 @@
 import { ISupportTicket } from "./supportTicket.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { SupportTicketPriority } from "./supportTicket.interface";
 
 /**

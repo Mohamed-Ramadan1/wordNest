@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 import { ObjectId } from "mongoose";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 /**
@@ -67,5 +67,4 @@ export interface ITicketsCRUDService {
     user: IUser,
     ipAddress?: string
   ): Promise<void>;
-  
 }

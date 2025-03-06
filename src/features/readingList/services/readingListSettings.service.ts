@@ -4,8 +4,8 @@ import { ObjectId } from "mongoose";
 // JOBS imports
 import { readingListQueue, ReadingListQueueJobs } from "@jobs/index";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { AppError } from "@shared/index";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
 // models imports

@@ -2,11 +2,8 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// Utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // Shared imports
-import { ApiResponse } from "@shared/index";
+import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interface imports
 import {
@@ -19,8 +16,6 @@ import {
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 import { ITicketsCRUDService } from "../../interfaces/index";
 
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 @injectable()
 export class TicketsCRUDController {
   private ticketsCRUDService: ITicketsCRUDService;

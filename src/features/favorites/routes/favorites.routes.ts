@@ -1,9 +1,9 @@
 // Express imports
 import { Router } from "express";
-import { TYPES } from "@shared/types/containerTypes";
+
 import { container } from "@config/inversify.config";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 
 // middleware imports
 import { FavoritesMiddleware } from "../middlewares/favorites.middleware";

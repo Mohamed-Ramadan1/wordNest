@@ -1,5 +1,5 @@
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { AppError, handleServiceError } from "@utils/index";
+import { AppError, handleServiceError } from "@shared/index";
 
 // interfaces imports
 import { IBlogStatusService } from "../../interfaces/index";

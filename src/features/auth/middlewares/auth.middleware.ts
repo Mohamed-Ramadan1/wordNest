@@ -2,10 +2,10 @@
 
 import { NextFunction, Request, Response } from "express";
 // Models imports
-import { IUser, UserModel } from "@features/users_feature";
+import { IUser, UserModel } from "@features/users";
 
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { AppError, catchAsync, validateDto } from "@shared/index";
 
 // dto imports
 import { RegistrationDto } from "../dtos/registration.dto";

@@ -1,8 +1,8 @@
 // Models imports
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // utils imports
-import { handleServiceError } from "@utils/index";
+import { handleServiceError } from "@shared/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";

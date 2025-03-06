@@ -2,19 +2,14 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
-// shared interface imports
-import { ApiResponse } from "@shared/index";
+// shard imports
+import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { ReadingListManagementRequestParams } from "../interfaces/readingListManagementRequest.interface";
 // service imports
 import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
 
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 @injectable()
 export class ReadingListManagementController {
   private readingListManagementService: IReadingListManagementService;

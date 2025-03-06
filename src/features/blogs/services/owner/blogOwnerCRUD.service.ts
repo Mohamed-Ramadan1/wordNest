@@ -6,8 +6,8 @@ import { Request } from "express";
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
 
-// utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+// shard imports
+import { APIFeatures, AppError, handleServiceError } from "@shared/index";
 
 //interfaces imports
 import {
@@ -18,7 +18,7 @@ import {
   IBlog,
   DeletionStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // logging imports
 import { blogsLogger } from "@logging/index";

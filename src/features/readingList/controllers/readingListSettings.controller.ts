@@ -3,20 +3,14 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// Utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // Shared interface imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   ReadingListSettingsRequestParams,
   ReadingListSettingsRequestBody,
 } from "../interfaces/readingListSettingsRequest.interface";
-
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 
 // interfaces imports
 import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";

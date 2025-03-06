@@ -1,5 +1,5 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@shared/types/containerTypes";
+import { TYPES } from "@shared/index";
 
 // controller imports
 import { ReadingListCRUDController } from "../controllers/readingListCRUD.controller";

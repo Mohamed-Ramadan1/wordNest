@@ -6,7 +6,7 @@ import {
   SupportTicketPriority,
   SupportTicketStatus,
 } from "./supportTicket.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 export interface TicketBody {
   user: IUser;

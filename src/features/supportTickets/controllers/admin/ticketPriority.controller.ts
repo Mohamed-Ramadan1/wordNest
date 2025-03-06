@@ -2,16 +2,12 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// Utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // Shared imports
-import { ApiResponse } from "@shared/index";
+import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+
 import { TicketPriorityChangeBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 import { ITicketPriorityService } from "../../interfaces/index";
 
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 
 @injectable()
 export class TicketPriorityController {

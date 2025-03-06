@@ -4,11 +4,8 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // shared interface imports
-import { ApiResponse, TYPES } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // interfaces imports
 import { IReadingList } from "../interfaces/readingList.interface";

@@ -5,17 +5,15 @@ import { Response, Request } from "express";
 import { injectable, inject } from "inversify";
 // interface imports
 
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // shared interface imports
-import { ApiResponse, TYPES } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";
 
 // interface imports
 import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
+
 @injectable()
 export class InteractionsController {
   private interactionService: IInteractionsService;

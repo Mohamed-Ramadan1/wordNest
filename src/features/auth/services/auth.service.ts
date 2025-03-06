@@ -1,14 +1,14 @@
 // modules / packages imports.
 import { Response } from "express";
 // Models imports
-import { IUser, UserModel } from "@features/users_feature";
+import { IUser, UserModel } from "@features/users";
 
 // utils imports
 import {
   generateAuthToken,
   generateLogOutToken,
   handleServiceError,
-} from "@utils/index";
+} from "@shared/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";

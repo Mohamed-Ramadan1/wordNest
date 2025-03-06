@@ -4,10 +4,10 @@ import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 // model imports
 import { FavoriteModel } from "../models/favorites.model";
-// utils imports
-import { APIFeatures, AppError } from "@utils/index";
+// shard imports
+import { APIFeatures, AppError } from "@shared/index";
 
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { IFavorite } from "../interfaces/favorites.interface";
 import { IFavoritesService } from "../interfaces/favoritesService.interface";
 // redis client instance creation.

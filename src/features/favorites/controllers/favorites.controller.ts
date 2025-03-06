@@ -8,19 +8,17 @@ import {
   FavoriteRequestBody,
   FavoriteRequestParams,
 } from "../interfaces/favoritesRequest.interface";
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
-import { ApiResponse, TYPES } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { FavoritesService } from "../services/favorites.service";
 import { IFavorite } from "../interfaces/favorites.interface";
 import { IFavoritesService } from "../interfaces/favoritesService.interface";
+
 @injectable()
 export class FavoritesController {
-  private favoritesService: FavoritesService;
+  private favoritesService: IFavoritesService;
   constructor(
     @inject(TYPES.FavoritesService) favoritesService: IFavoritesService
   ) {

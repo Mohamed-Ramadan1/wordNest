@@ -1,5 +1,5 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@shared/types/containerTypes";
+import { TYPES } from "@shared/index";
 
 // services imports
 import { BlogManagementService } from "../services/admin/blogsManagement.service";

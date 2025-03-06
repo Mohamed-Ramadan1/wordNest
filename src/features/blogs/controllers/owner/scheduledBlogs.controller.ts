@@ -5,13 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { TYPES } from "@shared/types/containerTypes";
-
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
-// shared interface imports
-import { ApiResponse } from "@shared/index";
+import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
 
 // interfaces imports
 import {

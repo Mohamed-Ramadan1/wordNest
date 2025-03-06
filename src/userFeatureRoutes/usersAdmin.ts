@@ -3,15 +3,15 @@ import { protect, restrictTo, TYPES } from "@shared/index";
 import { container } from "@config/inversify.config";
 
 // middleware imports
-import { RolesManagementMiddleware } from "@features/users_feature/middlewares/admin/rolesManagement.middleware";
-import { LockUserAccountMiddleware } from "@features/users_feature/middlewares/admin/locAccounts.middleware";
-import { BanUserAccountMiddleware } from "@features/users_feature/middlewares/admin/banUsersAccounts.middleware";
+import { RolesManagementMiddleware } from "@features/users/middlewares/admin/rolesManagement.middleware";
+import { LockUserAccountMiddleware } from "@features/users/middlewares/admin/locAccounts.middleware";
+import { BanUserAccountMiddleware } from "@features/users/middlewares/admin/banUsersAccounts.middleware";
 
 // controllers imports
-import { UsersCrudController } from "@features/users_feature/controllers/admin/usersCrud.controller";
-import { RolesManagementController } from "@features/users_feature/controllers/admin/roleManagement.controller";
-import { LockAccountsController } from "@features/users_feature/controllers/admin/locAccounts.controller";
-import { BanUsersAccountsController } from "@features/users_feature/controllers/admin/banUsersAccounts.controller";
+import { UsersCrudController } from "@features/users/controllers/admin/usersCrud.controller";
+import { RolesManagementController } from "@features/users/controllers/admin/roleManagement.controller";
+import { LockAccountsController } from "@features/users/controllers/admin/locAccounts.controller";
+import { BanUsersAccountsController } from "@features/users/controllers/admin/banUsersAccounts.controller";
 
 // Instantiate controller
 const usersCrudController = container.get<UsersCrudController>(
@@ -26,7 +26,6 @@ const lockAccountsController = container.get<LockAccountsController>(
 const banUsersAccountsController = container.get<BanUsersAccountsController>(
   TYPES.BanUsersAccountsController
 );
-
 
 const router: Router = Router();
 

@@ -1,13 +1,13 @@
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// utils imports
+// shard imports
 import {
   catchAsync,
   validateDto,
   AppError,
   uploadImagesToCloudinary,
-} from "@utils/index";
+} from "@shared/index";
 
 // interfaces imports
 import {

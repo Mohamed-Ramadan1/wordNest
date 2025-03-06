@@ -2,13 +2,13 @@
 import { Response, Request, NextFunction } from "express";
 // packages imports
 import { isValid, parse } from "date-fns";
-// utils imports
+// shard imports
 import {
   catchAsync,
   validateDto,
   AppError,
   uploadImagesToCloudinary,
-} from "@utils/index";
+} from "@shared/index";
 
 // dtos imports
 import { CreateBlogPostDTO } from "@features/blogs/dtos/createBlogPost.dto";

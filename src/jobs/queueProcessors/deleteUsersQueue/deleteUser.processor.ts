@@ -2,7 +2,7 @@
 import { Job } from "bull";
 
 // models imports
-import { UserModel } from "@features/users_feature";
+import { UserModel } from "@features/users";
 import BlogModel from "@features/blogs/models/blog.model";
 import { ReadingListModel } from "@features/readingList/models/readingList.model";
 import SupportTicketModel from "@features/supportTickets/models/supportTicket.model";

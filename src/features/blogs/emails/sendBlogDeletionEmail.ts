@@ -1,4 +1,4 @@
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { IBlog } from "../interfaces/blog.interface";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";

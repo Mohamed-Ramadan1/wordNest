@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { protect, restrictTo } from "@shared/index";
+import { protect, restrictTo, TYPES } from "@shared/index";
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
+
 // middleware imports
 import { TicketCRUDMiddleware } from "../middlewares/admin/ticketsCRUD.middleware";
 import { TicketPriorityMiddleware } from "../middlewares/admin/ticketPriority.middleware";

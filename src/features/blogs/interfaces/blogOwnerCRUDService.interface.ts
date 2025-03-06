@@ -5,7 +5,7 @@ import {
   UpdatesBlogBodyRequest,
 } from "@features/blogs/interfaces/blogOwnerRequest.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 /**
  * Interface defining the structure for BlogCRUDService.

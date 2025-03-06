@@ -4,23 +4,22 @@ import { Router } from "express";
 // multer config import
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
 
 // middleware imports
-import { protect } from "@shared/index";
-import { ProfileMiddleware } from "@features/users_feature/middlewares/users/profile.middleware";
-import { AccountPasswordManagementMiddleware } from "@features/users_feature/middlewares/users/accountPasswordManagement.middleware";
-import { AccountNotificationMiddleware } from "@features/users_feature/middlewares/users/accountNotification.middleware";
-import { AccountStatusMiddleware } from "@features/users_feature/middlewares/users/accountStatus.middleware";
-import { AccountDeletionMiddleware } from "@features/users_feature/middlewares/users/accountDeletion.middleware";
-import { AccountEmailMiddleware } from "@features/users_feature/middlewares/users/accountEmail.middleware";
+import { protect, TYPES } from "@shared/index";
+import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
+import { AccountPasswordManagementMiddleware } from "@features/users/middlewares/users/accountPasswordManagement.middleware";
+import { AccountNotificationMiddleware } from "@features/users/middlewares/users/accountNotification.middleware";
+import { AccountStatusMiddleware } from "@features/users/middlewares/users/accountStatus.middleware";
+import { AccountDeletionMiddleware } from "@features/users/middlewares/users/accountDeletion.middleware";
+import { AccountEmailMiddleware } from "@features/users/middlewares/users/accountEmail.middleware";
 // controller imports
-import { ProfileController } from "@features/users_feature/controllers/users/profile.controller";
-import { AccountNotificationController } from "@features/users_feature/controllers/users/accountNotification.controller";
-import { AccountEmailController } from "@features/users_feature/controllers/users/accountEmail.controller";
-import { AccountDeletionController } from "@features/users_feature/controllers/users/accountDeletion.controller";
-import { AccountPasswordManagementController } from "@features/users_feature/controllers/users/accountPasswordManagement.controller";
-import { AccountStatusController } from "@features/users_feature/controllers/users/accountStatus.controller";
+import { ProfileController } from "@features/users/controllers/users/profile.controller";
+import { AccountNotificationController } from "@features/users/controllers/users/accountNotification.controller";
+import { AccountEmailController } from "@features/users/controllers/users/accountEmail.controller";
+import { AccountDeletionController } from "@features/users/controllers/users/accountDeletion.controller";
+import { AccountPasswordManagementController } from "@features/users/controllers/users/accountPasswordManagement.controller";
+import { AccountStatusController } from "@features/users/controllers/users/accountStatus.controller";
 
 // Create an instance of UserController
 const profileController = container.get<ProfileController>(

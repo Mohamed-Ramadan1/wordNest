@@ -4,17 +4,17 @@ import {
   SupportTicketStatus,
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { AppError, uploadToCloudinary } from "@shared/index";
 
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
 
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 import { ObjectId } from "mongoose";
 import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { uploadToCloudinary } from "@utils/index";
+
 import cloudinary from "cloudinary";
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";

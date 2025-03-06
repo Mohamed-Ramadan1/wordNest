@@ -1,7 +1,7 @@
 // src/features/auth/helper/accountValidation.helper.ts
 
-import { IUser } from "@features/users_feature";
-import { AppError } from "@utils/index";
+import { IUser } from "@features/users";
+import { AppError } from "@shared/index";
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // Constants for reactivation logic

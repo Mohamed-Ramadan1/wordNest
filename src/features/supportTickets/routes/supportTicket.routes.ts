@@ -1,11 +1,11 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
+
 // middleware imports
 import { SupportTicketsMiddleware } from "../middlewares/users/supportTickets.middleware";
 

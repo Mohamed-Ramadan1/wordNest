@@ -3,8 +3,8 @@ import { ParsedQs } from "qs";
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
-// utils imports
-import { APIFeatures, AppError } from "@utils/index";
+// shard imports
+import { APIFeatures, AppError } from "@shared/index";
 import { IReadingList } from "../interfaces/readingList.interface";
 
 // interface imports

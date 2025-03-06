@@ -3,14 +3,14 @@ import {
   SupportTicketBody,
   SupportTicketBodyReplay,
 } from "@features/supportTickets/interfaces/supportTicketBody.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // packages imports
 import cloudinary from "cloudinary";
 import { ObjectId } from "mongoose";
 
-// utils imports
-import { AppError, uploadToCloudinary } from "@utils/index";
+// shard imports
+import { AppError, uploadToCloudinary } from "@shared/index";
 
 // logging imports
 import { supportTicketsLogger } from "@logging/index";

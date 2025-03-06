@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
-// Utils imports
-import { AppError } from "@utils/index";
+// Shard imports
+import { AppError } from "@shared/index";
 
 export const restrictTo = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {

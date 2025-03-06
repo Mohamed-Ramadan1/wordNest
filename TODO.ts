@@ -7,7 +7,6 @@
 => following/follower feature.
 -----------------------------------------------------------------------------------
 => swagger integration for all routes.
-=> DI(Dependency Injection) for features  with refactoring any necessary code.
 => testing the project (unite tests , integration tests, E2E tests).
 => thinking of adding notifications with sockit.io to the project.
 

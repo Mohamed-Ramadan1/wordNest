@@ -1,6 +1,6 @@
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync, AppError } from "@shared/index";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@utils/appError";
+
 import {
   SupportTicketBody,
   SupportTicketBodyReplay,

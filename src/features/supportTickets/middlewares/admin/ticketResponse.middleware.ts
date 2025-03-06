@@ -1,11 +1,11 @@
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync } from "@shared/utils/catchAsync";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@utils/appError";
+import { AppError } from "@shared/utils/appError";
 import {
   TicketAdminResponseBody,
   TicketParams,
 } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { IUser, UserModel } from "@features/users_feature";
+import { IUser, UserModel } from "@features/users";
 import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";

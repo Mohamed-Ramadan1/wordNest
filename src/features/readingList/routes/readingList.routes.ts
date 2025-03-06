@@ -1,9 +1,9 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/types/containerTypes";
+
 // middleware imports
 import { ReadingListCRUDMiddleware } from "../middlewares/readingListCRUD.middleware";
 import { ReadingListSettingsMiddleware } from "../middlewares/readingListSettings.middleware";

@@ -1,8 +1,8 @@
 //express imports
 import { Response, Request } from "express";
 
-// utils imports
-import { AppError, catchAsync } from "@utils/index";
+// shard imports
+import { AppError, catchAsync } from "@shared/index";
 
 // interfaces imports
 import {

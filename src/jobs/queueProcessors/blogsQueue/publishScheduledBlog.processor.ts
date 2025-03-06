@@ -1,7 +1,7 @@
 import { Job } from "bull";
 import { ScheduleStatus } from "@features/blogs/interfaces/blog.interface";
 import BlogModel from "@features/blogs/models/blog.model";
-import { AppError } from "@utils/appError";
+import { AppError } from "@shared/index";
 import { ObjectId } from "mongoose";
 import { blogQueueLogger } from "@logging/index";
 

@@ -15,14 +15,14 @@ import {
   IBlog,
   ScheduleStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import {
   UpdateScheduleBlogBodyRequestBody,
   BlogData,
 } from "../../interfaces/scheduledBlogsRequest.interface";
 
-// utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+// shard imports
+import { APIFeatures, AppError, handleServiceError } from "@shared/index";
 
 // jobs imports
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";

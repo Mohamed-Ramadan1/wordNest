@@ -4,15 +4,15 @@ import {
   SupportTicketStatus,
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { AppError } from "@shared/index";
 
 // logger imports
 import { supportTicketsLogger } from "@logging/index";
 
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // interfaces imports
 import { ITicketStatusService } from "../../interfaces/index";

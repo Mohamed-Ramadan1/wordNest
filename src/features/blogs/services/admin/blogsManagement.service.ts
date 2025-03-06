@@ -7,14 +7,14 @@ import { ObjectId } from "mongoose";
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+import { APIFeatures, AppError, handleServiceError } from "@shared/index";
 
 import {
   IBlog,
   DeletionStatus,
   ReviewContentStatus,
 } from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // queues imports
 import { BlogsQueueJobs, blogQueue } from "@jobs/index";

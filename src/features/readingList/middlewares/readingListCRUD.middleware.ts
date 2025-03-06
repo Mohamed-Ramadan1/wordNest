@@ -4,8 +4,8 @@ import { Response, Request, NextFunction } from "express";
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
 import BlogModel from "@features/blogs/models/blog.model";
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { AppError, catchAsync, validateDto } from "@shared/index";
 
 // interfaces imports
 import { CreateReadingListItemRequestBody } from "../interfaces/readingListCRUDRequest.interface";

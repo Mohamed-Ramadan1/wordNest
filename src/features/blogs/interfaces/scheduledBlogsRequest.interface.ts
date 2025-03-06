@@ -4,7 +4,7 @@ import {
   IBlog,
   IUploadedImage,
 } from "../interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 export interface validateScheduleDateFormatRequestBody {
   scheduledFor: string;

@@ -1,4 +1,4 @@
-import { catchAsync } from "@utils/index";
+import { catchAsync, AppError } from "@shared/index";
 import { Request, Response, NextFunction } from "express";
 import {
   ISupportTicket,
@@ -10,8 +10,8 @@ import {
 } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-import { AppError } from "@utils/index";
-import { IUser, UserModel } from "@features/users_feature";
+
+import { IUser, UserModel } from "@features/users";
 export class TicketStatusMiddleware {
   // validate close support ticket
   static validateCloseTicket = catchAsync(

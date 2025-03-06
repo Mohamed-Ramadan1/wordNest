@@ -1,4 +1,4 @@
-import { catchAsync } from "@utils/index";
+import { catchAsync, AppError } from "@shared/index";
 import { Request, Response, NextFunction } from "express";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 import {
@@ -10,9 +10,9 @@ import {
 import { SupportTicketPriority } from "@features/supportTickets/interfaces/supportTicket.interface";
 import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-import { AppError } from "@utils/index";
-import User from "@features/users_feature/models/user.model";
-import { IUser } from "@features/users_feature";
+
+import User from "@features/users/models/user.model";
+import { IUser } from "@features/users";
 
 export class TicketCRUDMiddleware {
   // validate create support ticket

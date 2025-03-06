@@ -4,8 +4,8 @@ import { Response, Request, NextFunction } from "express";
 // models imports
 import { FavoriteModel } from "../models/favorites.model";
 import BlogModel from "@features/blogs/models/blog.model";
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { AppError, catchAsync, validateDto } from "@shared/index";
 
 // interfaces imports
 import { FavoriteRequestBody } from "../interfaces/favoritesRequest.interface";

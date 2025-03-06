@@ -1,5 +1,5 @@
 import { Document, ObjectId } from "mongoose";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 // Support ticket lifecycle states
 export enum SupportTicketStatus {
   OPEN = "open",

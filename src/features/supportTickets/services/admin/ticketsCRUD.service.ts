@@ -11,8 +11,8 @@ import cloudinary from "cloudinary";
 // models imports
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-// utils imports
-import { AppError, uploadToCloudinary, APIFeatures } from "@utils/index";
+// shard imports
+import { AppError, uploadToCloudinary, APIFeatures } from "@shared/index";
 import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 // logger imports
@@ -25,7 +25,7 @@ import {
   supportTicketQueue,
   CloudinaryQueueJobs,
 } from "@jobs/index";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // interfaces imports
 import { ITicketsCRUDService } from "../../interfaces/index";

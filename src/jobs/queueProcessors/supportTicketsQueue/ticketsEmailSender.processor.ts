@@ -1,7 +1,7 @@
 // ticketsEmailSender.processor.ts
 import { Job } from "bull";
 
-import { AppError } from "@utils/appError";
+import { AppError } from "@shared/index";
 import { logFailedEmailSent } from "@logging/index";
 import { SupportTicketQueueJobs } from "@jobs/constants/supportTicketQueueJobs";
 

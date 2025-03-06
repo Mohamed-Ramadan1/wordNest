@@ -1,8 +1,8 @@
 // Packages imports
 import { ObjectId } from "mongoose";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { AppError } from "@shared/index";
 import { ReadingStatus } from "../interfaces/readingList.interface";
 
 // models imports
