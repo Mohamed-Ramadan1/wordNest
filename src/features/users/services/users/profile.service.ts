@@ -6,7 +6,7 @@ import UserModel from "../../models/user.model";
 import { ObjectId } from "mongoose";
 // packages imports
 import cloudinary from "cloudinary";
-import { AppError } from "@shared/utils/appError";
+import { AppError, handleServiceError } from "@shared/index";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // jobs imports
@@ -62,8 +62,7 @@ export class ProfileService implements IProfileService {
       // return the updated user.
       return updatedUser;
     } catch (err: any) {
-      console.log(err);
-      throw new AppError("Fail to upload image", 500);
+      handleServiceError(err);
     }
   }
 
@@ -84,7 +83,7 @@ export class ProfileService implements IProfileService {
 
       return updatedUser;
     } catch (err: any) {
-      throw new AppError("Fail to update user information", 500);
+      handleServiceError(err);
     }
   }
 }

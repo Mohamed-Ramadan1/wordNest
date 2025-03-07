@@ -1,5 +1,5 @@
 // utils imports
-import { AppError } from "@shared/index";
+import { handleServiceError } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -49,10 +49,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         user._id,
         err.message
       );
-      throw new AppError(
-        "An error occurred while processing your request. Please try again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -106,10 +103,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         user.deleteAccountConfirmedAt as Date,
         err.message
       );
-      throw new AppError(
-        "An error occurred while processing your request. Please try again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 }

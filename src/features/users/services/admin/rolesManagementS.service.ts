@@ -5,7 +5,7 @@ import UserModel from "@features/users/models/user.model";
 import { IUser, Roles } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError } from "@shared/index";
+import { handleServiceError, AppError } from "@shared/index";
 
 // interfaces imports
 import { IRolesManagementService } from "../../interfaces/index";
@@ -20,7 +20,7 @@ export class RolesManagementService implements IRolesManagementService {
       userToBeAssigned.roles.push(role);
       await userToBeAssigned.save();
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   }
 
@@ -33,7 +33,7 @@ export class RolesManagementService implements IRolesManagementService {
       userToBeAssigned.roles = userToBeAssigned.roles.filter((r) => r !== role);
       await userToBeAssigned.save();
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   }
 
@@ -51,7 +51,7 @@ export class RolesManagementService implements IRolesManagementService {
       }
       return { roles: user.roles, userEmail: user.email };
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   }
 
@@ -67,7 +67,7 @@ export class RolesManagementService implements IRolesManagementService {
       user.roles = [Roles.User];
       await user.save();
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   }
 }

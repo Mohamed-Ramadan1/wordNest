@@ -1,5 +1,5 @@
 // utils imports
-import { AppError } from "@shared/index";
+import { AppError, handleServiceError } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -46,10 +46,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "Unknown IP address",
         err.message
       );
-      throw new AppError(
-        "Failed to request email change,please tray again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -87,10 +84,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      throw new AppError(
-        "Failed to confirm email change, please try again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -122,10 +116,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      throw new AppError(
-        "Failed to resend email verification token, please try again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 
@@ -172,10 +163,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      throw new AppError(
-        "Failed to verify new email ownership, please try again.",
-        500
-      );
+      handleServiceError(err);
     }
   }
 }

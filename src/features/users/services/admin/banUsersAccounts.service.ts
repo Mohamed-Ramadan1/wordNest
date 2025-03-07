@@ -12,7 +12,7 @@ import {
 // Config imports
 
 // utils imports
-import { AppError } from "@shared/index";
+import { handleServiceError } from "@shared/index";
 // logger imports
 import { banAccountsLogger } from "@logging/index";
 
@@ -77,7 +77,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         ipAddress,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -121,7 +121,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         adminUnBanComment,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

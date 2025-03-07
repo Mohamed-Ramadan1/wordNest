@@ -1,9 +1,10 @@
 /*
-=> create comments feature.
+=> Repository pattern integration on the whole application.
 => create interactions feature.
+=> create comments feature.
 => improve the DTO Usage across the project.
------------------------------------------------------------------------------------
 => create content Reports feature.
+-----------------------------------------------------------------------------------
 => following/follower feature.
 -----------------------------------------------------------------------------------
 => swagger integration for all routes.

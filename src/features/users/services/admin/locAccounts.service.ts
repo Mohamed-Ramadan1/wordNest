@@ -2,7 +2,7 @@
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError } from "@shared/index";
+import { AppError, handleServiceError } from "@shared/index";
 
 // queues imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -52,7 +52,7 @@ export class LockAccountService implements ILockAccountService {
         err.message,
         ipAddress
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -96,7 +96,7 @@ export class LockAccountService implements ILockAccountService {
         err.message,
         ipAddress
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

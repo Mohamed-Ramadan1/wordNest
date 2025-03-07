@@ -1,5 +1,5 @@
 // utils imports
-import { AppError } from "@shared/index";
+import { handleServiceError } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -14,7 +14,7 @@ export class AccountPasswordManagementService
       user.passwordChangedAt = new Date();
       await user.save();
     } catch (err: any) {
-      throw new AppError("Failed to change password", 500);
+      handleServiceError(err);
     }
   }
 }

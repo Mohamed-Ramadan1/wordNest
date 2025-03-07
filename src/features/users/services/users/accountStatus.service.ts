@@ -1,5 +1,5 @@
 // utils imports
-import { AppError } from "@shared/index";
+import { handleServiceError } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -47,7 +47,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -83,7 +83,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -119,7 +119,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

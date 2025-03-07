@@ -8,7 +8,7 @@ import UserModel from "@features/users/models/user.model";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError, APIFeatures } from "@shared/index";
+import { AppError, APIFeatures, handleServiceError } from "@shared/index";
 
 // queues imports
 import {
@@ -34,7 +34,7 @@ export class UsersCrudService implements IUsersCrudService {
       const users: IUser[] = await features.execute();
       return users;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -47,7 +47,7 @@ export class UsersCrudService implements IUsersCrudService {
       }
       return user;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -65,7 +65,7 @@ export class UsersCrudService implements IUsersCrudService {
 
       return user;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -86,7 +86,7 @@ export class UsersCrudService implements IUsersCrudService {
       }
       return updatedUser;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 
@@ -102,10 +102,7 @@ export class UsersCrudService implements IUsersCrudService {
         user,
       });
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   };
 }

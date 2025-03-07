@@ -6,7 +6,7 @@ import UserModel from "../../models/user.model";
 import { ClientSession, startSession, ObjectId } from "mongoose";
 // packages imports
 
-import { AppError } from "@shared/index";
+import { handleServiceError } from "@shared/index";
 
 // interfaces imports
 import { IAccountNotificationService } from "../../interfaces/index";
@@ -26,10 +26,7 @@ export class AccountNotificationService implements IAccountNotificationService {
       await session.commitTransaction();
     } catch (err: any) {
       await session.abortTransaction();
-      throw new AppError(
-        "field to enable user notification. please tray again.",
-        500
-      );
+      handleServiceError(err);
     } finally {
       session.endSession();
     }
@@ -48,10 +45,7 @@ export class AccountNotificationService implements IAccountNotificationService {
       await session.commitTransaction();
     } catch (err: any) {
       await session.abortTransaction();
-      throw new AppError(
-        "field to disable  user notifications. please tray again.",
-        500
-      );
+      handleServiceError(err);
     } finally {
       session.endSession();
     }

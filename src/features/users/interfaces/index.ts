@@ -17,3 +17,5 @@ export { IAccountPasswordManagementService } from "./accountPasswordManagementSe
 export { IAccountStatusService } from "./accountStatusService.interface";
 
 export { IProfileService } from "./profileService.interface";
+
+export { IUserRepository } from "./userRepository.interface";
