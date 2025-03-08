@@ -1,5 +1,8 @@
-// utils imports
-import { handleServiceError } from "@shared/index";
+// packages imports
+import { inject, injectable } from "inversify";
+
+// Shard imports
+import { TYPES, handleServiceError } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -7,19 +10,18 @@ import { IUser } from "@features/users/interfaces/user.interface";
 // queues imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
-// logs imports
-import {
-  logSuccessfulAccountDeactivationConfirmation,
-  logFailedAccountDeactivationConfirmation,
-  logFailedAccountDeactivationRequest,
-  logSuccessfulAccountDeactivationRequest,
-  logFailedAccountActivation,
-  logSuccessfulAccountActivation,
-} from "@logging/index";
+import { IAccountStatusLogger } from "@logging/interfaces";
 
 import { IAccountStatusService } from "../../interfaces/index";
-
+@injectable()
 export class AccountStatusService implements IAccountStatusService {
+  private accountStatusLogger: IAccountStatusLogger;
+  constructor(
+    @inject(TYPES.AccountStatusLogger)
+    accountStatusLogger: IAccountStatusLogger
+  ) {
+    this.accountStatusLogger = accountStatusLogger;
+  }
   // Logic to deactivate  account request.
   public async deactivateAccountReq(
     user: IUser,
@@ -32,7 +34,7 @@ export class AccountStatusService implements IAccountStatusService {
       emailQueue.add(EmailQueueJobs.DeactivateAccountRequest, {
         user,
       });
-      logSuccessfulAccountDeactivationRequest(
+      this.accountStatusLogger.logSuccessfulAccountDeactivationRequest(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
         user._id,
@@ -40,7 +42,7 @@ export class AccountStatusService implements IAccountStatusService {
         new Date()
       );
     } catch (err: any) {
-      logFailedAccountDeactivationRequest(
+      this.accountStatusLogger.logFailedAccountDeactivationRequest(
         user.email,
         ipAddress ? ipAddress : "unknown ip address",
         user._id,
@@ -67,7 +69,7 @@ export class AccountStatusService implements IAccountStatusService {
       emailQueue.add(EmailQueueJobs.DeactivateAccountConfirmation, { user });
 
       // log success account deactivation confirmation.
-      logSuccessfulAccountDeactivationConfirmation(
+      this.accountStatusLogger.logSuccessfulAccountDeactivationConfirmation(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
         user._id,
@@ -76,7 +78,7 @@ export class AccountStatusService implements IAccountStatusService {
       );
     } catch (err: any) {
       // log failed account deactivation confirmation.
-      logFailedAccountDeactivationConfirmation(
+      this.accountStatusLogger.logFailedAccountDeactivationConfirmation(
         user.email,
         ipAddress ? ipAddress : "unknown ip address",
         user._id,
@@ -103,7 +105,7 @@ export class AccountStatusService implements IAccountStatusService {
       // send email to user to confirm account activation.
       emailQueue.add(EmailQueueJobs.ReactivateAccountSuccess, { user });
       // log success account activation.
-      logSuccessfulAccountActivation(
+      this.accountStatusLogger.logSuccessfulAccountActivation(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
         user._id,
@@ -112,7 +114,7 @@ export class AccountStatusService implements IAccountStatusService {
       );
     } catch (err: any) {
       // log failed account activation.
-      logFailedAccountActivation(
+      this.accountStatusLogger.logFailedAccountActivation(
         user.email,
         ipAddress ? ipAddress : "unknown ip address",
         user._id,

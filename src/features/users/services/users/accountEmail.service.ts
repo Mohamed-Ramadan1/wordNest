@@ -1,5 +1,8 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 // utils imports
-import { AppError, handleServiceError } from "@shared/index";
+import { AppError, handleServiceError, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -8,11 +11,20 @@ import { emailQueue, EmailQueueJobs } from "@jobs/index";
 // config imports
 
 // logger imports
-import { changeAccountEmailLogger } from "@logging/index";
+import { IChangeAccountEmailLogger } from "@logging/interfaces";
 
 // interfaces imports
 import { IAccountEmailService } from "../../interfaces/index";
+
+@injectable()
 export class AccountEmailService implements IAccountEmailService {
+  private changeAccountEmailLogger: IChangeAccountEmailLogger;
+  constructor(
+    @inject(TYPES.ChangeAccountEmailLogger)
+    changeAccountEmailLogger: IChangeAccountEmailLogger
+  ) {
+    this.changeAccountEmailLogger = changeAccountEmailLogger;
+  }
   /**
    * Handles the request to change the user's email address.
    * Generates a verification token for the current email.
@@ -33,14 +45,14 @@ export class AccountEmailService implements IAccountEmailService {
         user,
       });
       // log successful email change request
-      changeAccountEmailLogger.logSuccessRequestChangeAccountEmail(
+      this.changeAccountEmailLogger.logSuccessRequestChangeAccountEmail(
         user.email,
         user._id,
         ipAddress ? ipAddress : "Unknown IP address",
         user.lastChangeEmailRequestAt as Date
       );
     } catch (err: any) {
-      changeAccountEmailLogger.logFailedRequestChangeAccountEmail(
+      this.changeAccountEmailLogger.logFailedRequestChangeAccountEmail(
         user.email,
         user._id,
         ipAddress ? ipAddress : "Unknown IP address",
@@ -71,14 +83,14 @@ export class AccountEmailService implements IAccountEmailService {
       });
 
       // log successful email change confirmation
-      changeAccountEmailLogger.logSuccessConfirmEmailChange(
+      this.changeAccountEmailLogger.logSuccessConfirmEmailChange(
         user.email,
         user._id,
         ipAddress ? ipAddress : "unknown ip address",
         user.changeEmailRequestConfirmedAt as Date
       );
     } catch (err: any) {
-      changeAccountEmailLogger.logFailedConfirmEmailChange(
+      this.changeAccountEmailLogger.logFailedConfirmEmailChange(
         user.email,
         user._id,
         ipAddress ? ipAddress : "unknown ip address",
@@ -103,14 +115,14 @@ export class AccountEmailService implements IAccountEmailService {
         user,
       });
       // log successful email change request
-      changeAccountEmailLogger.logSuccessResendEmailVerificationToken(
+      this.changeAccountEmailLogger.logSuccessResendEmailVerificationToken(
         user.email,
         user._id,
         new Date(),
         ipAddress ? ipAddress : "unknown ip address"
       );
     } catch (err: any) {
-      changeAccountEmailLogger.logFailedResendEmailVerificationToken(
+      this.changeAccountEmailLogger.logFailedResendEmailVerificationToken(
         user.email,
         user._id,
         ipAddress ? ipAddress : "unknown ip address",
@@ -150,14 +162,14 @@ export class AccountEmailService implements IAccountEmailService {
         user,
       });
       // log successful email change
-      changeAccountEmailLogger.logSuccessChangeUserEmail(
+      this.changeAccountEmailLogger.logSuccessChangeUserEmail(
         user.email,
         user._id,
         ipAddress ? ipAddress : "unknown ip address",
         new Date()
       );
     } catch (err: any) {
-      changeAccountEmailLogger.logFailedChangeUserEmail(
+      this.changeAccountEmailLogger.logFailedChangeUserEmail(
         user.email,
         user._id,
         ipAddress ? ipAddress : "unknown ip address",

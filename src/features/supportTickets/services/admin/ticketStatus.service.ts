@@ -1,3 +1,6 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import {
   ISupportTicket,
@@ -5,10 +8,10 @@ import {
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { AppError } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // logger imports
-import { supportTicketsLogger } from "@logging/index";
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
@@ -17,7 +20,15 @@ import { IUser } from "@features/users";
 // interfaces imports
 import { ITicketStatusService } from "../../interfaces/index";
 
+@injectable()
 export class TicketStatusService implements ITicketStatusService {
+  private supportTicketsLogger: ISupportTicketsLogger;
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    supportTicketsLogger: ISupportTicketsLogger
+  ) {
+    this.supportTicketsLogger = supportTicketsLogger;
+  }
   /**
    * Marks a ticket as closed.
    * Indicates that the ticket has been resolved or is no longer active.
@@ -35,7 +46,7 @@ export class TicketStatusService implements ITicketStatusService {
       ticket.closedAt = new Date();
       await ticket.save();
       // log close event
-      supportTicketsLogger.logSuccessCloseTicket(
+      this.supportTicketsLogger.logSuccessCloseTicket(
         ipAddress,
         userAdmin._id,
         ticket._id
@@ -47,13 +58,13 @@ export class TicketStatusService implements ITicketStatusService {
       });
     } catch (err: any) {
       // log failed close event
-      supportTicketsLogger.logFailCloseTicket(
+      this.supportTicketsLogger.logFailCloseTicket(
         ipAddress,
         userAdmin._id,
         ticket._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -73,7 +84,7 @@ export class TicketStatusService implements ITicketStatusService {
       ticket.reopenedBy = userAdmin._id;
       await ticket.save();
       // log reopen event
-      supportTicketsLogger.logSuccessReopenTicket(
+      this.supportTicketsLogger.logSuccessReopenTicket(
         ipAddress,
         userAdmin._id,
         ticket._id
@@ -85,13 +96,13 @@ export class TicketStatusService implements ITicketStatusService {
       });
     } catch (err: any) {
       // log failed reopen event
-      supportTicketsLogger.logFailReopenTicket(
+      this.supportTicketsLogger.logFailReopenTicket(
         ipAddress,
         userAdmin._id,
         ticket._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

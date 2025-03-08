@@ -4,8 +4,9 @@ import { Job } from "bull";
 import cloudinary from "cloudinary";
 
 // logs imports
-import { logFailedImageDelete } from "@logging/index";
+import { CloudinaryLogger } from "@logging/index";
 
+const cloudinaryLogger = new CloudinaryLogger();
 export const deleteImageProcessor = async (job: Job) => {
   try {
     const destroyResponse = await cloudinary.v2.uploader.destroy(
@@ -13,13 +14,17 @@ export const deleteImageProcessor = async (job: Job) => {
     );
 
     if (destroyResponse.result !== "ok") {
-      logFailedImageDelete(
+      cloudinaryLogger.logFailedImageDelete(
         "image deleting fail ",
         job.data.publicId,
         job.data.userId
       );
     }
   } catch (err: any) {
-    logFailedImageDelete(err.message, job.data.imagePublicId, job.data.userId);
+    cloudinaryLogger.logFailedImageDelete(
+      err.message,
+      job.data.imagePublicId,
+      job.data.userId
+    );
   }
 };

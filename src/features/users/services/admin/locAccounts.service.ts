@@ -1,18 +1,30 @@
+//packages imports
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError, handleServiceError } from "@shared/index";
+import { TYPES, handleServiceError } from "@shared/index";
 
 // queues imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
-// logging imports
-import { lockAccountsLogger } from "@logging/index";
+// logger imports
+import { ILockAccountsLogger } from "@logging/interfaces";
 
 // interfaces imports
 import { ILockAccountService } from "../../interfaces/index";
+
+@injectable()
 export class LockAccountService implements ILockAccountService {
+  private lockAccountsLogger: ILockAccountsLogger;
+  constructor(
+    @inject(TYPES.LockAccountsLogger)
+    lockAccountsLogger: ILockAccountsLogger
+  ) {
+    this.lockAccountsLogger = lockAccountsLogger;
+  }
   /**
    * Locks a user account.
    * Temporarily restricts access to the account for a specified period.
@@ -34,7 +46,7 @@ export class LockAccountService implements ILockAccountService {
         user: userToBeLocked,
       });
       // log the successful lock account attempt
-      lockAccountsLogger.logSuccessfulLockAccount(
+      this.lockAccountsLogger.logSuccessfulLockAccount(
         userToBeLocked.email,
         userToBeLocked._id,
         adminUser.email,
@@ -43,7 +55,7 @@ export class LockAccountService implements ILockAccountService {
       );
     } catch (err: any) {
       // log the failed lock account attempt
-      lockAccountsLogger.logFailedLockAccount(
+      this.lockAccountsLogger.logFailedLockAccount(
         userToBeLocked.email,
         lockReason,
         userToBeLocked._id,
@@ -79,7 +91,7 @@ export class LockAccountService implements ILockAccountService {
       });
 
       // log the successful unlock account attempt
-      lockAccountsLogger.logSuccessfulUnlockAccount(
+      this.lockAccountsLogger.logSuccessfulUnlockAccount(
         userToBeUnlock.email,
         userToBeUnlock._id,
         adminUser.email,
@@ -88,7 +100,7 @@ export class LockAccountService implements ILockAccountService {
       );
     } catch (err: any) {
       // log the failed unlock account attempt
-      lockAccountsLogger.logFailedUnlockAccount(
+      this.lockAccountsLogger.logFailedUnlockAccount(
         userToBeUnlock.email,
         userToBeUnlock._id,
         adminUser.email,

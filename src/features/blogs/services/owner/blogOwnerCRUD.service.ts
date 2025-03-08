@@ -1,13 +1,18 @@
 // Packages imports
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
-
+import { inject, injectable } from "inversify";
 import { Request } from "express";
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
 
 // shard imports
-import { APIFeatures, AppError, handleServiceError } from "@shared/index";
+import {
+  APIFeatures,
+  AppError,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 //interfaces imports
 import {
@@ -21,8 +26,8 @@ import {
 import { IUser } from "@features/users";
 
 // logging imports
-import { blogsLogger } from "@logging/index";
 
+import { IBlogsLogger } from "@logging/interfaces";
 // queues imports
 import {
   BlogsQueueJobs,
@@ -37,7 +42,12 @@ const redisClient = new Redis();
 // interfaces imports
 import { IBlogOwnerCRUDService } from "../../interfaces/index";
 
+@injectable()
 export class BlogCRUDService implements IBlogOwnerCRUDService {
+  private blogsLogger: IBlogsLogger;
+  constructor(@inject(TYPES.BlogsLogger) blogsLogger: IBlogsLogger) {
+    this.blogsLogger = blogsLogger;
+  }
   /**
    * Handles the logic for creating a blog post.
    */
@@ -57,7 +67,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
           });
         });
       }
-      blogsLogger.logFailedBlogPostCreation(user._id, err.message);
+      this.blogsLogger.logFailedBlogPostCreation(user._id, err.message);
       handleServiceError(err);
     }
   }
@@ -107,7 +117,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
       // register the deletion in queue to move allow complete deletion in background
     } catch (err: any) {
       // logging the failed deletion
-      blogsLogger.logFailedBlogDeletion(
+      this.blogsLogger.logFailedBlogDeletion(
         user._id,
         err.message,
         blogToBeDeleted._id,

@@ -1,26 +1,31 @@
 import { ObjectId } from "mongoose";
 import { createLogger } from "@logging/utils/loggerFactory";
 import { Logger } from "winston";
+import { IReadingListLogger } from "@logging/interfaces";
 
-// Configure Winston logger
-const readingListLogger: Logger = createLogger("readingList");
+export class ReadingListLogger implements IReadingListLogger {
+  private logger: Logger;
+  constructor() {
+    this.logger = createLogger("readingList");
+  }
 
-// log fail send reminder reading alert email
-export const logFailedSendReadingReminderEmail = (
-  email: string | undefined,
+  // log fail send reminder reading alert email
+  logFailedSendReadingReminderEmail = (
+    email: string | undefined,
 
-  readingItemId: ObjectId | undefined,
-  errorMessage: string | undefined,
-  madeAttempt: number
-) => {
-  readingListLogger.error({
-    message: `Failed to send reading reminder email to user with email: ${email}`,
-    email,
-    readingItemId,
-    errorMessage,
-    madeAttempt,
-    level: "error",
-    timestamp: new Date().toISOString(),
-    location: "readingListQueue",
-  });
-};
+    readingItemId: ObjectId | undefined,
+    errorMessage: string | undefined,
+    madeAttempt: number
+  ) => {
+    this.logger.error({
+      message: `Failed to send reading reminder email to user with email: ${email}`,
+      email,
+      readingItemId,
+      errorMessage,
+      madeAttempt,
+      level: "error",
+      timestamp: new Date().toISOString(),
+      location: "readingListQueue",
+    });
+  };
+}

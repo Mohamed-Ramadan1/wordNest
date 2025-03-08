@@ -5,8 +5,11 @@ import {
 import BlogModel from "@features/blogs/models/blog.model";
 import { AppError } from "@shared/index";
 
-import { blogQueueLogger } from "@logging/index";
+import { BlogsQueueLogger } from "@logging/index";
+
 import { BlogsQueueJobs, blogQueue } from "@jobs/index";
+
+const blogQueueLogger = new BlogsQueueLogger();
 
 export const collectFailedDeletionBlogsProcessor = async () => {
   try {

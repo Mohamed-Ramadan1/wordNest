@@ -7,12 +7,14 @@ import {
 import BlogModel from "@features/blogs/models/blog.model";
 import { AppError } from "@shared/index";
 import { ClientSession, startSession } from "mongoose";
-import { blogQueueLogger } from "@logging/index";
+import { BlogsQueueLogger } from "@logging/index";
 import { retryAttempts } from "@jobs/queues/blogQueue";
 import { cloudinaryQueue, CloudinaryQueueJobs } from "@jobs/index";
 export interface DeleteBlogJobData {
   blog: IBlog;
 }
+
+const blogQueueLogger = new BlogsQueueLogger();
 
 export const deleteBlogsPostsProcessor = async (
   job: Job<DeleteBlogJobData>

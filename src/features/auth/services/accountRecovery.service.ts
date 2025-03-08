@@ -1,26 +1,33 @@
+//packages imports
+import { inject, injectable } from "inversify";
+
 // Models imports
 import { IUser } from "@features/users";
 
-// utils imports
-import { handleServiceError } from "@shared/index";
+// Shard imports
+import { TYPES, handleServiceError } from "@shared/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
-//logging imports
-import {
-  logFailedEmailVerification,
-  logSuccessfulEmailVerification,
-  logSuccessfulEmailResend,
-  logFailedEmailResend,
-  logFailedPasswordReset,
-  logSuccessfulPasswordReset,
-} from "@logging/index";
-
 // interface imports
 import { IAccountRecoveryService } from "../interfaces";
-// Account recovery class
+
+// interfaces imports
+import { IAuthLogger, IEmailsVerificationsLogger } from "@logging/interfaces";
+
+@injectable()
 export default class AccountRecoveryService implements IAccountRecoveryService {
+  private authLogger: IAuthLogger;
+  private emailsVerificationsLogger: IEmailsVerificationsLogger;
+  constructor(
+    @inject(TYPES.AuthLogger) authLogger: IAuthLogger,
+    @inject(TYPES.EmailVerificationLogger)
+    emailsVerificationsLogger: IEmailsVerificationsLogger
+  ) {
+    this.authLogger = authLogger;
+    this.emailsVerificationsLogger = emailsVerificationsLogger;
+  }
   // Verify user's email address.
   public verifyEmail = async (user: IUser): Promise<void> => {
     try {
@@ -35,7 +42,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
 
       emailQueue.add(EmailQueueJobs.SendAccountVerifiedEmail, { user });
       // log the successful email verification attempt.
-      logSuccessfulEmailVerification(
+      this.emailsVerificationsLogger.logSuccessfulEmailVerification(
         user.email,
         user._id,
         user.createdAt,
@@ -43,7 +50,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       );
     } catch (err: any) {
       // log the failed email verification attempt.
-      logFailedEmailVerification(
+      this.emailsVerificationsLogger.logFailedEmailVerification(
         user.email,
         user._id,
         user.createdAt,
@@ -62,10 +69,19 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       await user.save();
       emailQueue.add(EmailQueueJobs.ResendVerificationEmail, { user });
       // log the successful email resend attempt.
-      logSuccessfulEmailResend(user.email, user._id, user.createdAt);
+      this.emailsVerificationsLogger.logSuccessfulEmailResend(
+        user.email,
+        user._id,
+        user.createdAt
+      );
     } catch (err: any) {
       // log the failed email resend attempt.
-      logFailedEmailResend(user.email, user._id, user.createdAt, err.message);
+      this.emailsVerificationsLogger.logFailedEmailResend(
+        user.email,
+        user._id,
+        user.createdAt,
+        err.message
+      );
       handleServiceError(err);
     }
   };
@@ -80,12 +96,12 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       await user.save();
 
       // Log successful password reset request
-      logSuccessfulPasswordReset(user.email, user.id, ip);
+      this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
 
       emailQueue.add(EmailQueueJobs.RequestPasswordReset, { user });
     } catch (err: any) {
       // Log the failed password reset attempt
-      logFailedPasswordReset(
+      this.authLogger.logFailedPasswordReset(
         user.email,
         ip,
         user.id,
@@ -116,9 +132,14 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       await user.save();
 
       emailQueue.add(EmailQueueJobs.ResetPassword, { user });
-      logSuccessfulPasswordReset(user.email, user.id, ip);
+      this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
     } catch (err: any) {
-      logFailedPasswordReset(user.email, ip, user.id, err.message);
+      this.authLogger.logFailedPasswordReset(
+        user.email,
+        ip,
+        user.id,
+        err.message
+      );
       // If transaction failed, re-throw the error
       handleServiceError(err);
     }

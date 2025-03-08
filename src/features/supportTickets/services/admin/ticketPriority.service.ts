@@ -1,3 +1,6 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import {
   ISupportTicket,
@@ -5,17 +8,25 @@ import {
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { AppError } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // logger imports
-import { supportTicketsLogger } from "@logging/index";
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 import { IUser } from "@features/users";
 
 // interfaces imports
 import { ITicketPriorityService } from "../../interfaces/index";
 
+@injectable()
 export class TicketPriorityService implements ITicketPriorityService {
+  private supportTicketsLogger: ISupportTicketsLogger;
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    supportTicketsLogger: ISupportTicketsLogger
+  ) {
+    this.supportTicketsLogger = supportTicketsLogger;
+  }
   /**
    * Changes the priority of a ticket.
    * Sends or skips notifications based on the priority level.
@@ -30,14 +41,14 @@ export class TicketPriorityService implements ITicketPriorityService {
     try {
       ticket.priority = newPriority;
       await ticket.save();
-      supportTicketsLogger.logSupportTicketPriorityChangeSuccess(
+      this.supportTicketsLogger.logSupportTicketPriorityChangeSuccess(
         ipAddress,
         userAdmin._id,
         ticket._id,
         newPriority
       );
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

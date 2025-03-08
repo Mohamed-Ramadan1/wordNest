@@ -1,5 +1,9 @@
-// modules / packages imports.
+//Express imports
 import { Response } from "express";
+
+//packages imports
+import { inject, injectable } from "inversify";
+
 // Models imports
 import { IUser, UserModel } from "@features/users";
 
@@ -8,22 +12,24 @@ import {
   generateAuthToken,
   generateLogOutToken,
   handleServiceError,
+  TYPES,
 } from "@shared/index";
 
 //jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
-// logging imports
-import {
-  logSuccessfulLogin,
-  logSuccessfulLogout,
-  logFailedLogin,
-} from "@logging/index";
+// interfaces
+import { IAuthLogger } from "@logging/interfaces";
 
 // interfaces imports
 import { IAuthService } from "../interfaces";
 
+@injectable()
 export default class AuthService implements IAuthService {
+  private authLogger: IAuthLogger;
+  constructor(@inject(TYPES.AuthLogger) authLogger: IAuthLogger) {
+    this.authLogger = authLogger;
+  }
   public async registerWithEmail(
     email: string,
     firstName: string,
@@ -66,10 +72,10 @@ export default class AuthService implements IAuthService {
       user.lastLoginIP = ipAddress;
       user.lastLoginAt = new Date();
       await user.save();
-      logSuccessfulLogin(user.email, ipAddress);
+      this.authLogger.logSuccessfulLogin(user.email, ipAddress);
       return { token };
     } catch (err: any) {
-      logFailedLogin(user.email, ipAddress, err.message);
+      this.authLogger.logFailedLogin(user.email, ipAddress, err.message);
       handleServiceError(err);
     }
   }
@@ -82,7 +88,7 @@ export default class AuthService implements IAuthService {
     try {
       const token: string = generateLogOutToken(user, res);
       res.clearCookie("jwt");
-      logSuccessfulLogout(user.email as string, ipAddress);
+      this.authLogger.logSuccessfulLogout(user.email as string, ipAddress);
       return token;
     } catch (err: any) {
       handleServiceError(err);

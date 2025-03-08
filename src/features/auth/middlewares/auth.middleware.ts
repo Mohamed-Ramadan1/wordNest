@@ -1,5 +1,3 @@
-// modules / packages imports.
-
 import { NextFunction, Request, Response } from "express";
 // Models imports
 import { IUser, UserModel } from "@features/users";
@@ -11,7 +9,7 @@ import { AppError, catchAsync, validateDto } from "@shared/index";
 import { RegistrationDto } from "../dtos/registration.dto";
 
 import { LoginDTO } from "../dtos/login.dto";
-import { logFailedLogin } from "@logging/index";
+import { AuthLogger } from "@logging/index";
 import {
   checkAccountDeletionStatus,
   checkAccountLockStatus,
@@ -19,6 +17,8 @@ import {
   checkAccountLoginLockedStatus,
   lockAccountLogin,
 } from "../helper/accountValidation.helper";
+
+const authLogger = new AuthLogger();
 export default class AuthMiddleware {
   public validateRegistration = [
     validateDto(RegistrationDto), // Step 1: Validate inputs using DTO
@@ -45,7 +45,7 @@ export default class AuthMiddleware {
 
       // If no user is found, log and throw an error
       if (!user) {
-        logFailedLogin(
+        authLogger.logFailedLogin(
           email,
           req.ip,
           `No user existing with email address ${email}`
@@ -63,7 +63,7 @@ export default class AuthMiddleware {
       if (!isPasswordValid) {
         // Increment login attempts and potentially lock the account
         await lockAccountLogin(user);
-        logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
+        authLogger.logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
         throw new AppError("Invalid email or password", 401);
       }
       // Check account deletion status (if account marked for deletion)

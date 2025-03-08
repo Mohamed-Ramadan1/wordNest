@@ -1,54 +1,25 @@
-export {
-  logSuccessfulLogin,
-  logFailedLogin,
-  logFailedRegister,
-  logSuccessfulLogout,
-  logSuccessfulRegister,
-  logSuccessfulPasswordReset,
-  logFailedPasswordReset,
-} from "./loggers/authLogger";
+export { AuthLogger } from "./loggers/authLogger";
 
-export {
-  logFailedEmailVerification,
-  logSuccessfulEmailVerification,
-  logSuccessfulEmailResend,
-  logFailedEmailResend,
-} from "./loggers/emailsVerificationsLogger";
+export { EmailVerificationLogger } from "./loggers/emailsVerificationsLogger";
 
-export { logFailedEmailSent } from "./loggers/emailLogger";
+export { EmailLogger } from "./loggers/emailLogger";
 
-export {
-  logFailedImageDelete,
-  logFailedImageUpload,
-  logFailedResourceUpload,
-} from "./loggers/cloudinaryLogger";
+export { CloudinaryLogger } from "./loggers/cloudinaryLogger";
 
-export {
-  logSuccessfulAccountDeactivationConfirmation,
-  logFailedAccountDeactivationConfirmation,
-  logFailedAccountDeactivationRequest,
-  logSuccessfulAccountDeactivationRequest,
-  logFailedAccountActivation,
-  logSuccessfulAccountActivation,
-} from "./loggers/accountStatus";
+export { AccountStatusLogger } from "./loggers/accountStatus";
 
-export {
-  logFailedAccountDeletionConfirmation,
-  logFailedAccountDeletionRequest,
-  logSuccessfulAccountDeletionConfirmation,
-  logSuccessfulAccountDeletionRequest,
-} from "./loggers/accountDeletionLogger";
+export { AccountDeletionLogger } from "./loggers/accountDeletionLogger";
 
-export * as changeAccountEmailLogger from "./loggers/changeAccountEmailLogger";
+export { ChangeAccountEmailLogger } from "./loggers/changeAccountEmailLogger";
 
-export * as lockAccountsLogger from "./loggers/lockAccountLogger";
+export { LockAccountsLogger } from "./loggers/lockAccountLogger";
 
-export * as banAccountsLogger from "./loggers/bandAccountsLogger";
+export { BandedAccountsLogger } from "./loggers/bandAccountsLogger";
 
-export * as supportTicketsLogger from "./loggers/supportTicketsLogger";
+export { BlogsLogger } from "./loggers/blogsLogger";
 
-export * as blogsLogger from "./loggers/blogsLogger";
+export { BlogsQueueLogger } from "./loggers/blogQueueLogger";
 
-export * as blogQueueLogger from "./loggers/blogQueueLogger";
+export { SupportTicketsLogger } from "./loggers/supportTicketsLogger";
 
-export * as readingListLogger from "./loggers/readingListLogger";
+export { ReadingListLogger } from "./loggers/readingListLogger";

@@ -1,10 +1,10 @@
 import cloudinary from "cloudinary";
 import { AppError } from "./appError";
-import { logFailedResourceUpload } from "@logging/index";
+import { CloudinaryLogger } from "@logging/index";
 import { removeLocalFile } from "./deleteLocalFiles";
 
 // single file upload to cloudinary function
-
+const cloudinaryLogger = new CloudinaryLogger();
 export async function uploadToCloudinary(
   filePath: string,
   resourceName: string
@@ -14,7 +14,7 @@ export async function uploadToCloudinary(
       await cloudinary.v2.uploader.upload(filePath);
 
     if (!uploadedResource.secure_url) {
-      logFailedResourceUpload(
+      cloudinaryLogger.logFailedResourceUpload(
         "Failed to upload resource to Cloudinary: No secure URL returned",
         resourceName,
         filePath
@@ -26,7 +26,7 @@ export async function uploadToCloudinary(
 
     return uploadedResource;
   } catch (err: any) {
-    logFailedResourceUpload(
+    cloudinaryLogger.logFailedResourceUpload(
       `Failed to upload resource to Cloudinary: ${err.message}. File: ${filePath}, Resource Type: ${resourceName}`,
       resourceName,
       filePath

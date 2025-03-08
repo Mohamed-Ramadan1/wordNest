@@ -1,3 +1,5 @@
+// packages imports
+import { inject, injectable } from "inversify";
 // interfaces imports
 import {
   ISupportTicket,
@@ -5,10 +7,11 @@ import {
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { AppError, uploadToCloudinary } from "@shared/index";
+import { uploadToCloudinary, TYPES, handleServiceError } from "@shared/index";
 
 // logger imports
-import { supportTicketsLogger } from "@logging/index";
+// logger imports
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 import { IUser } from "@features/users";
 
@@ -21,7 +24,16 @@ import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 
 // interfaces imports
 import { ITicketResponseService } from "../../interfaces/index";
+
+@injectable()
 export class TicketResponseService implements ITicketResponseService {
+  private supportTicketsLogger: ISupportTicketsLogger;
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    supportTicketsLogger: ISupportTicketsLogger
+  ) {
+    this.supportTicketsLogger = supportTicketsLogger;
+  }
   /**
    * Allows an admin to respond to a ticket.
    * Admins can provide a reply to address user concerns or issues in a ticket.
@@ -58,7 +70,7 @@ export class TicketResponseService implements ITicketResponseService {
       ticket.status = SupportTicketStatus.IN_PROGRESS;
       await ticket.save();
       // log response event
-      supportTicketsLogger.logSuccessAdminResponseTicket(
+      this.supportTicketsLogger.logSuccessAdminResponseTicket(
         ipAddress,
         adminUser._id,
         ticket._id,
@@ -71,13 +83,13 @@ export class TicketResponseService implements ITicketResponseService {
         supportTicket: ticket,
       });
     } catch (err: any) {
-      supportTicketsLogger.logFailAdminResponseTicket(
+      this.supportTicketsLogger.logFailAdminResponseTicket(
         ipAddress,
         adminUser._id,
         ticket._id,
         err
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

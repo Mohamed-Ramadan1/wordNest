@@ -3,7 +3,9 @@ import { ScheduleStatus } from "@features/blogs/interfaces/blog.interface";
 import BlogModel from "@features/blogs/models/blog.model";
 import { AppError } from "@shared/index";
 import { ObjectId } from "mongoose";
-import { blogQueueLogger } from "@logging/index";
+import { BlogsQueueLogger } from "@logging/index";
+
+const blogQueueLogger = new BlogsQueueLogger();
 
 export interface PublishScheduledBlog {
   blogId: ObjectId;

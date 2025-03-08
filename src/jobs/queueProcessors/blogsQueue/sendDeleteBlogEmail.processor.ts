@@ -1,6 +1,8 @@
 import { Job } from "bull";
 import { sendBlogDeletionEmail } from "@features/blogs/emails";
-import { blogQueueLogger } from "@logging/index";
+import { BlogsQueueLogger } from "@logging/index";
+
+const blogQueueLogger = new BlogsQueueLogger();
 
 export const sendDeleteBlogEmailProcessor = async (job: Job): Promise<void> => {
   const { blogPost, blogAuthor } = job.data;

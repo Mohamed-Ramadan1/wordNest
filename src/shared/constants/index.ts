@@ -5,3 +5,4 @@ export { FAVORITES_TYPES } from "./injectionContainerTypes/favoritesTypes";
 export { READING_LIST_TYPES } from "./injectionContainerTypes/readingListTypes";
 export { SUPPORT_TICKETS_TYPES } from "./injectionContainerTypes/supportTicketTypes";
 export { BLOGS_TYPES } from "./injectionContainerTypes/blogsTypes";
+export { LOGGING_TYPES } from "./injectionContainerTypes/loggingTypes";

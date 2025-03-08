@@ -1,17 +1,13 @@
+// packages imports
+import { inject, injectable } from "inversify";
 // utils imports
-import { handleServiceError } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // logging imports
-import {
-  logFailedAccountDeletionConfirmation,
-  logFailedAccountDeletionRequest,
-  logSuccessfulAccountDeletionConfirmation,
-  logSuccessfulAccountDeletionRequest,
-} from "@logging/loggers/accountDeletionLogger";
-
+import { IAccountDeletionLogger } from "@logging/interfaces";
 // queues imports
 import {
   emailQueue,
@@ -24,7 +20,15 @@ import {
 // interfaces imports
 import { IAccountDeletionService } from "../../interfaces/index";
 
+@injectable()
 export class AccountDeletionService implements IAccountDeletionService {
+  private accountDeletionLogger: IAccountDeletionLogger;
+  constructor(
+    @inject(TYPES.AccountDeletionLogger)
+    accountDeletionLogger: IAccountDeletionLogger
+  ) {
+    this.accountDeletionLogger = accountDeletionLogger;
+  }
   // Account Deletion
   public async requestAccountDeletion(
     user: IUser,
@@ -34,7 +38,7 @@ export class AccountDeletionService implements IAccountDeletionService {
     try {
       user.createDeleteAccountRequestToken();
       await user.save();
-      logSuccessfulAccountDeletionRequest(
+      this.accountDeletionLogger.logSuccessfulAccountDeletionRequest(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
         user._id,
@@ -43,7 +47,7 @@ export class AccountDeletionService implements IAccountDeletionService {
       );
       emailQueue.add(EmailQueueJobs.DeleteAccountRequest, { user });
     } catch (err: any) {
-      logFailedAccountDeletionRequest(
+      this.accountDeletionLogger.logFailedAccountDeletionRequest(
         user.email,
         ipAddress ? ipAddress : "unknown ip address",
         user._id,
@@ -85,7 +89,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         }
       );
       // logging the process of successfully user account deletion confirmation.
-      logSuccessfulAccountDeletionConfirmation(
+      this.accountDeletionLogger.logSuccessfulAccountDeletionConfirmation(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
         user._id,
@@ -95,7 +99,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         user.userAccountDeletedAt as Date
       );
     } catch (err: any) {
-      logFailedAccountDeletionConfirmation(
+      this.accountDeletionLogger.logFailedAccountDeletionConfirmation(
         user.email,
         ipAddress ? ipAddress : "unknown ip address",
         user._id,

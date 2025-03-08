@@ -26,7 +26,7 @@ import {
   sendAccountUnbannedEmail,
 } from "@features/users/emails";
 
-import { logFailedEmailSent } from "@logging/index";
+import { EmailLogger } from "@logging/index";
 import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 
 // Map email types to their corresponding sending functions
@@ -53,6 +53,7 @@ export const emailHandlers = {
   [EmailQueueJobs.FailedLoginAttempts]: sendFailedLoginAttemptsEmail,
 };
 
+const emailLogger = new EmailLogger();
 // Generic email processor function
 export const sendEmailsProcessor = async (job: Job) => {
   const { user } = job.data;
@@ -72,7 +73,7 @@ export const sendEmailsProcessor = async (job: Job) => {
     return `${job.name} email successfully sent to ${user.email}`;
   } catch (err) {
     console.error(`Error processing job ID ${job.id}:`, err);
-    logFailedEmailSent(job.name, user.email, job.attemptsMade);
+    emailLogger.logFailedEmailSent(job.name, user.email, job.attemptsMade);
     throw err;
   }
 };

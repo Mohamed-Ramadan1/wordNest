@@ -2,7 +2,7 @@
 import { Job } from "bull";
 
 import { AppError } from "@shared/index";
-import { logFailedEmailSent } from "@logging/index";
+import { EmailLogger } from "@logging/index";
 import { SupportTicketQueueJobs } from "@jobs/constants/supportTicketQueueJobs";
 
 import {
@@ -12,6 +12,8 @@ import {
   sendTicketClosedEmail,
   sendTicketReopenedEmail,
 } from "@features/supportTickets/emails";
+
+const emailLogger = new EmailLogger();
 
 export const supportTicketHandlers = {
   [SupportTicketQueueJobs.SendTicketCreationEmail]: sendTicketCreationEmail,
@@ -49,7 +51,7 @@ export const ticketsEmailSenderProcessor = async (job: Job) => {
     return `${job.name} email successfully sent to ${user.email}`;
   } catch (err: any) {
     console.error(`Error processing job ID ${job.id}:`, err);
-    logFailedEmailSent(job.name, user.email, job.attemptsMade);
+    emailLogger.logFailedEmailSent(job.name, user.email, job.attemptsMade);
     throw new AppError(err.message, 500);
   }
 };

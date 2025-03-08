@@ -1,13 +1,20 @@
 // Packages imports
 import { ParsedQs } from "qs";
 
+import { inject, injectable } from "inversify";
+
 import { ObjectId } from "mongoose";
 
 // model imports
 import BlogModel from "@features/blogs/models/blog.model";
 
 // utils imports
-import { APIFeatures, AppError, handleServiceError } from "@shared/index";
+import {
+  APIFeatures,
+  AppError,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 import {
   IBlog,
@@ -19,13 +26,20 @@ import { IUser } from "@features/users";
 // queues imports
 import { BlogsQueueJobs, blogQueue } from "@jobs/index";
 
-// logger
-import { blogQueueLogger } from "@logging/index";
+// logger imports
+import { IBlogsQueueLogger } from "@logging/interfaces";
 
 // interfaces imports
 import { IBlogManagementService } from "../../interfaces/index";
 
+@injectable()
 export class BlogManagementService implements IBlogManagementService {
+  private blogQueueLogger: IBlogsQueueLogger;
+  constructor(
+    @inject(TYPES.BlogsQueueLogger) blogQueueLogger: IBlogsQueueLogger
+  ) {
+    this.blogQueueLogger = blogQueueLogger;
+  }
   /**
    * Deletes a blog post permanently.
    */
@@ -49,7 +63,7 @@ export class BlogManagementService implements IBlogManagementService {
         blogAuthor: blogAuthor,
       });
       // log the deletion of the blog post
-      blogQueueLogger.logBlogPostDeletion(
+      this.blogQueueLogger.logBlogPostDeletion(
         blogPost._id,
         userAdmin.email,
         new Date()
@@ -139,7 +153,7 @@ export class BlogManagementService implements IBlogManagementService {
         blogAuthor: blogAuthor,
       });
       // log the action
-      blogQueueLogger.logBlogPostUnPublishedAction(
+      this.blogQueueLogger.logBlogPostUnPublishedAction(
         blogPost._id,
         new Date(),
         userAdmin.email
@@ -173,7 +187,7 @@ export class BlogManagementService implements IBlogManagementService {
         blogAuthor: blogAuthor,
       });
       // log the action
-      blogQueueLogger.logBlogPostRepublishedAction(
+      this.blogQueueLogger.logBlogPostRepublishedAction(
         blogPost._id,
         new Date(),
         userAdmin.email

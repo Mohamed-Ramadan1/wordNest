@@ -1,7 +1,8 @@
 import { Job } from "bull";
 import { sendBlogRepublishEmail } from "@features/blogs/emails";
-import { blogQueueLogger } from "@logging/index";
+import { BlogsQueueLogger } from "@logging/index";
 
+const blogQueueLogger = new BlogsQueueLogger();
 export const sendRepublishedBlogEmailProcessor = async (
   job: Job
 ): Promise<void> => {

@@ -1,3 +1,6 @@
+//packages imports
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
@@ -9,17 +12,23 @@ import {
   EmailQueueJobs,
 } from "@jobs/index";
 
-// Config imports
-
 // utils imports
-import { handleServiceError } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 // logger imports
-import { banAccountsLogger } from "@logging/index";
-
+import { IBandAccountsLogger } from "@logging/interfaces";
 // const banPeriodMs = 2 * 60 * 1000;
 // interfaces imports
 import { IBanUserAccountService } from "../../interfaces/index";
+
+@injectable()
 export class BanUserAccountService implements IBanUserAccountService {
+  private bandAccountsLogger: IBandAccountsLogger;
+  constructor(
+    @inject(TYPES.BandedAccountsLogger)
+    bandAccountsLogger: IBandAccountsLogger
+  ) {
+    this.bandAccountsLogger = bandAccountsLogger;
+  }
   /**
    * Bans a user account.
    * Restricts the user's access to the platform by marking their account as banned.
@@ -57,7 +66,7 @@ export class BanUserAccountService implements IBanUserAccountService {
       );
 
       // log success ban user account
-      banAccountsLogger.logSuccessBanUserAccount(
+      this.bandAccountsLogger.logSuccessBanUserAccount(
         adminUser.email,
         adminUser._id,
         userToBeBaned.email,
@@ -67,7 +76,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         ipAddress
       );
     } catch (err: any) {
-      banAccountsLogger.logFailedBanUserAccount(
+      this.bandAccountsLogger.logFailedBanUserAccount(
         adminUser.email,
         adminUser._id,
         userToBeBaned.email,
@@ -103,7 +112,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         user: userToBeUnBaned,
       });
       // log success un-ban user account
-      banAccountsLogger.logSuccessUnbanUserAccount(
+      this.bandAccountsLogger.logSuccessUnbanUserAccount(
         adminUser.email,
         adminUser._id,
         userToBeUnBaned.email,
@@ -112,7 +121,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         adminUnBanComment
       );
     } catch (err: any) {
-      banAccountsLogger.logFailedUnbanUserAccount(
+      this.bandAccountsLogger.logFailedUnbanUserAccount(
         adminUser.email,
         adminUser._id,
         userToBeUnBaned.email,

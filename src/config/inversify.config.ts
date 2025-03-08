@@ -8,6 +8,7 @@ import usersModule from "@features/users/modules/users.module";
 import readingListModule from "@features/readingList/modules/readingList.module";
 import supportTicketModule from "@features/supportTickets/module/supportTicket.module";
 import blogsModule from "@features/blogs/modules/blogs.module";
+import loggingModule from "@logging/modules/logging.module";
 
 // Create an IoC container
 const container = new Container();
@@ -19,7 +20,8 @@ container.load(
   usersModule,
   readingListModule,
   supportTicketModule,
-  blogsModule
+  blogsModule,
+  loggingModule
 );
 
 export { container };

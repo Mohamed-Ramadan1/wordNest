@@ -1,3 +1,5 @@
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import {
   SupportTicketBody,
@@ -10,10 +12,15 @@ import cloudinary from "cloudinary";
 import { ObjectId } from "mongoose";
 
 // shard imports
-import { AppError, uploadToCloudinary } from "@shared/index";
+import {
+  AppError,
+  uploadToCloudinary,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 // logging imports
-import { supportTicketsLogger } from "@logging/index";
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 // Queues imports
 import { supportTicketQueue, SupportTicketQueueJobs } from "@jobs/index";
@@ -24,7 +31,17 @@ import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 // interfaces imports
 import { ISupportTicketService } from "../../interfaces/index";
+
+@injectable()
 export class SupportTicketService implements ISupportTicketService {
+  private supportTicketLogger: ISupportTicketsLogger;
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    supportTicketsLogger: ISupportTicketsLogger
+  ) {
+    this.supportTicketLogger = supportTicketsLogger;
+  }
+
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
@@ -60,19 +77,19 @@ export class SupportTicketService implements ISupportTicketService {
       });
 
       // Log the successful ticket creation.
-      supportTicketsLogger.logTicketCreation(
+      this.supportTicketLogger.logTicketCreation(
         ipAddress,
         user._id,
         supportTicket._id
       );
     } catch (err: any) {
       // Log the error and re-throw it for proper error handling.
-      supportTicketsLogger.logTicketCreationFail(
+      this.supportTicketLogger.logTicketCreationFail(
         ipAddress,
         user._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -115,7 +132,7 @@ export class SupportTicketService implements ISupportTicketService {
       }
       return supportTicket;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -160,20 +177,20 @@ export class SupportTicketService implements ISupportTicketService {
       );
 
       // log success replay ticket
-      supportTicketsLogger.logSuccessReplayTicket(
+      this.supportTicketLogger.logSuccessReplayTicket(
         ipAddress,
         user._id,
         supportTicket._id,
         responseInfo.message
       );
     } catch (err: any) {
-      supportTicketsLogger.logFailReplayTicket(
+      this.supportTicketLogger.logFailReplayTicket(
         ipAddress,
         user._id,
         supportTicket._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }
