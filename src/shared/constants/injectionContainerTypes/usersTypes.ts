@@ -1,4 +1,5 @@
 export const USERS_TYPES = {
+  USER_MODEL: Symbol.for("UserModel"),  
   LockAccountsController: Symbol.for("LockAccountsController"),
   LockAccountService: Symbol.for("LockAccountService"),
   BanUsersAccountsController: Symbol.for("BanUsersAccountsController"),

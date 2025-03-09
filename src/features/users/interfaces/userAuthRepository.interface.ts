@@ -5,6 +5,56 @@ import { IUser } from "./user.interface";
  */
 export interface IUserAuthRepository {
   /**
+   * Finds a user by their email address without specific field selection.
+   * @param email - The email address of the user to find
+   * @returns A promise resolving to the user document if found, or null if no user exists with the given email
+   */
+  findUserByEmail(email: string): Promise<IUser | null>;
+
+  /**
+   * Finds a user by their email address and selects specific fields.
+   * This is useful for retrieving only necessary fields, such as including the password for authentication.
+   * @param email - The email address of the user to find
+   * @param fieldsToBeSelected - Array of field names to select. Use "+" prefix to include fields hidden by default (e.g., "+password")
+   * @returns A promise resolving to the user document with selected fields if found, or null if no user exists
+   */
+  findUserByEmailAndSelectFields(
+    email: string,
+    fieldsToBeSelected: string[]
+  ): Promise<IUser | null>;
+
+  /**
+   * Finds a user based on dynamic conditions provided as an array of attribute-value pairs.
+   * The conditions can be used to create a MongoDB query, and the method will return the first user
+   * that matches the given conditions. Operators like `$gt`, `$lt`, etc., can be used with the value.
+   *
+   * @param conditions - An array of condition objects where each object contains:
+   *   - `attribute`: The field of the user document to match (e.g., `email`, `emailVerificationToken`).
+   *   - `value`: The value to match for the specified attribute (can be a string, Date, or other types).
+   *   - `operator` (optional): The operator to use for the comparison (e.g., `$gt`, `$lt`, `$eq`).
+   *     If not provided, a direct match will be used.
+   *
+   * @returns A `Promise` that resolves to the found user (`IUser`), or `null` if no user matches the conditions.
+   *
+   * @example
+   * Example of finding a user by their email verification token and expiration date
+   * const user: IUser | null = await this.findUserWithCondition([
+   *   { attribute: 'emailVerificationToken', value: req.params.token },
+   *   { attribute: 'emailVerificationExpires', value: new Date(), operator: '$gt' }
+   * ]);
+   *
+   * @example
+   * // Example of finding a user by the password reset token
+   * const user: IUser | null = await this.findUserWithCondition([
+   *   { attribute: 'passwordResetToken', value: req.params.token }
+   * ]);
+   */
+
+  findUserWithCondition(
+    conditions: { attribute: string; value: string | Date; operator?: string }[]
+  ): Promise<IUser | null>;
+
+  /**
    * Verifies a user's email address by updating verification status and clearing tokens.
    * @param user The user whose email is being verified
    */

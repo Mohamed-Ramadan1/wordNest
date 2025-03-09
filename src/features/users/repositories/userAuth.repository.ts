@@ -1,6 +1,63 @@
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+
+// shard imports
+import { TYPES } from "@shared/index";
+
+// interfaces imports
 import { IUserAuthRepository, IUser } from "../interfaces/index";
-import UserModel from "../models/user.model";
+
+@injectable()
 export class UserAuthRepository implements IUserAuthRepository {
+  constructor(
+    @inject(TYPES.USER_MODEL) private userModel: Model<IUser> // Correct type
+  ) {}
+
+  public async findUserByEmail(email: string): Promise<IUser | null> {
+    try {
+      return await this.userModel.findOne({ email });
+    } catch (err: any) {
+      throw new Error(`Failed to find user by email: ${err.message}`);
+    }
+  }
+
+  public async findUserByEmailAndSelectFields(
+    email: string,
+    fieldsToBeSelected: string[]
+  ): Promise<IUser | null> {
+    try {
+      return await this.userModel.findOne({ email }).select(fieldsToBeSelected);
+    } catch (err: any) {
+      throw new Error(`Failed to find user by email: ${err.message}`);
+    }
+  }
+
+  async findUserWithCondition(
+    conditions: { attribute: string; value: string | Date; operator?: string }[]
+  ): Promise<IUser | null> {
+    const query: { [key: string]: any } = {};
+
+    // Loop through conditions and build the query
+    conditions.forEach((condition) => {
+      const { attribute, value, operator } = condition;
+
+      if (operator) {
+        query[attribute] = { [operator]: value };
+      } else {
+        query[attribute] = value;
+      }
+    });
+
+    // Execute the query and return the result
+    try {
+      return await this.userModel.findOne(query);
+    } catch (error) {
+      console.error("Error finding user with conditions:", error);
+      throw new Error("Failed to find user with the given conditions");
+    }
+  }
+
   public async markEmailAsVerified(user: IUser): Promise<void> {
     try {
       user.set({
@@ -59,12 +116,15 @@ export class UserAuthRepository implements IUserAuthRepository {
     password: string
   ): Promise<IUser> {
     try {
-      const user: IUser = new UserModel({
+      console.log("here it begins ");
+
+      const user: IUser = new this.userModel({
         email,
         firstName,
         lastName,
         password,
       });
+      console.log("here it begins ");
 
       // generate verification token
       user.emailVerificationToken = user.createEmailVerificationToken();
@@ -72,7 +132,7 @@ export class UserAuthRepository implements IUserAuthRepository {
       // save the user to the database.
       await user.save();
 
-      return user;
+      return user.toObject();
     } catch (err: any) {
       console.error("Error registering user:", err);
       throw new Error(`User registration failed:${err.message}`);

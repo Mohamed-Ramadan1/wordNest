@@ -1,7 +1,7 @@
-//Express imports
+// Express imports
 import { Response } from "express";
 
-//packages imports
+// packages imports
 import { inject, injectable } from "inversify";
 
 // Models imports
@@ -15,7 +15,7 @@ import {
   TYPES,
 } from "@shared/index";
 
-//jobs imports
+// jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 // interfaces
@@ -27,14 +27,34 @@ import { IAuthService } from "../interfaces";
 // users imports
 import { IUserAuthRepository } from "@features/users/interfaces";
 
+/**
+ * Service class responsible for handling authentication operations such as registration, login, and logout.
+ * @implements {IAuthService}
+ */
 @injectable()
 export default class AuthService implements IAuthService {
   // private authLogger: IAuthLogger;
+
+  /**
+   * Constructs an instance of AuthService with injected dependencies.
+   * @param authLogger - The logger instance for authentication-related events.
+   * @param userAuthRepository - The repository instance for user authentication operations.
+   */
   constructor(
     @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.UserAuthRepository)
     private readonly userAuthRepository: IUserAuthRepository
   ) {}
+
+  /**
+   * Registers a new user with the provided email, first name, last name, and password.
+   * @param email - The email address of the user.
+   * @param firstName - The first name of the user.
+   * @param lastName - The last name of the user.
+   * @param password - The password for the user account.
+   * @param res - The Express response object used to set authentication details.
+   * @returns A promise that resolves to an object containing the registered user and an authentication token.
+   */
   public async registerWithEmail(
     email: string,
     firstName: string,
@@ -62,6 +82,13 @@ export default class AuthService implements IAuthService {
     }
   }
 
+  /**
+   * Logs in an existing user and generates an authentication token.
+   * @param user - The user object to log in.
+   * @param ipAddress - The IP address from which the login request originated (optional).
+   * @param res - The Express response object used to set authentication details.
+   * @returns A promise that resolves to an object containing the authentication token.
+   */
   public async loginWithEmail(
     user: IUser,
     ipAddress: string | undefined,
@@ -78,6 +105,13 @@ export default class AuthService implements IAuthService {
     }
   }
 
+  /**
+   * Logs out a user and clears the authentication cookie.
+   * @param user - The user object to log out.
+   * @param ipAddress - The IP address from which the logout request originated (optional).
+   * @param res - The Express response object used to clear authentication details.
+   * @returns The logout token as a string.
+   */
   public logout(
     user: IUser,
     ipAddress: string | undefined,

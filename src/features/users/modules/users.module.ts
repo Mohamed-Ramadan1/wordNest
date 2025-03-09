@@ -1,5 +1,6 @@
 import { ContainerModule, interfaces } from "inversify";
 import { TYPES } from "@shared/index";
+import { Model } from "mongoose";
 
 // repository imports
 import { UserAuthRepository } from "../repositories/userAuth.repository";
@@ -30,6 +31,11 @@ import { AccountPasswordManagementController } from "../controllers/users/accoun
 import { AccountStatusController } from "../controllers/users/accountStatus.controller";
 import { ProfileController } from "../controllers/users/profile.controller";
 
+// middleware imports
+
+// models imports
+import UserModel from "../models/user.model";
+
 // interfaces imports
 import {
   IBanUserAccountService,
@@ -45,6 +51,7 @@ import {
   IUserAuthRepository,
   IUserManagementRepository,
   IUserSelfRepository,
+  IUser,
 } from "../interfaces/index";
 
 /**
@@ -52,6 +59,9 @@ import {
  * It defines how the services and controllers are bound to the container.
  */
 export default new ContainerModule((bind: interfaces.Bind) => {
+  // Binding the user model
+  bind<Model<IUser>>(TYPES.USER_MODEL).toConstantValue(UserModel);
+
   // Binding the services
   bind<IBanUserAccountService>(TYPES.BanUserAccountService)
     .to(BanUserAccountService)
