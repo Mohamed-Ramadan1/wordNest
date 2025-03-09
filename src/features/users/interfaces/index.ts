@@ -1,3 +1,5 @@
+export { IUser } from "./user.interface";
+
 export { IBanUserAccountService } from "./banUsersAccountService.interface";
 
 export { ILockAccountService } from "./locAccountService.interface";
@@ -18,4 +20,7 @@ export { IAccountStatusService } from "./accountStatusService.interface";
 
 export { IProfileService } from "./profileService.interface";
 
-export { IUserRepository } from "./userRepository.interface";
+export { IUserSelfRepository } from "./userSelfRepository.interface";
+
+export { IUserManagementRepository } from "./userManagementRepository.interface";
+export { IUserAuthRepository } from "./userAuthRepository.interface";

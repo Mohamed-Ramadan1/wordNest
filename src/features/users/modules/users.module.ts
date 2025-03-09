@@ -1,6 +1,11 @@
 import { ContainerModule, interfaces } from "inversify";
 import { TYPES } from "@shared/index";
 
+// repository imports
+import { UserAuthRepository } from "../repositories/userAuth.repository";
+import { UserManagementRepository } from "../repositories/userManagement.repository";
+import { UserSelfRepository } from "../repositories/userSelf.repository";
+
 // services imports
 import { BanUserAccountService } from "../services/admin/banUsersAccounts.service";
 import { LockAccountService } from "../services/admin/locAccounts.service";
@@ -37,6 +42,9 @@ import {
   IProfileService,
   IRolesManagementService,
   IUsersCrudService,
+  IUserAuthRepository,
+  IUserManagementRepository,
+  IUserSelfRepository,
 } from "../interfaces/index";
 
 /**
@@ -109,5 +117,16 @@ export default new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
   bind<ProfileController>(TYPES.ProfileController)
     .to(ProfileController)
+    .inSingletonScope();
+
+  // Binding the repositories
+  bind<IUserAuthRepository>(TYPES.UserAuthRepository)
+    .to(UserAuthRepository)
+    .inSingletonScope();
+  bind<IUserManagementRepository>(TYPES.UserManagementRepository)
+    .to(UserManagementRepository)
+    .inSingletonScope();
+  bind<IUserSelfRepository>(TYPES.UserSelfRepository)
+    .to(UserSelfRepository)
     .inSingletonScope();
 });

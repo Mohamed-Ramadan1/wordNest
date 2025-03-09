@@ -23,4 +23,7 @@ export const USERS_TYPES = {
   AccountStatusService: Symbol.for("AccountStatusService"),
   ProfileController: Symbol.for("ProfileController"),
   ProfileService: Symbol.for("ProfileService"),
+  UserAuthRepository: Symbol.for("UserAuthRepository"),
+  UserManagementRepository: Symbol.for("UserManagementRepository"),
+  UserSelfRepository: Symbol.for("UserSelfRepository"),
 };

@@ -16,30 +16,22 @@ import { IAccountRecoveryService } from "../interfaces";
 // interfaces imports
 import { IAuthLogger, IEmailsVerificationsLogger } from "@logging/interfaces";
 
+// users imports
+import { IUserAuthRepository } from "@features/users/interfaces";
+
 @injectable()
 export default class AccountRecoveryService implements IAccountRecoveryService {
-  private authLogger: IAuthLogger;
-  private emailsVerificationsLogger: IEmailsVerificationsLogger;
   constructor(
-    @inject(TYPES.AuthLogger) authLogger: IAuthLogger,
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository,
+    @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.EmailVerificationLogger)
-    emailsVerificationsLogger: IEmailsVerificationsLogger
-  ) {
-    this.authLogger = authLogger;
-    this.emailsVerificationsLogger = emailsVerificationsLogger;
-  }
+    private readonly emailsVerificationsLogger: IEmailsVerificationsLogger
+  ) {}
   // Verify user's email address.
   public verifyEmail = async (user: IUser): Promise<void> => {
     try {
-      user.set({
-        emailVerified: true,
-        emailVerifiedAt: new Date(),
-        emailVerificationToken: undefined,
-        emailVerificationExpires: undefined,
-      });
-
-      await user.save();
-
+      await this.userAuthRepository.markEmailAsVerified(user);
       emailQueue.add(EmailQueueJobs.SendAccountVerifiedEmail, { user });
       // log the successful email verification attempt.
       this.emailsVerificationsLogger.logSuccessfulEmailVerification(
@@ -63,10 +55,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
   // Resend verification email.
   public resendVerification = async (user: IUser) => {
     try {
-      user.createEmailVerificationToken();
-      user.lastVerificationEmailSentAt = new Date();
-      user.resendVerificationTokenCount++;
-      await user.save();
+      await this.userAuthRepository.resendVerification(user);
       emailQueue.add(EmailQueueJobs.ResendVerificationEmail, { user });
       // log the successful email resend attempt.
       this.emailsVerificationsLogger.logSuccessfulEmailResend(
@@ -89,11 +78,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
   // Forgot password.
   public requestPasswordReset = async (user: IUser, ip: string | undefined) => {
     try {
-      // Generate password reset token
-      user.createPasswordResetToken();
-
-      // Save the user document with the session
-      await user.save();
+      await this.userAuthRepository.requestPasswordReset(user);
 
       // Log successful password reset request
       this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
@@ -120,17 +105,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
     ip: string | undefined
   ) => {
     try {
-      user.set({
-        password: newPassword,
-        passwordChangedAt: new Date(),
-        passwordResetToken: undefined,
-        passwordResetTokenExpiredAt: undefined,
-        passwordResetRequestsAttempts: 0,
-        passwordLastResetRequestAttemptDate: undefined,
-      });
-
-      await user.save();
-
+      await this.userAuthRepository.resetPassword(user, newPassword);
       emailQueue.add(EmailQueueJobs.ResetPassword, { user });
       this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
     } catch (err: any) {

@@ -62,7 +62,7 @@ export class AccountRecoveryMiddleware {
       }
 
       if (user) {
-        checkResetPasswordAttempts(user);
+        await checkResetPasswordAttempts(user);
         req.user = user;
       }
       next();

@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 // Shard imports
 import { AppError } from "@shared/index";
 
+// interfaces imports
+import { Roles } from "@features/users/interfaces/user.interface";
 export const restrictTo = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
     // Ensure user and roles are defined
@@ -13,7 +15,7 @@ export const restrictTo = (...roles: string[]) => {
     }
 
     // Check if the user has at least one of the required roles
-    const userHasRole = req.user.roles.some((role: any) =>
+    const userHasRole = req.user.roles.some((role: Roles) =>
       roles.includes(role)
     );
 
