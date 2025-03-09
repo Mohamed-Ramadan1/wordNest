@@ -28,4 +28,25 @@ export interface IUserAuthRepository {
    * @param newPassword The new password to set
    */
   resetPassword(user: IUser, newPassword: string): Promise<void>;
+  /**
+   * Registers a new user with the provided details and generates an email verification token.
+   * @param email The email address of the new user
+   * @param firstName The first name of the new user
+   * @param lastName The last name of the new user
+   * @param password The password for the new user
+   * @returns A promise resolving to the newly created user
+   */
+  registerUser(
+    email: string,
+    firstName: string,
+    lastName: string,
+    password: string
+  ): Promise<IUser>;
+
+  /**
+   * Logs in a user by updating their last login metadata.
+   * @param user The user logging in
+   * @param ipAddress The IP address from which the user is logging in (optional)
+   */
+  loginUser(user: IUser, ipAddress: string | undefined): Promise<void>;
 }

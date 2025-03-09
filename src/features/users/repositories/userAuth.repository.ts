@@ -1,5 +1,5 @@
 import { IUserAuthRepository, IUser } from "../interfaces/index";
-
+import UserModel from "../models/user.model";
 export class UserAuthRepository implements IUserAuthRepository {
   public async markEmailAsVerified(user: IUser): Promise<void> {
     try {
@@ -49,6 +49,46 @@ export class UserAuthRepository implements IUserAuthRepository {
       await user.save();
     } catch (err: any) {
       throw new Error(`Failed to reset password: ${err.message}`);
+    }
+  }
+
+  public async registerUser(
+    email: string,
+    firstName: string,
+    lastName: string,
+    password: string
+  ): Promise<IUser> {
+    try {
+      const user: IUser = new UserModel({
+        email,
+        firstName,
+        lastName,
+        password,
+      });
+
+      // generate verification token
+      user.emailVerificationToken = user.createEmailVerificationToken();
+
+      // save the user to the database.
+      await user.save();
+
+      return user;
+    } catch (err: any) {
+      console.error("Error registering user:", err);
+      throw new Error(`User registration failed:${err.message}`);
+    }
+  }
+
+  public async loginUser(
+    user: IUser,
+    ipAddress: string | undefined
+  ): Promise<void> {
+    try {
+      user.lastLoginIP = ipAddress;
+      user.lastLoginAt = new Date();
+      await user.save();
+    } catch (err: any) {
+      throw new Error(`Failed to login user: ${err.message}`);
     }
   }
 }

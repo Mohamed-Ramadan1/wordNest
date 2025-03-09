@@ -5,7 +5,7 @@ import { Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Models imports
-import { IUser, UserModel } from "@features/users";
+import { IUser } from "@features/users";
 
 // utils imports
 import {
@@ -24,12 +24,17 @@ import { IAuthLogger } from "@logging/interfaces";
 // interfaces imports
 import { IAuthService } from "../interfaces";
 
+// users imports
+import { IUserAuthRepository } from "@features/users/interfaces";
+
 @injectable()
 export default class AuthService implements IAuthService {
-  private authLogger: IAuthLogger;
-  constructor(@inject(TYPES.AuthLogger) authLogger: IAuthLogger) {
-    this.authLogger = authLogger;
-  }
+  // private authLogger: IAuthLogger;
+  constructor(
+    @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
   public async registerWithEmail(
     email: string,
     firstName: string,
@@ -39,17 +44,12 @@ export default class AuthService implements IAuthService {
   ): Promise<{ user: IUser; token: string }> {
     // create a new user with the provided details.
     try {
-      const user: IUser = new UserModel({
+      const user: IUser = await this.userAuthRepository.registerUser(
         email,
         firstName,
         lastName,
-        password,
-      });
-      // generate verification token
-      user.emailVerificationToken = user.createEmailVerificationToken();
-
-      // save the user to the database.
-      await user.save();
+        password
+      );
 
       const token: string = generateAuthToken(user, res);
 
@@ -69,9 +69,7 @@ export default class AuthService implements IAuthService {
   ): Promise<{ token: string }> {
     try {
       const token: string = generateAuthToken(user, res);
-      user.lastLoginIP = ipAddress;
-      user.lastLoginAt = new Date();
-      await user.save();
+      this.userAuthRepository.loginUser(user, ipAddress);
       this.authLogger.logSuccessfulLogin(user.email, ipAddress);
       return { token };
     } catch (err: any) {
