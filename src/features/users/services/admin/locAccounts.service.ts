@@ -14,17 +14,19 @@ import { emailQueue, EmailQueueJobs } from "@jobs/index";
 import { ILockAccountsLogger } from "@logging/interfaces";
 
 // interfaces imports
-import { ILockAccountService } from "../../interfaces/index";
+import {
+  ILockAccountService,
+  IUserManagementRepository,
+} from "../../interfaces/index";
 
 @injectable()
 export class LockAccountService implements ILockAccountService {
-  private lockAccountsLogger: ILockAccountsLogger;
   constructor(
     @inject(TYPES.LockAccountsLogger)
-    lockAccountsLogger: ILockAccountsLogger
-  ) {
-    this.lockAccountsLogger = lockAccountsLogger;
-  }
+    private readonly lockAccountsLogger: ILockAccountsLogger,
+    @inject(TYPES.UserManagementRepository)
+    private readonly userManagementRepository: IUserManagementRepository
+  ) {}
   /**
    * Locks a user account.
    * Temporarily restricts access to the account for a specified period.
@@ -36,11 +38,11 @@ export class LockAccountService implements ILockAccountService {
     adminUser: IUser
   ): Promise<void> {
     try {
-      userToBeLocked.isAccountLocked = true;
-      userToBeLocked.accountLockedReason = lockReason;
-      userToBeLocked.accountLockedAt = new Date();
-      userToBeLocked.accountLockedByAdminEmail = adminUser.email;
-      await userToBeLocked.save();
+      await this.userManagementRepository.lockAccount(
+        userToBeLocked,
+        lockReason,
+        adminUser
+      );
       // adding locked confirmation email to the email queue
       emailQueue.add(EmailQueueJobs.LockUserAccount, {
         user: userToBeLocked,
@@ -79,11 +81,11 @@ export class LockAccountService implements ILockAccountService {
     adminUser: IUser
   ): Promise<void> {
     try {
-      userToBeUnlock.accountLockedAt = new Date();
-      userToBeUnlock.accountUnlockedBy = adminUser.email;
-      userToBeUnlock.accountUnlockedComment = unLockComment;
-      userToBeUnlock.isAccountLocked = false;
-      await userToBeUnlock.save();
+      await this.userManagementRepository.unlockAccount(
+        userToBeUnlock,
+        unLockComment,
+        adminUser
+      );
 
       // adding unlocked confirmation email to the email queue
       emailQueue.add(EmailQueueJobs.UnlockUserAccount, {

@@ -14,6 +14,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     @inject(TYPES.USER_MODEL) private userModel: Model<IUser> // Correct type
   ) {}
 
+  /**
+   * Finds a user by their email address
+   * @param email - The email address to search for
+   * @returns Promise resolving to the user object or null if not found
+   * @throws Error if the database query fails
+   */
   public async findUserByEmail(email: string): Promise<IUser | null> {
     try {
       return await this.userModel.findOne({ email });
@@ -22,6 +28,13 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Finds a user by email and selects specific fields
+   * @param email - The email address to search for
+   * @param fieldsToBeSelected - Array of field names to include in the result
+   * @returns Promise resolving to the user object with selected fields or null if not found
+   * @throws Error if the database query fails
+   */
   public async findUserByEmailAndSelectFields(
     email: string,
     fieldsToBeSelected: string[]
@@ -33,6 +46,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Finds a user based on multiple conditions
+   * @param conditions - Array of condition objects containing attribute, value, and optional operator
+   * @returns Promise resolving to the matching user object or null if not found
+   * @throws Error if the database query fails
+   */
   async findUserWithCondition(
     conditions: { attribute: string; value: string | Date; operator?: string }[]
   ): Promise<IUser | null> {
@@ -58,6 +77,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Marks a user's email as verified and updates related fields
+   * @param user - The user object to update
+   * @returns Promise that resolves when the update is complete
+   * @throws Error if the database update fails
+   */
   public async markEmailAsVerified(user: IUser): Promise<void> {
     try {
       user.set({
@@ -72,6 +97,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Resends email verification for a user
+   * @param user - The user object to update
+   * @returns Promise that resolves when the update is complete
+   * @throws Error if the database update fails
+   */
   public async resendVerification(user: IUser): Promise<void> {
     try {
       user.createEmailVerificationToken();
@@ -83,6 +114,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Requests a password reset for a user
+   * @param user - The user object to update
+   * @returns Promise that resolves when the update is complete
+   * @throws Error if the database update fails
+   */
   public async requestPasswordReset(user: IUser): Promise<void> {
     try {
       // Generate password reset token
@@ -93,6 +130,13 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Resets a user's password and clears reset-related fields
+   * @param user - The user object to update
+   * @param newPassword - The new password to set
+   * @returns Promise that resolves when the update is complete
+   * @throws Error if the database update fails
+   */
   public async resetPassword(user: IUser, newPassword: string): Promise<void> {
     try {
       user.set({
@@ -109,6 +153,15 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Registers a new user with the provided details
+   * @param email - The user's email address
+   * @param firstName - The user's first name
+   * @param lastName - The user's last name
+   * @param password - The user's password
+   * @returns Promise resolving to the created user object
+   * @throws Error if user registration fails
+   */
   public async registerUser(
     email: string,
     firstName: string,
@@ -139,6 +192,13 @@ export class UserAuthRepository implements IUserAuthRepository {
     }
   }
 
+  /**
+   * Updates user login information
+   * @param user - The user object to update
+   * @param ipAddress - The IP address from which the user is logging in (optional)
+   * @returns Promise that resolves when the update is complete
+   * @throws Error if the database update fails
+   */
   public async loginUser(
     user: IUser,
     ipAddress: string | undefined

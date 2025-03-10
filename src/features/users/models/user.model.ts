@@ -155,6 +155,9 @@ const userSchema: Schema = new Schema<IUser>(
 
     /** Indicates if the account is banned */
     isAccountBanned: { type: Boolean, default: false },
+
+    /** Duration of the ban in days */
+    accountBannedUntil: { type: Date, default: undefined },
     /** Date when the account was banned */
     accountBannedAt: { type: Date, default: undefined },
     /** Duration of the ban in days */

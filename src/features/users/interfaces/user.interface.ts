@@ -227,6 +227,9 @@ export interface IUser extends Document {
   /** Whether the account is currently banned */
   isAccountBanned: boolean | undefined;
 
+  /** Date until account is banned */
+  accountBannedUntil: Date | undefined;
+
   /** Date when account was banned */
   accountBannedAt: Date | undefined;
 

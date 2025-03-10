@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { IUser, Roles } from "./user.interface";
 
 export interface IRolesManagementService {
@@ -24,7 +25,7 @@ export interface IRolesManagementService {
    * @throws {AppError} If the user does not exist or an error occurs.
    */
   listUserRoles(
-    userId: string
+    userId: ObjectId
   ): Promise<{ roles: string[]; userEmail: string }>;
 
   /**
@@ -32,5 +33,5 @@ export interface IRolesManagementService {
    * @param userId - The ID of the user whose roles are to be reset.
    * @throws {AppError} If the user does not exist or an error occurs.
    */
-  resetUserRoles(userId: string): Promise<void>;
+  resetUserRoles(userId: ObjectId): Promise<void>;
 }

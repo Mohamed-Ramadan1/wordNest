@@ -1,5 +1,9 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Request } from "express";
+import { ObjectId } from "mongoose";
 
 // models imports
 import UserModel from "@features/users/models/user.model";
@@ -8,7 +12,12 @@ import UserModel from "@features/users/models/user.model";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { AppError, APIFeatures, handleServiceError } from "@shared/index";
+import {
+  AppError,
+  APIFeatures,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 // queues imports
 import {
@@ -19,10 +28,19 @@ import {
 } from "@jobs/index";
 
 // interfaces imports
-import { IUsersCrudService } from "../../interfaces/index";
+import {
+  IUsersCrudService,
+  IUserManagementRepository,
+} from "../../interfaces/index";
 
 // CRUD operations for users.
+
+@injectable()
 export class UsersCrudService implements IUsersCrudService {
+  constructor(
+    @inject(TYPES.UserManagementRepository)
+    private readonly userManagementRepository: IUserManagementRepository
+  ) {}
   // get all users
   public getUsers = async (req: Request): Promise<IUser[]> => {
     try {
@@ -39,12 +57,10 @@ export class UsersCrudService implements IUsersCrudService {
   };
 
   // get user by id
-  public getUser = async (id: string): Promise<IUser> => {
+  public getUser = async (id: ObjectId): Promise<IUser> => {
     try {
-      const user: IUser | null = await UserModel.findById(id);
-      if (!user) {
-        throw new AppError("No user exist with this id.", 404);
-      }
+      const user: IUser | null =
+        await this.userManagementRepository.getUserById(id);
       return user;
     } catch (err: any) {
       handleServiceError(err);
@@ -54,12 +70,9 @@ export class UsersCrudService implements IUsersCrudService {
   // create user
   public createUser = async (userData: IUser): Promise<IUser> => {
     try {
-      const user: IUser | null = await UserModel.create(userData);
-      if (!user) {
-        throw new AppError("Failed to create user.", 500);
-      }
-      user.createEmailVerificationToken();
-      await user.save();
+      const user: IUser =
+        await this.userManagementRepository.createUser(userData);
+
       // Send welcome email here.
       emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
 
@@ -71,19 +84,13 @@ export class UsersCrudService implements IUsersCrudService {
 
   //---------------------------------------------------------------------------------
   // update user
-  public updateUser = async (id: string, userData: IUser): Promise<IUser> => {
+  public updateUser = async (id: ObjectId, userData: IUser): Promise<IUser> => {
     try {
-      const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
+      const updatedUser: IUser = await this.userManagementRepository.updateUser(
         id,
-        userData,
-        {
-          new: true,
-          runValidators: true,
-        }
+        userData
       );
-      if (!updatedUser) {
-        throw new AppError("No user exist with this id.", 404);
-      }
+
       return updatedUser;
     } catch (err: any) {
       handleServiceError(err);
@@ -91,12 +98,9 @@ export class UsersCrudService implements IUsersCrudService {
   };
 
   // delete user
-  public deleteUser = async (id: string): Promise<void> => {
+  public deleteUser = async (id: ObjectId): Promise<void> => {
     try {
-      const user: IUser | null = await UserModel.findById(id);
-      if (!user) {
-        throw new AppError("No user exist with this id.", 404);
-      }
+      const user: IUser = await this.userManagementRepository.getUserById(id);
       // Add delete user account job to queue to handle deletion of user account and related data.
       deleteUserAccountQueue.add(DeleteUserAccountQueueJobs.DeleteUserAccount, {
         user,
