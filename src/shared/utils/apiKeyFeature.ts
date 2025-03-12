@@ -1,10 +1,7 @@
 import { Query, Document } from "mongoose";
 import { ParsedQs } from "qs";
 
-interface APIFeaturesInterface<T extends Document> {
-  query: Query<T[], T>;
-  queryString: ParsedQs;
-}
+import { APIFeaturesInterface } from "../interfaces/apiKeyFeature.interface";
 
 export class APIFeatures<T extends Document>
   implements APIFeaturesInterface<T>

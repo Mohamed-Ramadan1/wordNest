@@ -1,26 +1,40 @@
 // packages imports
+import { Request } from "express";
 import { inject, injectable } from "inversify";
-import { Model, ObjectId } from "mongoose";
+import { Model, ObjectId, Query } from "mongoose";
+import { ParsedQs } from "qs";
 
 // interfaces imports
 import { IUser, IUserManagementRepository } from "../interfaces/index";
 import { Roles } from "../interfaces/user.interface";
 
 // shard imports
-import { TYPES } from "@shared/index";
+import { TYPES, APIFeaturesInterface } from "@shared/index";
 
 @injectable()
 export class UserManagementRepository implements IUserManagementRepository {
   constructor(
-    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>
+    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>,
+    @inject(TYPES.APIFeatures)
+    private readonly apiFeatures: (
+      query: Query<IUser[], IUser>,
+      queryString: ParsedQs
+    ) => APIFeaturesInterface<IUser>
   ) {}
 
-  //   public async getUsers(): Promise<IUser[]> {
-  //     try {
-  //     } catch (err: any) {
-  //       throw new Error(`Failed to get users: ${err.message}`);
-  //     }
-  //   }
+  public async getUsers(req: Request): Promise<IUser[]> {
+    try {
+      const features = this.apiFeatures(this.userModel.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const users: IUser[] = await features.execute();
+      return users;
+    } catch (err: any) {
+      throw new Error(`Failed to get users: ${err.message}`);
+    }
+  }
 
   public async getUserById(userId: ObjectId): Promise<IUser> {
     try {

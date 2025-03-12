@@ -10,3 +10,10 @@
 => thinking of adding notifications with sockit.io to the project.
 -------------------------------------------------------------------------------------
 */
+
+/* 
+// interface APIFeaturesInterface<T extends Document> {
+//   query: Query<T[], T>;
+//   queryString: ParsedQs;
+// }
+*/

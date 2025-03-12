@@ -2,7 +2,7 @@
 import { inject, injectable } from "inversify";
 
 // utils imports
-import { AppError, handleServiceError, TYPES } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -14,17 +14,19 @@ import { emailQueue, EmailQueueJobs } from "@jobs/index";
 import { IChangeAccountEmailLogger } from "@logging/interfaces";
 
 // interfaces imports
-import { IAccountEmailService } from "../../interfaces/index";
+import {
+  IAccountEmailService,
+  IUserSelfRepository,
+} from "../../interfaces/index";
 
 @injectable()
 export class AccountEmailService implements IAccountEmailService {
-  private changeAccountEmailLogger: IChangeAccountEmailLogger;
   constructor(
     @inject(TYPES.ChangeAccountEmailLogger)
-    changeAccountEmailLogger: IChangeAccountEmailLogger
-  ) {
-    this.changeAccountEmailLogger = changeAccountEmailLogger;
-  }
+    private readonly changeAccountEmailLogger: IChangeAccountEmailLogger,
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
   /**
    * Handles the request to change the user's email address.
    * Generates a verification token for the current email.
@@ -36,10 +38,7 @@ export class AccountEmailService implements IAccountEmailService {
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      user.createChangeEmailRequestToken();
-      user.tempChangedEmail = newEmail;
-      await user.save();
-
+      this.userSelfRepository.saveEmailChangeRequest(user, newEmail);
       // add background job to send email notification
       emailQueue.add(EmailQueueJobs.ChangeAccountEmailRequest, {
         user,
@@ -71,12 +70,7 @@ export class AccountEmailService implements IAccountEmailService {
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      user.changeEmailRequestToken = undefined;
-      user.changeEmailVerificationTokenExpiresAt = undefined;
-      user.changeEmailRequestConfirmedAt = new Date();
-      user.isChangeEmailRequestConfirmed = true;
-      user.createTempChangedEmailVerificationToken();
-      await user.save();
+      this.userSelfRepository.confirmEmailChangeStatus(user);
       // add background job to send email notification
       emailQueue.add(EmailQueueJobs.NewAccountConfirmationEmail, {
         user,
@@ -108,8 +102,7 @@ export class AccountEmailService implements IAccountEmailService {
     ipAddress: string | undefined
   ) {
     try {
-      user.createTempChangedEmailVerificationToken();
-      await user.save();
+      this.userSelfRepository.resendNewEmailVerificationToken(user);
       // add background job to send email notification
       emailQueue.add(EmailQueueJobs.NewAccountConfirmationEmail, {
         user,
@@ -141,22 +134,7 @@ export class AccountEmailService implements IAccountEmailService {
     ipAddress: string | undefined
   ) {
     try {
-      user.resetChangeEmailRequestToken();
-      user.resetTempChangedEmailVerificationToken();
-      user.previousEmails.push({
-        email: user.email,
-        changedAt: new Date(),
-      });
-
-      if (user.tempChangedEmail) {
-        user.email = user.tempChangedEmail;
-      } else {
-        throw new AppError("New email address not found .", 400);
-      }
-      user.emailChangeLockedUntil = new Date(Date.now() + 1000 * 60 * 60 * 24);
-      user.tempChangedEmail = undefined;
-
-      await user.save();
+      this.userSelfRepository.verifyNewEmailOwnership(user);
       // add background job to send email notification
       emailQueue.add(EmailQueueJobs.ChangeAccountEmailChangeSuccess, {
         user,

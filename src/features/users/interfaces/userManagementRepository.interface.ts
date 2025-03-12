@@ -1,6 +1,7 @@
 import { IUser } from "../interfaces/index";
 import { Roles } from "../interfaces/user.interface";
 import { ObjectId } from "mongoose";
+import {Request} from "express";
 
 /**
  * Interface for user management repository operations.
@@ -8,6 +9,14 @@ import { ObjectId } from "mongoose";
  * as well as user creation, updates, and role management.
  */
 export interface IUserManagementRepository {
+  /**
+   * Retrieves a list of users based on query parameters.
+   *
+   * @param req - The Express Request object containing query parameters for filtering, sorting, limiting fields, and pagination
+   * @returns Promise that resolves to an array of user objects
+   * @throws Error if the retrieval operation fails
+   */
+  getUsers(req: Request): Promise<IUser[]>;
   /**
    * Retrieves a user by their unique identifier.
    *

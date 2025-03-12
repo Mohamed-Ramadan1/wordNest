@@ -1,3 +1,6 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 // models imports
 import UserModel from "../../models/user.model";
 
@@ -6,7 +9,12 @@ import UserModel from "../../models/user.model";
 import { ObjectId } from "mongoose";
 // packages imports
 import cloudinary from "cloudinary";
-import { AppError, handleServiceError } from "@shared/index";
+import {
+  AppError,
+  handleServiceError,
+  TYPES,
+  uploadToCloudinary,
+} from "@shared/index";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // jobs imports
@@ -14,19 +22,24 @@ import { cloudinaryQueue, CloudinaryQueueJobs } from "@jobs/index";
 
 // dto imports
 import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
-import { uploadToCloudinary } from "@shared/index";
 
 //interfaces imports
-import { IProfileService } from "../../interfaces/index";
+import { IProfileService, IUserSelfRepository } from "../../interfaces/index";
 
+@injectable()
 export class ProfileService implements IProfileService {
+  constructor(
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
   // get current singed in user
   public async getCurrentUser(userId: ObjectId): Promise<IUser> {
-    const user: IUser | null = await UserModel.findById(userId);
-    if (!user) {
-      throw new AppError("User not found", 401);
+    try {
+      const user = await this.userSelfRepository.findUserById(userId);
+      return user;
+    } catch (err: any) {
+      handleServiceError(err);
     }
-    return user;
   }
 
   // Profile update picture
@@ -49,15 +62,11 @@ export class ProfileService implements IProfileService {
         });
       }
 
-      // update user profile picture and public id
-      const updatedUser = (await UserModel.findByIdAndUpdate(
-        user._id,
-        {
-          profilePicture: uploadedImage.secure_url,
-          profilePictureId: uploadedImage.public_id,
-        },
-        { new: true }
-      )) as IUser;
+      const updatedUser: IUser =
+        await this.userSelfRepository.updateUserProfilePicture(user._id, {
+          url: uploadedImage?.secure_url,
+          publicId: uploadedImage?.public_id,
+        });
 
       // return the updated user.
       return updatedUser;
@@ -72,15 +81,11 @@ export class ProfileService implements IProfileService {
     updatedField: IFieldsToBeUpdates
   ): Promise<IUser> {
     try {
-      const updatedUser: IUser | null = await UserModel.findByIdAndUpdate(
-        userId,
-        updatedField,
-        { new: true }
-      );
-      if (!updatedUser) {
-        throw new AppError("User not found", 404);
-      }
-
+      const updatedUser: IUser =
+        await this.userSelfRepository.updateUserProfileInformation(
+          userId,
+          updatedField
+        );
       return updatedUser;
     } catch (err: any) {
       handleServiceError(err);

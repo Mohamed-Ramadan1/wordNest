@@ -12,24 +12,26 @@ import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
 import { IAccountStatusLogger } from "@logging/interfaces";
 
-import { IAccountStatusService } from "../../interfaces/index";
+import {
+  IAccountStatusService,
+  IUserSelfRepository,
+} from "../../interfaces/index";
+
 @injectable()
 export class AccountStatusService implements IAccountStatusService {
-  private accountStatusLogger: IAccountStatusLogger;
   constructor(
     @inject(TYPES.AccountStatusLogger)
-    accountStatusLogger: IAccountStatusLogger
-  ) {
-    this.accountStatusLogger = accountStatusLogger;
-  }
+    private readonly accountStatusLogger: IAccountStatusLogger,
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
   // Logic to deactivate  account request.
   public async deactivateAccountReq(
     user: IUser,
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      user.createDeactivationAccountToken();
-      await user.save();
+      this.userSelfRepository.saveAccountDeactivationRequest(user);
 
       emailQueue.add(EmailQueueJobs.DeactivateAccountRequest, {
         user,
@@ -59,12 +61,7 @@ export class AccountStatusService implements IAccountStatusService {
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      user.isActive = false;
-      user.deactivationAccountToken = undefined;
-      user.deactivationAccountTokenExpiredAt = undefined;
-      user.lastDeactivationRequestAt = undefined;
-      await user.save();
-
+      this.userSelfRepository.updateDeactivationRequestConfirmed(user);
       // send email to user to confirm account deactivation.
       emailQueue.add(EmailQueueJobs.DeactivateAccountConfirmation, { user });
 
@@ -95,13 +92,7 @@ export class AccountStatusService implements IAccountStatusService {
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      user.isActive = true;
-      user.reactivationAccountToken = undefined;
-      user.reactivationAccountTokenExpiredAt = undefined;
-      user.reactivationRequestCount = 0;
-      user.lastReactivationRequestAt = undefined;
-      await user.save();
-
+      this.userSelfRepository.activateAccount(user);
       // send email to user to confirm account activation.
       emailQueue.add(EmailQueueJobs.ReactivateAccountSuccess, { user });
       // log success account activation.

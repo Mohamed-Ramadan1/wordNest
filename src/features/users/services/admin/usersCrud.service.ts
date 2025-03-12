@@ -12,12 +12,7 @@ import UserModel from "@features/users/models/user.model";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import {
-  AppError,
-  APIFeatures,
-  handleServiceError,
-  TYPES,
-} from "@shared/index";
+import { APIFeatures, handleServiceError, TYPES } from "@shared/index";
 
 // queues imports
 import {
@@ -44,12 +39,7 @@ export class UsersCrudService implements IUsersCrudService {
   // get all users
   public getUsers = async (req: Request): Promise<IUser[]> => {
     try {
-      const features = new APIFeatures(UserModel.find(), req.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const users: IUser[] = await features.execute();
+      const users: IUser[] = await this.userManagementRepository.getUsers(req);
       return users;
     } catch (err: any) {
       handleServiceError(err);

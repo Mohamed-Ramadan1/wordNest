@@ -1,53 +1,38 @@
-// models imports
-import UserModel from "../../models/user.model";
+// packages imports
+import { inject, injectable } from "inversify";
 
-//mongoose imports
-
-import { ClientSession, startSession, ObjectId } from "mongoose";
+import { ObjectId } from "mongoose";
 // packages imports
 
-import { handleServiceError } from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // interfaces imports
-import { IAccountNotificationService } from "../../interfaces/index";
+import {
+  IAccountNotificationService,
+  IUserSelfRepository,
+} from "../../interfaces/index";
 
+@injectable()
 export class AccountNotificationService implements IAccountNotificationService {
+  constructor(
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
   // Notifications
   public async enableNotifications(userId: ObjectId): Promise<void> {
     // Logic to enable notifications
-    const session: ClientSession = await startSession();
     try {
-      session.startTransaction();
-      await UserModel.findByIdAndUpdate(
-        userId,
-        { $set: { notificationsEnabled: true } },
-        { session }
-      );
-      await session.commitTransaction();
+      this.userSelfRepository.updateNotificationsEnabled(userId, true);
     } catch (err: any) {
-      await session.abortTransaction();
       handleServiceError(err);
-    } finally {
-      session.endSession();
     }
   }
 
   public async disableNotifications(userId: ObjectId): Promise<void> {
-    // Logic to disable notifications
-    const session: ClientSession = await startSession();
     try {
-      session.startTransaction();
-      await UserModel.findByIdAndUpdate(
-        userId,
-        { $set: { notificationsEnabled: false } },
-        { session }
-      );
-      await session.commitTransaction();
+      this.userSelfRepository.updateNotificationsEnabled(userId, false);
     } catch (err: any) {
-      await session.abortTransaction();
       handleServiceError(err);
-    } finally {
-      session.endSession();
     }
   }
 }

@@ -32,3 +32,5 @@ export { removeLocalFile } from "./utils/deleteLocalFiles";
 export { uploadImagesToCloudinary } from "./utils/uploadImagesToCloudinary";
 
 export { handleServiceError } from "./utils/handleServiceError";
+
+export { APIFeaturesInterface } from "./interfaces/apiKeyFeature.interface";

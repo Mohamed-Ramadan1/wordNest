@@ -18,17 +18,19 @@ import {
 
 // config imports
 // interfaces imports
-import { IAccountDeletionService } from "../../interfaces/index";
+import {
+  IAccountDeletionService,
+  IUserSelfRepository,
+} from "../../interfaces/index";
 
 @injectable()
 export class AccountDeletionService implements IAccountDeletionService {
-  private accountDeletionLogger: IAccountDeletionLogger;
   constructor(
     @inject(TYPES.AccountDeletionLogger)
-    accountDeletionLogger: IAccountDeletionLogger
-  ) {
-    this.accountDeletionLogger = accountDeletionLogger;
-  }
+    private readonly accountDeletionLogger: IAccountDeletionLogger,
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
   // Account Deletion
   public async requestAccountDeletion(
     user: IUser,
@@ -36,8 +38,8 @@ export class AccountDeletionService implements IAccountDeletionService {
   ) {
     // Logic to handle account deletion request
     try {
-      user.createDeleteAccountRequestToken();
-      await user.save();
+      await this.userSelfRepository.saveAccountDeletionRequest(user);
+
       this.accountDeletionLogger.logSuccessfulAccountDeletionRequest(
         ipAddress ? ipAddress : "unknown ip address",
         user.email,
@@ -62,19 +64,8 @@ export class AccountDeletionService implements IAccountDeletionService {
     ipAddress: string | undefined
   ) {
     try {
-      user.userAccountToBeDeleted = true;
-      user.deleteAccountConfirmedAt = new Date();
-      const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000; // 30 days * hours * minutes * seconds * milliseconds
-      // const thirtyDaysInMilliseconds = 1 * 60 * 1000; // 3 minutes * 60 seconds * 1000 milliseconds
-
-      // Create a new Date object with the calculated timestamp (30 days from now)
-      user.userAccountDeletedAt = new Date(
-        new Date().getTime() + thirtyDaysInMilliseconds
-      );
-
-      // save the user document
-      await user.save();
-
+      const userAccountDeletedAt =
+        await this.userSelfRepository.deletionRequestConfirmation(user);
       // email queue for successful account deletion
       emailQueue.add(EmailQueueJobs.DeleteAccountConfirm, { user });
 
@@ -85,7 +76,7 @@ export class AccountDeletionService implements IAccountDeletionService {
           user,
         },
         {
-          delay: user.userAccountDeletedAt.getTime() - Date.now(),
+          delay: userAccountDeletedAt.getTime() - Date.now(),
         }
       );
       // logging the process of successfully user account deletion confirmation.
