@@ -2,13 +2,14 @@
 import { NextFunction, Request, Response } from "express";
 
 // shard imports
-import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+import { catchAsync, AppError, TYPES } from "@shared/index";
 
 // packages imports
 import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
 
 // users feature interfaces imports
-import { IUser, UserModel } from "@features/users";
+import { IUser } from "@features/users";
 
 // helpers imports
 import { validateSupportTicketAttachments } from "../../helpers/index";
@@ -16,16 +17,20 @@ import { validateSupportTicketAttachments } from "../../helpers/index";
 // interfaces imports
 import {
   TicketParams,
-  ISupportTicket,
   TicketAdminResponseBody,
   ITicketResponseMiddleware,
+  ISupportTicketManagementRepository,
 } from "../../interfaces/index";
 
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 @injectable()
 export class TicketResponseMiddleware implements ITicketResponseMiddleware {
-  constructor() {}
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private userModel: Model<IUser>
+  ) {}
   public validateRespondToTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketAdminResponseBody>,
@@ -37,17 +42,14 @@ export class TicketResponseMiddleware implements ITicketResponseMiddleware {
         return next(new AppError("Message is required.", 400));
       }
 
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
-
-      if (!ticket) {
-        return next(
-          new AppError("Ticket you tray to response for not found .", 404)
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
 
       if (!ticketOwner) {
         return next(new AppError("User who own the ticket not exist.", 404));

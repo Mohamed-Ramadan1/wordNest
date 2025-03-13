@@ -1,10 +1,7 @@
 // packages imports
 import { inject, injectable } from "inversify";
 // interfaces imports
-import {
-  ISupportTicket,
-  SupportTicketStatus,
-} from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
 import { uploadToCloudinary, TYPES, handleServiceError } from "@shared/index";
@@ -23,17 +20,17 @@ import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 import {
   ITicketResponseService,
   TicketResponseData,
+  ISupportTicketManagementRepository,
 } from "../../interfaces/index";
 
 @injectable()
 export class TicketResponseService implements ITicketResponseService {
-  private supportTicketsLogger: ISupportTicketsLogger;
   constructor(
     @inject(TYPES.SupportTicketsLogger)
-    supportTicketsLogger: ISupportTicketsLogger
-  ) {
-    this.supportTicketsLogger = supportTicketsLogger;
-  }
+    private readonly supportTicketsLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository
+  ) {}
   /**
    * Allows an admin to respond to a ticket.
    * Admins can provide a reply to address user concerns or issues in a ticket.
@@ -59,9 +56,10 @@ export class TicketResponseService implements ITicketResponseService {
           uploadedAttachments.secure_url;
         ticketResponseObject.attachment.uploadedAt = new Date();
       }
-      ticket.adminResponses.push(ticketResponseObject);
-      ticket.status = SupportTicketStatus.IN_PROGRESS;
-      await ticket.save();
+      await this.ticketManagementRepository.saveAdminTicketResponse(
+        ticket,
+        ticketResponseObject
+      );
       // log response event
       this.supportTicketsLogger.logSuccessAdminResponseTicket(
         ipAddress,

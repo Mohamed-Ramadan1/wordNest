@@ -57,7 +57,7 @@ export class SupportTicketController {
   public getAllUserSupportTickets = catchAsync(
     async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
       const supportTickets =
-        await this.supportTicketService.getAllUserSupportTickets(req.user);
+        await this.supportTicketService.getAllUserSupportTickets(req.user, req);
 
       // creating the response object
       const response: ApiResponse<ISupportTicket[]> = {

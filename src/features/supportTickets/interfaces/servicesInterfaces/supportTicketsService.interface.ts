@@ -5,6 +5,8 @@ import {
   SupportTicketBodyReplay,
 } from "../index";
 
+import { Request } from "express";
+
 import { ObjectId } from "mongoose";
 /**
  * Interface for the SupportTicketService class.
@@ -30,7 +32,10 @@ export interface ISupportTicketService {
    * @returns {Promise<ISupportTicket[]>} - List of support tickets.
    * @throws {AppError} - Throws an error if retrieval fails.
    */
-  getAllUserSupportTickets(user: IUser): Promise<ISupportTicket[]>;
+  getAllUserSupportTickets(
+    user: IUser,
+    req: Request
+  ): Promise<ISupportTicket[]>;
 
   /**
    * Retrieves a specific support ticket by ID.

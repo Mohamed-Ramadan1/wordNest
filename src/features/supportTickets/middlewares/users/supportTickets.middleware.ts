@@ -2,7 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 
 // shard imports
-import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+import { catchAsync, AppError, TYPES } from "@shared/index";
 
 // packages imports
 import { inject, injectable } from "inversify";
@@ -12,16 +12,19 @@ import {
   SupportTicketBody,
   SupportTicketBodyReplay,
   SupportTicketParams,
-  ISupportTicket,
   ISupportTicketsMiddleware,
+  ISupportTicketRepository,
 } from "../../interfaces/index";
 
 // helpers imports
 import { validateSupportTicketAttachments } from "../../helpers";
 
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 @injectable()
 export class SupportTicketsMiddleware implements ISupportTicketsMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketRepository)
+    private readonly supportTicketRepository: ISupportTicketRepository
+  ) {}
   public validateCreateSupportTicket = catchAsync(
     async (
       req: Request<{}, {}, SupportTicketBody>,
@@ -61,11 +64,11 @@ export class SupportTicketsMiddleware implements ISupportTicketsMiddleware {
         return next(new AppError("Message is required", 400));
       }
 
-      const userSupportTicket: ISupportTicket | null =
-        await SupportTicket.findOne({
-          _id: req.params.ticketId,
-          user: req.user._id,
-        });
+      const userSupportTicket =
+        await this.supportTicketRepository.getUserSupportTicket(
+          req.params.ticketId,
+          req.user._id
+        );
 
       if (!userSupportTicket) {
         return next(

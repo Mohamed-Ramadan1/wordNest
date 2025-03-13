@@ -2,10 +2,7 @@
 import { inject, injectable } from "inversify";
 
 // interfaces imports
-import {
-  ISupportTicket,
-  SupportTicketStatus,
-} from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
 import { handleServiceError, TYPES } from "@shared/index";
@@ -18,14 +15,18 @@ import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 import { IUser } from "@features/users";
 
 // interfaces imports
-import { ITicketStatusService } from "../../interfaces/index";
+import {
+  ITicketStatusService,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
 
 @injectable()
 export class TicketStatusService implements ITicketStatusService {
-  private supportTicketsLogger: ISupportTicketsLogger;
   constructor(
     @inject(TYPES.SupportTicketsLogger)
-    supportTicketsLogger: ISupportTicketsLogger
+    private readonly supportTicketsLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository
   ) {
     this.supportTicketsLogger = supportTicketsLogger;
   }
@@ -40,11 +41,10 @@ export class TicketStatusService implements ITicketStatusService {
     ipAddress: string | undefined
   ) {
     try {
-      ticket.status = SupportTicketStatus.CLOSED;
-      ticket.resolvedAt = new Date();
-      ticket.resolvedBy = userAdmin._id;
-      ticket.closedAt = new Date();
-      await ticket.save();
+      await this.ticketManagementRepository.updateTicketStatusToClosed(
+        ticket,
+        userAdmin._id
+      );
       // log close event
       this.supportTicketsLogger.logSuccessCloseTicket(
         ipAddress,
@@ -79,10 +79,10 @@ export class TicketStatusService implements ITicketStatusService {
     ipAddress: string | undefined
   ) {
     try {
-      ticket.status = SupportTicketStatus.OPEN;
-      ticket.reopenedAt = new Date();
-      ticket.reopenedBy = userAdmin._id;
-      await ticket.save();
+      await this.ticketManagementRepository.updateTicketStatusToReopened(
+        ticket,
+        userAdmin._id
+      );
       // log reopen event
       this.supportTicketsLogger.logSuccessReopenTicket(
         ipAddress,

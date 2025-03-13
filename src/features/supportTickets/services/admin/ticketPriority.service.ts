@@ -16,13 +16,18 @@ import { ISupportTicketsLogger } from "@logging/interfaces";
 import { IUser } from "@features/users";
 
 // interfaces imports
-import { ITicketPriorityService } from "../../interfaces/index";
+import {
+  ITicketPriorityService,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
 
 @injectable()
 export class TicketPriorityService implements ITicketPriorityService {
   constructor(
     @inject(TYPES.SupportTicketsLogger)
-    private readonly supportTicketsLogger: ISupportTicketsLogger
+    private readonly supportTicketsLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository
   ) {}
   /**
    * Changes the priority of a ticket.
@@ -36,8 +41,11 @@ export class TicketPriorityService implements ITicketPriorityService {
     newPriority: SupportTicketPriority
   ) {
     try {
-      ticket.priority = newPriority;
-      await ticket.save();
+      await this.ticketManagementRepository.updateTicketPriority(
+        ticket,
+        newPriority
+      );
+
       this.supportTicketsLogger.logSupportTicketPriorityChangeSuccess(
         ipAddress,
         userAdmin._id,

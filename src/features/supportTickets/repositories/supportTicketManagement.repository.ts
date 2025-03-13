@@ -10,14 +10,15 @@ import {
   SupportTicketStatus,
   TicketResponseData,
   TicketBody,
+  ISupportTicketManagementRepository,
 } from "../interfaces";
-
-import SupportTicketModel from "../models/supportTicket.model";
 
 import { APIFeaturesInterface, TYPES } from "@shared/index";
 
 @injectable()
-export class SupportTicketManagementRepository {
+export class SupportTicketManagementRepository
+  implements ISupportTicketManagementRepository
+{
   constructor(
     @inject(TYPES.SupportTicketModel)
     private readonly supportTicketModel: Model<ISupportTicket>,
@@ -129,5 +130,34 @@ export class SupportTicketManagementRepository {
     } catch (err: any) {
       throw new Error(`Failed to save admin ticket response: ${err.message}`);
     }
+  }
+
+  public async updateTicketStatusToClosed(
+    ticket: ISupportTicket,
+    adminUserId: ObjectId
+  ): Promise<void> {
+    try {
+      ticket.status = SupportTicketStatus.CLOSED;
+      ticket.resolvedAt = new Date();
+      ticket.resolvedBy = adminUserId;
+      ticket.closedAt = new Date();
+      await ticket.save();
+    } catch (err: any) {
+      throw new Error(
+        `Failed to update ticket status to closed: ${err.message}`
+      );
+    }
+  }
+
+  public async updateTicketStatusToReopened(
+    ticket: ISupportTicket,
+    adminUserId: ObjectId
+  ): Promise<void> {
+    try {
+      ticket.status = SupportTicketStatus.OPEN;
+      ticket.reopenedAt = new Date();
+      ticket.reopenedBy = adminUserId;
+      await ticket.save();
+    } catch (err: any) {}
   }
 }

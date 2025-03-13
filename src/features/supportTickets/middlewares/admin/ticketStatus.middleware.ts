@@ -2,27 +2,30 @@
 import { NextFunction, Request, Response } from "express";
 
 // shard imports
-import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+import { catchAsync, AppError, TYPES } from "@shared/index";
 
 // packages imports
 import { inject, injectable } from "inversify";
-
+import { Model } from "mongoose";
 // users feature interfaces imports
-import { IUser, UserModel } from "@features/users";
+import { IUser } from "@features/users";
 
 // interfaces imports
 import {
   TicketParams,
-  ISupportTicket,
   TicketCloseBody,
   SupportTicketStatus,
   ITicketStatusMiddleware,
+  ISupportTicketManagementRepository,
 } from "../../interfaces/index";
-
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 @injectable()
 export class TicketStatusMiddleware implements ITicketStatusMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>
+  ) {}
   // validate close support ticket
   public validateCloseTicket = catchAsync(
     async (
@@ -31,17 +34,10 @@ export class TicketStatusMiddleware implements ITicketStatusMiddleware {
       next: NextFunction
     ) => {
       // check if ticket exists
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
-      if (!ticket) {
-        return next(
-          new AppError(
-            `No support ticket found with this id : ${req.params.ticketId}`,
-            404
-          )
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
       // check if ticket is already closed
       if (ticket.status === SupportTicketStatus.CLOSED) {
@@ -51,7 +47,9 @@ export class TicketStatusMiddleware implements ITicketStatusMiddleware {
       }
 
       // check if the user own the ticket is exist
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
       if (!ticketOwner) {
         return next(new AppError(`ticket owner no longer exists`, 404));
       }
@@ -69,9 +67,11 @@ export class TicketStatusMiddleware implements ITicketStatusMiddleware {
       next: NextFunction
     ) => {
       // check if ticket exists
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
+        ); // req.params.ticketId
+
       if (!ticket) {
         return next(
           new AppError(
@@ -92,7 +92,10 @@ export class TicketStatusMiddleware implements ITicketStatusMiddleware {
       }
 
       // check if the user own the ticket is exist
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
+
       if (!ticketOwner) {
         return next(new AppError(`ticket owner no longer exists`, 404));
       }

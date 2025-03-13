@@ -2,13 +2,14 @@
 import { NextFunction, Request, Response } from "express";
 
 // shard imports
-import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+import { catchAsync, AppError, TYPES } from "@shared/index";
 
 // packages imports
 import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
 
 // users feature interfaces imports
-import { IUser, UserModel } from "@features/users";
+import { IUser } from "@features/users";
 
 // helpers imports
 import { validateSupportTicketAttachments } from "../../helpers/index";
@@ -16,18 +17,21 @@ import { validateSupportTicketAttachments } from "../../helpers/index";
 // interfaces imports
 import {
   TicketParams,
-  ISupportTicket,
   TicketUPdateBody,
   TicketBody,
   TicketDeletionBody,
   SupportTicketPriority,
   ITicketCRUDMiddleware,
+  ISupportTicketManagementRepository,
 } from "../../interfaces/index";
-
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
 @injectable()
 export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private userModel: Model<IUser>
+  ) {}
   // validate create support ticket
   public validateCreateTicket = catchAsync(
     async (
@@ -35,8 +39,6 @@ export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
       res: Response,
       next: NextFunction
     ) => {
-      console.log(req.file);
-
       const { subject, description, category, userEmail } = req.body;
 
       // validate required fields
@@ -50,7 +52,7 @@ export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
       }
 
       // validate user existence
-      const ticketOwner: IUser | null = await UserModel.findOne({
+      const ticketOwner: IUser | null = await this.userModel.findOne({
         email: userEmail,
       });
       if (!ticketOwner) {
@@ -81,16 +83,10 @@ export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
       res: Response,
       next: NextFunction
     ) => {
-      const ticketToDeleted: ISupportTicket | null =
-        await SupportTicket.findById(req.params.ticketId);
-      if (!ticketToDeleted) {
-        return next(
-          new AppError(
-            `No support ticket found with this id:${req.params.ticketId} `,
-            404
-          )
+      const ticketToDeleted =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
       req.body.ticketToBeDeleted = ticketToDeleted;
       next();
@@ -104,8 +100,11 @@ export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
       res: Response,
       next: NextFunction
     ) => {
-      const ticketToBeUpdated: ISupportTicket | null =
-        await SupportTicket.findById(req.params.ticketId);
+      const ticketToBeUpdated =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
+        );
+
       if (!ticketToBeUpdated) {
         return next(
           new AppError(
