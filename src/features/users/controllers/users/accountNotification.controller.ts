@@ -8,8 +8,6 @@ import { IAccountNotificationService } from "../../interfaces/index";
 // Shard imports
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
-import { ObjectId } from "mongoose";
-
 @injectable()
 export class AccountNotificationController {
   private accountNotificationService: IAccountNotificationService;
@@ -26,13 +24,12 @@ export class AccountNotificationController {
 
   public enableAccountNotifications = catchAsync(
     async (req: Request, res: Response) => {
-      await this.accountNotificationService.enableNotifications(
-        req.user?._id as ObjectId
-      );
+      await this.accountNotificationService.enableNotifications(req.user._id);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Notifications enabled successfully",
       };
+
       sendResponse(200, res, response);
     }
   );
@@ -44,9 +41,7 @@ export class AccountNotificationController {
 
   public disableAccountNotifications = catchAsync(
     async (req: Request, res: Response) => {
-      await this.accountNotificationService.disableNotifications(
-        req.user?._id as ObjectId
-      );
+      await this.accountNotificationService.disableNotifications(req.user._id);
       const response: ApiResponse<null> = {
         status: "success",
         message: "Notifications disabled successfully.",

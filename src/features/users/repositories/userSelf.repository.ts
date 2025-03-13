@@ -116,12 +116,18 @@ export class UserSelfRepository implements IUserSelfRepository {
         userId,
         {
           $set: { notificationsEnabled: enabled },
+        },
+        {
+          new: true,
         }
       );
+
       if (!updatedUser) {
         throw new Error(`User not found with id: ${userId}`);
       }
-    } catch (err: any) {}
+    } catch (err: any) {
+      throw new Error(`Failed to update notifications enabled: ${err.message}`);
+    }
   }
 
   public async updateUserPassword(
@@ -182,6 +188,24 @@ export class UserSelfRepository implements IUserSelfRepository {
       return user;
     } catch (err: any) {
       throw new Error(`Failed to find user by id: ${err.message}`);
+    }
+  }
+
+  public async findUserByIdAndSelectFields(
+    userId: ObjectId,
+    fieldsToBeSelected: string[]
+  ): Promise<IUser> {
+    try {
+      const user: IUser | null = await this.userModel
+        .findById(userId)
+        .select(fieldsToBeSelected.join(" "));
+      if (!user) throw new Error("User not found with the given id.");
+
+      return user;
+    } catch (err: any) {
+      throw new Error(
+        `Failed to find user by id and select fields: ${err.message}`
+      );
     }
   }
 

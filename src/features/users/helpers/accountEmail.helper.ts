@@ -1,5 +1,5 @@
 import { AppError } from "@shared/index";
-import { IUser } from "@features/users/interfaces/user.interface";
+import { IUser } from "../interfaces/index";
 import UserModel from "@features/users/models/user.model";
 const MAX_EMAIL_CHANGE_REQUESTS: number = 4;
 // const COOLDOWN_PERIOD: number = 48 * 60 * 60 * 1000;

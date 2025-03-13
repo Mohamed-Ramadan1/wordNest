@@ -70,7 +70,7 @@ export class AccountEmailService implements IAccountEmailService {
     ipAddress: string | undefined
   ): Promise<void> {
     try {
-      this.userSelfRepository.confirmEmailChangeStatus(user);
+      await this.userSelfRepository.confirmEmailChangeStatus(user);
       // add background job to send email notification
       emailQueue.add(EmailQueueJobs.NewAccountConfirmationEmail, {
         user,

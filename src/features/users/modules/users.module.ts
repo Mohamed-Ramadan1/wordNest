@@ -32,6 +32,16 @@ import { AccountStatusController } from "../controllers/users/accountStatus.cont
 import { ProfileController } from "../controllers/users/profile.controller";
 
 // middleware imports
+import { BanUserAccountMiddleware } from "../middlewares/admin/banUsersAccounts.middleware";
+import { LockUserAccountMiddleware } from "../middlewares/admin/locAccounts.middleware";
+import { RolesManagementMiddleware } from "../middlewares/admin/rolesManagement.middleware";
+
+import { AccountDeletionMiddleware } from "../middlewares/users/accountDeletion.middleware";
+import { AccountEmailMiddleware } from "../middlewares/users/accountEmail.middleware";
+import { AccountNotificationMiddleware } from "../middlewares/users/accountNotification.middleware";
+import { AccountPasswordManagementMiddleware } from "../middlewares/users/accountPasswordManagement.middleware";
+import { AccountStatusMiddleware } from "../middlewares/users/accountStatus.middleware";
+import { ProfileMiddleware } from "../middlewares/users/profile.middleware";
 
 // models imports
 import UserModel from "../models/user.model";
@@ -52,6 +62,15 @@ import {
   IUserManagementRepository,
   IUserSelfRepository,
   IUser,
+  IAccountDeletionMiddleware,
+  IAccountEmailMiddleware,
+  IAccountNotificationMiddleware,
+  IAccountPasswordManagementMiddleware,
+  IBanUserAccountMiddleware,
+  IAccountStatusMiddleware,
+  ILockUserAccountMiddleware,
+  IRolesManagementMiddleware,
+  IProfileMiddleware,
 } from "../interfaces/index";
 
 /**
@@ -138,5 +157,36 @@ export default new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
   bind<IUserSelfRepository>(TYPES.UserSelfRepository)
     .to(UserSelfRepository)
+    .inSingletonScope();
+
+  // Binding the middlewares
+  bind<IBanUserAccountMiddleware>(TYPES.BanUserAccountMiddleware)
+    .to(BanUserAccountMiddleware)
+    .inSingletonScope();
+  bind<ILockUserAccountMiddleware>(TYPES.LockUserAccountMiddleware)
+    .to(LockUserAccountMiddleware)
+    .inSingletonScope();
+  bind<IRolesManagementMiddleware>(TYPES.RolesManagementMiddleware)
+    .to(RolesManagementMiddleware)
+    .inSingletonScope();
+  bind<IAccountDeletionMiddleware>(TYPES.AccountDeletionMiddleware)
+    .to(AccountDeletionMiddleware)
+    .inSingletonScope();
+  bind<IAccountEmailMiddleware>(TYPES.AccountEmailMiddleware)
+    .to(AccountEmailMiddleware)
+    .inSingletonScope();
+  bind<IAccountNotificationMiddleware>(TYPES.AccountNotificationMiddleware)
+    .to(AccountNotificationMiddleware)
+    .inSingletonScope();
+  bind<IAccountPasswordManagementMiddleware>(
+    TYPES.AccountPasswordManagementMiddleware
+  )
+    .to(AccountPasswordManagementMiddleware)
+    .inSingletonScope();
+  bind<IAccountStatusMiddleware>(TYPES.AccountStatusMiddleware)
+    .to(AccountStatusMiddleware)
+    .inSingletonScope();
+  bind<IProfileMiddleware>(TYPES.ProfileMiddleware)
+    .to(ProfileMiddleware)
     .inSingletonScope();
 });

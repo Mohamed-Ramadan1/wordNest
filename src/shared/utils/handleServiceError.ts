@@ -7,5 +7,7 @@ import { AppError } from "@shared/index";
  */
 export function handleServiceError(error: any): never {
   if (error instanceof AppError) throw error;
-  throw new AppError(error.message || "An unexpected error occurred", 500);
+  const errorMessage =
+    error && error.message ? error.message : "An unexpected error occurred";
+  throw new AppError(errorMessage, 500);
 }

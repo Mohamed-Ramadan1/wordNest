@@ -1,21 +1,43 @@
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { catchAsync, AppError } from "@shared/index";
 
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
+//packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
+
+import {
+  IUser,
+  IAccountEmailMiddleware,
+  IUserAuthRepository,
+  ValidateChangeEmailRequestBody,
+  AccountEmailRequestParams,
+} from "../../interfaces/index";
+
 import {
   validateNewEmail,
   checkIfEmailExists,
   handleCooldownAndReset,
   enforceEmailChangeLimit,
-} from "@features/users/helpers/accountEmail.helper";
-export class AccountEmailMiddleware {
+} from "../../helpers/accountEmail.helper";
+
+@injectable()
+export class AccountEmailMiddleware implements IAccountEmailMiddleware {
+  constructor(
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
   /**
    * Validates the email change request.
    */
-  static validateChangeEmailRequest = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const user = req.user as IUser;
+  public validateChangeEmailRequest = catchAsync(
+    async (
+      req: Request<{}, {}, ValidateChangeEmailRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const user = req.user;
       const { newEmail } = req.body;
 
       if (!newEmail) {
@@ -37,13 +59,27 @@ export class AccountEmailMiddleware {
   /**
    * Validates the email change confirmation request.
    */
-  static validateConfirmEmailChange = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const user: IUser | null = await UserModel.findOne({
-        changeEmailRequestToken: req.params.token,
-        changeEmailVerificationTokenExpiresAt: { $gt: Date.now() },
-      });
-      console.log(req.params.token);
+  public validateConfirmEmailChange = catchAsync(
+    async (
+      req: Request<AccountEmailRequestParams>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { token } = req.params;
+
+      const user: IUser | null =
+        await this.userAuthRepository.findUserWithCondition([
+          {
+            attribute: "changeEmailRequestToken",
+            value: token,
+          },
+          {
+            attribute: "changeEmailVerificationTokenExpiresAt",
+            value: new Date(),
+            operator: "$gt",
+          },
+        ]);
+      console.log(user);
       if (!user) {
         throw new AppError("Invalid or expired change email token", 400);
       }
@@ -55,12 +91,26 @@ export class AccountEmailMiddleware {
   /**
    * Validates the new email ownership verification request.
    */
-  static validateVerifyNewEmailOwnership = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const user: IUser | null = await UserModel.findOne({
-        tempChangeEmailVerificationToken: req.params.token,
-        tempChangedEmailVerificationTokenExpiresAt: { $gt: Date.now() },
-      });
+  public validateVerifyNewEmailOwnership = catchAsync(
+    async (
+      req: Request<AccountEmailRequestParams>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { token } = req.params;
+      const user: IUser | null =
+        await this.userAuthRepository.findUserWithCondition([
+          {
+            attribute: "tempChangeEmailVerificationToken",
+            value: token,
+          },
+          {
+            attribute: "tempChangedEmailVerificationTokenExpiresAt",
+            value: new Date(),
+            operator: "$gt",
+          },
+        ]);
+
       if (!user) {
         throw new AppError("Invalid or expired temp change email token", 400);
       }
@@ -71,9 +121,9 @@ export class AccountEmailMiddleware {
   /**
    * Validates the resend email verification token request.
    */
-  static validateResendNewEmailVerificationToken = catchAsync(
+  public validateResendNewEmailVerificationToken = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user = req.user as IUser;
+      const user = req.user;
       const {
         tempChangedEmailVerificationTokenCount,
         lastTempChangedEmailVerificationTokenSentAt,

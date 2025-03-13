@@ -47,6 +47,33 @@ const accountPasswordManagementController =
     TYPES.AccountPasswordManagementController
   );
 
+// middleware creation for using container
+const accountDeletionMiddleware = container.get<AccountDeletionMiddleware>(
+  TYPES.AccountDeletionMiddleware
+);
+
+const accountNotificationMiddleware =
+  container.get<AccountNotificationMiddleware>(
+    TYPES.AccountNotificationMiddleware
+  );
+
+const accountStatusMiddleware = container.get<AccountStatusMiddleware>(
+  TYPES.AccountStatusMiddleware
+);
+
+const accountEmailMiddleware = container.get<AccountEmailMiddleware>(
+  TYPES.AccountEmailMiddleware
+);
+
+const profileMiddleware = container.get<ProfileMiddleware>(
+  TYPES.ProfileMiddleware
+);
+
+const accountPasswordManagement =
+  container.get<AccountPasswordManagementMiddleware>(
+    TYPES.AccountPasswordManagementMiddleware
+  );
+
 // Initialize router
 const router: Router = Router();
 
@@ -59,13 +86,13 @@ router.patch(
   "/profile/picture",
   protect,
   upload.single("profilePicture"),
-  ProfileMiddleware.validateUpdateUserProfilePicture,
+  profileMiddleware.validateUpdateUserProfilePicture,
   profileController.updateProfilePicture
 );
 router.patch(
   "/profile/information",
   protect,
-  ProfileMiddleware.validateUpdateUserProfileInformation,
+  profileMiddleware.validateUpdateUserProfileInformation,
   profileController.updateProfileInformation
 );
 
@@ -73,7 +100,7 @@ router.patch(
 router.patch(
   "/account/password",
   protect,
-  AccountPasswordManagementMiddleware.validateChangeAccountPassword,
+  accountPasswordManagement.validateChangeAccountPassword,
   accountPasswordManagementController.changeAccountPassword
 );
 
@@ -81,12 +108,12 @@ router.patch(
 router.post(
   "/account/deletion-request",
   protect,
-  AccountDeletionMiddleware.validateRequestAccountDeletion,
+  accountDeletionMiddleware.validateRequestAccountDeletion,
   accountDeletionController.requestAccountDeletion
 );
 router.delete(
   "/account/confirm-deletion/:token",
-  AccountDeletionMiddleware.validateConfirmAccountDeletion,
+  accountDeletionMiddleware.validateConfirmAccountDeletion,
   accountDeletionController.confirmAccountDeletion
 );
 
@@ -94,19 +121,19 @@ router.delete(
 router.post(
   "/account/activate/:token",
 
-  AccountStatusMiddleware.validateActivateAccount,
+  accountStatusMiddleware.validateActivateAccount,
   accountStatusController.activateAccount
 );
 router.post(
   "/account/deactivate-request",
   protect,
-  AccountStatusMiddleware.validateDeactivateAccountRequest,
+  accountStatusMiddleware.validateDeactivateAccountRequest,
   accountStatusController.deactivateAccountRequest
 );
 //(No need to protect this route will be use by non authenticated user).
 router.post(
   "/account/deactivate-confirm/:token",
-  AccountStatusMiddleware.validateDeactivateAccountConfirmation,
+  accountStatusMiddleware.validateDeactivateAccountConfirmation,
   accountStatusController.deactivateAccountConfirmation
 );
 
@@ -114,13 +141,13 @@ router.post(
 router.patch(
   "/account/notifications/enable",
   protect,
-  AccountNotificationMiddleware.validateEnableAccountNotifications,
+  accountNotificationMiddleware.validateEnableAccountNotifications,
   accountNotificationController.enableAccountNotifications
 );
 router.patch(
   "/account/notifications/disable",
   protect,
-  AccountNotificationMiddleware.validateDisableAccountNotifications,
+  accountNotificationMiddleware.validateDisableAccountNotifications,
   accountNotificationController.disableAccountNotifications
 );
 
@@ -129,14 +156,14 @@ router.patch(
 router.post(
   "/account/email/change-request",
   protect,
-  AccountEmailMiddleware.validateChangeEmailRequest,
+  accountEmailMiddleware.validateChangeEmailRequest,
   accountEmailController.requestAccountEmailChange
 );
 
 // Confirm email change with token sent to current email
 router.patch(
   "/account/email/confirm-change/:token",
-  AccountEmailMiddleware.validateConfirmEmailChange,
+  accountEmailMiddleware.validateConfirmEmailChange,
   accountEmailController.confirmAccountEmailChange
 );
 
@@ -144,7 +171,7 @@ router.patch(
 router.patch(
   "/account/email/verify-new-email/:token",
 
-  AccountEmailMiddleware.validateVerifyNewEmailOwnership,
+  accountEmailMiddleware.validateVerifyNewEmailOwnership,
   accountEmailController.verifyNewEmailOwnership
 );
 
@@ -152,7 +179,7 @@ router.patch(
 router.post(
   "/account/email/resend-new-email-token",
   protect,
-  AccountEmailMiddleware.validateResendNewEmailVerificationToken,
+  accountEmailMiddleware.validateResendNewEmailVerificationToken,
   accountEmailController.resendNewEmailVerificationToken
 );
 

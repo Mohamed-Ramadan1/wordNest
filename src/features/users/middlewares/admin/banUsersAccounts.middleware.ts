@@ -1,19 +1,28 @@
+//packages imports
+import { inject, injectable } from "inversify";
+
 // Express imports
 import { NextFunction, Request, Response } from "express";
 
 // shard imports
-import { AppError, catchAsync } from "@shared/index";
+import { AppError, catchAsync, TYPES } from "@shared/index";
 
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
 import {
+  IUser,
   BandAccountsBody,
   BandAccountsParams,
-} from "../../interfaces/bandAccountsBody.interface";
+  IBanUserAccountMiddleware,
+  IUserManagementRepository,
+} from "../../interfaces/index";
 
-export class BanUserAccountMiddleware {
+@injectable()
+export class BanUserAccountMiddleware implements IBanUserAccountMiddleware {
+  constructor(
+    @inject(TYPES.UserManagementRepository)
+    private readonly userManagementRepository: IUserManagementRepository
+  ) {}
   // validate before ban user account
-  static validateBanUserAccount = catchAsync(
+  public validateBanUserAccount = catchAsync(
     async (
       req: Request<BandAccountsParams, {}, BandAccountsBody>,
       res: Response,
@@ -27,10 +36,8 @@ export class BanUserAccountMiddleware {
           new AppError("Ban account reason and days number are required", 400)
         );
       }
-      const userToBanned: IUser | null = await UserModel.findById(userId);
-      if (!userToBanned) {
-        return next(new AppError("User you want to ban not existing", 404));
-      }
+      const userToBanned: IUser =
+        await this.userManagementRepository.getUserById(userId);
 
       if (userToBanned.isAccountBanned) {
         return next(new AppError("User account is already banned", 400));
@@ -42,12 +49,12 @@ export class BanUserAccountMiddleware {
   );
 
   // validate before un-ban user account
-  static validateUnBanUserAccount = catchAsync(
+  public validateUnBanUserAccount = catchAsync(
     async (
       req: Request<BandAccountsParams, {}, BandAccountsBody>,
       res: Response,
       next: NextFunction
-    ) => {
+    ): Promise<void> => {
       const userId = req.params.userId;
       const { adminUnbanComment } = req.body;
 
@@ -55,10 +62,8 @@ export class BanUserAccountMiddleware {
         return next(new AppError("Admin unban comment is required", 400));
       }
 
-      const userToUnBanned: IUser | null = await UserModel.findById(userId);
-      if (!userToUnBanned) {
-        return next(new AppError("User you want to un-ban not existing", 404));
-      }
+      const userToUnBanned: IUser =
+        await this.userManagementRepository.getUserById(userId);
 
       if (!userToUnBanned.isAccountBanned) {
         return next(new AppError("User account is already un-banned", 400));

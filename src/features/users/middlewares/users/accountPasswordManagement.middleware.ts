@@ -1,17 +1,37 @@
-import { AppError, catchAsync } from "@shared/index";
+// Express imports
 import { NextFunction, Request, Response } from "express";
-import { ChangePasswordDTO } from "@features/users/dtos/changePassword.dto";
-import { validateDto } from "@shared/utils/validate.dto";
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
 
-export class AccountPasswordManagementMiddleware {
-  static validateChangeAccountPassword = [
+//packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
+
+import { ChangePasswordDTO } from "../../dtos/changePassword.dto";
+
+import {
+  IUser,
+  IAccountPasswordManagementMiddleware,
+  IUserSelfRepository,
+} from "../../interfaces/index";
+
+@injectable()
+export class AccountPasswordManagementMiddleware
+  implements IAccountPasswordManagementMiddleware
+{
+  constructor(
+    @inject(TYPES.UserSelfRepository)
+    private readonly userSelfRepository: IUserSelfRepository
+  ) {}
+
+  public validateChangeAccountPassword = [
     validateDto(ChangePasswordDTO),
     catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-      const userWithPassword = (await UserModel.findById(req.user?._id).select(
-        "+password"
-      )) as IUser;
+      const userWithPassword: IUser =
+        await this.userSelfRepository.findUserByIdAndSelectFields(
+          req.user._id,
+          ["+password"]
+        );
 
       if (
         !userWithPassword.comparePassword(

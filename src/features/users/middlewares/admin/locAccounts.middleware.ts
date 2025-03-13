@@ -1,22 +1,34 @@
-import { AppError, catchAsync } from "@shared/index";
-
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
+
+//packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
 
 import {
+  IUser,
   LockAccountBody,
   LockAccountParameters,
-} from "@features/users/interfaces/lockAccountBody.interface";
-export class LockUserAccountMiddleware {
+  ILockUserAccountMiddleware,
+  IUserManagementRepository,
+} from "../../interfaces/index";
+
+@injectable()
+export class LockUserAccountMiddleware implements ILockUserAccountMiddleware {
+  constructor(
+    @inject(TYPES.UserManagementRepository)
+    private readonly userManagementRepository: IUserManagementRepository
+  ) {}
   // validate lock user account
-  static validateLockAccount = catchAsync(
+  public validateLockAccount = catchAsync(
     async (
       req: Request<LockAccountParameters, {}, LockAccountBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const userId: string = req.params.userId;
+      const { userId } = req.params;
       const { lockReason } = req.body;
 
       // check if not existing reason
@@ -25,12 +37,8 @@ export class LockUserAccountMiddleware {
       }
 
       // check if not existing user
-      const user: IUser | null = await UserModel.findById(userId);
-      if (!user) {
-        return next(
-          new AppError("User you want to lock his account not existing,", 404)
-        );
-      }
+      const user: IUser =
+        await this.userManagementRepository.getUserById(userId);
 
       if (user.isAccountLocked) {
         return next(new AppError("User account is already locked", 400));
@@ -42,24 +50,20 @@ export class LockUserAccountMiddleware {
   );
 
   // lock user account
-  static validateUnlockAccount = catchAsync(
+  public validateUnlockAccount = catchAsync(
     async (
       req: Request<LockAccountParameters, {}, LockAccountBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const userId: string = req.params.userId;
+      const { userId } = req.params;
       const { unLockComment } = req.body;
       if (!unLockComment || unLockComment.trim() === "") {
         return next(new AppError("Unlock comment is required", 400));
       }
       // check if not existing user
-      const user: IUser | null = await UserModel.findById(userId);
-      if (!user) {
-        return next(
-          new AppError("User you want to unlock his account not existing,", 404)
-        );
-      }
+      const user: IUser =
+        await this.userManagementRepository.getUserById(userId);
 
       if (!user.isAccountLocked) {
         return next(new AppError("User account is not locked", 400));

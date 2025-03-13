@@ -1,28 +1,40 @@
 // Express imports
 import { NextFunction, Request, Response } from "express";
 
+//packages imports
+import { injectable } from "inversify";
+
 // shard imports
 import { AppError, catchAsync } from "@shared/index";
 
-export class AccountNotificationMiddleware {
-  static validateEnableAccountNotifications = catchAsync(
+// interfaces imports
+import { IAccountNotificationMiddleware } from "../../interfaces/index";
+
+@injectable()
+export class AccountNotificationMiddleware
+  implements IAccountNotificationMiddleware
+{
+  public validateEnableAccountNotifications = catchAsync(
     (req: Request, res: Response, next: NextFunction): void => {
-      if (!req.user || req.user.notificationsEnabled === true) {
+      const user = req.user;
+      if (user.notificationsEnabled ) {
         throw new AppError(
           "Your account notifications are already enabled.",
           400
         );
       }
+
       next();
     }
   );
 
-  static validateDisableAccountNotifications(
+  public validateDisableAccountNotifications(
     req: Request,
     res: Response,
     next: NextFunction
   ): void {
-    if (!req.user || req.user.notificationsEnabled === false) {
+    const user = req.user;
+    if (!user.notificationsEnabled) {
       throw new AppError(
         "Your account notifications are already disabled.",
         400

@@ -27,6 +27,18 @@ const banUsersAccountsController = container.get<BanUsersAccountsController>(
   TYPES.BanUsersAccountsController
 );
 
+// middleware creation for using container
+const rolesManagementMiddleware = container.get<RolesManagementMiddleware>(
+  TYPES.RolesManagementMiddleware
+);
+const lockUserAccountMiddleware = container.get<LockUserAccountMiddleware>(
+  TYPES.LockUserAccountMiddleware
+);
+
+const banUserAccountMiddleware = container.get<BanUserAccountMiddleware>(
+  TYPES.BanUserAccountMiddleware
+);
+
 const router: Router = Router();
 
 // Get all users
@@ -52,8 +64,8 @@ router.route("/:userId/roles").get(rolesManagementController.listUserRoles);
 router
   .route("/:userId/assign-role")
   .post(
-    RolesManagementMiddleware.validateRequestParams,
-    RolesManagementMiddleware.validateAddRoleToUser,
+    rolesManagementMiddleware.validateRequestParams,
+    rolesManagementMiddleware.validateAddRoleToUser,
     rolesManagementController.assignRoleToUser
   );
 
@@ -61,8 +73,8 @@ router
 router
   .route("/:userId/remove-role")
   .delete(
-    RolesManagementMiddleware.validateRequestParams,
-    RolesManagementMiddleware.validateRemoveRoleFromUser,
+    rolesManagementMiddleware.validateRequestParams,
+    rolesManagementMiddleware.validateRemoveRoleFromUser,
     rolesManagementController.removeRoleFromUser
   );
 
@@ -77,7 +89,7 @@ router
 router
   .route("/:userId/lock-account")
   .patch(
-    LockUserAccountMiddleware.validateLockAccount,
+    lockUserAccountMiddleware.validateLockAccount,
     lockAccountsController.lockAccount
   );
 
@@ -85,7 +97,7 @@ router
 router
   .route("/:userId/unlock-account")
   .patch(
-    LockUserAccountMiddleware.validateUnlockAccount,
+    lockUserAccountMiddleware.validateUnlockAccount,
     lockAccountsController.unlockAccount
   );
 
@@ -94,7 +106,7 @@ router
 router
   .route("/:userId/ban-account")
   .patch(
-    BanUserAccountMiddleware.validateBanUserAccount,
+    banUserAccountMiddleware.validateBanUserAccount,
     banUsersAccountsController.banUserAccount
   );
 
@@ -102,7 +114,7 @@ router
 router
   .route("/:userId/unban-account")
   .patch(
-    BanUserAccountMiddleware.validateUnBanUserAccount,
+    banUserAccountMiddleware.validateUnBanUserAccount,
     banUsersAccountsController.unBanUserAccount
   );
 

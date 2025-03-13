@@ -1,19 +1,34 @@
-import { AppError, catchAsync } from "@shared/index";
-
+// Express imports
 import { NextFunction, Request, Response } from "express";
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
+
+//packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
+
+// interfaces imports
+import {
+  IUser,
+  IAccountStatusMiddleware,
+  IUserAuthRepository,
+  AccountStatusRequestParams,
+} from "../../interfaces/index";
 
 const MAX_DEACTIVATION_REQUESTS: number = 4;
 const COOLDOWN_PERIOD: number = 48 * 60 * 60 * 1000;
 // const COOLDOWN_PERIOD :number= 1 * 60 * 1000; // 1 minute in milliseconds
 
-export class AccountStatusMiddleware {
+@injectable()
+export class AccountStatusMiddleware implements IAccountStatusMiddleware {
+  constructor(
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
   // validate deactivate account request
-  static validateDeactivateAccountRequest = catchAsync(
+  public validateDeactivateAccountRequest = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user = req.user as IUser;
-
+      const user = req.user;
       if (!user.isActive) {
         throw new AppError("Account is already deactivated", 400);
       }
@@ -47,13 +62,22 @@ export class AccountStatusMiddleware {
   );
 
   // validate deactivate account confirmation
-  static validateDeactivateAccountConfirmation = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      // get the user
-      const user: IUser | null = await UserModel.findOne({
-        deactivationAccountToken: req.params.token,
-        deactivationAccountTokenExpiredAt: { $gt: Date.now() },
-      });
+  public validateDeactivateAccountConfirmation = catchAsync(
+    async (
+      req: Request<AccountStatusRequestParams>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { token } = req.params;
+      const user: IUser | null =
+        await this.userAuthRepository.findUserWithCondition([
+          { attribute: "deactivationAccountToken", value: token },
+          {
+            attribute: "deactivationAccountTokenExpiredAt",
+            value: new Date(),
+            operator: "$gt",
+          },
+        ]);
       // check if the user is active or not
       if (!user) {
         throw new AppError("Invalid or expired deactivation token", 400);
@@ -67,13 +91,23 @@ export class AccountStatusMiddleware {
   );
 
   // validate activation account confirmation
-  static validateActivateAccount = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
+  public validateActivateAccount = catchAsync(
+    async (
+      req: Request<AccountStatusRequestParams>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { token } = req.params;
       // get the user
-      const user: IUser | null = await UserModel.findOne({
-        reactivationAccountToken: req.params.token,
-        reactivationAccountTokenExpiredAt: { $gt: Date.now() },
-      });
+      const user: IUser | null =
+        await this.userAuthRepository.findUserWithCondition([
+          { attribute: "reactivationAccountToken", value: token },
+          {
+            attribute: "reactivationAccountTokenExpiredAt",
+            value: new Date(),
+            operator: "$gt",
+          },
+        ]);
       // check if the user is active or not
       if (!user) {
         throw new AppError("Invalid or expired reactivation token", 400);

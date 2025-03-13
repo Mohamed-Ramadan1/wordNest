@@ -22,7 +22,7 @@ export class AccountNotificationService implements IAccountNotificationService {
   public async enableNotifications(userId: ObjectId): Promise<void> {
     // Logic to enable notifications
     try {
-      this.userSelfRepository.updateNotificationsEnabled(userId, true);
+      await this.userSelfRepository.updateNotificationsEnabled(userId, true);
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -30,7 +30,7 @@ export class AccountNotificationService implements IAccountNotificationService {
 
   public async disableNotifications(userId: ObjectId): Promise<void> {
     try {
-      this.userSelfRepository.updateNotificationsEnabled(userId, false);
+      await this.userSelfRepository.updateNotificationsEnabled(userId, false);
     } catch (err: any) {
       handleServiceError(err);
     }

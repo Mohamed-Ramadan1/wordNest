@@ -1,10 +1,17 @@
-import { AppError, removeLocalFile } from "@shared/index";
-import { catchAsync } from "@shared/utils/catchAsync";
+// Express imports
 import { NextFunction, Request, Response } from "express";
-import { IFieldsToBeUpdates } from "@features/users/interfaces/fieldsToBeUpdate.interface";
 
-export class ProfileMiddleware {
-  static validateUpdateUserProfilePicture = catchAsync(
+//packages imports
+import { injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, removeLocalFile } from "@shared/index";
+
+import { IFieldsToBeUpdates, IProfileMiddleware } from "../../interfaces/index";
+
+@injectable()
+export class ProfileMiddleware implements IProfileMiddleware {
+  public validateUpdateUserProfilePicture = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       if (!req.file || !req.file.mimetype.startsWith("image/")) {
         return next(new AppError("Please provide a image", 400));
@@ -20,7 +27,7 @@ export class ProfileMiddleware {
     }
   );
 
-  static validateUpdateUserProfileInformation = catchAsync(
+  public validateUpdateUserProfileInformation = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const { firstName, lastName, bio, password, confirmPassword } = req.body;
 

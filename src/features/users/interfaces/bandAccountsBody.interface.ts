@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { IUser } from "./user.interface";
 
 export interface BandAccountsBody {
@@ -9,5 +10,5 @@ export interface BandAccountsBody {
 }
 
 export interface BandAccountsParams {
-  userId: string;
+  userId: ObjectId;
 }

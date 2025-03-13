@@ -1,26 +1,70 @@
-export { IUser } from "./user.interface";
+export { IUser, Roles } from "./user.interface";
 
-export { IBanUserAccountService } from "./banUsersAccountService.interface";
+export {
+  BandAccountsBody,
+  BandAccountsParams,
+} from "./bandAccountsBody.interface";
+export {
+  LockAccountBody,
+  LockAccountParameters,
+} from "./lockAccountBody.interface";
 
-export { ILockAccountService } from "./locAccountService.interface";
+export {
+  RolesManagementRequestParams,
+  RolesManagementRequestBody,
+} from "./rolesManagementRequest.interface";
 
-export { IRolesManagementService } from "./rolesManagementService.interface";
+export {
+  AccountEmailRequestParams,
+  ValidateChangeEmailRequestBody,
+} from "./accountEmailRequest.interface";
 
-export { IUsersCrudService } from "./usersCrudService.interface";
+export { AccountStatusRequestParams } from "./accountStatusRequest.interface";
 
-export { IAccountDeletionService } from "./accountDeletionService.interface";
+export { AccountDeletionRequestParams } from "./accountDeletionRequest.interface";
 
-export { IAccountEmailService } from "./accountEmailService.interface";
+export { IFieldsToBeUpdates } from "./fieldsToBeUpdate.interface";
 
-export { IAccountNotificationService } from "./accountNotificationService.interface";
+export { IBanUserAccountService } from "./servicesInterfaces/banUsersAccountService.interface";
 
-export { IAccountPasswordManagementService } from "./accountPasswordManagementService.interface";
+export { ILockAccountService } from "./servicesInterfaces/locAccountService.interface";
 
-export { IAccountStatusService } from "./accountStatusService.interface";
+export { IRolesManagementService } from "./servicesInterfaces/rolesManagementService.interface";
 
-export { IProfileService } from "./profileService.interface";
+export { IUsersCrudService } from "./servicesInterfaces/usersCrudService.interface";
 
-export { IUserSelfRepository } from "./userSelfRepository.interface";
+export { IAccountDeletionService } from "./servicesInterfaces/accountDeletionService.interface";
 
-export { IUserManagementRepository } from "./userManagementRepository.interface";
-export { IUserAuthRepository } from "./userAuthRepository.interface";
+export { IAccountEmailService } from "./servicesInterfaces/accountEmailService.interface";
+
+export { IAccountNotificationService } from "./servicesInterfaces/accountNotificationService.interface";
+
+export { IAccountPasswordManagementService } from "./servicesInterfaces/accountPasswordManagementService.interface";
+
+export { IAccountStatusService } from "./servicesInterfaces/accountStatusService.interface";
+
+export { IProfileService } from "./servicesInterfaces/profileService.interface";
+
+export { IUserSelfRepository } from "./repositoryInterfaces/userSelfRepository.interface";
+
+export { IUserManagementRepository } from "./repositoryInterfaces/userManagementRepository.interface";
+
+export { IUserAuthRepository } from "./repositoryInterfaces/userAuthRepository.interface";
+
+export { IBanUserAccountMiddleware } from "./middlewaresInterfaces/banUsersAccountsMiddleware.interface";
+
+export { IRolesManagementMiddleware } from "./middlewaresInterfaces/rolesManagementMiddleware.interface";
+
+export { ILockUserAccountMiddleware } from "./middlewaresInterfaces/lockUserAccountMiddleware.interface";
+
+export { IAccountDeletionMiddleware } from "./middlewaresInterfaces/accountDeletionMiddleware.interface";
+
+export { IAccountEmailMiddleware } from "./middlewaresInterfaces/accountEmailMiddleware.interface";
+
+export { IAccountNotificationMiddleware } from "./middlewaresInterfaces/accountNotificationMiddleware.interface";
+
+export { IAccountPasswordManagementMiddleware } from "./middlewaresInterfaces/accountPasswordManagementMiddleware..interface";
+
+export { IAccountStatusMiddleware } from "./middlewaresInterfaces/accountStatusMiddleware.interface";
+
+export { IProfileMiddleware } from "./middlewaresInterfaces/profileMiddleware.interface";

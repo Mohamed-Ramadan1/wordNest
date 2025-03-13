@@ -1,17 +1,33 @@
-import { AppError, catchAsync } from "@shared/index";
-
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { IUser } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
+
+//packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
+
+import {
+  IUser,
+  IAccountDeletionMiddleware,
+  IUserAuthRepository,
+  AccountDeletionRequestParams,
+} from "../../interfaces/index";
 
 const MAX_DELETEA_ACCOUNT_REQUESTS: number = 5;
 const COOLDOWN_PERIOD: number = 24 * 60 * 60 * 1000;
 // const COOLDOWN_PERIOD: number = 1 * 60 * 1000; // 1 minute in milliseconds
-export class AccountDeletionMiddleware {
+
+@injectable()
+export class AccountDeletionMiddleware implements IAccountDeletionMiddleware {
+  constructor(
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
   // Account Deletion
-  static validateRequestAccountDeletion = catchAsync(
+  public validateRequestAccountDeletion = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user = req.user as IUser;
+      const { user } = req;
       const hasExceededRequests =
         user.deleteAccountRequestCount &&
         user.deleteAccountRequestCount >= MAX_DELETEA_ACCOUNT_REQUESTS &&
@@ -43,14 +59,27 @@ export class AccountDeletionMiddleware {
     }
   );
 
-  static validateConfirmAccountDeletion = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
+  public validateConfirmAccountDeletion = catchAsync(
+    async (
+      req: Request<AccountDeletionRequestParams>,
+      res: Response,
+      next: NextFunction
+    ) => {
       // Logic to confirm account deletion
-      const token: string = req.params.token;
-      const user: IUser | null = await UserModel.findOne({
-        deleteAccountRequestToken: token,
-        deleteAccountRequestTokenExpiredAt: { $gt: Date.now() },
-      });
+      const { token } = req.params;
+
+      const user: IUser | null =
+        await this.userAuthRepository.findUserWithCondition([
+          {
+            attribute: "deleteAccountRequestToken",
+            value: token,
+          },
+          {
+            attribute: "deleteAccountRequestTokenExpiredAt",
+            value: new Date(),
+            operator: "$gt",
+          },
+        ]);
       if (!user) {
         throw new AppError("Invalid or expired delete account token", 400);
       }

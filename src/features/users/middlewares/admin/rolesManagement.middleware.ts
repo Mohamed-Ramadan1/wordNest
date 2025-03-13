@@ -1,15 +1,39 @@
-import { AppError, catchAsync } from "@shared/index";
-
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { IUser, Roles } from "@features/users/interfaces/user.interface";
-import UserModel from "@features/users/models/user.model";
 
-export class RolesManagementMiddleware {
+// packages imports
+import { inject, injectable } from "inversify";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
+
+import {
+  IUser,
+  IRolesManagementMiddleware,
+  IUserManagementRepository,
+  RolesManagementRequestParams,
+  RolesManagementRequestBody,
+} from "../../interfaces/index";
+
+@injectable()
+export class RolesManagementMiddleware implements IRolesManagementMiddleware {
+  constructor(
+    @inject(TYPES.UserManagementRepository)
+    private readonly userManagementRepository: IUserManagementRepository
+  ) {}
   // validate the request parameters
-  static validateRequestParams = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const userId: string = req.params.userId;
-      const role: Roles = req.body.role;
+  public validateRequestParams = catchAsync(
+    async (
+      req: Request<
+        RolesManagementRequestParams,
+        {},
+        RolesManagementRequestBody
+      >,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { userId } = req.params;
+      const { role } = req.body;
 
       // check if role is valid
       if (!role) {
@@ -22,16 +46,8 @@ export class RolesManagementMiddleware {
       }
 
       // check if user id is valid and user exists.
-      const targetedUser: IUser | null = await UserModel.findById(userId);
-
-      if (!targetedUser) {
-        return next(
-          new AppError(
-            "No user existing with this id. please check the target user id.",
-            404
-          )
-        );
-      }
+      const targetedUser: IUser =
+        await this.userManagementRepository.getUserById(userId);
 
       req.userToBeAssigned = targetedUser;
       next();
@@ -39,9 +55,13 @@ export class RolesManagementMiddleware {
   );
 
   // validate add role to user
-  static validateAddRoleToUser = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const role: Roles = req.body.role;
+  public validateAddRoleToUser = catchAsync(
+    async (
+      req: Request<{}, {}, RolesManagementRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { role } = req.body;
       const targetedUser: IUser = req.userToBeAssigned;
       // check if user already has the role assigned
       if (targetedUser.roles.includes(role)) {
@@ -57,9 +77,13 @@ export class RolesManagementMiddleware {
   );
 
   // validate remove role from user
-  static validateRemoveRoleFromUser = catchAsync(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const role: Roles = req.body.role;
+  public validateRemoveRoleFromUser = catchAsync(
+    async (
+      req: Request<{}, {}, RolesManagementRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const { role } = req.body;
       const userToBeAssigned: IUser = req.userToBeAssigned;
       // check if user already has the role assigned
       if (!userToBeAssigned.roles.includes(role)) {
