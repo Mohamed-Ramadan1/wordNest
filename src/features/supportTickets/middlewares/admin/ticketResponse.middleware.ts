@@ -1,17 +1,32 @@
-import { catchAsync } from "@shared/utils/catchAsync";
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@shared/utils/appError";
-import {
-  TicketAdminResponseBody,
-  TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+
+// shard imports
+import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// users feature interfaces imports
 import { IUser, UserModel } from "@features/users";
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers/index";
+
+// interfaces imports
+import {
+  TicketParams,
+  ISupportTicket,
+  TicketAdminResponseBody,
+  ITicketResponseMiddleware,
+} from "../../interfaces/index";
+
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-export class TicketResponseMiddleware {
-  static validateRespondToTicket = catchAsync(
+@injectable()
+export class TicketResponseMiddleware implements ITicketResponseMiddleware {
+  constructor() {}
+  public validateRespondToTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketAdminResponseBody>,
       res: Response,

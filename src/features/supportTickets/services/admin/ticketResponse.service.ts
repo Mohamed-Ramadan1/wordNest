@@ -15,15 +15,15 @@ import { ISupportTicketsLogger } from "@logging/interfaces";
 
 import { IUser } from "@features/users";
 
-import { ObjectId } from "mongoose";
-import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";
-
 import cloudinary from "cloudinary";
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 
 // interfaces imports
-import { ITicketResponseService } from "../../interfaces/index";
+import {
+  ITicketResponseService,
+  TicketResponseData,
+} from "../../interfaces/index";
 
 @injectable()
 export class TicketResponseService implements ITicketResponseService {
@@ -43,14 +43,7 @@ export class TicketResponseService implements ITicketResponseService {
     ticketOwner: IUser,
     ipAddress: string | undefined,
     adminUser: IUser,
-    ticketResponseObject: {
-      message: string;
-      responderId: ObjectId;
-      respondedAt: Date;
-      attachment?: Attachment;
-      internalNotes?: string;
-      escalationLevel?: number;
-    }
+    ticketResponseObject: TicketResponseData
   ): Promise<void> {
     try {
       if (ticketResponseObject.attachment) {

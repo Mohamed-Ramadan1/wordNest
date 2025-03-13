@@ -10,7 +10,7 @@ import {
   TicketDeletionBody,
   TicketParams,
   TicketUPdateBody,
-} from "../../interfaces/SupportTicketAdminBody.interface";
+} from "../../interfaces/supportTicketAdminBody.interface";
 
 // services imports
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";

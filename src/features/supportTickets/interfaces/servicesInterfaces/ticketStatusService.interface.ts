@@ -1,5 +1,5 @@
 import { IUser } from "@features/users";
-import { ISupportTicket } from "./supportTicket.interface";
+import { ISupportTicket } from "../index";
 /**
  * Interface for the TicketStatusService class.
  * Provides methods to manage the status of support tickets.

@@ -1,17 +1,28 @@
-import { catchAsync, AppError } from "@shared/index";
+// express imports
 import { NextFunction, Request, Response } from "express";
 
+// shard imports
+import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// interfaces imports
 import {
   SupportTicketBody,
   SupportTicketBodyReplay,
   SupportTicketParams,
-} from "@features/supportTickets/interfaces/supportTicketBody.interface";
+  ISupportTicket,
+  ISupportTicketsMiddleware,
+} from "../../interfaces/index";
 
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers";
+
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-export class SupportTicketsMiddleware {
-  static validateCreateSupportTicket = catchAsync(
+@injectable()
+export class SupportTicketsMiddleware implements ISupportTicketsMiddleware {
+  public validateCreateSupportTicket = catchAsync(
     async (
       req: Request<{}, {}, SupportTicketBody>,
       res: Response,
@@ -36,7 +47,7 @@ export class SupportTicketsMiddleware {
     }
   );
 
-  static validateReplaySupportTicket = catchAsync(
+  public validateReplaySupportTicket = catchAsync(
     async (
       req: Request<SupportTicketParams, {}, SupportTicketBodyReplay>,
       res: Response,

@@ -1,20 +1,30 @@
-import { catchAsync, AppError } from "@shared/index";
-import { Request, Response, NextFunction } from "express";
+// express imports
+import { NextFunction, Request, Response } from "express";
+
+// shard imports
+import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// users feature interfaces imports
+import { IUser, UserModel } from "@features/users";
+
+// interfaces imports
 import {
-  ISupportTicket,
-  SupportTicketStatus,
-} from "@features/supportTickets/interfaces/supportTicket.interface";
-import {
-  TicketCloseBody,
   TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+  ISupportTicket,
+  TicketCloseBody,
+  SupportTicketStatus,
+  ITicketStatusMiddleware,
+} from "../../interfaces/index";
 
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-import { IUser, UserModel } from "@features/users";
-export class TicketStatusMiddleware {
+@injectable()
+export class TicketStatusMiddleware implements ITicketStatusMiddleware {
   // validate close support ticket
-  static validateCloseTicket = catchAsync(
+  public validateCloseTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketCloseBody>,
       res: Response,
@@ -52,7 +62,7 @@ export class TicketStatusMiddleware {
     }
   );
 
-  static validateReopenTicket = catchAsync(
+  public validateReopenTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketCloseBody>,
       res: Response,

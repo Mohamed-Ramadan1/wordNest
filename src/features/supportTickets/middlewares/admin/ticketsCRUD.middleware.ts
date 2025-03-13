@@ -1,22 +1,35 @@
-import { catchAsync, AppError } from "@shared/index";
-import { Request, Response, NextFunction } from "express";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+// express imports
+import { NextFunction, Request, Response } from "express";
+
+// shard imports
+import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// users feature interfaces imports
+import { IUser, UserModel } from "@features/users";
+
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers/index";
+
+// interfaces imports
 import {
-  TicketBody,
   TicketParams,
-  TicketDeletionBody,
+  ISupportTicket,
   TicketUPdateBody,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { SupportTicketPriority } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
+  TicketBody,
+  TicketDeletionBody,
+  SupportTicketPriority,
+  ITicketCRUDMiddleware,
+} from "../../interfaces/index";
+
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-import User from "@features/users/models/user.model";
-import { IUser } from "@features/users";
-
-export class TicketCRUDMiddleware {
+@injectable()
+export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
   // validate create support ticket
-  static validateCreateTicket = catchAsync(
+  public validateCreateTicket = catchAsync(
     async (
       req: Request<{}, {}, TicketBody>,
       res: Response,
@@ -37,7 +50,7 @@ export class TicketCRUDMiddleware {
       }
 
       // validate user existence
-      const ticketOwner: IUser | null = await User.findOne({
+      const ticketOwner: IUser | null = await UserModel.findOne({
         email: userEmail,
       });
       if (!ticketOwner) {
@@ -62,7 +75,7 @@ export class TicketCRUDMiddleware {
   );
 
   // validate delete support ticket
-  static validateDeleteTicket = catchAsync(
+  public validateDeleteTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketDeletionBody>,
       res: Response,
@@ -85,7 +98,7 @@ export class TicketCRUDMiddleware {
   );
 
   // validate update support ticket
-  static validateUpdateTicket = catchAsync(
+  public validateUpdateTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketUPdateBody>,
       res: Response,

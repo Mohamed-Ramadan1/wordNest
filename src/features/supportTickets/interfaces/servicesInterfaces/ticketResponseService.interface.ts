@@ -1,7 +1,6 @@
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicket, Attachment } from "../index";
 import { IUser } from "@features/users";
 import { ObjectId } from "mongoose";
-import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 /**
  * Interface for the TicketResponseService.

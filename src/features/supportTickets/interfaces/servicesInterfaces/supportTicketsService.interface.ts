@@ -1,9 +1,10 @@
 import { IUser } from "@features/users";
-import { ISupportTicket } from "./supportTicket.interface";
 import {
+  ISupportTicket,
   SupportTicketBody,
   SupportTicketBodyReplay,
-} from "./supportTicketBody.interface";
+} from "../index";
+
 import { ObjectId } from "mongoose";
 /**
  * Interface for the SupportTicketService class.

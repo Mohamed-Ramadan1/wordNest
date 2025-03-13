@@ -1,7 +1,6 @@
 import { IUser } from "@features/users";
-import { AppError } from "@shared/utils/appError";
-import { Attachment } from "../../interfaces/supportTicket.interface";
-import { removeLocalFile } from "@shared/index";
+import { AppError, removeLocalFile } from "@shared/index";
+import { Attachment } from "../../interfaces/index";
 
 export const validateSupportTicketAttachments = (
   file: Express.Multer.File,

@@ -7,7 +7,7 @@ import { inject, injectable } from "inversify";
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
-import { TicketCloseBody } from "../../interfaces/SupportTicketAdminBody.interface";
+import { TicketCloseBody } from "../../interfaces/supportTicketAdminBody.interface";
 
 //interfaces imports
 import { ITicketStatusService } from "../../interfaces/index";

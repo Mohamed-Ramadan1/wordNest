@@ -22,7 +22,7 @@ import {
   TYPES,
   handleServiceError,
 } from "@shared/index";
-import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+import { TicketBody } from "@features/supportTickets/interfaces/supportTicketAdminBody.interface";
 
 // logger imports
 import { ISupportTicketsLogger } from "@logging/interfaces";

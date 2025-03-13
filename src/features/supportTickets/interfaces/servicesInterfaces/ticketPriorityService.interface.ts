@@ -1,6 +1,5 @@
-import { ISupportTicket } from "./supportTicket.interface";
+import { ISupportTicket, SupportTicketPriority } from "../index";
 import { IUser } from "@features/users";
-import { SupportTicketPriority } from "./supportTicket.interface";
 
 /**
  * Interface for the TicketPriorityService.

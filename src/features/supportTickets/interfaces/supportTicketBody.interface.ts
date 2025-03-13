@@ -1,9 +1,5 @@
 import { ObjectId } from "mongoose";
-import {
-  Attachment,
-  ISupportTicket,
-  SupportTicketCategory,
-} from "./supportTicket.interface";
+import { Attachment, ISupportTicket, SupportTicketCategory } from "./index";
 
 export interface SupportTicketBody {
   subject: string;

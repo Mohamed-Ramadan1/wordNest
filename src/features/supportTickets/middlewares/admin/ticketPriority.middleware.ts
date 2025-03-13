@@ -1,15 +1,26 @@
-import { catchAsync, AppError } from "@shared/index";
-import { Request, Response, NextFunction } from "express";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+// express imports
+import { NextFunction, Request, Response } from "express";
+
+// shard imports
+import { catchAsync, AppError, TYPES, validateDto } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// interfaces imports
 import {
-  TicketPriorityChangeBody,
   TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { SupportTicketPriority } from "@features/supportTickets/interfaces/supportTicket.interface";
+  ISupportTicket,
+  TicketPriorityChangeBody,
+  SupportTicketPriority,
+  ITicketPriorityMiddleware,
+} from "../../interfaces/index";
+
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-export class TicketPriorityMiddleware {
-  static validatePriorityChange = catchAsync(
+@injectable()
+export class TicketPriorityMiddleware implements ITicketPriorityMiddleware {
+  public validatePriorityChange = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketPriorityChangeBody>,
       res: Response,

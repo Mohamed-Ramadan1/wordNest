@@ -20,13 +20,10 @@ import { ITicketPriorityService } from "../../interfaces/index";
 
 @injectable()
 export class TicketPriorityService implements ITicketPriorityService {
-  private supportTicketsLogger: ISupportTicketsLogger;
   constructor(
     @inject(TYPES.SupportTicketsLogger)
-    supportTicketsLogger: ISupportTicketsLogger
-  ) {
-    this.supportTicketsLogger = supportTicketsLogger;
-  }
+    private readonly supportTicketsLogger: ISupportTicketsLogger
+  ) {}
   /**
    * Changes the priority of a ticket.
    * Sends or skips notifications based on the priority level.

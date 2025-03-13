@@ -1,8 +1,7 @@
 import { Request } from "express";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicket, TicketBody } from "../index";
 import { ObjectId } from "mongoose";
 import { IUser } from "@features/users";
-import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
 
 /**
  * Interface for TicketsCRUDService, defining ticket management operations.
