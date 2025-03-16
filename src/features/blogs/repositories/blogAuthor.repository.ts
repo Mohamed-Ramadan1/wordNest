@@ -2,7 +2,7 @@
 import { Model, ObjectId, Query } from "mongoose";
 import { inject, injectable } from "inversify";
 import { ParsedQs } from "qs";
-
+import { Request } from "express";
 //shard imports
 import { TYPES, APIFeaturesInterface } from "@shared/index";
 
@@ -13,6 +13,9 @@ import {
   IBlogAuthorRepository,
   ScheduleStatus,
   UpdateScheduleBlogBodyRequestBody,
+  UpdatesBlogBodyRequest,
+  DeletionStatus,
+  BlogData,
 } from "../interfaces/index";
 
 @injectable()
@@ -26,6 +29,47 @@ export class BlogAuthorRepository implements IBlogAuthorRepository {
     ) => APIFeaturesInterface<IBlog>
   ) {}
 
+  public async createBlogPost(blogData: BlogData): Promise<void> {
+    try {
+      const newBlogPost = new this.blogModel(blogData);
+      newBlogPost.publishedAt = new Date();
+      newBlogPost.createBlogSlug();
+      newBlogPost.generateSEOMetadata(blogData);
+      await newBlogPost.save();
+    } catch (err: any) {
+      throw new Error(`Failed to create blog post: ${err.message}`);
+    }
+  }
+
+  public async updateBlogPost(
+    blogPost: IBlog,
+    updatedBlogData: UpdatesBlogBodyRequest
+  ): Promise<void> {
+    try {
+      if (updatedBlogData.title) blogPost.title = updatedBlogData.title;
+      if (updatedBlogData.content) blogPost.content = updatedBlogData.content;
+      if (updatedBlogData.tags) blogPost.tags = updatedBlogData.tags;
+      if (updatedBlogData.categories)
+        blogPost.categories = updatedBlogData.categories;
+      blogPost.isEdited = true;
+      blogPost.editedAt = new Date();
+      await blogPost.save();
+    } catch (err: any) {
+      throw new Error(`Failed to update blog post: ${err.message}`);
+    }
+  }
+
+  public async deleteBlogPost(blogPost: IBlog): Promise<void> {
+    try {
+      blogPost.toBeDeleted = true;
+      blogPost.requestDeleteAt = new Date();
+      blogPost.deletionStatus = DeletionStatus.PENDING;
+      await blogPost.save();
+    } catch (err: any) {
+      throw new Error(`Failed to delete blog post: ${err.message}`);
+    }
+  }
+
   public async getBlogPostByIdAndAuthor(
     id: ObjectId,
     authorId: ObjectId
@@ -34,16 +78,39 @@ export class BlogAuthorRepository implements IBlogAuthorRepository {
       const blogPost: IBlog | null = await this.blogModel.findOne({
         _id: id,
         author: authorId,
+        isScheduled: false,
       });
       if (!blogPost) {
         throw new Error(
           "Blog post not found with given ID and related to this author."
         );
       }
-
       return blogPost;
     } catch (err: any) {
       throw new Error(`Failed to get blog by ID and author: ${err.message}`);
+    }
+  }
+
+  public async getBlogPosts(
+    authorId: ObjectId,
+    request: Request
+  ): Promise<IBlog[]> {
+    try {
+      const features = this.apiFeatures(
+        this.blogModel.find({
+          author: authorId,
+          isScheduled: false,
+        }),
+        request.query
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const blogPosts: IBlog[] = await features.execute();
+      return blogPosts;
+    } catch (err: any) {
+      throw new Error(`Failed to get  blog posts for the user: ${err.message}`);
     }
   }
 
@@ -72,7 +139,7 @@ export class BlogAuthorRepository implements IBlogAuthorRepository {
 
   public async createScheduleBlogPost(
     blogData: ScheduledBlogData
-  ): Promise<void> {
+  ): Promise<IBlog> {
     try {
       const scheduledBlogPost: IBlog = new this.blogModel(blogData);
       scheduledBlogPost.isPublished = false;
@@ -80,7 +147,7 @@ export class BlogAuthorRepository implements IBlogAuthorRepository {
       scheduledBlogPost.scheduleStatus = ScheduleStatus.PENDING;
       scheduledBlogPost.createBlogSlug();
       scheduledBlogPost.generateSEOMetadata(blogData);
-      await scheduledBlogPost.save();
+      return await scheduledBlogPost.save();
     } catch (err: any) {
       throw new Error(`Failed to schedule blog post: ${err.message}`);
     }
