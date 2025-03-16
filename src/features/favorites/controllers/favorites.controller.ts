@@ -80,9 +80,9 @@ export class FavoritesController {
    * Handles the logic for retrieving a specific blog post from the user's favorites list.
    */
   public getFavorite = catchAsync(
-    async (req: Request<{}, {}, FavoriteRequestBody>, res: Response) => {
+    async (req: Request<FavoriteRequestParams, {}>, res: Response) => {
       const blogPost = await this.favoritesService.getFavorite(
-        req.body.blogPostId,
+        req.params.favoriteId,
         req.user
       );
       const response: ApiResponse<IFavorite> = {

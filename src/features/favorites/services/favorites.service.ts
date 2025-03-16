@@ -5,7 +5,7 @@ import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
 // shard imports
-import { AppError, TYPES } from "@shared/index";
+import { AppError, TYPES, handleServiceError } from "@shared/index";
 
 import { IUser } from "@features/users";
 
@@ -33,7 +33,7 @@ export class FavoritesService implements IFavoritesService {
     try {
       await this.favoritesRepository.createFavoriteItem(blogPostId, user._id);
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   };
 
@@ -51,7 +51,7 @@ export class FavoritesService implements IFavoritesService {
       if (err instanceof AppError) {
         throw err;
       }
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   };
 
@@ -78,7 +78,7 @@ export class FavoritesService implements IFavoritesService {
       if (err instanceof AppError) {
         throw err;
       }
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   };
 
@@ -94,7 +94,7 @@ export class FavoritesService implements IFavoritesService {
         await this.favoritesRepository.getFavoriteItems(user._id, reqQuery);
       return favorites;
     } catch (err: any) {
-      throw new AppError(err.message, 400);
+      handleServiceError(err);
     }
   };
 }
