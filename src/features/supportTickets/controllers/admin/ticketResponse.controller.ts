@@ -5,9 +5,11 @@ import { inject, injectable } from "inversify";
 // Shared imports
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
-import { TicketAdminResponseBody } from "@features/supportTickets/interfaces/supportTicketAdminBody.interface";
-
-import { ITicketResponseService } from "../../interfaces/index";
+// interfaces imports
+import {
+  ITicketResponseService,
+  TicketAdminResponseBody,
+} from "../../interfaces/index";
 
 @injectable()
 export class TicketResponseController {

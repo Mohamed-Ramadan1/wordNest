@@ -7,7 +7,10 @@ import { inject, injectable } from "inversify";
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
-import { IRolesManagementService } from "../../interfaces/index";
+import {
+  IRolesManagementService,
+  RolesManagementRequestParams,
+} from "../../interfaces/index";
 
 @injectable()
 export class RolesManagementController {
@@ -56,31 +59,35 @@ export class RolesManagementController {
    * Lists all roles assigned to a user.
    * Retrieves all roles currently associated with a user.
    */
-  public listUserRoles = catchAsync(async (req: Request, res: Response) => {
-    const { roles, userEmail } =
-      await this.rolesManagementService.listUserRoles(req.params.userId);
-    const response: ApiResponse<string[] | string> = {
-      status: "success",
-      message: "Roles retrieved successfully",
-      data: {
-        userEmail,
-        roles,
-      },
-    };
-    sendResponse(200, res, response);
-  });
+  public listUserRoles = catchAsync(
+    async (req: Request<RolesManagementRequestParams>, res: Response) => {
+      const { roles, userEmail } =
+        await this.rolesManagementService.listUserRoles(req.params.userId);
+      const response: ApiResponse<string[] | string> = {
+        status: "success",
+        message: "Roles retrieved successfully",
+        data: {
+          userEmail,
+          roles,
+        },
+      };
+      sendResponse(200, res, response);
+    }
+  );
 
   /**
    * Resets all roles assigned to a user.
    * Removes all roles currently associated with a user.
    */
-  public resetUserRoles = catchAsync(async (req: Request, res: Response) => {
-    await this.rolesManagementService.resetUserRoles(req.params.userId);
-    const response: ApiResponse<null> = {
-      status: "success",
-      message:
-        "Roles reset successfully. now user has only default role (user )",
-    };
-    sendResponse(200, res, response);
-  });
+  public resetUserRoles = catchAsync(
+    async (req: Request<RolesManagementRequestParams>, res: Response) => {
+      await this.rolesManagementService.resetUserRoles(req.params.userId);
+      const response: ApiResponse<null> = {
+        status: "success",
+        message:
+          "Roles reset successfully. now user has only default role (user )",
+      };
+      sendResponse(200, res, response);
+    }
+  );
 }

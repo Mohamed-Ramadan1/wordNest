@@ -8,14 +8,12 @@ import { inject, injectable } from "inversify";
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // interfaces imports
-import { IReadingList } from "../interfaces/readingList.interface";
 import {
+  IReadingList,
+  IReadingListCRUDService,
   ReadingListCRUDRequestParams,
   CreateReadingListItemRequestBody,
-} from "../interfaces/readingListCRUDRequest.interface";
-
-// interfaces imports
-import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
+} from "../interfaces/index";
 @injectable()
 export class ReadingListCRUDController {
   private readingListCRUDService: IReadingListCRUDService;

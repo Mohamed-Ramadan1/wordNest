@@ -11,9 +11,9 @@ import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
 import {
   BlogsManagementRequestParams,
   BlogManagementRequestBody,
-} from "../../interfaces/blogsManagementRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IBlogManagementService } from "../../interfaces/index";
+  IBlog,
+  IBlogManagementService,
+} from "../../interfaces/index";
 
 @injectable()
 export class BlogManagementController {

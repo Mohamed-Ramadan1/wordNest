@@ -8,9 +8,10 @@ import { inject, injectable } from "inversify";
 import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
 
 // interfaces imports
-import { BlogStatusRequestBody } from "../../interfaces/blogStatusRequest.interface";
-
-import { IBlogStatusService } from "../../interfaces/index";
+import {
+  IBlogStatusService,
+  BlogStatusRequestBody,
+} from "../../interfaces/index";
 
 @injectable()
 export class BlogStatusController {

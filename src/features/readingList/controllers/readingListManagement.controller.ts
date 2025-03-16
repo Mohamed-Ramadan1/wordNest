@@ -5,10 +5,11 @@ import { inject, injectable } from "inversify";
 // shard imports
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
-// interfaces imports
-import { ReadingListManagementRequestParams } from "../interfaces/readingListManagementRequest.interface";
 // service imports
-import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
+import {
+  IReadingListManagementService,
+  ReadingListManagementRequestParams,
+} from "../interfaces/index";
 
 @injectable()
 export class ReadingListManagementController {

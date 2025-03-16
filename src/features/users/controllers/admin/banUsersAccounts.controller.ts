@@ -6,9 +6,10 @@ import { inject, injectable } from "inversify";
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
-import { BandAccountsBody } from "../../interfaces/bandAccountsBody.interface";
-// interfaces imports
-import { IBanUserAccountService } from "../../interfaces/index";
+import {
+  IBanUserAccountService,
+  BandAccountsBody,
+} from "../../interfaces/index";
 
 @injectable()
 export class BanUsersAccountsController {

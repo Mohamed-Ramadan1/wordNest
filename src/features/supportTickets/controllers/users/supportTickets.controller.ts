@@ -12,11 +12,9 @@ import {
   SupportTicketBody,
   SupportTicketParams,
   SupportTicketBodyReplay,
-} from "../../interfaces/supportTicketBody.interface";
-
-// interfaces imports
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { ISupportTicketService } from "../../interfaces/index";
+  ISupportTicket,
+  ISupportTicketService,
+} from "../../interfaces/index";
 
 @injectable()
 export class SupportTicketController {

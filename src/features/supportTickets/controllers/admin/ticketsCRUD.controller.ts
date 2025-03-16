@@ -10,11 +10,9 @@ import {
   TicketDeletionBody,
   TicketParams,
   TicketUPdateBody,
-} from "../../interfaces/supportTicketAdminBody.interface";
-
-// services imports
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { ITicketsCRUDService } from "../../interfaces/index";
+  ITicketsCRUDService,
+  ISupportTicket,
+} from "../../interfaces/index";
 
 @injectable()
 export class TicketsCRUDController {

@@ -13,8 +13,8 @@ import {
   ScheduleBlogsParams,
   RescheduleBlogRequestBody,
   UpdateScheduleBlogBodyRequestBody,
-} from "../../interfaces/scheduledBlogsRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+  IBlog,
+} from "../../interfaces/index";
 
 import { IScheduledBlogsService } from "../../interfaces/index";
 

@@ -8,12 +8,10 @@ import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
+  IReadingListSettingsService,
   ReadingListSettingsRequestParams,
   ReadingListSettingsRequestBody,
-} from "../interfaces/readingListSettingsRequest.interface";
-
-// interfaces imports
-import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+} from "../interfaces/index";
 
 @injectable()
 export class ReadingListSettingsController {

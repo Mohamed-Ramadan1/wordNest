@@ -13,8 +13,7 @@ import {
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { IFavorite } from "../interfaces/favorites.interface";
-import { IFavoritesService } from "../interfaces/favoritesService.interface";
+import { IFavoritesService, IFavorite } from "../interfaces/index";
 
 @injectable()
 export class FavoritesController {

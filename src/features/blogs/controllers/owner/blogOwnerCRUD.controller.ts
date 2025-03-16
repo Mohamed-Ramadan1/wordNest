@@ -7,14 +7,15 @@ import { inject, injectable } from "inversify";
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // service  imports
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import {
   BlogParams,
   CreateBlogBodyRequest,
   DeleteBlogBodyRequest,
   UpdatesBlogBodyRequest,
-} from "@features/blogs/interfaces/blogOwnerRequest.interface";
-import { IBlogOwnerCRUDService } from "../../interfaces/index";
+  IBlogOwnerCRUDService,
+  IBlog,
+} from "@features/blogs/interfaces/index";
+
 @injectable()
 export class BlogCRUDController {
   private blogCRUDService: IBlogOwnerCRUDService;

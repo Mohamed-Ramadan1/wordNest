@@ -8,7 +8,6 @@ import { IFavoritesRepository, IFavorite } from "../interfaces/index";
 
 // shard imports
 import { TYPES, APIFeaturesInterface } from "@shared/index";
-import { FavoriteModel } from "../models/favorites.model";
 
 @injectable()
 export class FavoritesRepository implements IFavoritesRepository {

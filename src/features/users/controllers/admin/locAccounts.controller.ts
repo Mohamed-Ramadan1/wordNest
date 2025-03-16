@@ -1,15 +1,15 @@
+// express imports
 import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
 // interfaces imports
 import { ILockAccountService } from "../../interfaces/index";
+
 // Shard imports
 import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
-import { LockAccountBody } from "@features/users/interfaces/lockAccountBody.interface";
-
-import { IUser } from "@features/users/interfaces/user.interface";
+import { LockAccountBody, IUser } from "@features/users/interfaces/index";
 
 @injectable()
 export class LockAccountsController {
