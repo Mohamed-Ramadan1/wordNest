@@ -166,3 +166,4 @@
 {"error":"Invalid credentials","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-10 00:51:41","user":"mohamedramadan11b@gmail.com"}
 {"error":"No user existing with email address mohamedramadan11b@gmail.com","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-10 00:51:55","user":"mohamedramadan11b@gmail.com"}
 {"error":"Invalid credentials","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-16 14:00:21","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-16 15:29:40","user":"mohamedramadan11b@gmail.com"}

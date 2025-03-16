@@ -16,6 +16,10 @@ const favoritesController = container.get<FavoritesController>(
   TYPES.FavoritesController
 );
 
+const favoritesMiddleware = container.get<FavoritesMiddleware>(
+  TYPES.FavoritesMiddleware
+);
+
 // create  the express router
 const router: Router = Router();
 
@@ -26,7 +30,7 @@ router
   .route("/")
   .get(favoritesController.getFavorites)
   .post(
-    FavoritesMiddleware.validateAddToFavorites,
+    favoritesMiddleware.validateAddToFavorites,
     favoritesController.addToFavorites
   );
 

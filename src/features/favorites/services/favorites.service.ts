@@ -1,28 +1,37 @@
-// Packages imports
+// packages imports
+import { inject, injectable } from "inversify";
 import { ParsedQs } from "qs";
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
-// model imports
-import { FavoriteModel } from "../models/favorites.model";
+
 // shard imports
-import { APIFeatures, AppError } from "@shared/index";
+import { AppError, TYPES } from "@shared/index";
 
 import { IUser } from "@features/users";
-import { IFavorite } from "../interfaces/favorites.interface";
-import { IFavoritesService } from "../interfaces/favoritesService.interface";
+
+// interfaces imports
+import {
+  IFavoritesService,
+  IFavorite,
+  IFavoritesRepository,
+} from "../interfaces/index";
+
 // redis client instance creation.
 const redisClient = new Redis();
 // const cacheKey = `blog:${blogId}:${user._id}`;
+
+@injectable()
 export class FavoritesService implements IFavoritesService {
+  constructor(
+    @inject(TYPES.FavoritesRepository)
+    private readonly favoritesRepository: IFavoritesRepository
+  ) {}
   /**
    * Adds a blog post to the user's favorites list.
    */
   public addToFavorites = async (blogPostId: ObjectId, user: IUser) => {
     try {
-      await FavoriteModel.create({
-        blogPost: blogPostId,
-        user: user._id,
-      });
+      await this.favoritesRepository.createFavoriteItem(blogPostId, user._id);
     } catch (err: any) {
       throw new AppError(err.message, 400);
     }
@@ -34,16 +43,8 @@ export class FavoritesService implements IFavoritesService {
   public removeFromFavorites = async (favoriteId: ObjectId, user: IUser) => {
     const cacheKey = `favoriteItem:${favoriteId}:${user._id}`;
     try {
-      const deletedFavorite = await FavoriteModel.findOneAndDelete({
-        _id: favoriteId,
-        user: user._id,
-      });
-      if (!deletedFavorite) {
-        throw new AppError(
-          "Failed to delete favorite item. please tray again.",
-          404
-        );
-      }
+      await this.favoritesRepository.deleteFavoriteItem(favoriteId, user._id);
+
       // Delete the cached data
       await redisClient.del(cacheKey);
     } catch (err: any) {
@@ -67,13 +68,9 @@ export class FavoritesService implements IFavoritesService {
       if (cachedFavorite) {
         return JSON.parse(cachedFavorite); // Return cached response
       }
-      const favorite: IFavorite | null = await FavoriteModel.findOne({
-        id: favoriteId,
-        user: user._id,
-      });
-      if (!favorite) {
-        throw new AppError("No favorite item found match this id.", 404);
-      }
+      const favorite: IFavorite =
+        await this.favoritesRepository.getFavoriteItem(favoriteId, user._id);
+
       //  Store the fetched data in Redis (expires in 1 hour)
       await redisClient.setex(cacheKey, 3600, JSON.stringify(favorite));
       return favorite;
@@ -93,17 +90,8 @@ export class FavoritesService implements IFavoritesService {
     reqQuery: ParsedQs
   ): Promise<IFavorite[]> => {
     try {
-      const features = new APIFeatures(
-        FavoriteModel.find({
-          user: user._id,
-        }),
-        reqQuery
-      )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const favorites: IFavorite[] = await features.execute();
+      const favorites: IFavorite[] =
+        await this.favoritesRepository.getFavoriteItems(user._id, reqQuery);
       return favorites;
     } catch (err: any) {
       throw new AppError(err.message, 400);

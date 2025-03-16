@@ -1,20 +1,35 @@
+//packages imports
+import { inject, injectable } from "inversify";
+
+import { Model } from "mongoose";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// models imports
-import { FavoriteModel } from "../models/favorites.model";
-import BlogModel from "@features/blogs/models/blog.model";
 // shard imports
-import { AppError, catchAsync, validateDto } from "@shared/index";
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // interfaces imports
-import { FavoriteRequestBody } from "../interfaces/favoritesRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  FavoriteRequestBody,
+  IFavorite,
+  IFavoritesMiddleware,
+  IFavoritesRepository,
+} from "../interfaces/index";
+
+import { IBlog } from "@features/blogs/interfaces/index";
 
 // dto imports
 import { addFavoriteItemDto } from "../dtos/addFavoriteItem.dto";
-export class FavoritesMiddleware {
-  public static validateAddToFavorites = [
+
+@injectable()
+export class FavoritesMiddleware implements IFavoritesMiddleware {
+  constructor(
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.FavoritesRepository)
+    private readonly favoritesRepository: IFavoritesRepository
+  ) {}
+  public validateAddToFavorites = [
     validateDto(addFavoriteItemDto),
     catchAsync(
       async (
@@ -28,7 +43,8 @@ export class FavoritesMiddleware {
           return next(new AppError("Blog post id is required", 400));
         }
 
-        const blogPost: IBlog | null = await BlogModel.findById(blogPostId);
+        const blogPost: IBlog | null =
+          await this.blogModel.findById(blogPostId);
 
         if (!blogPost) {
           return next(
@@ -38,10 +54,11 @@ export class FavoritesMiddleware {
             )
           );
         }
-        const existingFavorite = await FavoriteModel.findOne({
-          blogPost: blogPostId,
-          user: req.user._id,
-        });
+        const existingFavorite: IFavorite | null =
+          await this.favoritesRepository.getFavoriteItemsByUserAndBlogPost(
+            req.user._id,
+            blogPostId
+          );
         if (existingFavorite) {
           return next(new AppError("Blog post already in favorites", 400));
         }
@@ -49,5 +66,5 @@ export class FavoritesMiddleware {
         next();
       }
     ),
-  ];
+  ] as any;
 }
