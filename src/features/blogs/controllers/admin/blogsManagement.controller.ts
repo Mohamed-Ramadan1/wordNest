@@ -69,9 +69,7 @@ export class BlogManagementController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogsData = await this.blogManagementService.getAllBlogPosts(
-      req.query
-    );
+    const blogsData = await this.blogManagementService.getAllBlogPosts(req);
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog post retrieved successfully",

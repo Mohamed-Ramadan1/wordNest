@@ -30,6 +30,19 @@ const scheduledBlogsController = container.get<ScheduledBlogsController>(
   TYPES.ScheduledBlogsController
 );
 
+// middleware instances
+const blogOwnerCRUDMiddleware = container.get<BlogOwnerCRUDMiddleware>(
+  TYPES.BlogOwnerCRUDMiddleware
+);
+const blogStatusMiddleware = container.get<BlogStatusMiddleware>(
+  TYPES.BlogStatusMiddleware
+);
+
+const scheduledBlogsMiddleware = container.get<ScheduledBlogsMiddleware>(
+  TYPES.ScheduledBlogsMiddleware
+);
+
+
 router.use(protect);
 
 // blogs CRUD related routes
@@ -38,7 +51,7 @@ router
   .get(blogCRUDController.getAllBlogPosts)
   .post(
     upload.array("blogImages", 5),
-    BlogOwnerCRUDMiddleware.validateCreateBlogPost,
+    blogOwnerCRUDMiddleware.validateCreateBlogPost,
     blogCRUDController.createBlogPost
   );
 
@@ -47,11 +60,11 @@ router
   .get(blogCRUDController.getBlogPost)
   .patch(
     upload.single("image"),
-    BlogOwnerCRUDMiddleware.validateUpdateBlogPost,
+    blogOwnerCRUDMiddleware.validateUpdateBlogPost,
     blogCRUDController.updateBlogPost
   )
   .delete(
-    BlogOwnerCRUDMiddleware.validateDeleteBlogPost,
+    blogOwnerCRUDMiddleware.validateDeleteBlogPost,
     blogCRUDController.deleteBlogPost
   );
 
@@ -59,16 +72,16 @@ router
 router
   .route("/:blogId/private")
   .patch(
-    BlogStatusMiddleware.validateBlogExists,
-    BlogStatusMiddleware.validateConvertToPrivate,
+    blogStatusMiddleware.validateBlogExists,
+    blogStatusMiddleware.validateConvertToPrivate,
     blogStatusController.convertBlogToPrivate
   );
 
 router
   .route("/:blogId/public")
   .patch(
-    BlogStatusMiddleware.validateBlogExists,
-    BlogStatusMiddleware.validateConvertToPublic,
+    blogStatusMiddleware.validateBlogExists,
+    blogStatusMiddleware.validateConvertToPublic,
     blogStatusController.convertBlogToPublic
   );
 
@@ -76,8 +89,8 @@ router
 router
   .route("/:blogId/archive")
   .patch(
-    BlogStatusMiddleware.validateBlogExists,
-    BlogStatusMiddleware.validateArchiveBlogPost,
+    blogStatusMiddleware.validateBlogExists,
+    blogStatusMiddleware.validateArchiveBlogPost,
     blogStatusController.archiveBlogPost
   );
 
@@ -85,8 +98,8 @@ router
 router
   .route("/:blogId/unarchive")
   .patch(
-    BlogStatusMiddleware.validateBlogExists,
-    BlogStatusMiddleware.validateUneArchivedBlogPost,
+    blogStatusMiddleware.validateBlogExists,
+    blogStatusMiddleware.validateUneArchivedBlogPost,
     blogStatusController.restoreArchivedBlogPost
   );
 
@@ -100,8 +113,8 @@ router
   .get(scheduledBlogsController.getAllScheduledBlogPosts)
   .post(
     upload.array("blogImages", 5),
-    ScheduledBlogsMiddleware.validateScheduleDateFormat,
-    ScheduledBlogsMiddleware.validateCreateScheduledBlogPost,
+    scheduledBlogsMiddleware.validateScheduleDateFormat,
+    scheduledBlogsMiddleware.validateCreateScheduledBlogPost,
     scheduledBlogsController.createScheduledBlogPost
   );
 
@@ -110,7 +123,7 @@ router
   .get(scheduledBlogsController.getScheduledBlogPost)
   .delete(scheduledBlogsController.deleteScheduledBlogPost)
   .patch(
-    ScheduledBlogsMiddleware.validateUpdateScheduledBlogPost,
+    scheduledBlogsMiddleware.validateUpdateScheduledBlogPost,
     scheduledBlogsController.updateScheduledBlogPost
   );
 
@@ -118,8 +131,8 @@ router
 router
   .route("/scheduled/:blogId/reschedule")
   .patch(
-    ScheduledBlogsMiddleware.validateScheduleDateFormat,
-    ScheduledBlogsMiddleware.validateRescheduleBlogPost,
+    scheduledBlogsMiddleware.validateScheduleDateFormat,
+    scheduledBlogsMiddleware.validateRescheduleBlogPost,
     scheduledBlogsController.rescheduleBlogPost
   );
 export default router;

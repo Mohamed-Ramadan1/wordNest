@@ -1,33 +1,49 @@
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// models imports
-import BlogModel from "@features/blogs/models/blog.model";
-
 // shard imports
-import { catchAsync, AppError } from "@shared/index";
+import { catchAsync, AppError, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   BlogManagementRequestBody,
   BlogsManagementRequestParams,
-} from "../../interfaces/blogsManagementRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IUser, UserModel } from "@features/users";
+  IBlogsManagementMiddleware,
+  IBlog,
+  IBlogRepository,
+} from "../../interfaces/index";
+
+// cross features imports
+import { IUser } from "@features/users";
+
+// queues imports
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
-export class BlogsManagementMiddleware {
-  public static validateBlogPostManagementRequest = catchAsync(
+
+@injectable()
+export class BlogsManagementMiddleware implements IBlogsManagementMiddleware {
+  constructor(
+    @inject(TYPES.BlogsRepository)
+    private readonly blogsRepository: IBlogRepository,
+    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>
+  ) {}
+  public validateBlogPostManagementRequest = catchAsync(
     async (
       req: Request<BlogsManagementRequestParams, {}, BlogManagementRequestBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const blog: IBlog | null = await BlogModel.findById(req.params.blogId);
-      if (!blog) {
-        throw new AppError("Blog post not found with provided id.", 404);
-      }
+      const blog: IBlog = await this.blogsRepository.getBlogById(
+        req.params.blogId
+      );
 
-      const blogAuthor: IUser | null = await UserModel.findById(blog.author);
+      const blogAuthor: IUser | null = await this.userModel.findById(
+        blog.author
+      );
+
       if (!blogAuthor) {
         blogQueue.add(BlogsQueueJobs.DeleteBlog, {
           blog: blog,
@@ -41,7 +57,7 @@ export class BlogsManagementMiddleware {
     }
   );
 
-  public static validateUnPublishBlogStatus = catchAsync(
+  public validateUnPublishBlogStatus = catchAsync(
     async (
       req: Request<BlogsManagementRequestParams, {}, BlogManagementRequestBody>,
       res: Response,
@@ -54,7 +70,7 @@ export class BlogsManagementMiddleware {
     }
   );
 
-  public static validatePublishBlogStatus = catchAsync(
+  public validatePublishBlogStatus = catchAsync(
     async (
       req: Request<BlogsManagementRequestParams, {}, BlogManagementRequestBody>,
       res: Response,

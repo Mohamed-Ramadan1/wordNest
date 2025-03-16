@@ -18,7 +18,7 @@ import {
 import { IUser } from "@features/users";
 import {
   UpdateScheduleBlogBodyRequestBody,
-  BlogData,
+  ScheduledBlogData,
 } from "../../interfaces/scheduledBlogsRequest.interface";
 
 // shard imports
@@ -38,7 +38,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
    * Creates a new scheduled blog post.
    */
 
-  public async createScheduledBlogPost(blogData: BlogData) {
+  public async createScheduledBlogPost(blogData: ScheduledBlogData) {
     try {
       const scheduledBlogPost: IBlog = new BlogModel(blogData);
       scheduledBlogPost.isPublished = false;
