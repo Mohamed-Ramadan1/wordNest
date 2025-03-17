@@ -1,3 +1,6 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
@@ -8,14 +11,19 @@ import BlogModel from "@features/blogs/models/blog.model";
 import { AppError, catchAsync, validateDto } from "@shared/index";
 
 // interfaces imports
-import { CreateReadingListItemRequestBody } from "../interfaces/readingListCRUDRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  CreateReadingListItemRequestBody,
+  IReadingListCRUDMiddleware,
+} from "../interfaces/index";
+import { IBlog } from "@features/blogs/interfaces/index";
 
 // dto imports
 import { CreateReadingListItemDto } from "../dtos/createReadingListItem.dto";
 
-export class ReadingListCRUDMiddleware {
-  public static validateCreateReadingListItem = [
+@injectable()
+export class ReadingListCRUDMiddleware implements IReadingListCRUDMiddleware {
+  constructor() {}
+  public validateCreateReadingListItem = [
     validateDto(CreateReadingListItemDto),
     catchAsync(
       async (

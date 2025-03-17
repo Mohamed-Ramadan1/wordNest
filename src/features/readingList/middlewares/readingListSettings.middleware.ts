@@ -1,3 +1,8 @@
+//packages imports
+import { isValid, parse } from "date-fns";
+
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
@@ -14,7 +19,9 @@ import {
   ReadingListSettingsRequestParams,
   ReminderAlertData,
   DeleteReminderAlert,
-} from "../interfaces/readingListSettingsRequest.interface";
+  IReadingList,
+  IReadingListSettingsMiddleware,
+} from "../interfaces/index";
 
 // dto imports
 import { validateAlertTimeFormateDateDto } from "../dtos/validateAlertDateFormate.dto";
@@ -22,12 +29,14 @@ import { validateAlertTimeFormateDateDto } from "../dtos/validateAlertDateFormat
 // helpers
 import { checkReadingListJobExist } from "../helpers/validateJobExist.helper";
 
-//packages imports
-import { isValid, parse } from "date-fns";
-import { IReadingList } from "../interfaces/readingList.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-export class ReadingListSettingsMiddleware {
-  public static validateAlertTimeFormateDate = [
+import { IBlog } from "@features/blogs/interfaces/index";
+
+@injectable()
+export class ReadingListSettingsMiddleware
+  implements IReadingListSettingsMiddleware
+{
+  constructor() {}
+  public validateAlertTimeFormateDate = [
     validateDto(validateAlertTimeFormateDateDto),
     catchAsync(
       async (
@@ -63,7 +72,7 @@ export class ReadingListSettingsMiddleware {
     ),
   ];
 
-  public static createReadingReminderAlert = catchAsync(
+  public createReadingReminderAlert = catchAsync(
     async (
       req: Request<
         ReadingListSettingsRequestParams,
@@ -98,7 +107,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateReScheduleReminderAlert = catchAsync(
+  public validateReScheduleReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams>,
       res: Response,
@@ -120,7 +129,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateCreateReminderAlert = catchAsync(
+  public validateCreateReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams, {}, DeleteReminderAlert>,
       res: Response,
@@ -141,7 +150,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateDeleteReminderAlert = catchAsync(
+  public validateDeleteReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams, {}, DeleteReminderAlert>,
       res: Response,

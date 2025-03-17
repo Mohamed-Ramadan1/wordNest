@@ -12,8 +12,10 @@ import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { ReadingListModel } from "../models/readingList.model";
 
 // interfaces imports
-import { ReminderAlertData } from "../interfaces/readingListSettingsRequest.interface";
-import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+import {
+  IReadingListSettingsService,
+  ReminderAlertData,
+} from "../interfaces/index";
 export class ReadingListSettingsService implements IReadingListSettingsService {
   /**
    * Sets a reminder alert for a specific reading list item.

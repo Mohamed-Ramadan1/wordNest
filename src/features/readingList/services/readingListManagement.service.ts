@@ -3,13 +3,15 @@ import { ObjectId } from "mongoose";
 
 // shard imports
 import { AppError } from "@shared/index";
-import { ReadingStatus } from "../interfaces/readingList.interface";
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
 
 // interfaces imports
-import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
+import {
+  IReadingListManagementService,
+  ReadingStatus,
+} from "../interfaces/index";
 
 export class ReadingListManagementService
   implements IReadingListManagementService

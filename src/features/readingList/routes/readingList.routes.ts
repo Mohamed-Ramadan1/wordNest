@@ -26,6 +26,17 @@ const readingListSettingsController =
   container.get<ReadingListSettingsController>(
     TYPES.ReadingListSettingsController
   );
+
+// middleware initialization
+const readingListCRUDMiddleware = container.get<ReadingListCRUDMiddleware>(
+  TYPES.ReadingListCRUDMiddleware
+);
+
+const readingListSettingsMiddleware =
+  container.get<ReadingListSettingsMiddleware>(
+    TYPES.ReadingListSettingsMiddleware
+  );
+
 // create  the express router
 const router: Router = Router();
 
@@ -36,7 +47,7 @@ router
   .route("/")
   .get(readingListCRUDController.getAllReadingListItems)
   .post(
-    ReadingListCRUDMiddleware.validateCreateReadingListItem,
+    readingListCRUDMiddleware.validateCreateReadingListItem,
     readingListCRUDController.createReadingListItem
   )
   .delete(readingListManagementController.clearReadingList);
@@ -65,23 +76,23 @@ router.patch(
 // Settings related routes
 router.post(
   "/items/:itemId/reminder-alert",
-  ReadingListSettingsMiddleware.validateCreateReminderAlert,
-  ReadingListSettingsMiddleware.validateAlertTimeFormateDate,
-  ReadingListSettingsMiddleware.createReadingReminderAlert,
+  readingListSettingsMiddleware.validateCreateReminderAlert,
+  readingListSettingsMiddleware.validateAlertTimeFormateDate,
+  readingListSettingsMiddleware.createReadingReminderAlert,
   readingListSettingsController.setReminderAlert
 );
 
 router.patch(
   "/items/:itemId/reminder-reschedule",
-  ReadingListSettingsMiddleware.validateReScheduleReminderAlert,
-  ReadingListSettingsMiddleware.validateAlertTimeFormateDate,
-  ReadingListSettingsMiddleware.createReadingReminderAlert,
+  readingListSettingsMiddleware.validateReScheduleReminderAlert,
+  readingListSettingsMiddleware.validateAlertTimeFormateDate,
+  readingListSettingsMiddleware.createReadingReminderAlert,
   readingListSettingsController.reScheduleReminderAlert
 );
 
 router.delete(
   "/items/:itemId/reminder-delete",
-  ReadingListSettingsMiddleware.validateDeleteReminderAlert,
+  readingListSettingsMiddleware.validateDeleteReminderAlert,
   readingListSettingsController.deleteReminderAlert
 );
 

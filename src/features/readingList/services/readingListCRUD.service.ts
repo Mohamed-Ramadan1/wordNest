@@ -11,7 +11,7 @@ import { IReadingList } from "../interfaces/readingList.interface";
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
-import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
+import { IReadingListCRUDService } from "../interfaces/index";
 
 // redis client instance creation.
 const redisClient = new Redis();
