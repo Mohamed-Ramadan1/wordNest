@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { protect, restrictTo } from "@shared/index";
+import { protect, restrictTo, TYPES } from "@shared/index";
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
+
 // middleware imports
 import { TicketCRUDMiddleware } from "../middlewares/admin/ticketsCRUD.middleware";
 import { TicketPriorityMiddleware } from "../middlewares/admin/ticketPriority.middleware";
-import { TicketResponseMiddleware } from "../middlewares/admin/ticketResponse.middleware";
 import { TicketStatusMiddleware } from "../middlewares/admin/ticketStatus.middleware";
+import { TicketResponseMiddleware } from "../middlewares/admin/ticketResponse.middleware";
 
 // controller imports
 import { TicketsCRUDController } from "../controllers/admin/ticketsCRUD.controller";
@@ -29,6 +29,22 @@ const ticketResponseController = container.get<TicketResponseController>(
   TYPES.TicketResponseController
 );
 
+// middleware instance creation
+const ticketCRUDMiddleware = container.get<TicketCRUDMiddleware>(
+  TYPES.TicketCRUDMiddleware
+);
+const ticketPriorityMiddleware = container.get<TicketPriorityMiddleware>(
+  TYPES.TicketPriorityMiddleware
+);
+
+const ticketStatusMiddleware = container.get<TicketStatusMiddleware>(
+  TYPES.TicketStatusMiddleware
+);
+
+const ticketResponseMiddleware = container.get<TicketResponseMiddleware>(
+  TYPES.TicketResponseMiddleware
+);
+
 // create  the express router
 const router: Router = Router();
 
@@ -40,7 +56,7 @@ router
   .get(ticketsCRUDController.getAllTickets)
   .post(
     upload.single("attachment"),
-    TicketCRUDMiddleware.validateCreateTicket,
+    ticketCRUDMiddleware.validateCreateTicket,
     ticketsCRUDController.createTicket
   );
 
@@ -48,11 +64,11 @@ router
   .route("/:ticketId")
   .get(ticketsCRUDController.getTicket)
   .patch(
-    TicketCRUDMiddleware.validateUpdateTicket,
+    ticketCRUDMiddleware.validateUpdateTicket,
     ticketsCRUDController.updateTicket
   )
   .delete(
-    TicketCRUDMiddleware.validateDeleteTicket,
+    ticketCRUDMiddleware.validateDeleteTicket,
     ticketsCRUDController.deleteTicket
   );
 
@@ -60,7 +76,7 @@ router
 router
   .route("/:ticketId/priority")
   .patch(
-    TicketPriorityMiddleware.validatePriorityChange,
+    ticketPriorityMiddleware.validatePriorityChange,
     ticketPriorityController.changePriority
   );
 
@@ -68,14 +84,14 @@ router
 router
   .route("/:ticketId/status/close")
   .patch(
-    TicketStatusMiddleware.validateCloseTicket,
+    ticketStatusMiddleware.validateCloseTicket,
     ticketStatusController.closeTicket
   );
 
 router
   .route("/:ticketId/status/reopen")
   .patch(
-    TicketStatusMiddleware.validateReopenTicket,
+    ticketStatusMiddleware.validateReopenTicket,
     ticketStatusController.reopenTicket
   );
 
@@ -84,7 +100,7 @@ router
   .route("/:ticketId/response")
   .post(
     upload.single("attachment"),
-    TicketResponseMiddleware.validateRespondToTicket,
+    ticketResponseMiddleware.validateRespondToTicket,
     ticketResponseController.respondToTicket
   );
 export default router;

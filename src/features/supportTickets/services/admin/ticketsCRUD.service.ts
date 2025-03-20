@@ -1,3 +1,6 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Request } from "express";
 
@@ -8,15 +11,12 @@ import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicke
 import { ObjectId } from "mongoose";
 import cloudinary from "cloudinary";
 
-// models imports
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-
-// utils imports
-import { AppError, uploadToCloudinary, APIFeatures } from "@utils/index";
-import { TicketBody } from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+// shard imports
+import { uploadToCloudinary, TYPES, handleServiceError } from "@shared/index";
+import { TicketBody } from "@features/supportTickets/interfaces/supportTicketAdminBody.interface";
 
 // logger imports
-import { supportTicketsLogger } from "@logging/index";
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 // queues imports
 import {
@@ -25,27 +25,33 @@ import {
   supportTicketQueue,
   CloudinaryQueueJobs,
 } from "@jobs/index";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // interfaces imports
-import { ITicketsCRUDService } from "../../interfaces/index";
+import {
+  ITicketsCRUDService,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
 
+@injectable()
 export class TicketsCRUDService implements ITicketsCRUDService {
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    private readonly supportTicketsLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository
+  ) {}
   /**
    * Retrieves all tickets.
    * Fetches a list of all tickets, optionally filtered by certain criteria (e.g., user or status).
    */
   async getAllTickets(req: Request): Promise<ISupportTicket[]> {
     try {
-      const features = new APIFeatures(SupportTicket.find(), req.query)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const allTickets: ISupportTicket[] = await features.execute();
-      return allTickets;
+      const supportTickets =
+        await this.ticketManagementRepository.getSupportTickets(req);
+      return supportTickets;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -57,17 +63,11 @@ export class TicketsCRUDService implements ITicketsCRUDService {
    */
   async getTicketById(ticketId: ObjectId): Promise<ISupportTicket> {
     try {
-      const ticket: ISupportTicket | null =
-        await SupportTicket.findById(ticketId);
-      if (!ticket) {
-        throw new AppError(
-          `No support ticket found with this id:${ticketId} `,
-          404
-        );
-      }
+      const ticket =
+        await this.ticketManagementRepository.getSupportTicketById(ticketId);
       return ticket;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -94,11 +94,12 @@ export class TicketsCRUDService implements ITicketsCRUDService {
           uploadedAttachment.public_id;
         ticketInformation.attachment.uploadedAt = new Date();
       }
-      const newTicket = await SupportTicket.create({
-        ...ticketInformation,
-        attachments: ticketInformation.attachment,
-      });
-      supportTicketsLogger.logTicketCreation(
+      const newTicket =
+        await this.ticketManagementRepository.createSupportTicket(
+          ticketInformation
+        );
+
+      this.supportTicketsLogger.logTicketCreation(
         ipAddress,
         ticketInformation.user._id,
         newTicket._id
@@ -108,12 +109,12 @@ export class TicketsCRUDService implements ITicketsCRUDService {
         user: ticketInformation.user,
       });
     } catch (err: any) {
-      supportTicketsLogger.logTicketCreationFail(
+      this.supportTicketsLogger.logTicketCreationFail(
         ipAddress,
         ticketInformation.user._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -133,13 +134,12 @@ export class TicketsCRUDService implements ITicketsCRUDService {
     }
   ): Promise<void> {
     try {
-      const updateFields = Object.fromEntries(
-        Object.entries(updateObject).filter(([_, value]) => value !== undefined)
+      await this.ticketManagementRepository.updateSupportTicket(
+        ticket,
+        updateObject
       );
-      ticket.set(updateFields);
-      await ticket.save();
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -161,21 +161,21 @@ export class TicketsCRUDService implements ITicketsCRUDService {
           userId: user._id,
         });
       }
-      await SupportTicket.deleteOne({ _id: ticket._id });
+      await this.ticketManagementRepository.deleteSupportTicket(ticket);
 
-      supportTicketsLogger.logSupportTicketDeletionSuccess(
+      this.supportTicketsLogger.logSupportTicketDeletionSuccess(
         ipAddress,
         user._id,
         ticket._id
       );
     } catch (err: any) {
-      supportTicketsLogger.logSupportTicketDeletionFail(
+      this.supportTicketsLogger.logSupportTicketDeletionFail(
         ipAddress,
         user._id,
         ticket._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

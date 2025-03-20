@@ -5,13 +5,10 @@ import { inject, injectable } from "inversify";
 import { Request, Response } from "express";
 
 // Models imports
-import { IUser } from "@features/users_feature";
-
-// Utils imports
-import { catchAsync, sendResponse } from "@utils/index";
+import { IUser } from "@features/users";
 
 // shard imports
-import { ApiResponse, TYPES } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // interface imports
 import { IAuthService } from "../interfaces";

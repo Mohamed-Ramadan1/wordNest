@@ -1,9 +1,50 @@
-export { ITicketsCRUDService } from "../interfaces/ticketCRUDService.interface";
+export {
+  SupportTicketStatus,
+  SupportTicketCategory,
+  SupportTicketPriority,
+  Attachment,
+  AdminResponse,
+  UserResponse,
+  ISupportTicket,
+} from "./supportTicket.interface";
 
-export { ITicketPriorityService } from "../interfaces/ticketPriorityService.interface";
+export {
+  TicketBody,
+  TicketDeletionBody,
+  TicketUPdateBody,
+  TicketPriorityChangeBody,
+  TicketCloseBody,
+  TicketAdminResponseBody,
+  TicketParams,
+  TicketResponseData,
+} from "./supportTicketAdminBody.interface";
 
-export { ISupportTicketService } from "../interfaces/supportTicketsService.interface";
+export {
+  SupportTicketBody,
+  SupportTicketBodyReplay,
+  SupportTicketParams,
+} from "./supportTicketBody.interface";
 
-export { ITicketResponseService } from "../interfaces/ticketResponseService.interface";
+export { ITicketsCRUDService } from "./servicesInterfaces/ticketCRUDService.interface";
 
-export { ITicketStatusService } from "../interfaces/ticketStatusService.interface";
+export { ITicketPriorityService } from "./servicesInterfaces/ticketPriorityService.interface";
+
+export { ISupportTicketService } from "./servicesInterfaces/supportTicketsService.interface";
+
+export { ITicketResponseService } from "./servicesInterfaces/ticketResponseService.interface";
+
+export { ITicketStatusService } from "./servicesInterfaces/ticketStatusService.interface";
+
+export { ISupportTicketsMiddleware } from "./middlewaresInterfaces/supportTicketsMiddleware.interface";
+
+export { ITicketStatusMiddleware } from "./middlewaresInterfaces/ticketStatusMiddleware.interface";
+
+export { ITicketPriorityMiddleware } from "./middlewaresInterfaces/ticketPriorityMiddleware.interface";
+
+export { ITicketResponseMiddleware } from "./middlewaresInterfaces/ticketResponseMiddleware.interface";
+
+export { ITicketCRUDMiddleware } from "./middlewaresInterfaces/ticketsCRUDMiddleware.interface";
+
+export { ISupportTicketRepository } from "./repositoryInterfaces/supportTicketRepository.interface";
+
+export { ISupportTicketManagementRepository } from "./repositoryInterfaces/supportTicketManagementRepository.interface";

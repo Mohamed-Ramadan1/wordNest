@@ -1,5 +1,5 @@
 import { ISupportTicket } from "../interfaces/supportTicket.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import createMailTransporter from "@config/mailTransporter.config";
 import { siteName, siteOfficialEmail } from "@config/emails.config";
 

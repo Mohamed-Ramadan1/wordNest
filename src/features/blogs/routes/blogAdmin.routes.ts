@@ -10,10 +10,17 @@ import { BlogsManagementMiddleware } from "../middlewares/admin/blogsManagement.
 
 // controller imports
 import { BlogManagementController } from "../controllers/admin/blogsManagement.controller";
+
 // controllers initialization
 const blogManagementController = container.get<BlogManagementController>(
   TYPES.BlogManagementController
 );
+
+// middleware initialization
+const blogManagementMiddleware = container.get<BlogsManagementMiddleware>(
+  TYPES.BlogsManagementMiddleware
+);
+
 // create  the express router
 const router: Router = Router();
 router.use(protect);
@@ -25,23 +32,23 @@ router
   .route("/:blogId")
   .get(blogManagementController.getBlogPost)
   .delete(
-    BlogsManagementMiddleware.validateBlogPostManagementRequest,
+    blogManagementMiddleware.validateBlogPostManagementRequest,
     blogManagementController.deleteBlogPost
   );
 
 router
   .route("/:blogId/un-publish")
   .patch(
-    BlogsManagementMiddleware.validateBlogPostManagementRequest,
-    BlogsManagementMiddleware.validateUnPublishBlogStatus,
+    blogManagementMiddleware.validateBlogPostManagementRequest,
+    blogManagementMiddleware.validateUnPublishBlogStatus,
     blogManagementController.unPublishBlogPost
   );
 
 router
   .route("/:blogId/publish")
   .patch(
-    BlogsManagementMiddleware.validateBlogPostManagementRequest,
-    BlogsManagementMiddleware.validatePublishBlogStatus,
+    blogManagementMiddleware.validateBlogPostManagementRequest,
+    blogManagementMiddleware.validatePublishBlogStatus,
     blogManagementController.rePublishBlogPost
   );
 

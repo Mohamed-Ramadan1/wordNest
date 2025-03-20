@@ -1,29 +1,44 @@
-import { catchAsync } from "@utils/index";
-import { Request, Response, NextFunction } from "express";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import {
-  TicketBody,
-  TicketParams,
-  TicketDeletionBody,
-  TicketUPdateBody,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { SupportTicketPriority } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-import { AppError } from "@utils/index";
-import User from "@features/users_feature/models/user.model";
-import { IUser } from "@features/users_feature";
+// express imports
+import { NextFunction, Request, Response } from "express";
 
-export class TicketCRUDMiddleware {
+// shard imports
+import { catchAsync, AppError, TYPES } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+
+// users feature interfaces imports
+import { IUser } from "@features/users";
+
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers/index";
+
+// interfaces imports
+import {
+  TicketParams,
+  TicketUPdateBody,
+  TicketBody,
+  TicketDeletionBody,
+  SupportTicketPriority,
+  ITicketCRUDMiddleware,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
+
+@injectable()
+export class TicketCRUDMiddleware implements ITicketCRUDMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private userModel: Model<IUser>
+  ) {}
   // validate create support ticket
-  static validateCreateTicket = catchAsync(
+  public validateCreateTicket = catchAsync(
     async (
       req: Request<{}, {}, TicketBody>,
       res: Response,
       next: NextFunction
     ) => {
-      console.log(req.file);
-
       const { subject, description, category, userEmail } = req.body;
 
       // validate required fields
@@ -37,7 +52,7 @@ export class TicketCRUDMiddleware {
       }
 
       // validate user existence
-      const ticketOwner: IUser | null = await User.findOne({
+      const ticketOwner: IUser | null = await this.userModel.findOne({
         email: userEmail,
       });
       if (!ticketOwner) {
@@ -62,22 +77,16 @@ export class TicketCRUDMiddleware {
   );
 
   // validate delete support ticket
-  static validateDeleteTicket = catchAsync(
+  public validateDeleteTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketDeletionBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const ticketToDeleted: ISupportTicket | null =
-        await SupportTicket.findById(req.params.ticketId);
-      if (!ticketToDeleted) {
-        return next(
-          new AppError(
-            `No support ticket found with this id:${req.params.ticketId} `,
-            404
-          )
+      const ticketToDeleted =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
       req.body.ticketToBeDeleted = ticketToDeleted;
       next();
@@ -85,14 +94,17 @@ export class TicketCRUDMiddleware {
   );
 
   // validate update support ticket
-  static validateUpdateTicket = catchAsync(
+  public validateUpdateTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketUPdateBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const ticketToBeUpdated: ISupportTicket | null =
-        await SupportTicket.findById(req.params.ticketId);
+      const ticketToBeUpdated =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
+        );
+
       if (!ticketToBeUpdated) {
         return next(
           new AppError(

@@ -1,14 +1,18 @@
+// packages imports
+import { inject, injectable } from "inversify";
+import { isValid, parse } from "date-fns";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
-// packages imports
-import { isValid, parse } from "date-fns";
-// utils imports
+
+// shard imports
 import {
   catchAsync,
   validateDto,
   AppError,
   uploadImagesToCloudinary,
-} from "@utils/index";
+  TYPES,
+} from "@shared/index";
 
 // dtos imports
 import { CreateBlogPostDTO } from "@features/blogs/dtos/createBlogPost.dto";
@@ -20,15 +24,22 @@ import { filterValidImages } from "@features/blogs/helpers/filterValidImages";
 import {
   validateScheduleDateFormatRequestBody,
   CreateScheduleBlogsRequestBody,
-  BlogData,
+  ScheduledBlogData,
   ScheduleBlogsParams,
   RescheduleBlogRequestBody,
   UpdateScheduleBlogBodyRequestBody,
-} from "@features/blogs/interfaces/scheduledBlogsRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import BlogModel from "@features/blogs/models/blog.model";
-export class ScheduledBlogsMiddleware {
-  public static validateScheduleDateFormat = catchAsync(
+  IScheduledBlogsMiddleware,
+  IBlog,
+  IBlogAuthorRepository,
+} from "../../interfaces/index";
+
+@injectable()
+export class ScheduledBlogsMiddleware implements IScheduledBlogsMiddleware {
+  constructor(
+    @inject(TYPES.BlogAuthorRepository)
+    private readonly blogAuthorRepository: IBlogAuthorRepository
+  ) {}
+  public validateScheduleDateFormat = catchAsync(
     async (
       req: Request<{}, {}, validateScheduleDateFormatRequestBody>,
       res: Response,
@@ -70,7 +81,7 @@ export class ScheduledBlogsMiddleware {
     }
   );
 
-  public static validateCreateScheduledBlogPost = [
+  public validateCreateScheduledBlogPost = [
     validateDto(CreateBlogPostDTO),
     catchAsync(
       async (
@@ -84,7 +95,7 @@ export class ScheduledBlogsMiddleware {
       ) => {
         const { title, content, categories, parsedDate } = req.body;
 
-        const blogReadyData: BlogData = {
+        const blogReadyData: ScheduledBlogData = {
           title,
           content,
           categories,
@@ -111,7 +122,7 @@ export class ScheduledBlogsMiddleware {
     ),
   ];
 
-  public static validateRescheduleBlogPost = catchAsync(
+  public validateRescheduleBlogPost = catchAsync(
     async (
       req: Request<
         ScheduleBlogsParams,
@@ -121,44 +132,29 @@ export class ScheduledBlogsMiddleware {
       res: Response,
       next: NextFunction
     ) => {
-      const blogPost: IBlog | null = await BlogModel.findOne({
-        _id: req.params.blogId,
-        author: req.user._id,
-        isScheduled: true,
-      });
-      if (!blogPost) {
-        return next(
-          new AppError(
-            "Blog not found with given id and related to this user, or blog is not scheduled.",
-            404
-          )
+      const blogPost: IBlog =
+        await this.blogAuthorRepository.getScheduleBlogPostByIdAndAuthor(
+          req.params.blogId,
+          req.user._id
         );
-      }
+
       req.body.blog = blogPost;
       req.body.rescheduleFormatDate = req.body.parsedDate;
       next();
     }
   );
 
-  public static validateUpdateScheduledBlogPost = catchAsync(
+  public validateUpdateScheduledBlogPost = catchAsync(
     async (
       req: Request<ScheduleBlogsParams, {}, UpdateScheduleBlogBodyRequestBody>,
       res: Response,
       next: NextFunction
     ) => {
-      const blogPost: IBlog | null = await BlogModel.findOne({
-        _id: req.params.blogId,
-        author: req.user._id,
-        isScheduled: true,
-      });
-      if (!blogPost) {
-        return next(
-          new AppError(
-            "Blog not found with given id and related to this user.or is not a scheduled blog post.",
-            404
-          )
+      const blogPost: IBlog =
+        await this.blogAuthorRepository.getScheduleBlogPostByIdAndAuthor(
+          req.params.blogId,
+          req.user._id
         );
-      }
       req.body.blog = blogPost;
       next();
     }

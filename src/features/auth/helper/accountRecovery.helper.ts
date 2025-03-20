@@ -1,5 +1,5 @@
-import { IUser } from "@features/users_feature";
-import { AppError } from "@utils/appError";
+import { IUser } from "@features/users";
+import { AppError } from "@shared/utils/appError";
 
 export const checkResendVerificationEmailAttempts = async (
   user: IUser

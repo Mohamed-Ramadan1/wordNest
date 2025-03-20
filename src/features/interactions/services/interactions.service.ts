@@ -6,10 +6,12 @@ import { injectable, inject } from "inversify";
 import { InteractionModel } from "../models/interactions.model";
 
 // utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
-
-// config imports
-import { TYPES } from "@shared/index";
+import {
+  APIFeatures,
+  AppError,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 // interfaces imports
 import { IInteractionsService } from "../interfaces/interactionsService.interface";

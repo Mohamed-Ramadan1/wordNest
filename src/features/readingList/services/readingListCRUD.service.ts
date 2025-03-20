@@ -1,21 +1,27 @@
 // Packages imports
 import { ParsedQs } from "qs";
+import { inject, injectable } from "inversify";
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
-// utils imports
-import { APIFeatures, AppError } from "@utils/index";
+// shard imports
+import { handleServiceError, TYPES } from "@shared/index";
 import { IReadingList } from "../interfaces/readingList.interface";
 
-// interface imports
-
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
-import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
+import {
+  IReadingListCRUDService,
+  IReadingListRepository,
+} from "../interfaces/index";
 
 // redis client instance creation.
 const redisClient = new Redis();
+
+@injectable()
 export class ReadingListCRUDService implements IReadingListCRUDService {
+  constructor(
+    @inject(TYPES.ReadingListRepository)
+    private readingListRepository: IReadingListRepository
+  ) {}
   /**
    * Retrieves all reading list items.
    */
@@ -24,17 +30,15 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
     reqQuery: ParsedQs
   ): Promise<IReadingList[]> {
     try {
-      const features = new APIFeatures(
-        ReadingListModel.find({ user: userId }),
-        reqQuery
-      );
-      const readingList = await features.execute();
+      const readingList: IReadingList[] =
+        await this.readingListRepository.getUserReadingListItems(
+          userId,
+          reqQuery
+        );
+
       return readingList;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -51,23 +55,16 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
       if (cachedData) {
         return JSON.parse(cachedData);
       }
-      const readingListItem = await ReadingListModel.findOne({
-        _id: readingListItemId,
-        user: userId,
-      });
-      if (!readingListItem) {
-        throw new AppError(
-          "Reading list item not found with provided id.",
-          404
+      const readingListItem: IReadingList | null =
+        await this.readingListRepository.getReadingListItem(
+          readingListItemId,
+          userId
         );
-      }
+
       await redisClient.setex(cacheKey, 3600, JSON.stringify(readingListItem));
       return readingListItem;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -81,20 +78,13 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
     notes: string | undefined
   ): Promise<void> {
     try {
-      const readingListItem = await ReadingListModel.create({
-        user: useId,
-        blogPost: blogPostId,
-        notes,
-      });
-
-      if (!readingListItem) {
-        throw new AppError("Reading list item not created.", 500);
-      }
+      await this.readingListRepository.createReadingListItem(
+        useId,
+        blogPostId,
+        notes
+      );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -108,23 +98,14 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
   ): Promise<void> {
     const cacheKey = `readingListItem:${readingListItemId}:${userId}`;
     try {
-      const deletedReadingListItem = await ReadingListModel.findOneAndDelete({
-        _id: readingListItemId,
-        user: userId,
-      });
+      await this.readingListRepository.deleteReadingListItem(
+        readingListItemId,
+        userId
+      );
 
-      if (!deletedReadingListItem) {
-        throw new AppError(
-          "Reading list item not found with provided id.",
-          404
-        );
-      }
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

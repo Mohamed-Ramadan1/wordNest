@@ -1,21 +1,32 @@
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
-import BlogModel from "@features/blogs/models/blog.model";
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // interfaces imports
-import { CreateReadingListItemRequestBody } from "../interfaces/readingListCRUDRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import {
+  CreateReadingListItemRequestBody,
+  IReadingList,
+  IReadingListCRUDMiddleware,
+} from "../interfaces/index";
+import { IBlog } from "@features/blogs/interfaces/index";
 
 // dto imports
 import { CreateReadingListItemDto } from "../dtos/createReadingListItem.dto";
 
-export class ReadingListCRUDMiddleware {
-  public static validateCreateReadingListItem = [
+@injectable()
+export class ReadingListCRUDMiddleware implements IReadingListCRUDMiddleware {
+  constructor(
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.ReadingListModel)
+    private readingListModel: Model<IReadingList>
+  ) {}
+  public validateCreateReadingListItem = [
     validateDto(CreateReadingListItemDto),
     catchAsync(
       async (
@@ -25,7 +36,8 @@ export class ReadingListCRUDMiddleware {
       ) => {
         const { blogPostId } = req.body;
         // check blog to be added into the list is existing
-        const blogPost: IBlog | null = await BlogModel.findById(blogPostId);
+        const blogPost: IBlog | null =
+          await this.blogModel.findById(blogPostId);
         if (!blogPost) {
           return next(
             new AppError(
@@ -36,7 +48,7 @@ export class ReadingListCRUDMiddleware {
         }
 
         // check if the blog is already in the user reading list
-        const existingReadingListItem = await ReadingListModel.findOne({
+        const existingReadingListItem = await this.readingListModel.findOne({
           blogPost: blogPostId,
           user: req.user._id,
         });

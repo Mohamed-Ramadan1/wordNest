@@ -1,17 +1,28 @@
-import { catchAsync } from "@utils/index";
-import { Request, Response, NextFunction } from "express";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+// express imports
+import { NextFunction, Request, Response } from "express";
+
+// shard imports
+import { catchAsync, AppError, TYPES } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// interfaces imports
 import {
-  TicketPriorityChangeBody,
   TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { SupportTicketPriority } from "@features/supportTickets/interfaces/supportTicket.interface";
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-import { AppError } from "@utils/index";
+  TicketPriorityChangeBody,
+  SupportTicketPriority,
+  ITicketPriorityMiddleware,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
 
-
-export class TicketPriorityMiddleware {
-  static validatePriorityChange = catchAsync(
+@injectable()
+export class TicketPriorityMiddleware implements ITicketPriorityMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly supportTicketManagementRepository: ISupportTicketManagementRepository
+  ) {}
+  public validatePriorityChange = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketPriorityChangeBody>,
       res: Response,
@@ -33,17 +44,11 @@ export class TicketPriorityMiddleware {
         );
       }
 
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
-      if (!ticket) {
-        return next(
-          new AppError(
-            `No ticket found with this id : ${req.params.ticketId}`,
-            404
-          )
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
+
       if (ticket.priority === priority) {
         return next(
           new AppError(`Priority for this ticket is already ${priority}`, 400)

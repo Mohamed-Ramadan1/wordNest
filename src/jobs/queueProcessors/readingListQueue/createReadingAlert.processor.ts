@@ -1,14 +1,15 @@
 import { Job } from "bull";
 import { sendReadingReminderEmail } from "@features/readingList/emails";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { IReadingList } from "@features/readingList/interfaces/readingList.interface";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { readingListLogger } from "@logging/index";
+import { ReadingListLogger } from "@logging/index";
 interface ReadingReminderData {
   user: IUser;
   readingItem: IReadingList;
   blog: IBlog;
 }
+const readingListLogger = new ReadingListLogger();
 
 export const createReadingAlertProcessor = async (
   job: Job<ReadingReminderData>

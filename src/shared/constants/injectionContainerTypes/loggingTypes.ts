@@ -1,0 +1,15 @@
+export const LOGGING_TYPES = {
+  AccountDeletionLogger: Symbol.for("AccountDeletionLogger"),
+  AccountStatusLogger: Symbol.for("AccountStatusLogger"),
+  AuthLogger: Symbol.for("AuthLogger"),
+  EmailVerificationLogger: Symbol.for("EmailVerificationLogger"),
+  EmailLogger: Symbol.for("EmailLogger"),
+  CloudinaryLogger: Symbol.for("CloudinaryLogger"),
+  ChangeAccountEmailLogger: Symbol.for("ChangeAccountEmailLogger"),
+  LockAccountsLogger: Symbol.for("LockAccountsLogger"),
+  BandedAccountsLogger: Symbol.for("BandedAccountsLogger"),
+  BlogsLogger: Symbol.for("BlogsLogger"),
+  BlogsQueueLogger: Symbol.for("BlogsQueueLogger"),
+  SupportTicketsLogger: Symbol.for("SupportTicketsLogger"),
+  ReadingListLogger: Symbol.for("ReadingListLogger"),
+};

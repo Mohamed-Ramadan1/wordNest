@@ -1,17 +1,31 @@
-import { catchAsync } from "@utils/catchAsync";
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@utils/appError";
+
+// shard imports
+import { catchAsync, AppError, TYPES } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
+// interfaces imports
 import {
   SupportTicketBody,
   SupportTicketBodyReplay,
   SupportTicketParams,
-} from "@features/supportTickets/interfaces/supportTicketBody.interface";
+  ISupportTicketsMiddleware,
+  ISupportTicketRepository,
+} from "../../interfaces/index";
 
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-export class SupportTicketsMiddleware {
-  static validateCreateSupportTicket = catchAsync(
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers";
+
+@injectable()
+export class SupportTicketsMiddleware implements ISupportTicketsMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketRepository)
+    private readonly supportTicketRepository: ISupportTicketRepository
+  ) {}
+  public validateCreateSupportTicket = catchAsync(
     async (
       req: Request<{}, {}, SupportTicketBody>,
       res: Response,
@@ -36,7 +50,7 @@ export class SupportTicketsMiddleware {
     }
   );
 
-  static validateReplaySupportTicket = catchAsync(
+  public validateReplaySupportTicket = catchAsync(
     async (
       req: Request<SupportTicketParams, {}, SupportTicketBodyReplay>,
       res: Response,
@@ -50,11 +64,11 @@ export class SupportTicketsMiddleware {
         return next(new AppError("Message is required", 400));
       }
 
-      const userSupportTicket: ISupportTicket | null =
-        await SupportTicket.findOne({
-          _id: req.params.ticketId,
-          user: req.user._id,
-        });
+      const userSupportTicket =
+        await this.supportTicketRepository.getUserSupportTicket(
+          req.params.ticketId,
+          req.user._id
+        );
 
       if (!userSupportTicket) {
         return next(

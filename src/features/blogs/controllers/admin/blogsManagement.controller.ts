@@ -4,22 +4,16 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
-
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // shared interface imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   BlogsManagementRequestParams,
   BlogManagementRequestBody,
-} from "../../interfaces/blogsManagementRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { IBlogManagementService } from "../../interfaces/index";
+  IBlog,
+  IBlogManagementService,
+} from "../../interfaces/index";
 
 @injectable()
 export class BlogManagementController {
@@ -75,9 +69,7 @@ export class BlogManagementController {
    * Fetches a list of all blog posts available in the system.
    */
   public getAllBlogPosts = catchAsync(async (req: Request, res: Response) => {
-    const blogsData = await this.blogManagementService.getAllBlogPosts(
-      req.query
-    );
+    const blogsData = await this.blogManagementService.getAllBlogPosts(req);
     const response: ApiResponse<IBlog[]> = {
       status: "success",
       message: "Blog post retrieved successfully",

@@ -1,17 +1,37 @@
-import { catchAsync } from "@utils/catchAsync";
+// express imports
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "@utils/appError";
+
+// shard imports
+import { catchAsync, AppError, TYPES } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+
+// users feature interfaces imports
+import { IUser } from "@features/users";
+
+// helpers imports
+import { validateSupportTicketAttachments } from "../../helpers/index";
+
+// interfaces imports
 import {
-  TicketAdminResponseBody,
   TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
-import { IUser, UserModel } from "@features/users_feature";
-import { validateSupportTicketAttachments } from "@features/supportTickets/helpers";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
+  TicketAdminResponseBody,
+  ITicketResponseMiddleware,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
+
 import SupportTicket from "@features/supportTickets/models/supportTicket.model";
 
-export class TicketResponseMiddleware {
-  static validateRespondToTicket = catchAsync(
+@injectable()
+export class TicketResponseMiddleware implements ITicketResponseMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private userModel: Model<IUser>
+  ) {}
+  public validateRespondToTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketAdminResponseBody>,
       res: Response,
@@ -22,17 +42,14 @@ export class TicketResponseMiddleware {
         return next(new AppError("Message is required.", 400));
       }
 
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
-
-      if (!ticket) {
-        return next(
-          new AppError("Ticket you tray to response for not found .", 404)
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
 
       if (!ticketOwner) {
         return next(new AppError("User who own the ticket not exist.", 404));

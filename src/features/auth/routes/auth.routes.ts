@@ -12,7 +12,7 @@ import AuthController from "../controllers/auth.controller";
 import AccountRecoveryController from "../controllers/accountRecovery.controller";
 
 // middleware imports
-import AuthMiddleware from "../middlewares/auth.middleware";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { AccountRecoveryMiddleware } from "../middlewares/accountRecovery.middleware";
 
 // shared imports
@@ -25,8 +25,10 @@ const accountRecoveryController = container.get<AccountRecoveryController>(
 );
 
 // middleware instances
-const authMiddleware = new AuthMiddleware();
-
+const authMiddleware = container.get<AuthMiddleware>(TYPES.AuthMiddleware);
+const accountRecoveryMiddleware = container.get<AccountRecoveryMiddleware>(
+  TYPES.AccountRecoveryMiddleware
+);
 // Router instance
 const router = Router();
 
@@ -50,7 +52,7 @@ router.route("/social-register").post(authController.socialRegister);
 router
   .route("/verify-email/:token")
   .get(
-    AccountRecoveryMiddleware.validateVerifyEMails,
+    accountRecoveryMiddleware.validateVerifyEmails,
     accountRecoveryController.verifyEmail
   );
 // Resend verification email. (this route user must be authenticated)
@@ -58,7 +60,7 @@ router
   .route("/verify-email/resend")
   .post(
     protect,
-    AccountRecoveryMiddleware.validateResendVerificationEmail,
+    accountRecoveryMiddleware.validateResendVerificationEmail,
     accountRecoveryController.resendVerification
   );
 
@@ -66,7 +68,7 @@ router
 router
   .route("/password/forgot")
   .post(
-    AccountRecoveryMiddleware.validateRequestResetPassword,
+    accountRecoveryMiddleware.validateRequestResetPassword,
     accountRecoveryController.requestPasswordReset
   );
 
@@ -74,7 +76,7 @@ router
 router
   .route("/password/reset/:token")
   .post(
-    AccountRecoveryMiddleware.validateResetPassword,
+    accountRecoveryMiddleware.validateResetPassword,
     accountRecoveryController.resetPassword
   );
 

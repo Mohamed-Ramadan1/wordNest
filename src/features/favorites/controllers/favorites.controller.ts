@@ -8,19 +8,16 @@ import {
   FavoriteRequestBody,
   FavoriteRequestParams,
 } from "../interfaces/favoritesRequest.interface";
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
 
 // shared interface imports
-import { ApiResponse, TYPES } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { FavoritesService } from "../services/favorites.service";
-import { IFavorite } from "../interfaces/favorites.interface";
-import { IFavoritesService } from "../interfaces/favoritesService.interface";
+import { IFavoritesService, IFavorite } from "../interfaces/index";
+
 @injectable()
 export class FavoritesController {
-  private favoritesService: FavoritesService;
+  private favoritesService: IFavoritesService;
   constructor(
     @inject(TYPES.FavoritesService) favoritesService: IFavoritesService
   ) {
@@ -82,9 +79,9 @@ export class FavoritesController {
    * Handles the logic for retrieving a specific blog post from the user's favorites list.
    */
   public getFavorite = catchAsync(
-    async (req: Request<{}, {}, FavoriteRequestBody>, res: Response) => {
+    async (req: Request<FavoriteRequestParams, {}>, res: Response) => {
       const blogPost = await this.favoritesService.getFavorite(
-        req.body.blogPostId,
+        req.params.favoriteId,
         req.user
       );
       const response: ApiResponse<IFavorite> = {

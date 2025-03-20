@@ -4,23 +4,22 @@ import { Router } from "express";
 // multer config import
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
 
 // middleware imports
-import { protect } from "@shared/index";
-import { ProfileMiddleware } from "@features/users_feature/middlewares/users/profile.middleware";
-import { AccountPasswordManagementMiddleware } from "@features/users_feature/middlewares/users/accountPasswordManagement.middleware";
-import { AccountNotificationMiddleware } from "@features/users_feature/middlewares/users/accountNotification.middleware";
-import { AccountStatusMiddleware } from "@features/users_feature/middlewares/users/accountStatus.middleware";
-import { AccountDeletionMiddleware } from "@features/users_feature/middlewares/users/accountDeletion.middleware";
-import { AccountEmailMiddleware } from "@features/users_feature/middlewares/users/accountEmail.middleware";
+import { protect, TYPES } from "@shared/index";
+import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
+import { AccountPasswordManagementMiddleware } from "@features/users/middlewares/users/accountPasswordManagement.middleware";
+import { AccountNotificationMiddleware } from "@features/users/middlewares/users/accountNotification.middleware";
+import { AccountStatusMiddleware } from "@features/users/middlewares/users/accountStatus.middleware";
+import { AccountDeletionMiddleware } from "@features/users/middlewares/users/accountDeletion.middleware";
+import { AccountEmailMiddleware } from "@features/users/middlewares/users/accountEmail.middleware";
 // controller imports
-import { ProfileController } from "@features/users_feature/controllers/users/profile.controller";
-import { AccountNotificationController } from "@features/users_feature/controllers/users/accountNotification.controller";
-import { AccountEmailController } from "@features/users_feature/controllers/users/accountEmail.controller";
-import { AccountDeletionController } from "@features/users_feature/controllers/users/accountDeletion.controller";
-import { AccountPasswordManagementController } from "@features/users_feature/controllers/users/accountPasswordManagement.controller";
-import { AccountStatusController } from "@features/users_feature/controllers/users/accountStatus.controller";
+import { ProfileController } from "@features/users/controllers/users/profile.controller";
+import { AccountNotificationController } from "@features/users/controllers/users/accountNotification.controller";
+import { AccountEmailController } from "@features/users/controllers/users/accountEmail.controller";
+import { AccountDeletionController } from "@features/users/controllers/users/accountDeletion.controller";
+import { AccountPasswordManagementController } from "@features/users/controllers/users/accountPasswordManagement.controller";
+import { AccountStatusController } from "@features/users/controllers/users/accountStatus.controller";
 
 // Create an instance of UserController
 const profileController = container.get<ProfileController>(
@@ -48,6 +47,33 @@ const accountPasswordManagementController =
     TYPES.AccountPasswordManagementController
   );
 
+// middleware creation for using container
+const accountDeletionMiddleware = container.get<AccountDeletionMiddleware>(
+  TYPES.AccountDeletionMiddleware
+);
+
+const accountNotificationMiddleware =
+  container.get<AccountNotificationMiddleware>(
+    TYPES.AccountNotificationMiddleware
+  );
+
+const accountStatusMiddleware = container.get<AccountStatusMiddleware>(
+  TYPES.AccountStatusMiddleware
+);
+
+const accountEmailMiddleware = container.get<AccountEmailMiddleware>(
+  TYPES.AccountEmailMiddleware
+);
+
+const profileMiddleware = container.get<ProfileMiddleware>(
+  TYPES.ProfileMiddleware
+);
+
+const accountPasswordManagement =
+  container.get<AccountPasswordManagementMiddleware>(
+    TYPES.AccountPasswordManagementMiddleware
+  );
+
 // Initialize router
 const router: Router = Router();
 
@@ -60,13 +86,13 @@ router.patch(
   "/profile/picture",
   protect,
   upload.single("profilePicture"),
-  ProfileMiddleware.validateUpdateUserProfilePicture,
+  profileMiddleware.validateUpdateUserProfilePicture,
   profileController.updateProfilePicture
 );
 router.patch(
   "/profile/information",
   protect,
-  ProfileMiddleware.validateUpdateUserProfileInformation,
+  profileMiddleware.validateUpdateUserProfileInformation,
   profileController.updateProfileInformation
 );
 
@@ -74,7 +100,7 @@ router.patch(
 router.patch(
   "/account/password",
   protect,
-  AccountPasswordManagementMiddleware.validateChangeAccountPassword,
+  accountPasswordManagement.validateChangeAccountPassword,
   accountPasswordManagementController.changeAccountPassword
 );
 
@@ -82,12 +108,12 @@ router.patch(
 router.post(
   "/account/deletion-request",
   protect,
-  AccountDeletionMiddleware.validateRequestAccountDeletion,
+  accountDeletionMiddleware.validateRequestAccountDeletion,
   accountDeletionController.requestAccountDeletion
 );
 router.delete(
   "/account/confirm-deletion/:token",
-  AccountDeletionMiddleware.validateConfirmAccountDeletion,
+  accountDeletionMiddleware.validateConfirmAccountDeletion,
   accountDeletionController.confirmAccountDeletion
 );
 
@@ -95,19 +121,19 @@ router.delete(
 router.post(
   "/account/activate/:token",
 
-  AccountStatusMiddleware.validateActivateAccount,
+  accountStatusMiddleware.validateActivateAccount,
   accountStatusController.activateAccount
 );
 router.post(
   "/account/deactivate-request",
   protect,
-  AccountStatusMiddleware.validateDeactivateAccountRequest,
+  accountStatusMiddleware.validateDeactivateAccountRequest,
   accountStatusController.deactivateAccountRequest
 );
 //(No need to protect this route will be use by non authenticated user).
 router.post(
   "/account/deactivate-confirm/:token",
-  AccountStatusMiddleware.validateDeactivateAccountConfirmation,
+  accountStatusMiddleware.validateDeactivateAccountConfirmation,
   accountStatusController.deactivateAccountConfirmation
 );
 
@@ -115,13 +141,13 @@ router.post(
 router.patch(
   "/account/notifications/enable",
   protect,
-  AccountNotificationMiddleware.validateEnableAccountNotifications,
+  accountNotificationMiddleware.validateEnableAccountNotifications,
   accountNotificationController.enableAccountNotifications
 );
 router.patch(
   "/account/notifications/disable",
   protect,
-  AccountNotificationMiddleware.validateDisableAccountNotifications,
+  accountNotificationMiddleware.validateDisableAccountNotifications,
   accountNotificationController.disableAccountNotifications
 );
 
@@ -130,14 +156,14 @@ router.patch(
 router.post(
   "/account/email/change-request",
   protect,
-  AccountEmailMiddleware.validateChangeEmailRequest,
+  accountEmailMiddleware.validateChangeEmailRequest,
   accountEmailController.requestAccountEmailChange
 );
 
 // Confirm email change with token sent to current email
 router.patch(
   "/account/email/confirm-change/:token",
-  AccountEmailMiddleware.validateConfirmEmailChange,
+  accountEmailMiddleware.validateConfirmEmailChange,
   accountEmailController.confirmAccountEmailChange
 );
 
@@ -145,7 +171,7 @@ router.patch(
 router.patch(
   "/account/email/verify-new-email/:token",
 
-  AccountEmailMiddleware.validateVerifyNewEmailOwnership,
+  accountEmailMiddleware.validateVerifyNewEmailOwnership,
   accountEmailController.verifyNewEmailOwnership
 );
 
@@ -153,7 +179,7 @@ router.patch(
 router.post(
   "/account/email/resend-new-email-token",
   protect,
-  AccountEmailMiddleware.validateResendNewEmailVerificationToken,
+  accountEmailMiddleware.validateResendNewEmailVerificationToken,
   accountEmailController.resendNewEmailVerificationToken
 );
 

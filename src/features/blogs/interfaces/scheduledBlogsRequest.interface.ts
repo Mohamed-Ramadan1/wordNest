@@ -4,13 +4,13 @@ import {
   IBlog,
   IUploadedImage,
 } from "../interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 export interface validateScheduleDateFormatRequestBody {
   scheduledFor: string;
   parsedDate: Date;
 }
-export interface BlogData {
+export interface ScheduledBlogData {
   title: string;
   content: string;
   author: ObjectId | IUser;
@@ -27,7 +27,7 @@ export interface CreateScheduleBlogsRequestBody {
   tags?: string[];
   scheduledFor: string;
   uploadedImages: IUploadedImage[];
-  blogData: BlogData;
+  blogData: ScheduledBlogData;
 }
 
 export interface RescheduleBlogRequestBody {

@@ -4,8 +4,8 @@ import { Request, Response, NextFunction } from "express";
 // package imports
 import { JwtPayload } from "jsonwebtoken";
 
-// utils imports
-import { catchAsync } from "@utils/index";
+// shard imports
+import { catchAsync } from "@shared/utils/catchAsync";
 
 // helper imports
 import {

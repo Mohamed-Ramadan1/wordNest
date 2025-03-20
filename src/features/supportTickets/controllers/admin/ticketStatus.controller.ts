@@ -3,20 +3,12 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// Utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // Shared imports
-import { ApiResponse } from "@shared/index";
+import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
-import { TicketCloseBody } from "../../interfaces/SupportTicketAdminBody.interface";
+import { TicketCloseBody, ITicketStatusService } from "../../interfaces/index";
 
-//interfaces imports
-import { ITicketStatusService } from "../../interfaces/index";
-
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 @injectable()
 export class TicketStatusController {
   private ticketStatusService: ITicketStatusService;

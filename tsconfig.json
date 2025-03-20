@@ -13,7 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./src",
     "paths": {
-      "@utils/*": ["utils/*"],
       "@config/*": ["config/*"],
       "@emails/*": ["emails/*"],
       "@jobs/*": ["jobs/*"],

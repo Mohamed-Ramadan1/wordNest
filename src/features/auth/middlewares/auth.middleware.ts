@@ -1,17 +1,21 @@
-// modules / packages imports.
-
 import { NextFunction, Request, Response } from "express";
-// Models imports
-import { IUser, UserModel } from "@features/users_feature";
 
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// packages imports
+import { inject, injectable } from "inversify";
+
+// Models imports
+import { IUser } from "@features/users";
+
+// shard imports
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // dto imports
 import { RegistrationDto } from "../dtos/registration.dto";
-
 import { LoginDTO } from "../dtos/login.dto";
-import { logFailedLogin } from "@logging/index";
+
+// interfaces imports
+import { IAuthMiddleware } from "../interfaces/index";
+
 import {
   checkAccountDeletionStatus,
   checkAccountLockStatus,
@@ -19,16 +23,30 @@ import {
   checkAccountLoginLockedStatus,
   lockAccountLogin,
 } from "../helper/accountValidation.helper";
-export default class AuthMiddleware {
+
+// Logger imports
+import { IAuthLogger } from "@logging/interfaces";
+import { IUserAuthRepository } from "@features/users/interfaces";
+
+// const authLogger = new AuthLogger();
+
+@injectable()
+export class AuthMiddleware implements IAuthMiddleware {
+  constructor(
+    @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
   public validateRegistration = [
     validateDto(RegistrationDto), // Step 1: Validate inputs using DTO
     catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       const { email } = req.body;
 
-      const existingUser = await UserModel.findOne({ email });
+      const existingUser: IUser | null =
+        await this.userAuthRepository.findUserByEmail(email);
 
       if (existingUser) {
-        throw new AppError("Email already in use", 409);
+        throw new AppError("Email already in use.", 409);
       }
 
       next();
@@ -39,13 +57,14 @@ export default class AuthMiddleware {
     validateDto(LoginDTO),
     catchAsync(async (req: Request, res: Response, next: NextFunction) => {
       const { email, password } = req.body;
-      const user: IUser | null = await UserModel.findOne({ email }).select(
-        "+password"
-      );
+      const user: IUser | null =
+        await this.userAuthRepository.findUserByEmailAndSelectFields(email, [
+          "+password",
+        ]);
 
       // If no user is found, log and throw an error
       if (!user) {
-        logFailedLogin(
+        this.authLogger.logFailedLogin(
           email,
           req.ip,
           `No user existing with email address ${email}`
@@ -63,7 +82,7 @@ export default class AuthMiddleware {
       if (!isPasswordValid) {
         // Increment login attempts and potentially lock the account
         await lockAccountLogin(user);
-        logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
+        this.authLogger.logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
         throw new AppError("Invalid email or password", 401);
       }
       // Check account deletion status (if account marked for deletion)

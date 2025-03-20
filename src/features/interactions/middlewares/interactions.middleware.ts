@@ -3,8 +3,8 @@ import { Response, Request, NextFunction } from "express";
 
 // models imports
 
-// utils imports
-import { catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { catchAsync, validateDto } from "@shared/index";
 
 // interfaces imports
 import {

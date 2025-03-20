@@ -1,5 +1,5 @@
 import { ObjectId, Document } from "mongoose";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
 export enum ReadingStatus {

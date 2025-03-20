@@ -1,4 +1,5 @@
 export const BLOGS_TYPES = {
+  BlogModel: Symbol.for("BlogModel"),
   BlogsService: Symbol.for("BlogsService"),
   BlogsController: Symbol.for("BlogsController"),
 
@@ -13,4 +14,13 @@ export const BLOGS_TYPES = {
 
   BlogManagementService: Symbol.for("BlogManagementService"),
   BlogManagementController: Symbol.for("BlogManagementController"),
+
+  BlogOwnerCRUDMiddleware: Symbol.for("BlogOwnerCRUDMiddleware"),
+  BlogStatusMiddleware: Symbol.for("BlogStatusMiddleware"),
+  ScheduledBlogsMiddleware: Symbol.for("ScheduledBlogsMiddleware"),
+  BlogsManagementMiddleware: Symbol.for("BlogsManagementMiddleware"),
+
+  BlogsRepository: Symbol.for("BlogsRepository"),
+  BlogManagementRepository: Symbol.for("BlogManagementRepository"),
+  BlogAuthorRepository: Symbol.for("BlogAuthorRepository"),
 };

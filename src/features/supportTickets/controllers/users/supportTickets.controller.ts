@@ -4,25 +4,18 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
-// shard imports
-import { ApiResponse } from "@shared/index";
+// Shared imports
+import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   SupportTicketBody,
   SupportTicketParams,
   SupportTicketBodyReplay,
-} from "../../interfaces/supportTicketBody.interface";
+  ISupportTicket,
+  ISupportTicketService,
+} from "../../interfaces/index";
 
-// interfaces imports
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { ISupportTicketService } from "../../interfaces/index";
-
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
 @injectable()
 export class SupportTicketController {
   private supportTicketService: ISupportTicketService;
@@ -62,7 +55,7 @@ export class SupportTicketController {
   public getAllUserSupportTickets = catchAsync(
     async (req: Request<{}, {}, SupportTicketBody>, res: Response) => {
       const supportTickets =
-        await this.supportTicketService.getAllUserSupportTickets(req.user);
+        await this.supportTicketService.getAllUserSupportTickets(req.user, req);
 
       // creating the response object
       const response: ApiResponse<ISupportTicket[]> = {

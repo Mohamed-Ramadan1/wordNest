@@ -1,13 +1,17 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// utils imports
+// shard imports
 import {
   catchAsync,
   validateDto,
   AppError,
   uploadImagesToCloudinary,
-} from "@utils/index";
+  TYPES,
+} from "@shared/index";
 
 // interfaces imports
 import {
@@ -16,20 +20,25 @@ import {
   CreateBlogBodyRequest,
   DeleteBlogBodyRequest,
   UpdatesBlogBodyRequest,
-} from "@features/blogs/interfaces/blogOwnerRequest.interface";
+  IBlogOwnerCRUDMiddleware,
+  IBlogAuthorRepository,
+  IBlog,
+} from "../../interfaces/index";
 
 // helpers imports (feature specific)
 import { filterValidImages } from "@features/blogs/helpers/filterValidImages";
 
 // DTO imports
 import { CreateBlogPostDTO } from "../../dtos/createBlogPost.dto";
-// interfaces imports
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-// models imports
-import BlogModel from "@features/blogs/models/blog.model";
-export class BlogOwnerCRUDMiddleware {
+
+@injectable()
+export class BlogOwnerCRUDMiddleware implements IBlogOwnerCRUDMiddleware {
+  constructor(
+    @inject(TYPES.BlogAuthorRepository)
+    private readonly blogAuthorRepository: IBlogAuthorRepository
+  ) {}
   // validate the create blog post request
-  public static validateCreateBlogPost = [
+  public validateCreateBlogPost = [
     validateDto(CreateBlogPostDTO),
     catchAsync(
       async (
@@ -65,25 +74,17 @@ export class BlogOwnerCRUDMiddleware {
   ];
 
   // validate the delete blog post request
-  public static validateDeleteBlogPost = catchAsync(
+  public validateDeleteBlogPost = catchAsync(
     async (
       req: Request<BlogParams, {}, DeleteBlogBodyRequest>,
       res: Response,
       next: NextFunction
     ) => {
-      const blogToBeDeleted: IBlog | null = await BlogModel.findOne({
-        _id: req.params.blogId,
-        author: req.user._id,
-      });
-
-      if (!blogToBeDeleted) {
-        return next(
-          new AppError(
-            "Blog not found with given id and related to this user.",
-            404
-          )
+      const blogToBeDeleted: IBlog =
+        await this.blogAuthorRepository.getBlogPostByIdAndAuthor(
+          req.params.blogId,
+          req.user._id
         );
-      }
 
       // check if its already mark as to be deleted
       if (blogToBeDeleted.toBeDeleted) {
@@ -101,24 +102,17 @@ export class BlogOwnerCRUDMiddleware {
     }
   );
 
-  public static validateUpdateBlogPost = catchAsync(
+  public validateUpdateBlogPost = catchAsync(
     async (
       req: Request<BlogParams, {}, UpdatesBlogBodyRequest>,
       res: Response,
       next: NextFunction
     ) => {
-      const blogPost: IBlog | null = await BlogModel.findOne({
-        _id: req.params.blogId,
-        author: req.user._id,
-      });
-      if (!blogPost) {
-        return next(
-          new AppError(
-            "Blog not found with given id and related to this user.",
-            404
-          )
+      const blogPost: IBlog =
+        await this.blogAuthorRepository.getBlogPostByIdAndAuthor(
+          req.params.blogId,
+          req.user._id
         );
-      }
       req.body.blogPost = blogPost;
       next();
     }

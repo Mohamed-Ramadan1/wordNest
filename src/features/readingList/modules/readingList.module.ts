@@ -1,6 +1,8 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@shared/types/containerTypes";
+import { TYPES } from "@shared/index";
+import { Model } from "mongoose";
 
+import { ReadingListModel } from "../models/readingList.model";
 // controller imports
 import { ReadingListCRUDController } from "../controllers/readingListCRUD.controller";
 import { ReadingListManagementController } from "../controllers/readingListManagement.controller";
@@ -11,16 +13,34 @@ import { ReadingListCRUDService } from "../services/readingListCRUD.service";
 import { ReadingListManagementService } from "../services/readingListManagement.service";
 import { ReadingListSettingsService } from "../services/readingListSettings.service";
 
+// middlewares imports
+import { ReadingListCRUDMiddleware } from "../middlewares/readingListCRUD.middleware";
+import { ReadingListSettingsMiddleware } from "../middlewares/readingListSettings.middleware";
+
+// repository imports
+import { ReadingListRepository } from "../repositories/readingList.repository";
+
 // interface imports
-import { IReadingListCRUDService } from "../interfaces/readingListCRUDService.interface";
-import { IReadingListManagementService } from "../interfaces/readingListManagementService.interface";
-import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+import {
+  IReadingListCRUDService,
+  IReadingListManagementService,
+  IReadingListSettingsService,
+  IReadingListCRUDMiddleware,
+  IReadingListSettingsMiddleware,
+  IReadingList,
+  IReadingListRepository,
+} from "../interfaces/index";
 
 /**
  * This module encapsulates the bindings for the Authentication feature.
  * It defines how the services and controllers are bound to the container.
  */
 export default new ContainerModule((bind: interfaces.Bind) => {
+  // Binding the mongoose model to its interface
+  bind<Model<IReadingList>>(TYPES.ReadingListModel).toConstantValue(
+    ReadingListModel
+  );
+
   // Binding the service to its interface
   bind<IReadingListCRUDService>(TYPES.ReadingListCRUDService)
     .to(ReadingListCRUDService)
@@ -45,5 +65,19 @@ export default new ContainerModule((bind: interfaces.Bind) => {
 
   bind<ReadingListSettingsController>(TYPES.ReadingListSettingsController)
     .to(ReadingListSettingsController)
+    .inSingletonScope();
+
+  // Binding the middlewares
+  bind<IReadingListCRUDMiddleware>(TYPES.ReadingListCRUDMiddleware)
+    .to(ReadingListCRUDMiddleware)
+    .inSingletonScope();
+
+  bind<IReadingListSettingsMiddleware>(TYPES.ReadingListSettingsMiddleware)
+    .to(ReadingListSettingsMiddleware)
+    .inSingletonScope();
+
+  // Binding the repository to its interface
+  bind<IReadingListRepository>(TYPES.ReadingListRepository)
+    .to(ReadingListRepository)
     .inSingletonScope();
 });

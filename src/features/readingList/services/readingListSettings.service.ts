@@ -1,29 +1,34 @@
 // Packages imports
 import { ObjectId } from "mongoose";
-
+import { inject, injectable } from "inversify";
 // JOBS imports
 import { readingListQueue, ReadingListQueueJobs } from "@jobs/index";
 
-// utils imports
-import { AppError } from "@utils/index";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
+// shard imports
+import { handleServiceError, TYPES } from "@shared/index";
 
 // interfaces imports
-import { ReminderAlertData } from "../interfaces/readingListSettingsRequest.interface";
-import { IReadingListSettingsService } from "../interfaces/readingListSettingsService.interface";
+import {
+  IReadingListSettingsService,
+  IReadingListRepository,
+  ReminderAlertData,
+} from "../interfaces/index";
+
+@injectable()
 export class ReadingListSettingsService implements IReadingListSettingsService {
+  constructor(
+    @inject(TYPES.ReadingListRepository)
+    private readingListRepository: IReadingListRepository
+  ) {}
   /**
    * Sets a reminder alert for a specific reading list item.
    */
   public async setReminderAlert(alertData: ReminderAlertData): Promise<void> {
     try {
-      alertData.readingItem.lastInteractedAt = new Date();
-      alertData.readingItem.reminderAlert = true;
-      alertData.readingItem.reminderAlertTime = alertData.alertTime;
-      await alertData.readingItem.save();
+      await this.readingListRepository.saveReminderAlertDate(
+        alertData.readingItem,
+        alertData.alertTime
+      );
       readingListQueue.add(
         ReadingListQueueJobs.CreateReadingAlert,
         {
@@ -37,10 +42,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         }
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -53,10 +55,10 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
   ): Promise<void> {
     try {
       await readingListQueue.removeJobs(oldJobId);
-      alertData.readingItem.lastInteractedAt = new Date();
-      alertData.readingItem.reminderAlert = true;
-      alertData.readingItem.reminderAlertTime = alertData.alertTime;
-      await alertData.readingItem.save();
+      await this.readingListRepository.saveReminderAlertDate(
+        alertData.readingItem,
+        alertData.alertTime
+      );
       readingListQueue.add(
         ReadingListQueueJobs.CreateReadingAlert,
         {
@@ -70,10 +72,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         }
       );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -87,26 +86,9 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
   ): Promise<void> {
     try {
       await readingListQueue.removeJobs(itemId.toString());
-      const updatedReadingListItem: IBlog | null =
-        await ReadingListModel.findOneAndUpdate(
-          { _id: itemId, user: userId },
-          {
-            $set: {
-              reminderAlert: false,
-              reminderAlertTime: null,
-              lastInteractedAt: new Date(),
-            },
-          },
-          { new: true }
-        );
-      if (!updatedReadingListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
+      await this.readingListRepository.removeReminderAlertDate(itemId, userId);
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -118,25 +100,13 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
     userId: ObjectId
   ): Promise<void> {
     try {
-      const updatedReadingListItem: IBlog | null =
-        await ReadingListModel.findOneAndUpdate(
-          { _id: listItemId, user: userId },
-          {
-            $set: {
-              autoRemove: true,
-              lastInteractedAt: new Date(),
-            },
-          },
-          { new: true }
-        );
-      if (!updatedReadingListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
+      await this.readingListRepository.toggleAutoRemovingListItem(
+        listItemId,
+        userId,
+        true
+      );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -147,28 +117,14 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
-    console.log("get here");
     try {
-      const updatedReadingListItem: IBlog | null =
-        await ReadingListModel.findOneAndUpdate(
-          { _id: listItemId, user: userId },
-          {
-            $set: {
-              autoRemove: false,
-              lastInteractedAt: new Date(),
-            },
-          },
-          { new: true }
-        );
-
-      if (!updatedReadingListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
+      await this.readingListRepository.toggleAutoRemovingListItem(
+        listItemId,
+        userId,
+        false
+      );
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

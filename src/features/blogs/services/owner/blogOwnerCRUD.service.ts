@@ -1,27 +1,23 @@
 // Packages imports
-import { ObjectId } from "mongoose";
+import { inject, injectable } from "inversify";
 import Redis from "ioredis";
-
+import { ObjectId } from "mongoose";
 import { Request } from "express";
-// model imports
-import BlogModel from "@features/blogs/models/blog.model";
 
-// utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+// shard imports
+import { handleServiceError, TYPES } from "@shared/index";
 
 //interfaces imports
 import {
+  IBlog,
   BlogData,
   UpdatesBlogBodyRequest,
-} from "@features/blogs/interfaces/blogOwnerRequest.interface";
-import {
-  IBlog,
-  DeletionStatus,
-} from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+  IBlogAuthorRepository,
+} from "../../interfaces/index";
+import { IUser } from "@features/users";
 
 // logging imports
-import { blogsLogger } from "@logging/index";
+import { IBlogsLogger } from "@logging/interfaces";
 
 // queues imports
 import {
@@ -37,17 +33,20 @@ const redisClient = new Redis();
 // interfaces imports
 import { IBlogOwnerCRUDService } from "../../interfaces/index";
 
+@injectable()
 export class BlogCRUDService implements IBlogOwnerCRUDService {
+  constructor(
+    @inject(TYPES.BlogsLogger) private readonly blogsLogger: IBlogsLogger,
+    @inject(TYPES.BlogAuthorRepository)
+    private readonly blogAuthorRepository: IBlogAuthorRepository
+  ) {}
+
   /**
    * Handles the logic for creating a blog post.
    */
   public async createBlogPost(blogData: BlogData, user: IUser): Promise<void> {
     try {
-      const newBlogPost = new BlogModel(blogData);
-      newBlogPost.publishedAt = new Date();
-      newBlogPost.createBlogSlug();
-      newBlogPost.generateSEOMetadata(blogData);
-      await newBlogPost.save();
+      await this.blogAuthorRepository.createBlogPost(blogData);
     } catch (err: any) {
       if (blogData.uploadedImages && blogData.uploadedImages.length > 0) {
         blogData.uploadedImages.forEach((image) => {
@@ -57,7 +56,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
           });
         });
       }
-      blogsLogger.logFailedBlogPostCreation(user._id, err.message);
+      this.blogsLogger.logFailedBlogPostCreation(user._id, err.message);
       handleServiceError(err);
     }
   }
@@ -74,14 +73,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
 
     try {
       // update the blog post
-      if (updatedBlogData.title) blogPost.title = updatedBlogData.title;
-      if (updatedBlogData.content) blogPost.content = updatedBlogData.content;
-      if (updatedBlogData.tags) blogPost.tags = updatedBlogData.tags;
-      if (updatedBlogData.categories)
-        blogPost.categories = updatedBlogData.categories;
-      blogPost.isEdited = true;
-      blogPost.editedAt = new Date();
-      await blogPost.save();
+      await this.blogAuthorRepository.updateBlogPost(blogPost, updatedBlogData);
       await redisClient.del(cacheKey);
     } catch (err: any) {
       handleServiceError(err);
@@ -94,11 +86,8 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
   public async deleteBlogPost(blogToBeDeleted: IBlog, user: IUser) {
     const cacheKey = `blog:${blogToBeDeleted._id}:${user._id}`;
     try {
-      blogToBeDeleted.toBeDeleted = true;
-      blogToBeDeleted.requestDeleteAt = new Date();
-      blogToBeDeleted.deletionStatus = DeletionStatus.PENDING;
-      await blogToBeDeleted.save();
-      // check if it at the cash memory and delete it
+      await this.blogAuthorRepository.deleteBlogPost(blogToBeDeleted);
+
       await redisClient.del(cacheKey);
       blogQueue.add(BlogsQueueJobs.DeleteBlog, {
         blog: blogToBeDeleted,
@@ -107,7 +96,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
       // register the deletion in queue to move allow complete deletion in background
     } catch (err: any) {
       // logging the failed deletion
-      blogsLogger.logFailedBlogDeletion(
+      this.blogsLogger.logFailedBlogDeletion(
         user._id,
         err.message,
         blogToBeDeleted._id,
@@ -131,17 +120,11 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
       if (cachedBlog) {
         return JSON.parse(cachedBlog); // Return cached response
       }
-      const blogPost = await BlogModel.findOne({
-        _id: blogId,
-        author: user._id,
-        isScheduled: false,
-      });
-      if (!blogPost) {
-        throw new AppError(
-          "No Blog post found with this id and owned by current logged in user",
-          404
+      const blogPost: IBlog =
+        await this.blogAuthorRepository.getBlogPostByIdAndAuthor(
+          blogId,
+          user._id
         );
-      }
       //  Store the fetched data in Redis (expires in 1 hour)
       await redisClient.setex(cacheKey, 3600, JSON.stringify(blogPost));
 
@@ -157,20 +140,10 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
   public async getAllBlogPosts(user: IUser, req: Request): Promise<IBlog[]> {
     // Business logic to fetch a blog post by ID
     try {
-      // Apply APIFeatures for filtering, sorting, pagination, etc.
-      const features = new APIFeatures(
-        BlogModel.find({
-          author: user._id,
-          toBeDeleted: false,
-          isScheduled: false,
-        }),
-        req.query
-      )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const blogs: IBlog[] = await features.execute();
+      const blogs: IBlog[] = await this.blogAuthorRepository.getBlogPosts(
+        user._id,
+        req
+      );
       return blogs;
     } catch (err: any) {
       handleServiceError(err);

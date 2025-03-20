@@ -1,11 +1,11 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
-import { TYPES } from "@shared/index";
+
 // middleware imports
 import { SupportTicketsMiddleware } from "../middlewares/users/supportTickets.middleware";
 
@@ -17,6 +17,10 @@ const supportTicketController = container.get<SupportTicketController>(
   TYPES.SupportTicketController
 );
 
+// middleware instance creation
+const supportTicketsMiddleware = container.get<SupportTicketsMiddleware>(
+  TYPES.SupportTicketsMiddleware
+);
 // create  the express router
 const router: Router = Router();
 
@@ -27,7 +31,7 @@ router
   .get(supportTicketController.getAllUserSupportTickets)
   .post(
     upload.single("attachment"),
-    SupportTicketsMiddleware.validateCreateSupportTicket,
+    supportTicketsMiddleware.validateCreateSupportTicket,
     supportTicketController.createSupportTicket
   );
 
@@ -38,7 +42,7 @@ router.route("/:ticketId").get(supportTicketController.getSupportTicketById);
 router.post(
   "/:ticketId/reply",
   upload.single("attachment"),
-  SupportTicketsMiddleware.validateReplaySupportTicket,
+  supportTicketsMiddleware.validateReplaySupportTicket,
   supportTicketController.replaySupportTicket
 );
 

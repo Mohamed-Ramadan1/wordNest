@@ -1,41 +1,55 @@
+// packages imports
+import { inject, injectable } from "inversify";
+
 // Models imports
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
-// utils imports
-import { handleServiceError } from "@utils/index";
+// Shard imports
+import { TYPES, handleServiceError } from "@shared/index";
 
-//jobs imports
+// jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
-
-//logging imports
-import {
-  logFailedEmailVerification,
-  logSuccessfulEmailVerification,
-  logSuccessfulEmailResend,
-  logFailedEmailResend,
-  logFailedPasswordReset,
-  logSuccessfulPasswordReset,
-} from "@logging/index";
 
 // interface imports
 import { IAccountRecoveryService } from "../interfaces";
-// Account recovery class
+
+// interfaces imports
+import { IAuthLogger, IEmailsVerificationsLogger } from "@logging/interfaces";
+
+// users imports
+import { IUserAuthRepository } from "@features/users/interfaces";
+
+/**
+ * Service class responsible for handling account recovery operations such as email verification and password reset.
+ * @implements {IAccountRecoveryService}
+ */
+@injectable()
 export default class AccountRecoveryService implements IAccountRecoveryService {
-  // Verify user's email address.
+  /**
+   * Constructs an instance of AccountRecoveryService with injected dependencies.
+   * @param userAuthRepository - The repository instance for user authentication operations.
+   * @param authLogger - The logger instance for authentication-related events.
+   * @param emailsVerificationsLogger - The logger instance for email verification events.
+   */
+  constructor(
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository,
+    @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
+    @inject(TYPES.EmailVerificationLogger)
+    private readonly emailsVerificationsLogger: IEmailsVerificationsLogger
+  ) {}
+
+  /**
+   * Verifies a user's email address and logs the result.
+   * @param user - The user whose email is to be verified.
+   * @returns A promise that resolves when the email is verified.
+   */
   public verifyEmail = async (user: IUser): Promise<void> => {
     try {
-      user.set({
-        emailVerified: true,
-        emailVerifiedAt: new Date(),
-        emailVerificationToken: undefined,
-        emailVerificationExpires: undefined,
-      });
-
-      await user.save();
-
+      await this.userAuthRepository.markEmailAsVerified(user);
       emailQueue.add(EmailQueueJobs.SendAccountVerifiedEmail, { user });
       // log the successful email verification attempt.
-      logSuccessfulEmailVerification(
+      this.emailsVerificationsLogger.logSuccessfulEmailVerification(
         user.email,
         user._id,
         user.createdAt,
@@ -43,7 +57,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       );
     } catch (err: any) {
       // log the failed email verification attempt.
-      logFailedEmailVerification(
+      this.emailsVerificationsLogger.logFailedEmailVerification(
         user.email,
         user._id,
         user.createdAt,
@@ -53,39 +67,48 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
     }
   };
 
-  // Resend verification email.
+  /**
+   * Resends a verification email to the user and logs the result.
+   * @param user - The user requesting a new verification email.
+   */
   public resendVerification = async (user: IUser) => {
     try {
-      user.createEmailVerificationToken();
-      user.lastVerificationEmailSentAt = new Date();
-      user.resendVerificationTokenCount++;
-      await user.save();
+      await this.userAuthRepository.resendVerification(user);
       emailQueue.add(EmailQueueJobs.ResendVerificationEmail, { user });
       // log the successful email resend attempt.
-      logSuccessfulEmailResend(user.email, user._id, user.createdAt);
+      this.emailsVerificationsLogger.logSuccessfulEmailResend(
+        user.email,
+        user._id,
+        user.createdAt
+      );
     } catch (err: any) {
       // log the failed email resend attempt.
-      logFailedEmailResend(user.email, user._id, user.createdAt, err.message);
+      this.emailsVerificationsLogger.logFailedEmailResend(
+        user.email,
+        user._id,
+        user.createdAt,
+        err.message
+      );
       handleServiceError(err);
     }
   };
 
-  // Forgot password.
+  /**
+   * Requests a password reset for the user and logs the result.
+   * @param user - The user requesting a password reset.
+   * @param ip - The IP address from which the request originated (optional).
+   */
   public requestPasswordReset = async (user: IUser, ip: string | undefined) => {
     try {
-      // Generate password reset token
-      user.createPasswordResetToken();
-
-      // Save the user document with the session
-      await user.save();
+      await this.userAuthRepository.requestPasswordReset(user);
 
       // Log successful password reset request
-      logSuccessfulPasswordReset(user.email, user.id, ip);
+      this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
 
       emailQueue.add(EmailQueueJobs.RequestPasswordReset, { user });
     } catch (err: any) {
       // Log the failed password reset attempt
-      logFailedPasswordReset(
+      this.authLogger.logFailedPasswordReset(
         user.email,
         ip,
         user.id,
@@ -97,28 +120,28 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
     }
   };
 
-  // Reset password.
+  /**
+   * Resets the user's password and logs the result.
+   * @param user - The user whose password is to be reset.
+   * @param newPassword - The new password to set for the user.
+   * @param ip - The IP address from which the reset request originated (optional).
+   */
   public resetPassword = async (
     user: IUser,
     newPassword: string,
     ip: string | undefined
   ) => {
     try {
-      user.set({
-        password: newPassword,
-        passwordChangedAt: new Date(),
-        passwordResetToken: undefined,
-        passwordResetTokenExpiredAt: undefined,
-        passwordResetRequestsAttempts: 0,
-        passwordLastResetRequestAttemptDate: undefined,
-      });
-
-      await user.save();
-
+      await this.userAuthRepository.resetPassword(user, newPassword);
       emailQueue.add(EmailQueueJobs.ResetPassword, { user });
-      logSuccessfulPasswordReset(user.email, user.id, ip);
+      this.authLogger.logSuccessfulPasswordReset(user.email, user.id, ip);
     } catch (err: any) {
-      logFailedPasswordReset(user.email, ip, user.id, err.message);
+      this.authLogger.logFailedPasswordReset(
+        user.email,
+        ip,
+        user.id,
+        err.message
+      );
       // If transaction failed, re-throw the error
       handleServiceError(err);
     }

@@ -1,29 +1,60 @@
-// modules / packages imports.
+// Express imports
 import { Response } from "express";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
 // Models imports
-import { IUser, UserModel } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // utils imports
 import {
   generateAuthToken,
   generateLogOutToken,
   handleServiceError,
-} from "@utils/index";
+  TYPES,
+} from "@shared/index";
 
-//jobs imports
+// jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
 
-// logging imports
-import {
-  logSuccessfulLogin,
-  logSuccessfulLogout,
-  logFailedLogin,
-} from "@logging/index";
+// interfaces
+import { IAuthLogger } from "@logging/interfaces";
 
 // interfaces imports
 import { IAuthService } from "../interfaces";
 
+// users imports
+import { IUserAuthRepository } from "@features/users/interfaces";
+
+/**
+ * Service class responsible for handling authentication operations such as registration, login, and logout.
+ * @implements {IAuthService}
+ */
+@injectable()
 export default class AuthService implements IAuthService {
+  // private authLogger: IAuthLogger;
+
+  /**
+   * Constructs an instance of AuthService with injected dependencies.
+   * @param authLogger - The logger instance for authentication-related events.
+   * @param userAuthRepository - The repository instance for user authentication operations.
+   */
+  constructor(
+    @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthRepository: IUserAuthRepository
+  ) {}
+
+  /**
+   * Registers a new user with the provided email, first name, last name, and password.
+   * @param email - The email address of the user.
+   * @param firstName - The first name of the user.
+   * @param lastName - The last name of the user.
+   * @param password - The password for the user account.
+   * @param res - The Express response object used to set authentication details.
+   * @returns A promise that resolves to an object containing the registered user and an authentication token.
+   */
   public async registerWithEmail(
     email: string,
     firstName: string,
@@ -33,17 +64,12 @@ export default class AuthService implements IAuthService {
   ): Promise<{ user: IUser; token: string }> {
     // create a new user with the provided details.
     try {
-      const user: IUser = new UserModel({
+      const user: IUser = await this.userAuthRepository.registerUser(
         email,
         firstName,
         lastName,
-        password,
-      });
-      // generate verification token
-      user.emailVerificationToken = user.createEmailVerificationToken();
-
-      // save the user to the database.
-      await user.save();
+        password
+      );
 
       const token: string = generateAuthToken(user, res);
 
@@ -56,6 +82,13 @@ export default class AuthService implements IAuthService {
     }
   }
 
+  /**
+   * Logs in an existing user and generates an authentication token.
+   * @param user - The user object to log in.
+   * @param ipAddress - The IP address from which the login request originated (optional).
+   * @param res - The Express response object used to set authentication details.
+   * @returns A promise that resolves to an object containing the authentication token.
+   */
   public async loginWithEmail(
     user: IUser,
     ipAddress: string | undefined,
@@ -63,17 +96,22 @@ export default class AuthService implements IAuthService {
   ): Promise<{ token: string }> {
     try {
       const token: string = generateAuthToken(user, res);
-      user.lastLoginIP = ipAddress;
-      user.lastLoginAt = new Date();
-      await user.save();
-      logSuccessfulLogin(user.email, ipAddress);
+      this.userAuthRepository.loginUser(user, ipAddress);
+      this.authLogger.logSuccessfulLogin(user.email, ipAddress);
       return { token };
     } catch (err: any) {
-      logFailedLogin(user.email, ipAddress, err.message);
+      this.authLogger.logFailedLogin(user.email, ipAddress, err.message);
       handleServiceError(err);
     }
   }
 
+  /**
+   * Logs out a user and clears the authentication cookie.
+   * @param user - The user object to log out.
+   * @param ipAddress - The IP address from which the logout request originated (optional).
+   * @param res - The Express response object used to clear authentication details.
+   * @returns The logout token as a string.
+   */
   public logout(
     user: IUser,
     ipAddress: string | undefined,
@@ -82,7 +120,7 @@ export default class AuthService implements IAuthService {
     try {
       const token: string = generateLogOutToken(user, res);
       res.clearCookie("jwt");
-      logSuccessfulLogout(user.email as string, ipAddress);
+      this.authLogger.logSuccessfulLogout(user.email as string, ipAddress);
       return token;
     } catch (err: any) {
       handleServiceError(err);

@@ -1,4 +1,4 @@
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 import { IBlog, BlogCategory } from "@features/blogs/interfaces/blog.interface";
 import { IReadingList } from "../interfaces/readingList.interface";
 import createMailTransporter from "@config/mailTransporter.config";

@@ -1,3 +1,6 @@
+// Packages imports
+import { inject, injectable } from "inversify";
+
 // express imports
 import { Request } from "express";
 
@@ -7,22 +10,16 @@ import Redis from "ioredis";
 // mongoose imports
 import { ObjectId } from "mongoose";
 
-// models imports
-import BlogModel from "@features/blogs/models/blog.model";
-
 // interfaces imports
 import {
   IBlog,
-  ScheduleStatus,
-} from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
-import {
   UpdateScheduleBlogBodyRequestBody,
-  BlogData,
-} from "../../interfaces/scheduledBlogsRequest.interface";
+  ScheduledBlogData,
+} from "../../interfaces/index";
+import { IUser } from "@features/users";
 
-// utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+// shard imports
+import { handleServiceError, TYPES } from "@shared/index";
 
 // jobs imports
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
@@ -31,23 +28,25 @@ import { blogQueue, BlogsQueueJobs } from "@jobs/index";
 const redisClient = new Redis();
 
 // interfaces imports
-import { IScheduledBlogsService } from "../../interfaces/index";
+import {
+  IBlogAuthorRepository,
+  IScheduledBlogsService,
+} from "../../interfaces/index";
 
+@injectable()
 export class ScheduledBlogsService implements IScheduledBlogsService {
+  constructor(
+    @inject(TYPES.UserAuthRepository)
+    private readonly userAuthorRepository: IBlogAuthorRepository
+  ) {}
   /**
    * Creates a new scheduled blog post.
    */
 
-  public async createScheduledBlogPost(blogData: BlogData) {
+  public async createScheduledBlogPost(blogData: ScheduledBlogData) {
     try {
-      const scheduledBlogPost: IBlog = new BlogModel(blogData);
-      scheduledBlogPost.isPublished = false;
-      scheduledBlogPost.isScheduled = true;
-      scheduledBlogPost.scheduleStatus = ScheduleStatus.PENDING;
-      scheduledBlogPost.createBlogSlug();
-      scheduledBlogPost.generateSEOMetadata(blogData);
-      await scheduledBlogPost.save();
-
+      const scheduledBlogPost: IBlog =
+        await this.userAuthorRepository.createScheduleBlogPost(blogData);
       // adding job queue for publishing the blog post in the scheduler date range
       blogQueue.add(
         BlogsQueueJobs.PublishScheduledBlog,
@@ -69,18 +68,11 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
    */
   public async getAllScheduledBlogPosts(user: IUser, request: Request) {
     try {
-      const features = new APIFeatures(
-        BlogModel.find({
-          author: user._id,
-          isScheduled: true,
-        }),
-        request.query
-      )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const scheduledBlogPosts: IBlog[] = await features.execute();
+      const scheduledBlogPosts: IBlog[] =
+        await this.userAuthorRepository.getScheduleBlogPosts(
+          user._id,
+          request.query
+        );
       return scheduledBlogPosts;
     } catch (err: any) {
       handleServiceError(err);
@@ -98,18 +90,12 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
       if (cachedBlog) {
         return JSON.parse(cachedBlog); // Return cached response
       }
-      const blogPost: IBlog | null = await BlogModel.findOne({
-        _id: blogId,
-        author: user._id,
-        isScheduled: true,
-      });
-
-      if (!blogPost) {
-        throw new AppError(
-          "Scheduled blog post not found with this id and related to this user. or it not a scheduled blog post.",
-          404
+      const blogPost: IBlog =
+        await this.userAuthorRepository.getScheduleBlogPostByIdAndAuthor(
+          blogId,
+          user._id
         );
-      }
+
       //  Store the fetched data in Redis (expires in 1 hour)
       await redisClient.setex(cacheKey, 3600, JSON.stringify(blogPost));
 
@@ -129,13 +115,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
     const cacheKey = `blog:${reqBody.blog._id}:${user._id}`;
 
     try {
-      if (reqBody.title) reqBody.blog.title = reqBody.title;
-      if (reqBody.content) reqBody.blog.content = reqBody.content;
-      if (reqBody.tags) reqBody.blog.tags = reqBody.tags;
-      if (reqBody.categories) reqBody.blog.categories = reqBody.categories;
-      reqBody.blog.isEdited = true;
-      reqBody.blog.editedAt = new Date();
-      await reqBody.blog.save();
+      await this.userAuthorRepository.updateScheduleBlogPost(reqBody);
       await redisClient.del(cacheKey);
     } catch (err: any) {
       handleServiceError(err);
@@ -149,19 +129,8 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
     const cacheKey = `blog:${blogId}:${user._id}`;
 
     try {
-      const deletedPost: IBlog | null = await BlogModel.findOneAndDelete({
-        _id: blogId,
-        author: user._id,
-        isScheduled: true,
-      });
+      await this.userAuthorRepository.deleteScheduleBlogPost(blogId, user._id);
 
-      // If no post was deleted, throw a 404
-      if (!deletedPost) {
-        throw new AppError(
-          "Scheduled blog post not found or unauthorized.",
-          404
-        );
-      }
       // check if it at the cash memory and delete it
       await redisClient.del(cacheKey);
     } catch (err: any) {
@@ -177,8 +146,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
     rescheduleDate: Date
   ): Promise<void> {
     try {
-      blog.scheduledFor = rescheduleDate;
-      await blog.save();
+      await this.userAuthorRepository.rescheduleBlogPost(blog, rescheduleDate);
       const scheduledJob = await blogQueue.getJob(blog._id.toString());
       if (scheduledJob) {
         await scheduledJob.remove();

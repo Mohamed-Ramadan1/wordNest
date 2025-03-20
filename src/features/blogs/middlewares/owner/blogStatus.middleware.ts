@@ -1,45 +1,49 @@
-//express imports
-import { Response, Request } from "express";
+// packages imports
+import { inject, injectable } from "inversify";
 
-// utils imports
-import { AppError, catchAsync } from "@utils/index";
+//express imports
+import { Response, Request, NextFunction } from "express";
+
+// shard imports
+import { AppError, catchAsync, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   BlogStatusRequestBody,
   BlogStatusRequestParams,
-} from "../../interfaces/blogStatusRequest.interface";
+  IBlogStatusMiddleware,
+  IBlogAuthorRepository,
+} from "../../interfaces/index";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import BlogModel from "@features/blogs/models/blog.model";
-export class BlogStatusMiddleware {
-  public static validateBlogExists = catchAsync(
+
+@injectable()
+export class BlogStatusMiddleware implements IBlogStatusMiddleware {
+  constructor(
+    @inject(TYPES.BlogAuthorRepository)
+    private readonly blogAuthorRepository: IBlogAuthorRepository
+  ) {}
+
+  public validateBlogExists = catchAsync(
     async (
       req: Request<BlogStatusRequestParams, {}, BlogStatusRequestBody>,
       res: Response,
-      next: Function
+      next: NextFunction
     ) => {
-      const blog: IBlog | null = await BlogModel.findOne({
-        _id: req.params.blogId,
-        author: req.user._id,
-      });
-      if (!blog) {
-        return next(
-          new AppError(
-            `No blog exist with this id and related to thus user.`,
-            404
-          )
+      const blog: IBlog =
+        await this.blogAuthorRepository.getBlogPostByIdAndAuthor(
+          req.params.blogId,
+          req.user._id
         );
-      }
       req.body.blogPost = blog;
       next();
     }
   );
 
-  public static validateConvertToPrivate = catchAsync(
+  public validateConvertToPrivate = catchAsync(
     async (
       req: Request<{}, {}, BlogStatusRequestBody>,
       res: Response,
-      next: Function
+      next: NextFunction
     ) => {
       const { blogPost } = req.body;
       if (blogPost.isPrivate) {
@@ -49,11 +53,11 @@ export class BlogStatusMiddleware {
     }
   );
 
-  public static validateConvertToPublic = catchAsync(
+  public validateConvertToPublic = catchAsync(
     async (
       req: Request<{}, {}, BlogStatusRequestBody>,
       res: Response,
-      next: Function
+      next: NextFunction
     ) => {
       const { blogPost } = req.body;
       if (!blogPost.isPrivate) {
@@ -63,11 +67,11 @@ export class BlogStatusMiddleware {
     }
   );
 
-  public static validateArchiveBlogPost = catchAsync(
+  public validateArchiveBlogPost = catchAsync(
     async (
       req: Request<{}, {}, BlogStatusRequestBody>,
       res: Response,
-      next: Function
+      next: NextFunction
     ) => {
       const { blogPost } = req.body;
       if (blogPost.isArchived) {
@@ -77,11 +81,11 @@ export class BlogStatusMiddleware {
     }
   );
 
-  public static validateUneArchivedBlogPost = catchAsync(
+  public validateUneArchivedBlogPost = catchAsync(
     async (
       req: Request<{}, {}, BlogStatusRequestBody>,
       res: Response,
-      next: Function
+      next: NextFunction
     ) => {
       const { blogPost } = req.body;
       if (!blogPost.isArchived) {

@@ -1,30 +1,50 @@
+// express imports
+import { Request } from "express";
+
+// packages imports
+import { inject, injectable } from "inversify";
+
 // interfaces imports
 import {
   SupportTicketBody,
   SupportTicketBodyReplay,
 } from "@features/supportTickets/interfaces/supportTicketBody.interface";
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
 // packages imports
 import cloudinary from "cloudinary";
 import { ObjectId } from "mongoose";
 
-// utils imports
-import { AppError, uploadToCloudinary } from "@utils/index";
+// shard imports
+import {
+  AppError,
+  uploadToCloudinary,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 
 // logging imports
-import { supportTicketsLogger } from "@logging/index";
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
 // Queues imports
 import { supportTicketQueue, SupportTicketQueueJobs } from "@jobs/index";
-import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
-
-// models imports
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
+import {
+  ISupportTicket,
+  ISupportTicketRepository,
+} from "../../interfaces/index";
 
 // interfaces imports
 import { ISupportTicketService } from "../../interfaces/index";
+
+@injectable()
 export class SupportTicketService implements ISupportTicketService {
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    private readonly supportTicketLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketRepository)
+    private readonly supportTicketRepository: ISupportTicketRepository
+  ) {}
+
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
@@ -48,10 +68,11 @@ export class SupportTicketService implements ISupportTicketService {
       }
 
       // Create new support ticket and save it to the database.
-      const supportTicket = await SupportTicket.create({
-        ...ticketInfo,
-        user: user._id,
-      });
+      const supportTicket =
+        await this.supportTicketRepository.createSupportTicket(
+          ticketInfo,
+          user._id
+        );
 
       // Add the job to the queue to send an email to the user.
       supportTicketQueue.add(SupportTicketQueueJobs.SendTicketCreationEmail, {
@@ -60,19 +81,19 @@ export class SupportTicketService implements ISupportTicketService {
       });
 
       // Log the successful ticket creation.
-      supportTicketsLogger.logTicketCreation(
+      this.supportTicketLogger.logTicketCreation(
         ipAddress,
         user._id,
         supportTicket._id
       );
     } catch (err: any) {
       // Log the error and re-throw it for proper error handling.
-      supportTicketsLogger.logTicketCreationFail(
+      this.supportTicketLogger.logTicketCreationFail(
         ipAddress,
         user._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -80,14 +101,16 @@ export class SupportTicketService implements ISupportTicketService {
    * Retrieves all support tickets for the current user.
    * Fetches a list of all open or closed tickets submitted by the user.
    */
-  async getAllUserSupportTickets(user: IUser): Promise<ISupportTicket[]> {
+  async getAllUserSupportTickets(
+    user: IUser,
+    req: Request
+  ): Promise<ISupportTicket[]> {
     try {
-      const supportTickets: ISupportTicket[] | null = await SupportTicket.find({
-        user: user._id,
-      });
+      const supportTickets =
+        await this.supportTicketRepository.getUserSupportTickets(user._id, req);
       return supportTickets;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -101,12 +124,12 @@ export class SupportTicketService implements ISupportTicketService {
   ): Promise<ISupportTicket> {
     // Implementation here
     try {
-      const supportTicket: ISupportTicket | null = await SupportTicket.findOne({
-        _id: ticketId,
-        user: user._id,
-      });
+      const supportTicket =
+        await this.supportTicketRepository.getUserSupportTicket(
+          ticketId,
+          user._id
+        );
 
-      console.log(supportTicket);
       if (!supportTicket) {
         throw new AppError(
           "No support ticket found with this id nad and related to this user.",
@@ -115,7 +138,7 @@ export class SupportTicketService implements ISupportTicketService {
       }
       return supportTicket;
     } catch (err: any) {
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -142,14 +165,11 @@ export class SupportTicketService implements ISupportTicketService {
         responseInfo.attachment.uploadedAt = new Date();
       }
 
-      // Update the support ticket with the new response.
-      supportTicket.userResponses.push({
-        message: responseInfo.message,
-        responderId: user._id,
-        respondedAt: new Date(),
-        attachment: responseInfo.attachment,
-      });
-      await supportTicket.save();
+      await this.supportTicketRepository.saveSupportTicketReplay(
+        supportTicket,
+        responseInfo,
+        user._id
+      );
       // Add the job to the queue to send an email to the user.
       supportTicketQueue.add(
         SupportTicketQueueJobs.SendUserResponseConfirmationEmail,
@@ -160,20 +180,20 @@ export class SupportTicketService implements ISupportTicketService {
       );
 
       // log success replay ticket
-      supportTicketsLogger.logSuccessReplayTicket(
+      this.supportTicketLogger.logSuccessReplayTicket(
         ipAddress,
         user._id,
         supportTicket._id,
         responseInfo.message
       );
     } catch (err: any) {
-      supportTicketsLogger.logFailReplayTicket(
+      this.supportTicketLogger.logFailReplayTicket(
         ipAddress,
         user._id,
         supportTicket._id,
         err.message
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

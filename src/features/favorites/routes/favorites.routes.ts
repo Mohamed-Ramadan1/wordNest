@@ -1,9 +1,9 @@
 // Express imports
 import { Router } from "express";
-import { TYPES } from "@shared/types/containerTypes";
+
 import { container } from "@config/inversify.config";
 // shared imports
-import { protect } from "@shared/index";
+import { protect, TYPES } from "@shared/index";
 
 // middleware imports
 import { FavoritesMiddleware } from "../middlewares/favorites.middleware";
@@ -16,6 +16,10 @@ const favoritesController = container.get<FavoritesController>(
   TYPES.FavoritesController
 );
 
+const favoritesMiddleware = container.get<FavoritesMiddleware>(
+  TYPES.FavoritesMiddleware
+);
+
 // create  the express router
 const router: Router = Router();
 
@@ -26,7 +30,7 @@ router
   .route("/")
   .get(favoritesController.getFavorites)
   .post(
-    FavoritesMiddleware.validateAddToFavorites,
+    favoritesMiddleware.validateAddToFavorites,
     favoritesController.addToFavorites
   );
 

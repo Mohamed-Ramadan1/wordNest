@@ -3,8 +3,8 @@ import { Response, Request } from "express";
 
 // interface imports
 
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
+// shard imports
+import { catchAsync, sendResponse } from "@shared/index";
 
 // shared interface imports
 import { ApiResponse } from "@shared/index";

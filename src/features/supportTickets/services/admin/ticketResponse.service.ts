@@ -1,27 +1,36 @@
+// packages imports
+import { inject, injectable } from "inversify";
 // interfaces imports
-import {
-  ISupportTicket,
-  SupportTicketStatus,
-} from "@features/supportTickets/interfaces/supportTicket.interface";
+import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { uploadToCloudinary, TYPES, handleServiceError } from "@shared/index";
 
 // logger imports
-import { supportTicketsLogger } from "@logging/index";
+// logger imports
+import { ISupportTicketsLogger } from "@logging/interfaces";
 
-import { IUser } from "@features/users_feature";
+import { IUser } from "@features/users";
 
-import { ObjectId } from "mongoose";
-import { Attachment } from "@features/supportTickets/interfaces/supportTicket.interface";
-import { uploadToCloudinary } from "@utils/index";
 import cloudinary from "cloudinary";
 // queues imports
 import { SupportTicketQueueJobs, supportTicketQueue } from "@jobs/index";
 
 // interfaces imports
-import { ITicketResponseService } from "../../interfaces/index";
+import {
+  ITicketResponseService,
+  TicketResponseData,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
+
+@injectable()
 export class TicketResponseService implements ITicketResponseService {
+  constructor(
+    @inject(TYPES.SupportTicketsLogger)
+    private readonly supportTicketsLogger: ISupportTicketsLogger,
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository
+  ) {}
   /**
    * Allows an admin to respond to a ticket.
    * Admins can provide a reply to address user concerns or issues in a ticket.
@@ -31,14 +40,7 @@ export class TicketResponseService implements ITicketResponseService {
     ticketOwner: IUser,
     ipAddress: string | undefined,
     adminUser: IUser,
-    ticketResponseObject: {
-      message: string;
-      responderId: ObjectId;
-      respondedAt: Date;
-      attachment?: Attachment;
-      internalNotes?: string;
-      escalationLevel?: number;
-    }
+    ticketResponseObject: TicketResponseData
   ): Promise<void> {
     try {
       if (ticketResponseObject.attachment) {
@@ -54,11 +56,12 @@ export class TicketResponseService implements ITicketResponseService {
           uploadedAttachments.secure_url;
         ticketResponseObject.attachment.uploadedAt = new Date();
       }
-      ticket.adminResponses.push(ticketResponseObject);
-      ticket.status = SupportTicketStatus.IN_PROGRESS;
-      await ticket.save();
+      await this.ticketManagementRepository.saveAdminTicketResponse(
+        ticket,
+        ticketResponseObject
+      );
       // log response event
-      supportTicketsLogger.logSuccessAdminResponseTicket(
+      this.supportTicketsLogger.logSuccessAdminResponseTicket(
         ipAddress,
         adminUser._id,
         ticket._id,
@@ -71,13 +74,13 @@ export class TicketResponseService implements ITicketResponseService {
         supportTicket: ticket,
       });
     } catch (err: any) {
-      supportTicketsLogger.logFailAdminResponseTicket(
+      this.supportTicketsLogger.logFailAdminResponseTicket(
         ipAddress,
         adminUser._id,
         ticket._id,
         err
       );
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

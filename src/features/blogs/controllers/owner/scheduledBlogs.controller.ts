@@ -5,13 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { TYPES } from "@shared/types/containerTypes";
-
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
-// shared interface imports
-import { ApiResponse } from "@shared/index";
+import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
 
 // interfaces imports
 import {
@@ -19,8 +13,8 @@ import {
   ScheduleBlogsParams,
   RescheduleBlogRequestBody,
   UpdateScheduleBlogBodyRequestBody,
-} from "../../interfaces/scheduledBlogsRequest.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
+  IBlog,
+} from "../../interfaces/index";
 
 import { IScheduledBlogsService } from "../../interfaces/index";
 

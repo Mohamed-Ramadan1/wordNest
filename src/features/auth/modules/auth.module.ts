@@ -1,9 +1,11 @@
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@shared/types/containerTypes";
+import { TYPES } from "@shared/index";
 import {
   IAuthRepository,
   IAccountRecoveryService,
   IAuthService,
+  IAuthMiddleware,
+  IAccountRecoveryMiddleware,
 } from "../interfaces/index";
 
 // Service imports
@@ -16,6 +18,10 @@ import AuthController from "../controllers/auth.controller";
 
 // Repository imports
 import { AuthRepository } from "../repositories/auth.repository";
+
+// middleware imports
+import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { AccountRecoveryMiddleware } from "../middlewares/accountRecovery.middleware";
 
 /**
  * This module encapsulates the bindings for the Authentication feature.
@@ -39,5 +45,14 @@ export default new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope();
   bind<AccountRecoveryController>(TYPES.AccountRecoveryController)
     .to(AccountRecoveryController)
+    .inSingletonScope();
+
+  // Binding the middleware
+  bind<IAuthMiddleware>(TYPES.AuthMiddleware)
+    .to(AuthMiddleware)
+    .inSingletonScope();
+
+  bind<IAccountRecoveryMiddleware>(TYPES.AccountRecoveryMiddleware)
+    .to(AccountRecoveryMiddleware)
     .inSingletonScope();
 });

@@ -1,17 +1,27 @@
+// Packages imports
+import { inject, injectable } from "inversify";
+
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { AppError, handleServiceError } from "@utils/index";
+import { AppError, handleServiceError, TYPES } from "@shared/index";
 
 // interfaces imports
-import { IBlogStatusService } from "../../interfaces/index";
+import {
+  IBlogAuthorRepository,
+  IBlogStatusService,
+} from "../../interfaces/index";
 
+@injectable()
 export class BlogStatusService implements IBlogStatusService {
+  constructor(
+    @inject(TYPES.BlogAuthorRepository)
+    private readonly blogAuthorRepository: IBlogAuthorRepository
+  ) {}
   /**
    * Converts a blog post to private.
    */
   public async convertBlogToPrivate(blogPost: IBlog) {
     try {
-      blogPost.isPrivate = true;
-      await blogPost.save();
+      await this.blogAuthorRepository.markBlogAsPrivate(blogPost);
     } catch (err: any) {
       throw new AppError(err.message, 500);
     }
@@ -22,8 +32,7 @@ export class BlogStatusService implements IBlogStatusService {
    */
   public async convertBlogToPublic(blogPost: IBlog) {
     try {
-      blogPost.isPrivate = false;
-      await blogPost.save();
+      await this.blogAuthorRepository.markBlogAsPublic(blogPost);
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -34,8 +43,7 @@ export class BlogStatusService implements IBlogStatusService {
    */
   public async archiveBlogPost(blogPost: IBlog) {
     try {
-      blogPost.isArchived = true;
-      await blogPost.save();
+      await this.blogAuthorRepository.markBlogAsArchived(blogPost);
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -46,8 +54,7 @@ export class BlogStatusService implements IBlogStatusService {
    */
   public async unArchiveBlogPost(blogPost: IBlog) {
     try {
-      blogPost.isArchived = false;
-      await blogPost.save();
+      await this.blogAuthorRepository.markBlogAsUnArchived(blogPost);
     } catch (err: any) {
       handleServiceError(err);
     }

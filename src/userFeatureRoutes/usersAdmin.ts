@@ -3,15 +3,15 @@ import { protect, restrictTo, TYPES } from "@shared/index";
 import { container } from "@config/inversify.config";
 
 // middleware imports
-import { RolesManagementMiddleware } from "@features/users_feature/middlewares/admin/rolesManagement.middleware";
-import { LockUserAccountMiddleware } from "@features/users_feature/middlewares/admin/locAccounts.middleware";
-import { BanUserAccountMiddleware } from "@features/users_feature/middlewares/admin/banUsersAccounts.middleware";
+import { RolesManagementMiddleware } from "@features/users/middlewares/admin/rolesManagement.middleware";
+import { LockUserAccountMiddleware } from "@features/users/middlewares/admin/locAccounts.middleware";
+import { BanUserAccountMiddleware } from "@features/users/middlewares/admin/banUsersAccounts.middleware";
 
 // controllers imports
-import { UsersCrudController } from "@features/users_feature/controllers/admin/usersCrud.controller";
-import { RolesManagementController } from "@features/users_feature/controllers/admin/roleManagement.controller";
-import { LockAccountsController } from "@features/users_feature/controllers/admin/locAccounts.controller";
-import { BanUsersAccountsController } from "@features/users_feature/controllers/admin/banUsersAccounts.controller";
+import { UsersCrudController } from "@features/users/controllers/admin/usersCrud.controller";
+import { RolesManagementController } from "@features/users/controllers/admin/roleManagement.controller";
+import { LockAccountsController } from "@features/users/controllers/admin/locAccounts.controller";
+import { BanUsersAccountsController } from "@features/users/controllers/admin/banUsersAccounts.controller";
 
 // Instantiate controller
 const usersCrudController = container.get<UsersCrudController>(
@@ -27,6 +27,17 @@ const banUsersAccountsController = container.get<BanUsersAccountsController>(
   TYPES.BanUsersAccountsController
 );
 
+// middleware creation for using container
+const rolesManagementMiddleware = container.get<RolesManagementMiddleware>(
+  TYPES.RolesManagementMiddleware
+);
+const lockUserAccountMiddleware = container.get<LockUserAccountMiddleware>(
+  TYPES.LockUserAccountMiddleware
+);
+
+const banUserAccountMiddleware = container.get<BanUserAccountMiddleware>(
+  TYPES.BanUserAccountMiddleware
+);
 
 const router: Router = Router();
 
@@ -53,8 +64,8 @@ router.route("/:userId/roles").get(rolesManagementController.listUserRoles);
 router
   .route("/:userId/assign-role")
   .post(
-    RolesManagementMiddleware.validateRequestParams,
-    RolesManagementMiddleware.validateAddRoleToUser,
+    rolesManagementMiddleware.validateRequestParams,
+    rolesManagementMiddleware.validateAddRoleToUser,
     rolesManagementController.assignRoleToUser
   );
 
@@ -62,8 +73,8 @@ router
 router
   .route("/:userId/remove-role")
   .delete(
-    RolesManagementMiddleware.validateRequestParams,
-    RolesManagementMiddleware.validateRemoveRoleFromUser,
+    rolesManagementMiddleware.validateRequestParams,
+    rolesManagementMiddleware.validateRemoveRoleFromUser,
     rolesManagementController.removeRoleFromUser
   );
 
@@ -78,7 +89,7 @@ router
 router
   .route("/:userId/lock-account")
   .patch(
-    LockUserAccountMiddleware.validateLockAccount,
+    lockUserAccountMiddleware.validateLockAccount,
     lockAccountsController.lockAccount
   );
 
@@ -86,7 +97,7 @@ router
 router
   .route("/:userId/unlock-account")
   .patch(
-    LockUserAccountMiddleware.validateUnlockAccount,
+    lockUserAccountMiddleware.validateUnlockAccount,
     lockAccountsController.unlockAccount
   );
 
@@ -95,7 +106,7 @@ router
 router
   .route("/:userId/ban-account")
   .patch(
-    BanUserAccountMiddleware.validateBanUserAccount,
+    banUserAccountMiddleware.validateBanUserAccount,
     banUsersAccountsController.banUserAccount
   );
 
@@ -103,7 +114,7 @@ router
 router
   .route("/:userId/unban-account")
   .patch(
-    BanUserAccountMiddleware.validateUnBanUserAccount,
+    banUserAccountMiddleware.validateUnBanUserAccount,
     banUsersAccountsController.unBanUserAccount
   );
 

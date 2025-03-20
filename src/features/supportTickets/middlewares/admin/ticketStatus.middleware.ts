@@ -1,37 +1,43 @@
-import { catchAsync } from "@utils/index";
-import { Request, Response, NextFunction } from "express";
-import {
-  ISupportTicket,
-  SupportTicketStatus,
-} from "@features/supportTickets/interfaces/supportTicket.interface";
-import {
-  TicketCloseBody,
-  TicketParams,
-} from "@features/supportTickets/interfaces/SupportTicketAdminBody.interface";
+// express imports
+import { NextFunction, Request, Response } from "express";
 
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-import { AppError } from "@utils/index";
-import { IUser, UserModel } from "@features/users_feature";
-export class TicketStatusMiddleware {
+// shard imports
+import { catchAsync, AppError, TYPES } from "@shared/index";
+
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
+// users feature interfaces imports
+import { IUser } from "@features/users";
+
+// interfaces imports
+import {
+  TicketParams,
+  TicketCloseBody,
+  SupportTicketStatus,
+  ITicketStatusMiddleware,
+  ISupportTicketManagementRepository,
+} from "../../interfaces/index";
+
+@injectable()
+export class TicketStatusMiddleware implements ITicketStatusMiddleware {
+  constructor(
+    @inject(TYPES.SupportTicketManagementRepository)
+    private readonly supportTicketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>
+  ) {}
   // validate close support ticket
-  static validateCloseTicket = catchAsync(
+  public validateCloseTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketCloseBody>,
       res: Response,
       next: NextFunction
     ) => {
       // check if ticket exists
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
-      if (!ticket) {
-        return next(
-          new AppError(
-            `No support ticket found with this id : ${req.params.ticketId}`,
-            404
-          )
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
         );
-      }
 
       // check if ticket is already closed
       if (ticket.status === SupportTicketStatus.CLOSED) {
@@ -41,7 +47,9 @@ export class TicketStatusMiddleware {
       }
 
       // check if the user own the ticket is exist
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
       if (!ticketOwner) {
         return next(new AppError(`ticket owner no longer exists`, 404));
       }
@@ -52,16 +60,18 @@ export class TicketStatusMiddleware {
     }
   );
 
-  static validateReopenTicket = catchAsync(
+  public validateReopenTicket = catchAsync(
     async (
       req: Request<TicketParams, {}, TicketCloseBody>,
       res: Response,
       next: NextFunction
     ) => {
       // check if ticket exists
-      const ticket: ISupportTicket | null = await SupportTicket.findById(
-        req.params.ticketId
-      );
+      const ticket =
+        await this.supportTicketManagementRepository.getSupportTicketById(
+          req.params.ticketId
+        ); // req.params.ticketId
+
       if (!ticket) {
         return next(
           new AppError(
@@ -82,7 +92,10 @@ export class TicketStatusMiddleware {
       }
 
       // check if the user own the ticket is exist
-      const ticketOwner: IUser | null = await UserModel.findById(ticket.user);
+      const ticketOwner: IUser | null = await this.userModel.findById(
+        ticket.user
+      );
+
       if (!ticketOwner) {
         return next(new AppError(`ticket owner no longer exists`, 404));
       }

@@ -1,10 +1,13 @@
+import { container } from "@config/inversify.config";
 import { Job } from "bull";
-import { UserModel } from "@features/users_feature";
-import { banAccountsLogger } from "@logging/index";
+import { UserModel } from "@features/users";
+import { BandedAccountsLogger } from "@logging/index";
 import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
-import { IUser } from "@features/users_feature";
-import { AppError } from "@utils/appError";
+import { IUser } from "@features/users";
+import { AppError, TYPES } from "@shared/index";
+
+const bandAccountsLogger = new BandedAccountsLogger();
 
 export const unBanAccountProcessor = async (job: Job) => {
   const user: IUser | null = await UserModel.findById(job.data.user._id);
@@ -26,7 +29,7 @@ export const unBanAccountProcessor = async (job: Job) => {
     });
 
     // log success un-ban account
-    banAccountsLogger.logSuccessUnbanUserAccount(
+    bandAccountsLogger.logSuccessUnbanUserAccount(
       "system-automatic-tasks",
       "system-automatic-tasks",
       user.email,
@@ -36,7 +39,7 @@ export const unBanAccountProcessor = async (job: Job) => {
     );
   } catch (err: any) {
     // log failed un-ban account
-    banAccountsLogger.logFailedUnbanUserAccount(
+    bandAccountsLogger.logFailedUnbanUserAccount(
       "system-automatic-tasks",
       "system-automatic-tasks",
       user.email,

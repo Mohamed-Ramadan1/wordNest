@@ -3,24 +3,19 @@ import { Response, Request } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// shard imports
-import { TYPES } from "@shared/types/containerTypes";
-
-// utils imports
-import { catchAsync, sendResponse } from "@utils/index";
-
 // shared interface imports
-import { ApiResponse } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // service  imports
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import {
   BlogParams,
   CreateBlogBodyRequest,
   DeleteBlogBodyRequest,
   UpdatesBlogBodyRequest,
-} from "@features/blogs/interfaces/blogOwnerRequest.interface";
-import { IBlogOwnerCRUDService } from "../../interfaces/index";
+  IBlogOwnerCRUDService,
+  IBlog,
+} from "@features/blogs/interfaces/index";
+
 @injectable()
 export class BlogCRUDController {
   private blogCRUDService: IBlogOwnerCRUDService;

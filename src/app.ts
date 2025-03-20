@@ -32,8 +32,8 @@ import {
 // error handling middleware
 import { globalError } from "@shared/index";
 
-// utils imports
-import { AppError } from "@utils/index";
+// shard imports
+import { AppError } from "@shared/index";
 
 require("events").setMaxListeners(50);
 

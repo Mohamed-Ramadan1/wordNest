@@ -1,11 +1,13 @@
+//packages imports
+import { isValid, parse } from "date-fns";
+import { Model } from "mongoose";
+import { inject, injectable } from "inversify";
+
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
-
-// utils imports
-import { AppError, catchAsync, validateDto } from "@utils/index";
+// shard imports
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -14,7 +16,9 @@ import {
   ReadingListSettingsRequestParams,
   ReminderAlertData,
   DeleteReminderAlert,
-} from "../interfaces/readingListSettingsRequest.interface";
+  IReadingList,
+  IReadingListSettingsMiddleware,
+} from "../interfaces/index";
 
 // dto imports
 import { validateAlertTimeFormateDateDto } from "../dtos/validateAlertDateFormate.dto";
@@ -22,12 +26,18 @@ import { validateAlertTimeFormateDateDto } from "../dtos/validateAlertDateFormat
 // helpers
 import { checkReadingListJobExist } from "../helpers/validateJobExist.helper";
 
-//packages imports
-import { isValid, parse } from "date-fns";
-import { IReadingList } from "../interfaces/readingList.interface";
-import { IBlog } from "@features/blogs/interfaces/blog.interface";
-export class ReadingListSettingsMiddleware {
-  public static validateAlertTimeFormateDate = [
+import { IBlog } from "@features/blogs/interfaces/index";
+
+@injectable()
+export class ReadingListSettingsMiddleware
+  implements IReadingListSettingsMiddleware
+{
+  constructor(
+    @inject(TYPES.ReadingListModel)
+    private readingListModel: Model<IReadingList>
+  ) {}
+
+  public validateAlertTimeFormateDate = [
     validateDto(validateAlertTimeFormateDateDto),
     catchAsync(
       async (
@@ -63,7 +73,7 @@ export class ReadingListSettingsMiddleware {
     ),
   ];
 
-  public static createReadingReminderAlert = catchAsync(
+  public createReadingReminderAlert = catchAsync(
     async (
       req: Request<
         ReadingListSettingsRequestParams,
@@ -77,10 +87,11 @@ export class ReadingListSettingsMiddleware {
       const { itemId } = req.params;
 
       // check item existing and extract required data
-      const readingItem: IReadingList | null = await ReadingListModel.findOne({
-        _id: itemId,
-        user: req.user._id,
-      });
+      const readingItem: IReadingList | null =
+        await this.readingListModel.findOne({
+          _id: itemId,
+          user: req.user._id,
+        });
       if (!readingItem) {
         return next(
           new AppError("Reading item you want to set alert for  not found", 404)
@@ -98,7 +109,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateReScheduleReminderAlert = catchAsync(
+  public validateReScheduleReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams>,
       res: Response,
@@ -120,7 +131,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateCreateReminderAlert = catchAsync(
+  public validateCreateReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams, {}, DeleteReminderAlert>,
       res: Response,
@@ -141,7 +152,7 @@ export class ReadingListSettingsMiddleware {
     }
   );
 
-  public static validateDeleteReminderAlert = catchAsync(
+  public validateDeleteReminderAlert = catchAsync(
     async (
       req: Request<ReadingListSettingsRequestParams, {}, DeleteReminderAlert>,
       res: Response,
@@ -158,7 +169,6 @@ export class ReadingListSettingsMiddleware {
           )
         );
       }
-
       next();
     }
   );

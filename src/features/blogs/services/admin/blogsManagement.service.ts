@@ -1,31 +1,39 @@
 // Packages imports
 import { ParsedQs } from "qs";
+import { Request } from "express";
+import { inject, injectable } from "inversify";
 
 import { ObjectId } from "mongoose";
 
-// model imports
-import BlogModel from "@features/blogs/models/blog.model";
-
 // utils imports
-import { APIFeatures, AppError, handleServiceError } from "@utils/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
-import {
-  IBlog,
-  DeletionStatus,
-  ReviewContentStatus,
-} from "@features/blogs/interfaces/blog.interface";
-import { IUser } from "@features/users_feature";
+import { IBlog } from "@features/blogs/interfaces/blog.interface";
+import { IUser } from "@features/users";
 
 // queues imports
 import { BlogsQueueJobs, blogQueue } from "@jobs/index";
 
-// logger
-import { blogQueueLogger } from "@logging/index";
+// logger imports
+import { IBlogsQueueLogger } from "@logging/interfaces";
 
 // interfaces imports
-import { IBlogManagementService } from "../../interfaces/index";
+import {
+  IBlogManagementService,
+  IBlogManagementRepository,
+  IBlogRepository,
+} from "../../interfaces/index";
 
+@injectable()
 export class BlogManagementService implements IBlogManagementService {
+  constructor(
+    @inject(TYPES.BlogsQueueLogger)
+    private readonly blogQueueLogger: IBlogsQueueLogger,
+    @inject(TYPES.BlogManagementRepository)
+    private readonly blogManagementRepository: IBlogManagementRepository,
+    @inject(TYPES.BlogsRepository)
+    private readonly blogsRepository: IBlogRepository
+  ) {}
   /**
    * Deletes a blog post permanently.
    */
@@ -36,20 +44,19 @@ export class BlogManagementService implements IBlogManagementService {
     userAdmin: IUser
   ): Promise<void> {
     try {
-      blogPost.toBeDeleted = true;
-      blogPost.deletionStatus = DeletionStatus.PENDING;
-      await blogPost.save();
+      await this.blogManagementRepository.markBlogPostToDelete(blogPost);
 
       // register blog post background deletion job
       blogQueue.add(BlogsQueueJobs.DeleteBlog, {
         blog: blogPost,
       });
+
       blogQueue.add(BlogsQueueJobs.SendDeleteBlogEmail, {
         blogPost: blogPost,
         blogAuthor: blogAuthor,
       });
       // log the deletion of the blog post
-      blogQueueLogger.logBlogPostDeletion(
+      this.blogQueueLogger.logBlogPostDeletion(
         blogPost._id,
         userAdmin.email,
         new Date()
@@ -65,10 +72,9 @@ export class BlogManagementService implements IBlogManagementService {
 
   public async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
     try {
-      const blogPost = await BlogModel.findById(blogPostId);
-      if (!blogPost) {
-        throw new AppError("Blog post not found", 404);
-      }
+      const blogPost: IBlog =
+        await this.blogsRepository.getBlogById(blogPostId);
+
       return blogPost;
     } catch (err: any) {
       handleServiceError(err);
@@ -79,14 +85,9 @@ export class BlogManagementService implements IBlogManagementService {
    * Retrieves all blog posts.
    */
 
-  public async getAllBlogPosts(requestQuery: ParsedQs) {
+  public async getAllBlogPosts(request: Request) {
     try {
-      const feature = new APIFeatures(BlogModel.find(), requestQuery)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const blogs: IBlog[] = await feature.execute();
+      const blogs: IBlog[] = await this.blogsRepository.getBlogs(request);
       return blogs;
     } catch (err: any) {
       handleServiceError(err);
@@ -98,18 +99,13 @@ export class BlogManagementService implements IBlogManagementService {
    */
   public async getAllBlogPostsByUser(
     userId: ObjectId,
-    requestQuery: ParsedQs
+    query: ParsedQs
   ): Promise<IBlog[]> {
     try {
-      const feature = new APIFeatures(
-        BlogModel.find({ author: userId }),
-        requestQuery
-      )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-      const blogs: IBlog[] = await feature.execute();
+      const blogs: IBlog[] = await this.blogsRepository.getBlogPostsByUser(
+        userId,
+        query
+      );
       return blogs;
     } catch (err: any) {
       handleServiceError(err);
@@ -126,12 +122,10 @@ export class BlogManagementService implements IBlogManagementService {
     userAdmin: IUser
   ): Promise<void> {
     try {
-      blogPost.isPublished = false;
-      blogPost.underReview = true;
-      blogPost.addToUnderReviewAt = new Date();
-      blogPost.reviewStatus = ReviewContentStatus.PENDING;
-      blogPost.addToUnderReviewBy = userAdmin._id;
-      await blogPost.save();
+      await this.blogManagementRepository.markBlogPostAsUnpublished(
+        blogPost,
+        userAdmin._id
+      );
 
       // add email send queue
       blogQueue.add(BlogsQueueJobs.SendUnPublishedBlogEmail, {
@@ -139,7 +133,7 @@ export class BlogManagementService implements IBlogManagementService {
         blogAuthor: blogAuthor,
       });
       // log the action
-      blogQueueLogger.logBlogPostUnPublishedAction(
+      this.blogQueueLogger.logBlogPostUnPublishedAction(
         blogPost._id,
         new Date(),
         userAdmin.email
@@ -159,13 +153,10 @@ export class BlogManagementService implements IBlogManagementService {
     userAdmin: IUser
   ): Promise<void> {
     try {
-      blogPost.isPublished = true;
-      blogPost.underReview = false;
-      blogPost.addToUnderReviewAt = undefined;
-      blogPost.reviewStatus = ReviewContentStatus.APPROVED;
-      blogPost.reviewedAt = new Date();
-      blogPost.reviewedBy = userAdmin._id;
-      await blogPost.save();
+      await this.blogManagementRepository.markBlogPostAsPublished(
+        blogPost,
+        userAdmin._id
+      );
 
       // add email send queue
       blogQueue.add(BlogsQueueJobs.SendRepublishedBlogEmail, {
@@ -173,7 +164,7 @@ export class BlogManagementService implements IBlogManagementService {
         blogAuthor: blogAuthor,
       });
       // log the action
-      blogQueueLogger.logBlogPostRepublishedAction(
+      this.blogQueueLogger.logBlogPostRepublishedAction(
         blogPost._id,
         new Date(),
         userAdmin.email

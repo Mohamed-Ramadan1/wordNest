@@ -12,6 +12,8 @@ const router: Router = Router();
 // create an instance of the BlogsController
 const blogsController = container.get<BlogsController>(TYPES.BlogsController);
 
+
+
 // define the routes
 router.get("/", blogsController.getAllBlogPosts);
 router.get("/:blogId", blogsController.getBlogPost);
