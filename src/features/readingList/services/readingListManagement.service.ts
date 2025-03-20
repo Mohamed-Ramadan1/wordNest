@@ -2,16 +2,14 @@
 import { ObjectId } from "mongoose";
 import { inject, injectable } from "inversify";
 // shard imports
-import { AppError, handleServiceError, TYPES } from "@shared/index";
-
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   IReadingListManagementService,
   ReadingStatus,
   IReadingListRepository,
+  IReadingList,
 } from "../interfaces/index";
 
 @injectable()
@@ -31,14 +29,11 @@ export class ReadingListManagementService
     userId: ObjectId
   ): Promise<void> {
     try {
-      const updatedListItem = await ReadingListModel.findOneAndUpdate({
-        _id: listItemId,
-        user: userId,
-        status: ReadingStatus.UNREAD,
-      });
-      if (!updatedListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
+      await this.readingListRepository.updateReadingStatus(
+        listItemId,
+        userId,
+        ReadingStatus.UNREAD
+      );
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -53,16 +48,17 @@ export class ReadingListManagementService
     userId: ObjectId
   ): Promise<void> {
     try {
-      const updatedListItem = await ReadingListModel.findOneAndUpdate({
-        _id: listItemId,
-        user: userId,
-        status: ReadingStatus.COMPLETED,
-      });
-      if (!updatedListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
-      if (updatedListItem.autoRemove) {
-        await ReadingListModel.deleteOne({ _id: listItemId });
+      const readingListItem: IReadingList =
+        await this.readingListRepository.updateReadingStatus(
+          listItemId,
+          userId,
+          ReadingStatus.COMPLETED
+        );
+      if (readingListItem.autoRemove) {
+        await this.readingListRepository.deleteReadingListItem(
+          listItemId,
+          userId
+        );
       }
     } catch (err: any) {
       handleServiceError(err);
@@ -78,14 +74,11 @@ export class ReadingListManagementService
     userId: ObjectId
   ): Promise<void> {
     try {
-      const updatedListItem = await ReadingListModel.findOneAndUpdate({
-        _id: listItemId,
-        user: userId,
-        status: ReadingStatus.UNREAD,
-      });
-      if (!updatedListItem) {
-        throw new AppError("Reading list item not found.", 404);
-      }
+      await this.readingListRepository.updateReadingStatus(
+        listItemId,
+        userId,
+        ReadingStatus.READING
+      );
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -97,10 +90,7 @@ export class ReadingListManagementService
 
   public async clearReadingList(userId: ObjectId): Promise<void> {
     try {
-      const deletedItems = await ReadingListModel.deleteMany({ user: userId });
-      if (!deletedItems.acknowledged) {
-        throw new AppError("Failed to clear reading list", 400);
-      }
+      await this.readingListRepository.clearReadingList(userId);
     } catch (err: any) {
       handleServiceError(err);
     }

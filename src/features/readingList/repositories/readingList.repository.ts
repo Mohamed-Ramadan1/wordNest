@@ -120,7 +120,7 @@ export class ReadingListRepository implements IReadingListRepository {
     listItemId: ObjectId,
     userId: ObjectId,
     readingStatus: ReadingStatus
-  ): Promise<void> {
+  ): Promise<IReadingList> {
     try {
       const updatedListItem: IReadingList | null =
         await this.readingListModel.findOneAndUpdate(
@@ -134,6 +134,7 @@ export class ReadingListRepository implements IReadingListRepository {
       if (!updatedListItem) {
         throw new Error("Reading list item not found.");
       }
+      return updatedListItem;
     } catch (err: any) {
       throw new Error(
         `Error occurred while marking list item as unread: ${err.message}`

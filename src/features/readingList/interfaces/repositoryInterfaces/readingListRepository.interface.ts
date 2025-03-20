@@ -61,14 +61,14 @@ export interface IReadingListRepository {
    * @param {ObjectId} listItemId - The unique identifier of the reading list item.
    * @param {ObjectId} userId - The unique identifier of the user.
    * @param {ReadingStatus} readingStatus - The new reading status to set.
-   * @returns {Promise<void>} A promise that resolves when the status is updated.
+   * @returns {Promise<IReadingList>} A promise that resolves when the status is updated.
    * @throws {Error} If the item is not found or an error occurs during the update.
    */
   updateReadingStatus(
     listItemId: ObjectId,
     userId: ObjectId,
     readingStatus: ReadingStatus
-  ): Promise<void>;
+  ): Promise<IReadingList>;
 
   /**
    * Clears all reading list items for a specific user.
