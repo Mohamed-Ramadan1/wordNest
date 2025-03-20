@@ -17,6 +17,9 @@ import { ReadingListSettingsService } from "../services/readingListSettings.serv
 import { ReadingListCRUDMiddleware } from "../middlewares/readingListCRUD.middleware";
 import { ReadingListSettingsMiddleware } from "../middlewares/readingListSettings.middleware";
 
+// repository imports
+import { ReadingListRepository } from "../repositories/readingList.repository";
+
 // interface imports
 import {
   IReadingListCRUDService,
@@ -25,6 +28,7 @@ import {
   IReadingListCRUDMiddleware,
   IReadingListSettingsMiddleware,
   IReadingList,
+  IReadingListRepository,
 } from "../interfaces/index";
 
 /**
@@ -70,5 +74,10 @@ export default new ContainerModule((bind: interfaces.Bind) => {
 
   bind<IReadingListSettingsMiddleware>(TYPES.ReadingListSettingsMiddleware)
     .to(ReadingListSettingsMiddleware)
+    .inSingletonScope();
+
+  // Binding the repository to its interface
+  bind<IReadingListRepository>(TYPES.ReadingListRepository)
+    .to(ReadingListRepository)
     .inSingletonScope();
 });

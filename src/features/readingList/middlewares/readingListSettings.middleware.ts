@@ -1,16 +1,13 @@
 //packages imports
 import { isValid, parse } from "date-fns";
-
+import { Model } from "mongoose";
 import { inject, injectable } from "inversify";
 
 //express imports
 import { Response, Request, NextFunction } from "express";
 
-// models imports
-import { ReadingListModel } from "../models/readingList.model";
-
 // shard imports
-import { AppError, catchAsync, validateDto } from "@shared/index";
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -35,7 +32,11 @@ import { IBlog } from "@features/blogs/interfaces/index";
 export class ReadingListSettingsMiddleware
   implements IReadingListSettingsMiddleware
 {
-  constructor() {}
+  constructor(
+    @inject(TYPES.ReadingListModel)
+    private readingListModel: Model<IReadingList>
+  ) {}
+
   public validateAlertTimeFormateDate = [
     validateDto(validateAlertTimeFormateDateDto),
     catchAsync(
@@ -86,10 +87,11 @@ export class ReadingListSettingsMiddleware
       const { itemId } = req.params;
 
       // check item existing and extract required data
-      const readingItem: IReadingList | null = await ReadingListModel.findOne({
-        _id: itemId,
-        user: req.user._id,
-      });
+      const readingItem: IReadingList | null =
+        await this.readingListModel.findOne({
+          _id: itemId,
+          user: req.user._id,
+        });
       if (!readingItem) {
         return next(
           new AppError("Reading item you want to set alert for  not found", 404)
@@ -167,7 +169,6 @@ export class ReadingListSettingsMiddleware
           )
         );
       }
-
       next();
     }
   );

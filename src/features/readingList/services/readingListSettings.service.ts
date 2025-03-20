@@ -1,11 +1,11 @@
 // Packages imports
 import { ObjectId } from "mongoose";
-
+import { inject, injectable } from "inversify";
 // JOBS imports
 import { readingListQueue, ReadingListQueueJobs } from "@jobs/index";
 
 // shard imports
-import { AppError } from "@shared/index";
+import { AppError, handleServiceError, TYPES } from "@shared/index";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
 // models imports
@@ -13,10 +13,16 @@ import { ReadingListModel } from "../models/readingList.model";
 
 // interfaces imports
 import {
+  IReadingList,
   IReadingListSettingsService,
+  IReadingListRepository,
   ReminderAlertData,
 } from "../interfaces/index";
 export class ReadingListSettingsService implements IReadingListSettingsService {
+  constructor(
+    @inject(TYPES.ReadingListRepository)
+    private readingListRepository: IReadingListRepository
+  ) {}
   /**
    * Sets a reminder alert for a specific reading list item.
    */
@@ -89,7 +95,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
   ): Promise<void> {
     try {
       await readingListQueue.removeJobs(itemId.toString());
-      const updatedReadingListItem: IBlog | null =
+      const updatedReadingListItem: IReadingList | null =
         await ReadingListModel.findOneAndUpdate(
           { _id: itemId, user: userId },
           {
@@ -120,7 +126,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
     userId: ObjectId
   ): Promise<void> {
     try {
-      const updatedReadingListItem: IBlog | null =
+      const updatedReadingListItem: IReadingList | null =
         await ReadingListModel.findOneAndUpdate(
           { _id: listItemId, user: userId },
           {
@@ -149,9 +155,8 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
     listItemId: ObjectId,
     userId: ObjectId
   ): Promise<void> {
-    console.log("get here");
     try {
-      const updatedReadingListItem: IBlog | null =
+      const updatedReadingListItem: IReadingList | null =
         await ReadingListModel.findOneAndUpdate(
           { _id: listItemId, user: userId },
           {

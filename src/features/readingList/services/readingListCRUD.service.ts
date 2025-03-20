@@ -1,21 +1,34 @@
 // Packages imports
 import { ParsedQs } from "qs";
+import { inject, injectable } from "inversify";
 import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
 // shard imports
-import { APIFeatures, AppError } from "@shared/index";
+import {
+  APIFeatures,
+  AppError,
+  handleServiceError,
+  TYPES,
+} from "@shared/index";
 import { IReadingList } from "../interfaces/readingList.interface";
-
-// interface imports
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
-import { IReadingListCRUDService } from "../interfaces/index";
+import {
+  IReadingListCRUDService,
+  IReadingListRepository,
+} from "../interfaces/index";
 
 // redis client instance creation.
 const redisClient = new Redis();
+
+@injectable()
 export class ReadingListCRUDService implements IReadingListCRUDService {
+  constructor(
+    @inject(TYPES.ReadingListRepository)
+    private readingListRepository: IReadingListRepository
+  ) {}
   /**
    * Retrieves all reading list items.
    */
@@ -31,10 +44,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
       const readingList = await features.execute();
       return readingList;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -64,10 +74,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
       await redisClient.setex(cacheKey, 3600, JSON.stringify(readingListItem));
       return readingListItem;
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -91,10 +98,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
         throw new AppError("Reading list item not created.", 500);
       }
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -121,10 +125,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
       }
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw err;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

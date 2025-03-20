@@ -1,8 +1,8 @@
 // Packages imports
 import { ObjectId } from "mongoose";
-
+import { inject, injectable } from "inversify";
 // shard imports
-import { AppError } from "@shared/index";
+import { AppError, handleServiceError, TYPES } from "@shared/index";
 
 // models imports
 import { ReadingListModel } from "../models/readingList.model";
@@ -11,11 +11,17 @@ import { ReadingListModel } from "../models/readingList.model";
 import {
   IReadingListManagementService,
   ReadingStatus,
+  IReadingListRepository,
 } from "../interfaces/index";
 
+@injectable()
 export class ReadingListManagementService
   implements IReadingListManagementService
 {
+  constructor(
+    @inject(TYPES.ReadingListRepository)
+    private readingListRepository: IReadingListRepository
+  ) {}
   /**
    * Marks a specific reading list item as unread.
    */
@@ -34,10 +40,7 @@ export class ReadingListManagementService
         throw new AppError("Reading list item not found.", 404);
       }
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -62,10 +65,7 @@ export class ReadingListManagementService
         await ReadingListModel.deleteOne({ _id: listItemId });
       }
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -87,10 +87,7 @@ export class ReadingListManagementService
         throw new AppError("Reading list item not found.", 404);
       }
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 
@@ -105,10 +102,7 @@ export class ReadingListManagementService
         throw new AppError("Failed to clear reading list", 400);
       }
     } catch (err: any) {
-      if (err instanceof AppError) {
-        throw Error;
-      }
-      throw new AppError(err.message, 500);
+      handleServiceError(err);
     }
   }
 }

@@ -16,3 +16,4 @@ export { IReadingListManagementService } from "./servicesInterfaces/readingListM
 export { IReadingListSettingsService } from "./servicesInterfaces/readingListSettingsService.interface";
 export { IReadingListCRUDMiddleware } from "./middlewareInterfaces/readingListCRUDMiddleware.interface";
 export { IReadingListSettingsMiddleware } from "./middlewareInterfaces/readingListSettingsMiddleware.interface";
+export { IReadingListRepository } from "./repositoryInterfaces/readingListRepository.interface";

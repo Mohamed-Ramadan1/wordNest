@@ -12,4 +12,5 @@ export const READING_LIST_TYPES = {
   ReadingListCRUDMiddleware: Symbol.for("ReadingListCRUDMiddleware"),
   ReadingListSettingsMiddleware: Symbol.for("ReadingListSettingsMiddleware"),
   ReadingListModel: Symbol.for("ReadingListModel"),
+  ReadingListRepository: Symbol.for("ReadingListRepository"),
 };
