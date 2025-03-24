@@ -16,12 +16,10 @@ import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.
 
 @injectable()
 export class InteractionsController {
-  private interactionService: IInteractionsService;
   constructor(
-    @inject(TYPES.InteractionService) interactionService: IInteractionsService
-  ) {
-    this.interactionService = interactionService;
-  }
+    @inject(TYPES.InteractionService)
+    private readonly interactionService: IInteractionsService
+  ) {}
   /**
    * Handles the logic for interacting with a blog post.
    * This includes liking, disliking, or any other form of engagement.
