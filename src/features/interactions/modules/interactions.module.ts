@@ -1,10 +1,15 @@
 import { ContainerModule, interfaces } from "inversify";
 import { TYPES } from "@shared/index";
+import { Model } from "mongoose";
 
 // Interface imports
-import { IInteractionsService } from "../interfaces/interactionsService.interface";
-import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
 
+import {
+  IInteraction,
+  IInteractionsService,
+  IInteractionsRepository,
+} from "../interfaces/index";
+import { InteractionModel } from "../models/interactions.model";
 // Service  imports
 import { InteractionsService } from "../services/interactions.service";
 
@@ -19,6 +24,10 @@ import { InteractionsRepository } from "../repositories/interactions.repository"
  * It defines how the services and controllers are bound to the container.
  */
 export default new ContainerModule((bind: interfaces.Bind) => {
+  // binding the interactions models
+  bind<Model<IInteraction>>(TYPES.InteractionsModel).toConstantValue(
+    InteractionModel
+  );
   // Binding the repository to its interface
   bind<IInteractionsRepository>(TYPES.InteractionsRepository)
     .to(InteractionsRepository)

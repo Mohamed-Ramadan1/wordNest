@@ -14,10 +14,9 @@ import {
 } from "@shared/index";
 
 // interfaces imports
-import { IInteractionsService } from "../interfaces/interactionsService.interface";
-import { IInteraction } from "../interfaces/interaction.interface";
+import { IInteractionsService, IInteraction } from "../interfaces/index";
 import { InteractionData } from "../interfaces/interactionsRequest.interface";
-import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
+import { IInteractionsRepository } from "../interfaces/repositoryInterfaces/interactionsRepository.interface";
 @injectable()
 export class InteractionsService implements IInteractionsService {
   private interactionsRepository: IInteractionsRepository;

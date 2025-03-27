@@ -9,7 +9,7 @@ import { injectable, inject } from "inversify";
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { IInteractionsService } from "../interfaces/interactionsService.interface";
+import { IInteractionsService } from "../interfaces/index";
 
 // interface imports
 import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
@@ -34,7 +34,7 @@ export class InteractionsController {
       );
       const response: ApiResponse<null> = {
         status: "success",
-        message: "Successfully interacted with blog post",
+        message: "Successfully interacted with blog post.",
       };
       sendResponse(200, res, response);
     }

@@ -1,35 +1,47 @@
+// packages imports
+import { inject, injectable } from "inversify";
+import { Model, ObjectId } from "mongoose";
+
+// shard imports
+import { TYPES } from "@shared/index";
+
 // Interface imports
-import { IInteraction } from "../interfaces/interaction.interface";
-import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
-import { InteractionData } from "../interfaces/interactionsRequest.interface";
+import { IBlog } from "@features/blogs/interfaces";
+import {
+  IInteraction,
+  IInteractionsRepository,
+  InteractionData,
+} from "../interfaces/index";
 
-// Models imports
-import { InteractionModel } from "../models/interactions.model";
-
+@injectable()
 export class InteractionsRepository implements IInteractionsRepository {
-  async createInteraction(data: InteractionData): Promise<IInteraction> {
+  constructor(
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.InteractionsModel)
+    private readonly interactionModel: Model<IInteraction>
+  ) {}
+  async createInteraction(data: InteractionData): Promise<void> {
     try {
-      const interaction = new InteractionModel(data);
-      return await interaction.save();
+      await this.interactionModel.create(data);
     } catch (error: any) {
       throw new Error(`Error creating interaction: ${error.message}`);
     }
   }
 
-  async deleteInteraction(interactionId: string): Promise<void> {
+  async deleteInteraction(interactionId: ObjectId): Promise<void> {
     try {
-      await InteractionModel.findByIdAndDelete(interactionId);
+      await this.interactionModel.findByIdAndDelete(interactionId);
     } catch (error: any) {
       throw new Error(`Error deleting interaction: ${error.message}`);
     }
   }
 
   async updateInteraction(
-    interactionId: string,
+    interactionId: ObjectId,
     updateData: any
   ): Promise<any> {
     try {
-      return await InteractionModel.findByIdAndUpdate(
+      return await this.interactionModel.findByIdAndUpdate(
         interactionId,
         updateData,
         { new: true }
@@ -39,9 +51,9 @@ export class InteractionsRepository implements IInteractionsRepository {
     }
   }
 
-  async getInteractionsByBlogPost(blogPostId: string): Promise<any[]> {
+  async getInteractionsByBlogPost(blogPostId: ObjectId): Promise<any[]> {
     try {
-      return await InteractionModel.find({ blogPost: blogPostId });
+      return await this.interactionModel.find({ blogPost: blogPostId });
     } catch (error: any) {
       throw new Error(
         `Error fetching interactions by blog post: ${error.message}`
@@ -49,20 +61,20 @@ export class InteractionsRepository implements IInteractionsRepository {
     }
   }
 
-  async getInteractionsByUser(userId: string): Promise<any[]> {
+  async getInteractionsByUser(userId: ObjectId): Promise<any[]> {
     try {
-      return await InteractionModel.find({ user: userId });
+      return await this.interactionModel.find({ user: userId });
     } catch (error: any) {
       throw new Error(`Error fetching interactions by user: ${error.message}`);
     }
   }
 
   async getUserInteractionWithBlogPost(
-    userId: string,
-    blogPostId: string
+    userId: ObjectId,
+    blogPostId: ObjectId
   ): Promise<any | null> {
     try {
-      return await InteractionModel.findOne({
+      return await this.interactionModel.findOne({
         user: userId,
         blogPost: blogPostId,
       });
