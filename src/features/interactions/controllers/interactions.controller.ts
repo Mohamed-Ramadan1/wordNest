@@ -10,12 +10,17 @@ import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
 import {
+  IInteraction,
   IInteractionsService,
   InteractionsRequestParams,
+  CRUDInteractionsReqBody,
 } from "../interfaces/index";
 
 // interface imports
-import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
+import {
+  CreateInteractionRequestBody,
+  UpdateInteractionRequestBody,
+} from "../interfaces/interactionsRequest.interface";
 
 @injectable()
 export class InteractionsController {
@@ -66,8 +71,14 @@ export class InteractionsController {
    * This allows users to change their previous interaction (e.g., changing a like to a dislike).
    */
   public updateMyInteractionWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.updateMyInteractionWithBlogPost();
+    async (
+      req: Request<{}, {}, UpdateInteractionRequestBody>,
+      res: Response
+    ) => {
+      await this.interactionService.updateMyInteractionWithBlogPost(
+        req.body.interaction,
+        req.body.interactionType
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Interaction with blog post updated successfully.",
@@ -81,11 +92,19 @@ export class InteractionsController {
    * This includes likes, dislikes, and other engagement metrics.
    */
   public getAllInteractionsWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.getAllInteractionsWithBlogPost();
-      const response: ApiResponse<null> = {
+    async (req: Request<{}, {}, CRUDInteractionsReqBody>, res: Response) => {
+      const blogPostInteractions: IInteraction[] =
+        await this.interactionService.getAllInteractionsWithBlogPost(
+          req.body.blogPostId,
+          req.query
+        );
+      const response: ApiResponse<IInteraction[]> = {
         status: "success",
         message: "Interactions with blog post retrieved successfully.",
+        results: blogPostInteractions.length,
+        data: {
+          interactions: blogPostInteractions,
+        },
       };
       sendResponse(200, res, response);
     }

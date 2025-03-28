@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-import { InteractionType } from "./interaction.interface";
+import { IInteraction, InteractionType } from "./interaction.interface";
 
 export interface InteractionData {
   type: InteractionType;
@@ -14,6 +14,13 @@ export interface CreateInteractionRequestBody {
   newInteractionData: InteractionData;
 }
 
+export interface UpdateInteractionRequestBody {
+  interactionType: InteractionType;
+  interaction: IInteraction;
+}
+export interface CRUDInteractionsReqBody {
+  blogPostId: ObjectId;
+}
 export interface InteractionsRequestParams {
   interactionId: ObjectId;
 }

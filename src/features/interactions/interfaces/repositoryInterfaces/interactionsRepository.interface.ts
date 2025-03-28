@@ -1,9 +1,21 @@
 // packages imports
 import { ObjectId } from "mongoose";
 // interfaces imports
-import { InteractionData } from "../index";
+import { IInteraction, InteractionData, InteractionType } from "../index";
+
+import { ParsedQs } from "qs";
 
 export interface IInteractionsRepository {
+  /**
+   * Retrieves a specific interaction by its ID.
+   * @param interactionId - The ID of the interaction to retrieve.
+   * @param userId - The ID of the user making the request.
+   * @returns The interaction document if found, otherwise null.
+   */
+  getInteractionByIdAndUser(
+    interactionId: ObjectId,
+    userId: ObjectId
+  ): Promise<IInteraction>;
   /**
    * Creates a new interaction (like, dislike, etc.) on a blog post.
    * @param data - Interaction data including user, post, and type of interaction.
@@ -19,18 +31,24 @@ export interface IInteractionsRepository {
 
   /**
    * Updates a specific interaction (e.g., changing a like to a dislike).
-   * @param interactionId - The ID of the interaction to update.
-   * @param updateData - The new data to update the interaction with.
-   * @returns The updated interaction document.
+   * @param interaction - The ID of the interaction to update.
+   * @param interactionType - The new data to update the interaction with.
+   * @returns void
    */
-  updateInteraction(interactionId: ObjectId, updateData: any): Promise<any>;
+  updateInteractionType(
+    interaction: IInteraction,
+    interactionType: InteractionType
+  ): Promise<void>;
 
   /**
    * Retrieves all interactions for a given blog post.
    * @param blogPostId - The ID of the blog post.
    * @returns An array of interactions related to the blog post.
    */
-  getInteractionsByBlogPost(blogPostId: ObjectId): Promise<any[]>;
+  getInteractionsByBlogPost(
+    blogPostId: ObjectId,
+    reqQuery: ParsedQs
+  ): Promise<IInteraction[]>;
 
   /**
    * Retrieves all interactions made by a specific user.

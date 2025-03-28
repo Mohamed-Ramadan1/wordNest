@@ -1,6 +1,6 @@
-import { InteractionData } from "../index";
-import {ObjectId} from "mongoose";
-
+import { InteractionData, IInteraction, InteractionType } from "../index";
+import { ObjectId } from "mongoose";
+import { ParsedQs } from "qs";
 export interface IInteractionsService {
   /**
    * Handles interaction with a blog post, such as liking or disliking.
@@ -18,10 +18,16 @@ export interface IInteractionsService {
   /**
    * Updates the user's interaction with a blog post.
    */
-  updateMyInteractionWithBlogPost(): Promise<void>;
+  updateMyInteractionWithBlogPost(
+    interaction: IInteraction,
+    interactionType: InteractionType
+  ): Promise<void>;
 
   /**
    * Retrieves all interactions for a specific blog post.
    */
-  getAllInteractionsWithBlogPost(): Promise<void>;
+  getAllInteractionsWithBlogPost(
+    blogPostId: ObjectId,
+    reqQuery: ParsedQs
+  ): Promise<IInteraction[]>;
 }

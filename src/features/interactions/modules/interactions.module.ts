@@ -8,6 +8,7 @@ import {
   IInteraction,
   IInteractionsService,
   IInteractionsRepository,
+  IInteractionsMiddleware,
 } from "../interfaces/index";
 import { InteractionModel } from "../models/interactions.model";
 // Service  imports
@@ -18,6 +19,9 @@ import { InteractionsController } from "../controllers/interactions.controller";
 
 // Repository imports
 import { InteractionsRepository } from "../repositories/interactions.repository";
+
+// middleware imports
+import { InteractionsMiddleware } from "../middlewares/interactions.middleware";
 
 /**
  * This module encapsulates the bindings for the Interactions feature.
@@ -41,5 +45,10 @@ export default new ContainerModule((bind: interfaces.Bind) => {
   // Binding the controller to its type
   bind<InteractionsController>(TYPES.InteractionsController)
     .to(InteractionsController)
+    .inSingletonScope();
+
+  // Binding the middleware to its interface
+  bind<IInteractionsMiddleware>(TYPES.InteractionsMiddleware)
+    .to(InteractionsMiddleware)
     .inSingletonScope();
 });
