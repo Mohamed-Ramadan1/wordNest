@@ -15,7 +15,7 @@ export interface IInteractionsRepository {
    * Deletes a specific interaction by its ID.
    * @param interactionId - The ID of the interaction to delete.
    */
-  deleteInteraction(interactionId: ObjectId): Promise<void>;
+  deleteInteraction(interactionId: ObjectId, userId: ObjectId): Promise<void>;
 
   /**
    * Updates a specific interaction (e.g., changing a like to a dislike).

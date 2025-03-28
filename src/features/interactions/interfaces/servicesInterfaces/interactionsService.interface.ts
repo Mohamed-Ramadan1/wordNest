@@ -1,4 +1,5 @@
 import { InteractionData } from "../index";
+import {ObjectId} from "mongoose";
 
 export interface IInteractionsService {
   /**
@@ -9,7 +10,10 @@ export interface IInteractionsService {
   /**
    * Deletes the user's interaction with a blog post.
    */
-  deleteMyInteractionWithBlogPost(): Promise<void>;
+  deleteMyInteractionWithBlogPost(
+    interactionId: ObjectId,
+    userId: ObjectId
+  ): Promise<void>;
 
   /**
    * Updates the user's interaction with a blog post.

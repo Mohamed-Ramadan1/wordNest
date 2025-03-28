@@ -1,15 +1,17 @@
 // packages imports
 import { inject, injectable } from "inversify";
+import { Model } from "mongoose";
 
 //express imports
 import { Response, Request, NextFunction } from "express";
 
 // shard imports
-import { AppError, catchAsync, validateDto } from "@shared/index";
+import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
   CreateInteractionRequestBody,
+  IInteraction,
   InteractionData,
 } from "../interfaces/index";
 // dto imports
@@ -21,7 +23,11 @@ import { IBlog } from "@features/blogs/interfaces";
 
 @injectable()
 export class InteractionsMiddleware {
-  constructor() {}
+  constructor(
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.InteractionsModel)
+    private readonly interactionModel: Model<IInteraction>
+  ) {}
   public static validateInteractWithBlogPost = [
     validateDto(validateInteractWithBlogPostDto),
     catchAsync(

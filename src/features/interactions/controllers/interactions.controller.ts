@@ -9,7 +9,10 @@ import { injectable, inject } from "inversify";
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { IInteractionsService } from "../interfaces/index";
+import {
+  IInteractionsService,
+  InteractionsRequestParams,
+} from "../interfaces/index";
 
 // interface imports
 import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
@@ -45,8 +48,11 @@ export class InteractionsController {
    * This removes any previous likes, dislikes, or engagements.
    */
   public deleteMyInteractionWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.deleteMyInteractionWithBlogPost();
+    async (req: Request<InteractionsRequestParams>, res: Response) => {
+      await this.interactionService.deleteMyInteractionWithBlogPost(
+        req.params.interactionId,
+        req.user._id
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Interaction with blog post deleted successfully.",

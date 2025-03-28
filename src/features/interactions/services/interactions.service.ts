@@ -44,8 +44,15 @@ export class InteractionsService implements IInteractionsService {
   /**
    * Deletes the user's interaction with a blog post.
    */
-  public async deleteMyInteractionWithBlogPost() {
+  public async deleteMyInteractionWithBlogPost(
+    interactionId: ObjectId,
+    userId: ObjectId
+  ) {
     try {
+      await this.interactionsRepository.deleteInteraction(
+        interactionId,
+        userId
+      );
     } catch (err: any) {
       handleServiceError(err);
     }

@@ -28,9 +28,16 @@ export class InteractionsRepository implements IInteractionsRepository {
     }
   }
 
-  async deleteInteraction(interactionId: ObjectId): Promise<void> {
+  async deleteInteraction(
+    interactionId: ObjectId,
+    userId: ObjectId
+  ): Promise<void> {
     try {
-      await this.interactionModel.findByIdAndDelete(interactionId);
+      await this.interactionModel.findOneAndDelete({
+        _id: interactionId,
+        user: userId,
+      });
+      // await this.blogModel.updateOne();
     } catch (error: any) {
       throw new Error(`Error deleting interaction: ${error.message}`);
     }
