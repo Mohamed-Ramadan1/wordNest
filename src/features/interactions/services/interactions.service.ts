@@ -1,23 +1,18 @@
 // Packages imports
 import { ObjectId } from "mongoose";
 import { injectable, inject } from "inversify";
-
-// model imports
-import { InteractionModel } from "../models/interactions.model";
-
+import { ParsedQs } from "qs";
 // utils imports
-import {
-  APIFeatures,
-  AppError,
-  handleServiceError,
-  TYPES,
-} from "@shared/index";
+import { handleServiceError, TYPES } from "@shared/index";
 
 // interfaces imports
-import { IInteractionsService } from "../interfaces/interactionsService.interface";
-import { IInteraction } from "../interfaces/interaction.interface";
+import {
+  IInteractionsService,
+  IInteraction,
+  InteractionType,
+} from "../interfaces/index";
 import { InteractionData } from "../interfaces/interactionsRequest.interface";
-import { IInteractionsRepository } from "../interfaces/InteractionsRepository.interface";
+import { IInteractionsRepository } from "../interfaces/repositoryInterfaces/interactionsRepository.interface";
 @injectable()
 export class InteractionsService implements IInteractionsService {
   private interactionsRepository: IInteractionsRepository;
@@ -45,8 +40,15 @@ export class InteractionsService implements IInteractionsService {
   /**
    * Deletes the user's interaction with a blog post.
    */
-  public async deleteMyInteractionWithBlogPost() {
+  public async deleteMyInteractionWithBlogPost(
+    interactionId: ObjectId,
+    userId: ObjectId
+  ) {
     try {
+      await this.interactionsRepository.deleteInteraction(
+        interactionId,
+        userId
+      );
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -55,8 +57,15 @@ export class InteractionsService implements IInteractionsService {
   /**
    * Updates the user's interaction with a blog post.
    */
-  public async updateMyInteractionWithBlogPost() {
+  public async updateMyInteractionWithBlogPost(
+    interaction: IInteraction,
+    interactionType: InteractionType
+  ) {
     try {
+      await this.interactionsRepository.updateInteractionType(
+        interaction,
+        interactionType
+      );
     } catch (err: any) {
       handleServiceError(err);
     }
@@ -64,8 +73,17 @@ export class InteractionsService implements IInteractionsService {
   /**
    * Retrieves all interactions for a specific blog post.
    */
-  public async getAllInteractionsWithBlogPost() {
+  public async getAllInteractionsWithBlogPost(
+    blogPostId: ObjectId,
+    reqQuery: ParsedQs
+  ) {
     try {
+      const interactions: IInteraction[] =
+        await this.interactionsRepository.getInteractionsByBlogPost(
+          blogPostId,
+          reqQuery
+        );
+      return interactions;
     } catch (err: any) {
       handleServiceError(err);
     }

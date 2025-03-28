@@ -9,19 +9,25 @@ import { injectable, inject } from "inversify";
 import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
 
 // services imports
-import { IInteractionsService } from "../interfaces/interactionsService.interface";
+import {
+  IInteraction,
+  IInteractionsService,
+  InteractionsRequestParams,
+  CRUDInteractionsReqBody,
+} from "../interfaces/index";
 
 // interface imports
-import { CreateInteractionRequestBody } from "../interfaces/interactionsRequest.interface";
+import {
+  CreateInteractionRequestBody,
+  UpdateInteractionRequestBody,
+} from "../interfaces/interactionsRequest.interface";
 
 @injectable()
 export class InteractionsController {
-  private interactionService: IInteractionsService;
   constructor(
-    @inject(TYPES.InteractionService) interactionService: IInteractionsService
-  ) {
-    this.interactionService = interactionService;
-  }
+    @inject(TYPES.InteractionService)
+    private readonly interactionService: IInteractionsService
+  ) {}
   /**
    * Handles the logic for interacting with a blog post.
    * This includes liking, disliking, or any other form of engagement.
@@ -36,7 +42,7 @@ export class InteractionsController {
       );
       const response: ApiResponse<null> = {
         status: "success",
-        message: "Successfully interacted with blog post",
+        message: "Successfully interacted with blog post.",
       };
       sendResponse(200, res, response);
     }
@@ -47,8 +53,11 @@ export class InteractionsController {
    * This removes any previous likes, dislikes, or engagements.
    */
   public deleteMyInteractionWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.deleteMyInteractionWithBlogPost();
+    async (req: Request<InteractionsRequestParams>, res: Response) => {
+      await this.interactionService.deleteMyInteractionWithBlogPost(
+        req.params.interactionId,
+        req.user._id
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Interaction with blog post deleted successfully.",
@@ -62,8 +71,14 @@ export class InteractionsController {
    * This allows users to change their previous interaction (e.g., changing a like to a dislike).
    */
   public updateMyInteractionWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.updateMyInteractionWithBlogPost();
+    async (
+      req: Request<{}, {}, UpdateInteractionRequestBody>,
+      res: Response
+    ) => {
+      await this.interactionService.updateMyInteractionWithBlogPost(
+        req.body.interaction,
+        req.body.interactionType
+      );
       const response: ApiResponse<null> = {
         status: "success",
         message: "Interaction with blog post updated successfully.",
@@ -77,11 +92,19 @@ export class InteractionsController {
    * This includes likes, dislikes, and other engagement metrics.
    */
   public getAllInteractionsWithBlogPost = catchAsync(
-    async (req: Request, res: Response) => {
-      await this.interactionService.getAllInteractionsWithBlogPost();
-      const response: ApiResponse<null> = {
+    async (req: Request<{}, {}, CRUDInteractionsReqBody>, res: Response) => {
+      const blogPostInteractions: IInteraction[] =
+        await this.interactionService.getAllInteractionsWithBlogPost(
+          req.body.blogPostId,
+          req.query
+        );
+      const response: ApiResponse<IInteraction[]> = {
         status: "success",
         message: "Interactions with blog post retrieved successfully.",
+        results: blogPostInteractions.length,
+        data: {
+          interactions: blogPostInteractions,
+        },
       };
       sendResponse(200, res, response);
     }
