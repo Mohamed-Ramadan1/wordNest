@@ -15,14 +15,10 @@ import { IAccountRecoveryService } from "../interfaces";
 
 @injectable()
 export default class AccountRecoveryController {
-  accountRecoveryService: IAccountRecoveryService;
-
   constructor(
     @inject(TYPES.AccountRecoveryService)
-    accountRecoveryService: IAccountRecoveryService
-  ) {
-    this.accountRecoveryService = accountRecoveryService;
-  }
+    private readonly accountRecoveryService: IAccountRecoveryService
+  ) {}
   // Verify user's email address.
   public verifyEmail = catchAsync(async (req: Request, res: Response) => {
     await this.accountRecoveryService.verifyEmail(req.user as IUser);
