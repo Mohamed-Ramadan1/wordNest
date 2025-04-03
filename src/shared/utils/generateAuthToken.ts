@@ -3,7 +3,7 @@ import { IUser } from "@features/users";
 import { jwtConfig, Environment } from "@config/jwt.config";
 import { Response, CookieOptions } from "express";
 
-export const generateAuthToken = (user: IUser, res: Response) => {
+export const generateAuthToken = (user: IUser, res: Response): string => {
   const signOptions: SignOptions = {
     expiresIn: jwtConfig.expiresIn as any,
   };

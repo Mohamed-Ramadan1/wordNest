@@ -1,9 +1,22 @@
+// packages imports
 import { ContainerModule, interfaces } from "inversify";
-import { TYPES } from "@shared/index";
 import { Document, Query } from "mongoose";
 import { ParsedQs } from "qs";
-import { APIFeaturesInterface } from "../interfaces/apiKeyFeature.interface";
-import { APIFeatures } from "../utils/apiKeyFeature";
+
+// utils imports
+import { ResponseUtils } from "../utils/responseUtils";
+import { ErrorUtils } from "../utils/errorUtils";
+
+// shard imports
+import { TYPES, APIFeatures, TokenManagement } from "@shared/index";
+
+// interfaces imports
+import {
+  ITokenManagement,
+  APIFeaturesInterface,
+  IErrorUtils,
+  IResponseUtils,
+} from "../interfaces/index";
 
 export default new ContainerModule((bind: interfaces.Bind) => {
   // Bind a factory that creates APIFeatures instances
@@ -22,4 +35,17 @@ export default new ContainerModule((bind: interfaces.Bind) => {
       return new APIFeatures<T>(query, queryString);
     };
   });
+
+  // Bind the TokenManagement class as a singleton
+  bind<ITokenManagement>(TYPES.TokenManagement)
+    .to(TokenManagement)
+    .inSingletonScope();
+
+  // Bind the ResponseUtils class as a singleton
+  bind<IResponseUtils>(TYPES.ResponseUtils)
+    .to(ResponseUtils)
+    .inSingletonScope();
+
+  // Bind the ErrorUtils class as a singleton
+  bind<IErrorUtils>(TYPES.ErrorUtils).to(ErrorUtils).inSingletonScope();
 });

@@ -25,3 +25,5 @@ module.exports = {
   },
   externals: [nodeExternals()],
 };
+
+//https://apply.workable.com/toloka-ai/j/D85BAA58A4/apply/

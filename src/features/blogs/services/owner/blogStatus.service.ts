@@ -2,7 +2,7 @@
 import { inject, injectable } from "inversify";
 
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
-import { AppError, handleServiceError, TYPES } from "@shared/index";
+import { AppError, IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -14,7 +14,8 @@ import {
 export class BlogStatusService implements IBlogStatusService {
   constructor(
     @inject(TYPES.BlogAuthorRepository)
-    private readonly blogAuthorRepository: IBlogAuthorRepository
+    private readonly blogAuthorRepository: IBlogAuthorRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Converts a blog post to private.
@@ -34,7 +35,7 @@ export class BlogStatusService implements IBlogStatusService {
     try {
       await this.blogAuthorRepository.markBlogAsPublic(blogPost);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -45,7 +46,7 @@ export class BlogStatusService implements IBlogStatusService {
     try {
       await this.blogAuthorRepository.markBlogAsArchived(blogPost);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -56,7 +57,7 @@ export class BlogStatusService implements IBlogStatusService {
     try {
       await this.blogAuthorRepository.markBlogAsUnArchived(blogPost);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

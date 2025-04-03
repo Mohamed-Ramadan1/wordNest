@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { IAccountStatusService } from "../../interfaces/index";
@@ -12,13 +12,11 @@ import { IUser } from "@features/users/interfaces/user.interface";
 
 @injectable()
 export class AccountStatusController {
-  private accountStatusService: IAccountStatusService;
   constructor(
     @inject(TYPES.AccountStatusService)
-    accountStatusService: IAccountStatusService
-  ) {
-    this.accountStatusService = accountStatusService;
-  }
+    private readonly accountStatusService: IAccountStatusService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Deactivates the user's account.
    * Temporarily disables the account, preventing access and activity.
@@ -34,7 +32,7 @@ export class AccountStatusController {
         message:
           "Account deactivated requested successfully please check your email for completed the deactivation process.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -51,7 +49,7 @@ export class AccountStatusController {
         status: "success",
         message: "Account deactivated successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
   /**
@@ -66,6 +64,6 @@ export class AccountStatusController {
       message:
         "Account activated successfully now you can log in using your email and password.",
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 }

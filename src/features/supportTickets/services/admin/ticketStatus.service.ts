@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // logger imports
 import { ISupportTicketsLogger } from "@logging/interfaces";
@@ -26,10 +26,9 @@ export class TicketStatusService implements ITicketStatusService {
     @inject(TYPES.SupportTicketsLogger)
     private readonly supportTicketsLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketManagementRepository)
-    private readonly ticketManagementRepository: ISupportTicketManagementRepository
-  ) {
-    this.supportTicketsLogger = supportTicketsLogger;
-  }
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+  ) {}
   /**
    * Marks a ticket as closed.
    * Indicates that the ticket has been resolved or is no longer active.
@@ -64,7 +63,7 @@ export class TicketStatusService implements ITicketStatusService {
         ticket._id,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -102,7 +101,7 @@ export class TicketStatusService implements ITicketStatusService {
         ticket._id,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

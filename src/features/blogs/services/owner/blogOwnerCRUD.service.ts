@@ -5,7 +5,7 @@ import { ObjectId } from "mongoose";
 import { Request } from "express";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 //interfaces imports
 import {
@@ -38,7 +38,9 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
   constructor(
     @inject(TYPES.BlogsLogger) private readonly blogsLogger: IBlogsLogger,
     @inject(TYPES.BlogAuthorRepository)
-    private readonly blogAuthorRepository: IBlogAuthorRepository
+    private readonly blogAuthorRepository: IBlogAuthorRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
   ) {}
 
   /**
@@ -57,7 +59,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
         });
       }
       this.blogsLogger.logFailedBlogPostCreation(user._id, err.message);
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -76,7 +78,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
       await this.blogAuthorRepository.updateBlogPost(blogPost, updatedBlogData);
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -103,7 +105,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
         true,
         false
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -130,7 +132,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
 
       return blogPost;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -146,7 +148,7 @@ export class BlogCRUDService implements IBlogOwnerCRUDService {
       );
       return blogs;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

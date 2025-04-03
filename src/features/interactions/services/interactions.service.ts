@@ -3,7 +3,7 @@ import { ObjectId } from "mongoose";
 import { injectable, inject } from "inversify";
 import { ParsedQs } from "qs";
 // utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -13,16 +13,15 @@ import {
 } from "../interfaces/index";
 import { InteractionData } from "../interfaces/interactionsRequest.interface";
 import { IInteractionsRepository } from "../interfaces/repositoryInterfaces/interactionsRepository.interface";
+
 @injectable()
 export class InteractionsService implements IInteractionsService {
-  private interactionsRepository: IInteractionsRepository;
-
   constructor(
     @inject(TYPES.InteractionsRepository)
-    interactionsRepository: IInteractionsRepository
-  ) {
-    this.interactionsRepository = interactionsRepository;
-  }
+    private readonly interactionsRepository: IInteractionsRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
+  ) {}
 
   /**
    * Handles interaction with a blog post, such as liking or disliking.
@@ -33,7 +32,7 @@ export class InteractionsService implements IInteractionsService {
     try {
       await this.interactionsRepository.createInteraction(interactionInfo);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -50,7 +49,7 @@ export class InteractionsService implements IInteractionsService {
         userId
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -67,7 +66,7 @@ export class InteractionsService implements IInteractionsService {
         interactionType
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
   /**
@@ -85,7 +84,7 @@ export class InteractionsService implements IInteractionsService {
         );
       return interactions;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

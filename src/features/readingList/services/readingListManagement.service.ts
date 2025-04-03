@@ -1,8 +1,9 @@
 // Packages imports
 import { ObjectId } from "mongoose";
 import { inject, injectable } from "inversify";
+
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -18,7 +19,9 @@ export class ReadingListManagementService
 {
   constructor(
     @inject(TYPES.ReadingListRepository)
-    private readingListRepository: IReadingListRepository
+    private readonly readingListRepository: IReadingListRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Marks a specific reading list item as unread.
@@ -35,7 +38,7 @@ export class ReadingListManagementService
         ReadingStatus.UNREAD
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -61,7 +64,7 @@ export class ReadingListManagementService
         );
       }
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -80,7 +83,7 @@ export class ReadingListManagementService
         ReadingStatus.READING
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -92,7 +95,7 @@ export class ReadingListManagementService
     try {
       await this.readingListRepository.clearReadingList(userId);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

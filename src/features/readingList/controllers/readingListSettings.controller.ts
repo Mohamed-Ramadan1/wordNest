@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared interface imports
-import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
+import { ApiResponse, catchAsync, IResponseUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -15,13 +15,11 @@ import {
 
 @injectable()
 export class ReadingListSettingsController {
-  private readingListSettingsService: IReadingListSettingsService;
   constructor(
     @inject(TYPES.ReadingListSettingsService)
-    readingListSettingsService: IReadingListSettingsService
-  ) {
-    this.readingListSettingsService = readingListSettingsService;
-  }
+    private readonly readingListSettingsService: IReadingListSettingsService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
 
   /**
    * Sets a reminder alert for a specific reading list item.
@@ -41,7 +39,7 @@ export class ReadingListSettingsController {
           "Reminder alert set successfully.you will receive notifications email on the time you set.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -65,7 +63,7 @@ export class ReadingListSettingsController {
         status: "success",
         message: "Reminder alert rescheduled successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -83,7 +81,7 @@ export class ReadingListSettingsController {
         status: "success",
         message: "Reminder alert deleted successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -101,7 +99,7 @@ export class ReadingListSettingsController {
         message:
           "Auto-removal enabled successfully. Reading list item will be removed after being marked as reading completed.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -119,7 +117,7 @@ export class ReadingListSettingsController {
         message:
           "Auto-removal disabled successfully. Reading list item will not be removed after being marked as reading completed.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

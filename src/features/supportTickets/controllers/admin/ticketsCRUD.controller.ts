@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interface imports
 import {
@@ -16,13 +16,12 @@ import {
 
 @injectable()
 export class TicketsCRUDController {
-  private ticketsCRUDService: ITicketsCRUDService;
   constructor(
     @inject(TYPES.TicketsCRUDService)
-    ticketsCRUDService: ITicketsCRUDService
-  ) {
-    this.ticketsCRUDService = ticketsCRUDService;
-  }
+    private readonly ticketsCRUDService: ITicketsCRUDService,
+    @inject(TYPES.ResponseUtils)
+    private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Retrieves all tickets.
    * Fetches a list of all tickets in the system, optionally filtered by user or status.
@@ -39,7 +38,7 @@ export class TicketsCRUDController {
         supportTickets: tickets,
       },
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 
   /**
@@ -56,7 +55,7 @@ export class TicketsCRUDController {
         message: "Ticket retrieved successfully",
         data: { supportTicket: ticket },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -76,7 +75,7 @@ export class TicketsCRUDController {
         message:
           "Ticket created successfully.use will receive an email with more information.",
       };
-      sendResponse(201, res, response);
+      this.responseUtils.sendResponse(201, res, response);
     }
   );
 
@@ -99,7 +98,7 @@ export class TicketsCRUDController {
         message: "Ticket updated successfully",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -121,7 +120,7 @@ export class TicketsCRUDController {
         message: "Ticket deleted successfully",
       };
 
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 }

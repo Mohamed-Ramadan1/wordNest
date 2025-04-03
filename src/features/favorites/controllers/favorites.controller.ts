@@ -10,19 +10,18 @@ import {
 } from "../interfaces/favoritesRequest.interface";
 
 // shared interface imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, IResponseUtils } from "@shared/index";
 
 // services imports
 import { IFavoritesService, IFavorite } from "../interfaces/index";
 
 @injectable()
 export class FavoritesController {
-  private favoritesService: IFavoritesService;
   constructor(
-    @inject(TYPES.FavoritesService) favoritesService: IFavoritesService
-  ) {
-    this.favoritesService = favoritesService;
-  }
+    @inject(TYPES.FavoritesService)
+    private readonly favoritesService: IFavoritesService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Handles the logic for adding a blog post to the user's favorites list.
    */
@@ -33,7 +32,7 @@ export class FavoritesController {
         status: "success",
         message: "Blog post added to favorites successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -50,7 +49,7 @@ export class FavoritesController {
         status: "success",
         message: "Blog post removed from favorites successfully.",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 
@@ -71,7 +70,7 @@ export class FavoritesController {
           favorites: favoritesBlogs,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -91,7 +90,7 @@ export class FavoritesController {
           favorite: blogPost,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

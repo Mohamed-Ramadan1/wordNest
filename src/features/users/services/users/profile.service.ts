@@ -1,20 +1,12 @@
 // packages imports
 import { inject, injectable } from "inversify";
 
-// models imports
-import UserModel from "../../models/user.model";
-
 //mongoose imports
 
 import { ObjectId } from "mongoose";
 // packages imports
 import cloudinary from "cloudinary";
-import {
-  AppError,
-  handleServiceError,
-  TYPES,
-  uploadToCloudinary,
-} from "@shared/index";
+import { IErrorUtils, TYPES, uploadToCloudinary } from "@shared/index";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // jobs imports
@@ -30,7 +22,8 @@ import { IProfileService, IUserSelfRepository } from "../../interfaces/index";
 export class ProfileService implements IProfileService {
   constructor(
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // get current singed in user
   public async getCurrentUser(userId: ObjectId): Promise<IUser> {
@@ -38,7 +31,7 @@ export class ProfileService implements IProfileService {
       const user = await this.userSelfRepository.findUserById(userId);
       return user;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -71,7 +64,7 @@ export class ProfileService implements IProfileService {
       // return the updated user.
       return updatedUser;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -88,7 +81,7 @@ export class ProfileService implements IProfileService {
         );
       return updatedUser;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

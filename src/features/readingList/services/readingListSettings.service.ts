@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { readingListQueue, ReadingListQueueJobs } from "@jobs/index";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -18,7 +18,9 @@ import {
 export class ReadingListSettingsService implements IReadingListSettingsService {
   constructor(
     @inject(TYPES.ReadingListRepository)
-    private readingListRepository: IReadingListRepository
+    private readonly readingListRepository: IReadingListRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Sets a reminder alert for a specific reading list item.
@@ -42,7 +44,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         }
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -72,7 +74,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         }
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -88,7 +90,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
       await readingListQueue.removeJobs(itemId.toString());
       await this.readingListRepository.removeReminderAlertDate(itemId, userId);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -106,7 +108,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         true
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -124,7 +126,7 @@ export class ReadingListSettingsService implements IReadingListSettingsService {
         false
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

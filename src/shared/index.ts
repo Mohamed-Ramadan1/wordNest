@@ -2,9 +2,6 @@
 export { protect } from "./middleware/protect.middleware";
 export { restrictTo } from "./middleware/restrictTo.middleware";
 
-// interfaces exports
-export { ApiResponse } from "./interfaces/apiResponse.interface";
-
 // controllers exports
 export { globalError } from "./controller/error.Controller";
 
@@ -16,8 +13,6 @@ export { AppError } from "./utils/appError";
 export { APIFeatures } from "./utils/apiKeyFeature";
 
 export { catchAsync } from "./utils/catchAsync";
-
-export { sendResponse } from "./utils/sendResponse";
 
 export { generateAuthToken } from "./utils/generateAuthToken";
 
@@ -33,4 +28,13 @@ export { uploadImagesToCloudinary } from "./utils/uploadImagesToCloudinary";
 
 export { handleServiceError } from "./utils/handleServiceError";
 
-export { APIFeaturesInterface } from "./interfaces/apiKeyFeature.interface";
+export { TokenManagement } from "./utils/tokenManagement";
+
+// interfaces export
+export {
+  ITokenManagement,
+  IErrorUtils,
+  IResponseUtils,
+  APIFeaturesInterface,
+  ApiResponse,
+} from "./interfaces/index";

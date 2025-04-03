@@ -8,7 +8,7 @@ import {
 } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // logger imports
 import { ISupportTicketsLogger } from "@logging/interfaces";
@@ -27,7 +27,8 @@ export class TicketPriorityService implements ITicketPriorityService {
     @inject(TYPES.SupportTicketsLogger)
     private readonly supportTicketsLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketManagementRepository)
-    private readonly ticketManagementRepository: ISupportTicketManagementRepository
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Changes the priority of a ticket.
@@ -53,7 +54,7 @@ export class TicketPriorityService implements ITicketPriorityService {
         newPriority
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

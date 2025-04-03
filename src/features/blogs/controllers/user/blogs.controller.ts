@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
+import { catchAsync, IResponseUtils, TYPES, ApiResponse } from "@shared/index";
 
 // interfaces imports
 import { BlogsRequestParams } from "../../interfaces/blogsRequest.interface";
@@ -13,10 +13,10 @@ import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { IBlogsService } from "../../interfaces/index";
 @injectable()
 export class BlogsController {
-  private blogsService: IBlogsService;
-  constructor(@inject(TYPES.BlogsService) blogsService: IBlogsService) {
-    this.blogsService = blogsService;
-  }
+  constructor(
+    @inject(TYPES.BlogsService) private readonly blogsService: IBlogsService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Retrieves a single blog post.
    * Fetches a specific blog post by its ID for viewing or editing.
@@ -31,7 +31,7 @@ export class BlogsController {
           blog: blogPost,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -49,7 +49,7 @@ export class BlogsController {
         blogs: blogsData,
       },
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 
   /**
@@ -70,7 +70,7 @@ export class BlogsController {
           blogs: blogsData,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

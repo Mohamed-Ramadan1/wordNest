@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { IAccountEmailService } from "../../interfaces/index";
@@ -12,13 +12,11 @@ import { IUser } from "@features/users/interfaces/user.interface";
 
 @injectable()
 export class AccountEmailController {
-  private accountEmailService: IAccountEmailService;
   constructor(
     @inject(TYPES.AccountEmailService)
-    accountEmailService: IAccountEmailService
-  ) {
-    this.accountEmailService = accountEmailService;
-  }
+    private readonly accountEmailService: IAccountEmailService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Handles a request to change the user's email address.
    * Initiates the process, including generating a verification token.
@@ -36,7 +34,7 @@ export class AccountEmailController {
         message:
           "Email change request received. please check your email address for further instructions.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -56,7 +54,7 @@ export class AccountEmailController {
         message:
           "Email change successfully. please we send you a more details about the next step in your new email address. check your new email address for complete process. ",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
   /**
@@ -74,7 +72,7 @@ export class AccountEmailController {
         status: "success",
         message: "Email ownership verification successful.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
   /**
@@ -95,7 +93,7 @@ export class AccountEmailController {
         message:
           "A new verification token has been sent to your new email address. Please check your new  email address.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
+import { catchAsync, TYPES, ApiResponse, IResponseUtils } from "@shared/index";
 
 // interfaces imports
 import {
@@ -15,13 +15,11 @@ import {
 
 @injectable()
 export class BlogStatusController {
-  private blogStatusService: IBlogStatusService;
   constructor(
     @inject(TYPES.BlogStatusService)
-    blogStatusService: IBlogStatusService
-  ) {
-    this.blogStatusService = blogStatusService;
-  }
+    private readonly blogStatusService: IBlogStatusService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Converts a blog post to private.
    */
@@ -33,7 +31,7 @@ export class BlogStatusController {
         message: "Blog post converted to private successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -48,7 +46,7 @@ export class BlogStatusController {
         message: "Blog post converted to public successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -63,7 +61,7 @@ export class BlogStatusController {
         message: "Blog post archived successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -79,7 +77,7 @@ export class BlogStatusController {
         message: "Blog post un-archived successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

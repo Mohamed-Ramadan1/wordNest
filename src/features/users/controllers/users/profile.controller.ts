@@ -3,25 +3,22 @@ import { Request, Response } from "express";
 
 // packages imports
 import { inject, injectable } from "inversify";
+
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { IProfileService } from "../../interfaces/index";
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
-import { ObjectId } from "mongoose";
-
 @injectable()
 export class ProfileController {
-  private profileService: IProfileService;
   constructor(
     @inject(TYPES.ProfileService)
-    profileService: IProfileService
-  ) {
-    this.profileService = profileService;
-  }
+    private readonly profileService: IProfileService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Updates the user's profile picture.
    * This involves uploading a new picture and saving the reference to the user's profile.
@@ -29,7 +26,7 @@ export class ProfileController {
   public updateProfilePicture = catchAsync(
     async (req: Request, res: Response) => {
       const updatedUser = await this.profileService.updateProfilePicture(
-        req.user as IUser,
+        req.user,
         req.file
       );
       const response: ApiResponse<IUser> = {
@@ -38,7 +35,7 @@ export class ProfileController {
         data: { user: updatedUser },
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -49,7 +46,7 @@ export class ProfileController {
   public updateProfileInformation = catchAsync(
     async (req: Request, res: Response) => {
       const updatedUser = await this.profileService.updateProfileInformation(
-        req.user?._id as ObjectId,
+        req.user._id,
         req.profileInformationToUpdate
       );
 
@@ -59,7 +56,7 @@ export class ProfileController {
         data: { user: updatedUser },
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -69,14 +66,12 @@ export class ProfileController {
    */
 
   public getProfile = catchAsync(async (req: Request, res: Response) => {
-    const currentUser = await this.profileService.getCurrentUser(
-      req.user?._id as ObjectId
-    );
+    const currentUser = await this.profileService.getCurrentUser(req.user._id);
     const response: ApiResponse<IUser> = {
       status: "success",
       message: "User retrieved successfully",
       data: { userData: currentUser },
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 }

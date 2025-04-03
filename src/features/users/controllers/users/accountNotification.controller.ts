@@ -6,17 +6,15 @@ import { inject, injectable } from "inversify";
 // interfaces imports
 import { IAccountNotificationService } from "../../interfaces/index";
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 @injectable()
 export class AccountNotificationController {
-  private accountNotificationService: IAccountNotificationService;
   constructor(
     @inject(TYPES.AccountNotificationService)
-    accountNotificationService: IAccountNotificationService
-  ) {
-    this.accountNotificationService = accountNotificationService;
-  }
+    private readonly accountNotificationService: IAccountNotificationService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Enables notifications for the user's account.
    * This includes email, SMS, or other notification preferences.
@@ -30,7 +28,7 @@ export class AccountNotificationController {
         message: "Notifications enabled successfully",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -46,7 +44,7 @@ export class AccountNotificationController {
         status: "success",
         message: "Notifications disabled successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

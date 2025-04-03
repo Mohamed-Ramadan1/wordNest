@@ -1,26 +1,31 @@
+// inversify imports
+import { inject, injectable } from "inversify";
 // Packages imports
 import { ParsedQs } from "qs";
 
-import { ObjectId } from "mongoose";
-
-// model imports
-import BlogModel from "@features/blogs/models/blog.model";
+import { ObjectId, Model } from "mongoose";
 
 // utils imports
-import { APIFeatures, AppError, handleServiceError } from "@shared/index";
+import { APIFeatures, AppError, IErrorUtils, TYPES } from "@shared/index";
 
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 
 // interfaces imports
 import { IBlogsService } from "../../interfaces/index";
+
+@injectable()
 export class BlogsService implements IBlogsService {
+  constructor(
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+  ) {}
   /**
    * Retrieves a single blog post by its ID.
    */
 
   public async getBlogPost(blogPostId: ObjectId): Promise<IBlog> {
     try {
-      const blogPost = await BlogModel.findOne({
+      const blogPost = await this.blogModel.findOne({
         _id: blogPostId,
         isPublished: true,
         isPrivate: false,
@@ -33,7 +38,7 @@ export class BlogsService implements IBlogsService {
       }
       return blogPost;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -44,7 +49,7 @@ export class BlogsService implements IBlogsService {
   public async getAllBlogPosts(requestQuery: ParsedQs) {
     try {
       const feature = new APIFeatures(
-        BlogModel.find({
+        this.blogModel.find({
           isPublished: true,
           isPrivate: false,
           toBeDeleted: false,
@@ -60,7 +65,7 @@ export class BlogsService implements IBlogsService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -73,7 +78,7 @@ export class BlogsService implements IBlogsService {
   ): Promise<IBlog[]> {
     try {
       const feature = new APIFeatures(
-        BlogModel.find({
+        this.blogModel.find({
           author: userId,
           isPublished: true,
           isPrivate: false,
@@ -90,7 +95,7 @@ export class BlogsService implements IBlogsService {
       const blogs: IBlog[] = await feature.execute();
       return blogs;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

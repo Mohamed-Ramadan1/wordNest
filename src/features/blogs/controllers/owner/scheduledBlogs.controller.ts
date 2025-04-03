@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { catchAsync, sendResponse, TYPES, ApiResponse } from "@shared/index";
+import { catchAsync, TYPES, ApiResponse, IResponseUtils } from "@shared/index";
 
 // interfaces imports
 import {
@@ -20,13 +20,11 @@ import { IScheduledBlogsService } from "../../interfaces/index";
 
 @injectable()
 export class ScheduledBlogsController {
-  private scheduledBlogsService: IScheduledBlogsService;
   constructor(
     @inject(TYPES.ScheduledBlogsService)
-    scheduledBlogsService: IScheduledBlogsService
-  ) {
-    this.scheduledBlogsService = scheduledBlogsService;
-  }
+    private readonly scheduledBlogsService: IScheduledBlogsService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
 
   /**
    * Creates a new scheduled blog post.
@@ -44,7 +42,7 @@ export class ScheduledBlogsController {
         status: "success",
         message: "Scheduled blog post created successfully",
       };
-      sendResponse(201, res, response);
+      this.responseUtils.sendResponse(201, res, response);
     }
   );
 
@@ -65,7 +63,7 @@ export class ScheduledBlogsController {
         status: "success",
         message: "Scheduled blog post updated successfully",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -83,7 +81,7 @@ export class ScheduledBlogsController {
         status: "success",
         message: "Scheduled blog post deleted successfully",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 
@@ -106,7 +104,7 @@ export class ScheduledBlogsController {
           scheduledPosts: scheduledBlogPosts,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -128,7 +126,7 @@ export class ScheduledBlogsController {
           scheduledPost: scheduledBlogPost,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -146,7 +144,7 @@ export class ScheduledBlogsController {
         status: "success",
         message: "Scheduled blog post rescheduled successfully",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

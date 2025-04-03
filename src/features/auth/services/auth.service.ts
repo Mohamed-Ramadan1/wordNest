@@ -11,8 +11,8 @@ import { IUser } from "@features/users";
 import {
   generateAuthToken,
   generateLogOutToken,
-  handleServiceError,
   TYPES,
+  IErrorUtils,
 } from "@shared/index";
 
 // jobs imports
@@ -43,7 +43,8 @@ export default class AuthService implements IAuthService {
   constructor(
     @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.UserAuthRepository)
-    private readonly userAuthRepository: IUserAuthRepository
+    private readonly userAuthRepository: IUserAuthRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
 
   /**
@@ -78,7 +79,7 @@ export default class AuthService implements IAuthService {
 
       return { user, token };
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -101,7 +102,7 @@ export default class AuthService implements IAuthService {
       return { token };
     } catch (err: any) {
       this.authLogger.logFailedLogin(user.email, ipAddress, err.message);
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -123,7 +124,7 @@ export default class AuthService implements IAuthService {
       this.authLogger.logSuccessfulLogout(user.email as string, ipAddress);
       return token;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

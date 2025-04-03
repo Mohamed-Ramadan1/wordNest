@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -13,13 +13,11 @@ import {
 
 @injectable()
 export class TicketResponseController {
-  private ticketResponseService: ITicketResponseService;
   constructor(
     @inject(TYPES.TicketResponseService)
-    ticketResponseService: ITicketResponseService
-  ) {
-    this.ticketResponseService = ticketResponseService;
-  }
+    private readonly ticketResponseService: ITicketResponseService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Allows an admin to respond to a ticket.
    * Admins can provide a reply to address user concerns or issues in a ticket.
@@ -40,7 +38,7 @@ export class TicketResponseController {
         status: "success",
         message: "Ticket response sent successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

@@ -7,19 +7,17 @@ import { inject, injectable } from "inversify";
 import { ILockAccountService } from "../../interfaces/index";
 
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 import { LockAccountBody, IUser } from "@features/users/interfaces/index";
 
 @injectable()
 export class LockAccountsController {
-  private lockAccountService: ILockAccountService;
   constructor(
     @inject(TYPES.LockAccountService)
-    lockAccountService: ILockAccountService
-  ) {
-    this.lockAccountService = lockAccountService;
-  }
+    private readonly lockAccountService: ILockAccountService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Locks a user account.
    * Temporarily restricts access to the account for a specified period.
@@ -38,7 +36,7 @@ export class LockAccountsController {
         message: "Account locked successfully",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -60,7 +58,7 @@ export class LockAccountsController {
         message: "Account unlocked successfully",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

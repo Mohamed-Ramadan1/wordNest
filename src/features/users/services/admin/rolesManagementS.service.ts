@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { IUser, Roles } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { handleServiceError, AppError, TYPES } from "@shared/index";
+import { IErrorUtils, AppError, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -19,7 +19,8 @@ import { ObjectId } from "mongoose";
 export class RolesManagementService implements IRolesManagementService {
   constructor(
     @inject(TYPES.UserManagementRepository)
-    private readonly userManagementRepository: IUserManagementRepository
+    private readonly userManagementRepository: IUserManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Adds a role to a user.
@@ -29,7 +30,7 @@ export class RolesManagementService implements IRolesManagementService {
     try {
       await this.userManagementRepository.addRole(userToBeAssigned, role);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -41,7 +42,7 @@ export class RolesManagementService implements IRolesManagementService {
     try {
       await this.userManagementRepository.removeRole(userToBeAssigned, role);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -60,7 +61,7 @@ export class RolesManagementService implements IRolesManagementService {
       }
       return { roles: user.roles, userEmail: user.email };
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -71,7 +72,7 @@ export class RolesManagementService implements IRolesManagementService {
     try {
       await this.userManagementRepository.resetUserRoles(userId);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

@@ -71,17 +71,19 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
   // validation middleware for validate the reset password request.
   public validateRequestResetPassword = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
+      if (!req.body.email) {
+        throw new AppError("Email is required", 400);
+      }
       // find the user who have the email.
       const user: IUser | null = await this.userAuthRepository.findUserByEmail(
         req.body.email
       );
       if (!user) {
-        res.status(200).json({
+        return res.status(200).json({
           message:
             "If an account with this email exists, a password reset email will be sent.",
         });
       }
-
       if (user) {
         await checkResetPasswordAttempts(user);
         req.user = user;

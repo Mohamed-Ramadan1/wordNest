@@ -1,7 +1,7 @@
 // packages imports
 import { inject, injectable } from "inversify";
-// utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+// Shared imports
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -29,7 +29,8 @@ export class AccountDeletionService implements IAccountDeletionService {
     @inject(TYPES.AccountDeletionLogger)
     private readonly accountDeletionLogger: IAccountDeletionLogger,
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // Account Deletion
   public async requestAccountDeletion(
@@ -55,7 +56,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         user._id,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -98,7 +99,7 @@ export class AccountDeletionService implements IAccountDeletionService {
         user.deleteAccountConfirmedAt as Date,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

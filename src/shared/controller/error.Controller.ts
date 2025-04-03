@@ -35,7 +35,7 @@ const handleJWTError = () => {
 };
 
 const handleMulterLimitError = () => {
-  // the error indicates that more files than the expected number of files uplaoly
+  // the error indicates that more files than the expected number of files upload.
   return new AppError(
     "Too many files.Not expecting this number of files ",
     400
