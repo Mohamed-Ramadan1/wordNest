@@ -1,7 +1,7 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, restrictTo, TYPES } from "@shared/index";
+import { TYPES, AccessControlMiddleware } from "@shared/index";
 // config imports
 import { container } from "@config/inversify.config";
 
@@ -10,6 +10,12 @@ import { BlogsManagementMiddleware } from "../middlewares/admin/blogsManagement.
 
 // controller imports
 import { BlogManagementController } from "../controllers/admin/blogsManagement.controller";
+
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // controllers initialization
 const blogManagementController = container.get<BlogManagementController>(
@@ -23,8 +29,10 @@ const blogManagementMiddleware = container.get<BlogsManagementMiddleware>(
 
 // create  the express router
 const router: Router = Router();
-router.use(protect);
-router.use(restrictTo("admin"));
+router.use(
+  accessControllerMiddleware.protect,
+  accessControllerMiddleware.restrictTo("admin")
+);
 
 router.route("/").get(blogManagementController.getAllBlogPosts);
 

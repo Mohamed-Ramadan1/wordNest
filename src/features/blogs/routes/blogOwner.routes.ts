@@ -1,7 +1,7 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, TYPES } from "@shared/index";
+import { TYPES, AccessControlMiddleware } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
 // config imports
@@ -18,6 +18,11 @@ import { BlogStatusController } from "../controllers/owner/blogStatus.controller
 import { ScheduledBlogsController } from "../controllers/owner/scheduledBlogs.controller";
 // create  the express router
 const router: Router = Router();
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // controllers instances
 const blogCRUDController = container.get<BlogCRUDController>(
@@ -42,8 +47,7 @@ const scheduledBlogsMiddleware = container.get<ScheduledBlogsMiddleware>(
   TYPES.ScheduledBlogsMiddleware
 );
 
-
-router.use(protect);
+router.use(accessControllerMiddleware.protect);
 
 // blogs CRUD related routes
 router

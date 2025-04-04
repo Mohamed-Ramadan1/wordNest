@@ -1,7 +1,7 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 // config imports
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
@@ -11,6 +11,11 @@ import { SupportTicketsMiddleware } from "../middlewares/users/supportTickets.mi
 
 // controller imports
 import { SupportTicketController } from "../controllers/users/supportTickets.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // instantiate the support ticket controller
 const supportTicketController = container.get<SupportTicketController>(
@@ -24,7 +29,7 @@ const supportTicketsMiddleware = container.get<SupportTicketsMiddleware>(
 // create  the express router
 const router: Router = Router();
 
-router.use(protect);
+router.use(accessControllerMiddleware.protect);
 
 router
   .route("/")

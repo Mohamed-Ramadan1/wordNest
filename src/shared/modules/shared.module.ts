@@ -7,6 +7,12 @@ import { ParsedQs } from "qs";
 import { ResponseUtils } from "../utils/responseUtils";
 import { ErrorUtils } from "../utils/errorUtils";
 
+// middleware imports
+import { AccessControlMiddleware } from "../middleware/accessControl.middleware";
+
+// helpers imports
+import { AccessControlMiddlewareHelpers } from "../helper/accessControlMiddleware.helper";
+
 // shard imports
 import { TYPES, APIFeatures, TokenManagement } from "@shared/index";
 
@@ -16,6 +22,8 @@ import {
   APIFeaturesInterface,
   IErrorUtils,
   IResponseUtils,
+  IAccessControlMiddleware,
+  IAccessControlMiddlewareHelpers,
 } from "../interfaces/index";
 
 export default new ContainerModule((bind: interfaces.Bind) => {
@@ -48,4 +56,14 @@ export default new ContainerModule((bind: interfaces.Bind) => {
 
   // Bind the ErrorUtils class as a singleton
   bind<IErrorUtils>(TYPES.ErrorUtils).to(ErrorUtils).inSingletonScope();
+
+  // Bind the AccessControlMiddleware class as a singleton
+  bind<IAccessControlMiddleware>(TYPES.AccessControlMiddleware)
+    .to(AccessControlMiddleware)
+    .inSingletonScope();
+
+  // Bind the AccessControlMiddlewareHelpers class as a singleton
+  bind<IAccessControlMiddlewareHelpers>(TYPES.AccessControlMiddlewareHelpers)
+    .to(AccessControlMiddlewareHelpers)
+    .inSingletonScope();
 });

@@ -1,7 +1,3 @@
-// middlewares exports
-export { protect } from "./middleware/protect.middleware";
-export { restrictTo } from "./middleware/restrictTo.middleware";
-
 // controllers exports
 export { globalError } from "./controller/error.Controller";
 
@@ -23,7 +19,7 @@ export { removeLocalFile } from "./utils/deleteLocalFiles";
 export { uploadImagesToCloudinary } from "./utils/uploadImagesToCloudinary";
 
 export { TokenManagement } from "./utils/tokenManagement";
-
+export { AccessControlMiddleware } from "./middleware/accessControl.middleware";
 // interfaces export
 export {
   ITokenManagement,
@@ -31,4 +27,5 @@ export {
   IResponseUtils,
   APIFeaturesInterface,
   ApiResponse,
+  IAccessControlMiddleware,
 } from "./interfaces/index";
