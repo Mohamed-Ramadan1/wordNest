@@ -14,10 +14,6 @@ export { APIFeatures } from "./utils/apiKeyFeature";
 
 export { catchAsync } from "./utils/catchAsync";
 
-export { generateAuthToken } from "./utils/generateAuthToken";
-
-export { generateLogOutToken } from "./utils/generateLogoutToken";
-
 export { validateDto } from "./utils/validate.dto";
 
 export { uploadToCloudinary } from "./utils/uploadToCloudinary";

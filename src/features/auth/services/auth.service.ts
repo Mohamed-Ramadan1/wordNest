@@ -8,12 +8,7 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users";
 
 // utils imports
-import {
-  generateAuthToken,
-  generateLogOutToken,
-  TYPES,
-  IErrorUtils,
-} from "@shared/index";
+import { TYPES, IErrorUtils, ITokenManagement } from "@shared/index";
 
 // jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -44,7 +39,9 @@ export default class AuthService implements IAuthService {
     @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.UserAuthRepository)
     private readonly userAuthRepository: IUserAuthRepository,
-    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.TokenManagement)
+    private readonly tokenManagement: ITokenManagement
   ) {}
 
   /**
@@ -72,7 +69,10 @@ export default class AuthService implements IAuthService {
         password
       );
 
-      const token: string = generateAuthToken(user, res);
+      const token: string = this.tokenManagement.generateAccessToken(
+        user._id,
+        res
+      );
 
       // add welcome email to the emails-queue.
       emailQueue.add(EmailQueueJobs.WelcomeEmail, { user });
@@ -96,9 +96,14 @@ export default class AuthService implements IAuthService {
     res: Response
   ): Promise<{ token: string }> {
     try {
-      const token: string = generateAuthToken(user, res);
+      const token: string = this.tokenManagement.generateAccessToken(
+        user._id,
+        res
+      );
+
       this.userAuthRepository.loginUser(user, ipAddress);
       this.authLogger.logSuccessfulLogin(user.email, ipAddress);
+
       return { token };
     } catch (err: any) {
       this.authLogger.logFailedLogin(user.email, ipAddress, err.message);
@@ -119,7 +124,10 @@ export default class AuthService implements IAuthService {
     res: Response
   ): string {
     try {
-      const token: string = generateLogOutToken(user, res);
+      const token: string = this.tokenManagement.generateLogoutToken(
+        user._id,
+        res
+      );
       res.clearCookie("jwt");
       this.authLogger.logSuccessfulLogout(user.email as string, ipAddress);
       return token;
