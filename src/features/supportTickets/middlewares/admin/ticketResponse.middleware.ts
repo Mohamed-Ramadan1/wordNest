@@ -22,8 +22,6 @@ import {
   ISupportTicketManagementRepository,
 } from "../../interfaces/index";
 
-import SupportTicket from "@features/supportTickets/models/supportTicket.model";
-
 @injectable()
 export class TicketResponseMiddleware implements ITicketResponseMiddleware {
   constructor(

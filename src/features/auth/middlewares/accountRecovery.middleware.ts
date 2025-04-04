@@ -84,10 +84,10 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
             "If an account with this email exists, a password reset email will be sent.",
         });
       }
-      if (user) {
-        await checkResetPasswordAttempts(user);
-        req.user = user;
-      }
+
+      await checkResetPasswordAttempts(user);
+      req.user = user;
+
       next();
     }
   );
