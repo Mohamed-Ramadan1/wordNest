@@ -18,7 +18,7 @@ import { ObjectId } from "mongoose";
 // shard imports
 import {
   AppError,
-  uploadToCloudinary,
+  ICloudinaryUploader,
   IErrorUtils,
   TYPES,
 } from "@shared/index";
@@ -43,7 +43,9 @@ export class SupportTicketService implements ISupportTicketService {
     private readonly supportTicketLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketRepository)
     private readonly supportTicketRepository: ISupportTicketRepository,
-    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
 
   /**
@@ -58,7 +60,7 @@ export class SupportTicketService implements ISupportTicketService {
     try {
       if (ticketInfo.attachments) {
         const uploadedAttachments: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             ticketInfo.attachments.imageLink,
             "support-ticket-attachments"
           );
@@ -156,7 +158,7 @@ export class SupportTicketService implements ISupportTicketService {
     try {
       if (responseInfo.attachment) {
         const uploadedAttachments: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             responseInfo.attachment.imageLink,
             "support-ticket-replay-attachments"
           );

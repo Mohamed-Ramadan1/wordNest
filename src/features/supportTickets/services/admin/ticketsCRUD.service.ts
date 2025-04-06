@@ -12,7 +12,7 @@ import { ObjectId } from "mongoose";
 import cloudinary from "cloudinary";
 
 // shard imports
-import { uploadToCloudinary, TYPES, IErrorUtils } from "@shared/index";
+import { ICloudinaryUploader, TYPES, IErrorUtils } from "@shared/index";
 import { TicketBody } from "@features/supportTickets/interfaces/supportTicketAdminBody.interface";
 
 // logger imports
@@ -40,7 +40,9 @@ export class TicketsCRUDService implements ITicketsCRUDService {
     private readonly supportTicketsLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketManagementRepository)
     private readonly ticketManagementRepository: ISupportTicketManagementRepository,
-    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
   /**
    * Retrieves all tickets.
@@ -85,7 +87,7 @@ export class TicketsCRUDService implements ITicketsCRUDService {
     try {
       if (ticketInformation.attachment) {
         const uploadedAttachment: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             ticketInformation.attachment.imageLink,
             "support-ticket-attachments"
           );

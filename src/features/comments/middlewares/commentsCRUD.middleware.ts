@@ -55,10 +55,10 @@ export class CommentCRUDMiddleware implements ICommentCRUDMiddleware {
           content: req.body.content,
         };
         // handle the part of data existence ( attached images )
-        console.log(req.file);
+
         if (req.file) {
           // handel the uploaded image to the cloudinary and save the data into the object
-          console.log("igot here ");
+
           // the file will come inside the req.file
           const { public_id, url } =
             await this.cloudinaryUploader.uploadSingleFile(

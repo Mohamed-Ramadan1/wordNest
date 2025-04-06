@@ -9,7 +9,7 @@ import {
   catchAsync,
   validateDto,
   AppError,
-  uploadImagesToCloudinary,
+  ICloudinaryUploader,
   TYPES,
 } from "@shared/index";
 
@@ -35,7 +35,9 @@ import { CreateBlogPostDTO } from "../../dtos/createBlogPost.dto";
 export class BlogOwnerCRUDMiddleware implements IBlogOwnerCRUDMiddleware {
   constructor(
     @inject(TYPES.BlogAuthorRepository)
-    private readonly blogAuthorRepository: IBlogAuthorRepository
+    private readonly blogAuthorRepository: IBlogAuthorRepository,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
   // validate the create blog post request
   public validateCreateBlogPost = [
@@ -58,7 +60,7 @@ export class BlogOwnerCRUDMiddleware implements IBlogOwnerCRUDMiddleware {
 
         if (req.files) {
           const blogImages = filterValidImages(req.files);
-          const imagesData = await uploadImagesToCloudinary(
+          const imagesData = await this.cloudinaryUploader.uploadMultipleImages(
             blogImages,
             "blogImages",
             "blogs-images"
