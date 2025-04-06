@@ -5,3 +5,4 @@ export { IResponseUtils } from "./responseUtils.interface";
 export { IErrorUtils } from "./errorUtils.interface";
 export { IAccessControlMiddleware } from "./accessControlMiddleware.interface";
 export { IAccessControlMiddlewareHelpers } from "./accessControlMiddlewareHelpers.interface";
+export { ICloudinaryUploader } from "./cloudinaryUploader.interface";

@@ -5,4 +5,5 @@ export const SHARED_TYPES = {
   ErrorUtils: Symbol.for("ErrorUtils"),
   AccessControlMiddleware: Symbol.for("AccessControlMiddleware"),
   AccessControlMiddlewareHelpers: Symbol.for("AccessControlMiddlewareHelpers"),
+  CloudinaryUploader: Symbol.for("CloudinaryUploader"),
 };

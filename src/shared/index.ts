@@ -20,6 +20,7 @@ export { uploadImagesToCloudinary } from "./utils/uploadImagesToCloudinary";
 
 export { TokenManagement } from "./utils/tokenManagement";
 export { AccessControlMiddleware } from "./middleware/accessControl.middleware";
+
 // interfaces export
 export {
   ITokenManagement,
@@ -28,4 +29,5 @@ export {
   APIFeaturesInterface,
   ApiResponse,
   IAccessControlMiddleware,
+  ICloudinaryUploader,
 } from "./interfaces/index";

@@ -6,6 +6,7 @@ import { ParsedQs } from "qs";
 // utils imports
 import { ResponseUtils } from "../utils/responseUtils";
 import { ErrorUtils } from "../utils/errorUtils";
+import { CloudinaryUploader } from "../utils/cloudinaryUploader";
 
 // middleware imports
 import { AccessControlMiddleware } from "../middleware/accessControl.middleware";
@@ -24,6 +25,7 @@ import {
   IResponseUtils,
   IAccessControlMiddleware,
   IAccessControlMiddlewareHelpers,
+  ICloudinaryUploader,
 } from "../interfaces/index";
 
 export default new ContainerModule((bind: interfaces.Bind) => {
@@ -65,5 +67,10 @@ export default new ContainerModule((bind: interfaces.Bind) => {
   // Bind the AccessControlMiddlewareHelpers class as a singleton
   bind<IAccessControlMiddlewareHelpers>(TYPES.AccessControlMiddlewareHelpers)
     .to(AccessControlMiddlewareHelpers)
+    .inSingletonScope();
+
+  // Bind the CloudinaryUploader class as a singleton
+  bind<ICloudinaryUploader>(TYPES.CloudinaryUploader)
+    .to(CloudinaryUploader)
     .inSingletonScope();
 });

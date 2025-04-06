@@ -17,6 +17,7 @@ import { authRouter } from "@features/auth";
 // import userRouter from "./features/users_feature/routes/user.routes";
 import userAdminRouter from "./userFeatureRoutes/usersAdmin";
 import userRouter from "./userFeatureRoutes/users";
+import { commentRouter } from "@features/comments/index";
 import {
   supportTicketRouter,
   adminSupportTicketsRouter,
@@ -102,6 +103,9 @@ app.use("/api/v1/reading-list", readingListRouter);
 
 // auth related routes
 app.use("/api/v1/auth", authRouter);
+
+// comment related routes
+app.use("/api/v1/comments", commentRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {

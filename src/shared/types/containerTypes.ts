@@ -8,6 +8,7 @@ import {
   BLOGS_TYPES,
   LOGGING_TYPES,
   SHARED_TYPES,
+  COMMENTS_TYPES,
 } from "../constants/index";
 
 // Define identifiers for bindings
@@ -18,6 +19,8 @@ export const TYPES = {
   ...BLOGS_TYPES,
   // Users types
   ...USERS_TYPES,
+  // Comments types
+  ...COMMENTS_TYPES,
   // Reading list types
   ...READING_LIST_TYPES,
   // Favorites types

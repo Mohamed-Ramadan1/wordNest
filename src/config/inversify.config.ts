@@ -9,6 +9,7 @@ import readingListModule from "@features/readingList/modules/readingList.module"
 import supportTicketModule from "@features/supportTickets/module/supportTicket.module";
 import blogsModule from "@features/blogs/modules/blogs.module";
 import loggingModule from "@logging/modules/logging.module";
+import commentsModule from "@features/comments/modules/comments.module";
 import sharedModule from "@shared/modules/shared.module";
 // Create an IoC container
 const container = new Container();
@@ -22,6 +23,7 @@ container.load(
   supportTicketModule,
   blogsModule,
   loggingModule,
+  commentsModule,
   sharedModule
 );
 
