@@ -34,8 +34,20 @@ import { CreateCommentDTO } from "../dtos/index";
 // users feature imports
 import { IBlog } from "@features/blogs/interfaces";
 
+/**
+ * @class CommentCRUDMiddleware
+ * @implements {ICommentCRUDMiddleware}
+ * @description Middleware class for handling comment CRUD operations
+ */
 @injectable()
 export class CommentCRUDMiddleware implements ICommentCRUDMiddleware {
+  /**
+   * Creates an instance of CommentCRUDMiddleware
+   * @param {Model<IComment>} commentModel - Mongoose model for comments
+   * @param {Model<IBlog>} blogModel - Mongoose model for blogs
+   * @param {ICommentCRUDRepository} commentCRUDRepository - Repository for comment CRUD operations
+   * @param {ICloudinaryUploader} cloudinaryUploader - Cloudinary uploader service
+   */
   constructor(
     @inject(TYPES.CommentModel) private readonly commentModel: Model<IComment>,
     @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
@@ -45,9 +57,21 @@ export class CommentCRUDMiddleware implements ICommentCRUDMiddleware {
     private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
 
+  /**
+   * Middleware array to validate create comment requests
+   * @type {Array<((req: Request<{}, {}, CreateCommentRequestBdy>, res: Response, next: NextFunction) => void)>}
+   */
   public validateCreateCommentRequest = [
     validateDto(CreateCommentDTO),
     catchAsync(
+      /**
+       * Validates create comment request data and prepares comment data
+       * @async
+       * @param {Request<{}, {}, CreateCommentRequestBdy>} req - Express request object
+       * @param {Response} res - Express response object
+       * @param {NextFunction} next - Express next function
+       * @returns {Promise<void>}
+       */
       async (
         req: Request<{}, {}, CreateCommentRequestBdy>,
         res: Response,
@@ -88,7 +112,19 @@ export class CommentCRUDMiddleware implements ICommentCRUDMiddleware {
     ),
   ];
 
+  /**
+   * Middleware to validate update comment requests
+   * @type {(req: Request<CommentCRUDRequestParams, {}, UpdateCommentRequestBdy>, res: Response, next: NextFunction) => Promise<void>}
+   */
   public validateUpdateCommentRequest = catchAsync(
+    /**
+     * Validates update comment request data and prepares update data
+     * @async
+     * @param {Request<CommentCRUDRequestParams, {}, UpdateCommentRequestBdy>} req - Express request object
+     * @param {Response} res - Express response object
+     * @param {NextFunction} next - Express next function
+     * @returns {Promise<void>}
+     */
     async (
       req: Request<CommentCRUDRequestParams, {}, UpdateCommentRequestBdy>,
       res: Response,

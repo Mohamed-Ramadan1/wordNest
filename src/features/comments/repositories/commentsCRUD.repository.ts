@@ -1,9 +1,10 @@
 // packages imports
 import { inject, injectable } from "inversify";
-import { ClientSession, Model, ObjectId } from "mongoose";
+import { ClientSession, Model, ObjectId, Query } from "mongoose";
+import { ParsedQs } from "qs";
 
 // shard imports
-import { TYPES } from "@shared/index";
+import { TYPES, APIFeaturesInterface } from "@shared/index";
 
 // interfaces imports
 import {
@@ -14,12 +15,36 @@ import {
 } from "../interfaces/index";
 import { IBlog } from "@features/blogs/interfaces";
 
+/**
+ * @class CommentCRUDRepository
+ * @implements {ICommentCRUDRepository}
+ * @description Repository class for handling comment CRUD operations
+ */
 @injectable()
 export class CommentCRUDRepository implements ICommentCRUDRepository {
+  /**
+   * Creates an instance of CommentCRUDRepository
+   * @param {Model<IComment>} commentModel - Mongoose model for comments
+   * @param {Model<IBlog>} blogModel - Mongoose model for blogs
+   * @param {(query: Query<IComment[], IComment>, queryString: ParsedQs) => APIFeaturesInterface<IComment>} apiFeatures - API features utility for query building
+   */
   constructor(
     @inject(TYPES.CommentModel) private readonly commentModel: Model<IComment>,
-    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>
+    @inject(TYPES.BlogModel) private readonly blogModel: Model<IBlog>,
+    @inject(TYPES.APIFeatures)
+    private readonly apiFeatures: (
+      query: Query<IComment[], IComment>,
+      queryString: ParsedQs
+    ) => APIFeaturesInterface<IComment>
   ) {}
+
+  /**
+   * Creates a new comment with transaction support
+   * @async
+   * @param {CommentData} commentData - Data for the new comment
+   * @returns {Promise<void>}
+   * @throws {Error} If comment creation fails
+   */
   public async createNewComment(commentData: CommentData): Promise<void> {
     const session: ClientSession = await this.commentModel.startSession();
     try {
@@ -47,6 +72,46 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
     }
   }
 
+  /**
+   * Retrieves comments for a specific blog post with query features
+   * @async
+   * @param {ObjectId} blogId - ID of the blog post
+   * @param {ParsedQs} queryString - Query string parameters
+   * @returns {Promise<IComment[]>} Array of comments
+   * @throws {Error} If comment retrieval fails
+   */
+  public async getCommentsOnBlogPost(
+    blogId: ObjectId,
+    queryString: ParsedQs
+  ): Promise<IComment[]> {
+    try {
+      const features = this.apiFeatures(
+        this.commentModel.find({
+          blog: blogId,
+        }),
+        queryString
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const comments: IComment[] = await features.execute();
+      return comments;
+    } catch (err: any) {
+      throw new Error(
+        `Failed to get the comments on the blog post.
+        ${err.message}`
+      );
+    }
+  }
+
+  /**
+   * Retrieves a comment by its ID
+   * @async
+   * @param {ObjectId} commentId - ID of the comment
+   * @returns {Promise<IComment>} The requested comment
+   * @throws {Error} If comment is not found or retrieval fails
+   */
   public async getCommentById(commentId: ObjectId): Promise<IComment> {
     try {
       const comment: IComment | null =
@@ -64,8 +129,16 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
     }
   }
 
+  /**
+   * Retrieves a comment by ID and user ID
+   * @async
+   * @param {ObjectId} commentId - ID of the comment
+   * @param {ObjectId} userId - ID of the user
+   * @returns {Promise<IComment>} The requested comment
+   * @throws {Error} If comment is not found or retrieval fails
+   */
   public async getCommentByIdAndUser(
-    commentId: Object,
+    commentId: ObjectId,
     userId: ObjectId
   ): Promise<IComment> {
     try {
@@ -85,7 +158,15 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
       );
     }
   }
-  // public async getCommentsByBlogPost(): Promise<IComment[]> {}
+
+  /**
+   * Updates an existing comment
+   * @async
+   * @param {IComment} comment - The comment to update
+   * @param {UpdateCommentData} updateCommentData - Data to update the comment with
+   * @returns {Promise<void>}
+   * @throws {Error} If update fails
+   */
   public async updateComment(
     comment: IComment,
     updateCommentData: UpdateCommentData
@@ -104,6 +185,15 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
       );
     }
   }
+
+  /**
+   * Deletes a comment with transaction support
+   * @async
+   * @param {ObjectId} commentId - ID of the comment to delete
+   * @param {ObjectId} userId - ID of the user requesting deletion
+   * @returns {Promise<void>}
+   * @throws {Error} If deletion fails
+   */
   public async deleteComment(
     commentId: ObjectId,
     userId: ObjectId

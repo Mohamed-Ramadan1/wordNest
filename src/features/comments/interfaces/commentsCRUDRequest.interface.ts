@@ -37,6 +37,10 @@ export interface UpdateCommentRequestBdy {
   updateCommentData: UpdateCommentData;
 }
 
+export interface GetBlogCommentsRequestBody {
+  blogId: ObjectId;
+}
+
 export interface CommentCRUDRequestParams {
   commentId: ObjectId;
 }

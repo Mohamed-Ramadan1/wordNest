@@ -6,6 +6,7 @@ export {
   UpdateCommentRequestBdy,
   CommentCRUDRequestParams,
   UpdateCommentData,
+  GetBlogCommentsRequestBody,
 } from "./commentsCRUDRequest.interface";
 
 export { ICommentCRUDMiddleware } from "./commentsCRUDMiddleware.interface";
