@@ -31,5 +31,14 @@ const commentSchema: Schema = new Schema<IComment>(
 // Add indexes for better performance
 commentSchema.index({ blog: 1, createdAt: -1 });
 
+// prev find populate the usr who mad the comment name and email only
+commentSchema.pre<IComment>(/^find/, function (next) {
+  this.populate({
+    path: "comment_author",
+    select: "name email",
+  });
+  next();
+});
+
 const CommentModel: Model<IComment> = model<IComment>("Comment", commentSchema);
 export default CommentModel;

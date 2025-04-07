@@ -10,6 +10,7 @@ import {
   CommentData,
   IComment,
   ICommentCRUDRepository,
+  UpdateCommentData,
 } from "../interfaces/index";
 import { IBlog } from "@features/blogs/interfaces";
 
@@ -45,8 +46,63 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
       await session.endSession();
     }
   }
-  // public async getCommentById(commentId: Object): Promise<IComment> {}
+
+  public async getCommentById(commentId: ObjectId): Promise<IComment> {
+    try {
+      const comment: IComment | null =
+        await this.commentModel.findById(commentId);
+      if (!comment) {
+        throw new Error("Comment not found");
+      }
+
+      return comment;
+    } catch (err: any) {
+      throw new Error(
+        `Failed to get the comment.
+        ${err.message}`
+      );
+    }
+  }
+
+  public async getCommentByIdAndUser(
+    commentId: Object,
+    userId: ObjectId
+  ): Promise<IComment> {
+    try {
+      const comment: IComment | null = await this.commentModel.findOne({
+        _id: commentId,
+        comment_author: userId,
+      });
+
+      if (!comment) {
+        throw new Error("Comment not found");
+      }
+      return comment;
+    } catch (err: any) {
+      throw new Error(
+        `Failed to get the comment.
+        ${err.message}`
+      );
+    }
+  }
   // public async getCommentsByBlogPost(): Promise<IComment[]> {}
-  // public async updateComment(): Promise<void> {}
+  public async updateComment(
+    comment: IComment,
+    updateCommentData: UpdateCommentData
+  ): Promise<void> {
+    try {
+      if (updateCommentData.attachedImage)
+        comment.attachedImage = updateCommentData.attachedImage;
+
+      if (updateCommentData.content)
+        comment.content = updateCommentData.content;
+      await comment.save();
+    } catch (err: any) {
+      throw new Error(
+        `Failed to update the comment.
+        ${err.message}`
+      );
+    }
+  }
   // public async deleteComment(commentId: ObjectId): Promise<void> {}
 }

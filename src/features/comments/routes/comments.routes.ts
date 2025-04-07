@@ -45,8 +45,12 @@ router
   );
 
 router
-  .route("/:id")
+  .route("/:commentId")
   .get(commentsCRUDController.getComment)
-  .patch(commentsCRUDController.updateComment)
+  .patch(
+    upload.single("attachedImage"),
+    commentCRUDMiddleware.validateUpdateCommentRequest,
+    commentsCRUDController.updateComment
+  )
   .delete(commentsCRUDController.deleteComment);
 export default router;

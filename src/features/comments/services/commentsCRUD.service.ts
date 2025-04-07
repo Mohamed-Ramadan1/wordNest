@@ -7,8 +7,10 @@ import { TYPES, IErrorUtils } from "@shared/index";
 // interfaces imports
 import {
   CommentData,
+  IComment,
   ICommentCRUDRepository,
   ICommentCRUDService,
+  UpdateCommentData,
 } from "../interfaces/index";
 
 @injectable()
@@ -26,6 +28,7 @@ export class CommentsCRUDService implements ICommentCRUDService {
       this.errorUtile.handleServiceError(err);
     }
   }
+
   public async getComment() {
     try {
     } catch (err: any) {
@@ -38,8 +41,15 @@ export class CommentsCRUDService implements ICommentCRUDService {
       this.errorUtile.handleServiceError(err);
     }
   }
-  public async updateComment() {
+  public async updateComment(
+    updateCommentData: UpdateCommentData,
+    comment: IComment
+  ) {
     try {
+      await this.commentsCRUDRepository.updateComment(
+        comment,
+        updateCommentData
+      );
     } catch (err: any) {
       this.errorUtile.handleServiceError(err);
     }

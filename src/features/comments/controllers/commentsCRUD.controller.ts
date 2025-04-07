@@ -11,6 +11,7 @@ import { catchAsync, IResponseUtils, TYPES, ApiResponse } from "@shared/index";
 import {
   ICommentCRUDService,
   CreateCommentRequestBdy,
+  UpdateCommentRequestBdy,
 } from "../interfaces/index";
 
 @injectable()
@@ -38,6 +39,19 @@ export class CommentsCRUDController {
   public getBlogPostComments = catchAsync(
     async (req: Request, res: Response) => {}
   );
-  public updateComment = catchAsync(async (req: Request, res: Response) => {});
+  public updateComment = catchAsync(
+    async (req: Request<{}, {}, UpdateCommentRequestBdy>, res: Response) => {
+      await this.commentsCRUDService.updateComment(
+        req.body.updateCommentData,
+        req.body.comment
+      );
+
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Comment updated successfully",
+      };
+      this.responseUtil.sendResponse(200, res, response);
+    }
+  );
   public deleteComment = catchAsync(async (req: Request, res: Response) => {});
 }

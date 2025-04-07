@@ -1,5 +1,6 @@
 // mongoose imports
 import { ObjectId } from "mongoose";
+import { IComment } from "./index";
 
 export interface CommentData {
   blog: ObjectId;
@@ -22,8 +23,20 @@ export interface CreateCommentRequestBdy {
   commentData: CommentData;
 }
 
-export interface UpdateCommentRequestBdy {}
+export interface UpdateCommentData {
+  content?: string;
+  attachedImage?: {
+    public_id: string;
+    url: string;
+  };
+}
+
+export interface UpdateCommentRequestBdy {
+  content?: string;
+  comment: IComment;
+  updateCommentData: UpdateCommentData;
+}
 
 export interface CommentCRUDRequestParams {
-  commentId: string;
+  commentId: ObjectId;
 }
