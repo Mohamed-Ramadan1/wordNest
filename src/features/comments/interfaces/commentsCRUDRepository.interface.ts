@@ -13,4 +13,6 @@ export interface ICommentCRUDRepository {
     comment: IComment,
     updateCommentData: UpdateCommentData
   ): Promise<void>;
+
+  deleteComment(commentId: ObjectId, userId: ObjectId): Promise<void>;
 }

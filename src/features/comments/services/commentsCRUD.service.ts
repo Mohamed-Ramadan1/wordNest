@@ -12,6 +12,7 @@ import {
   ICommentCRUDService,
   UpdateCommentData,
 } from "../interfaces/index";
+import { ObjectId } from "mongoose";
 
 @injectable()
 export class CommentsCRUDService implements ICommentCRUDService {
@@ -29,8 +30,11 @@ export class CommentsCRUDService implements ICommentCRUDService {
     }
   }
 
-  public async getComment() {
+  public async getComment(commentId: ObjectId): Promise<IComment> {
     try {
+      const comment: IComment =
+        await this.commentsCRUDRepository.getCommentById(commentId);
+      return comment;
     } catch (err: any) {
       this.errorUtile.handleServiceError(err);
     }
@@ -54,8 +58,10 @@ export class CommentsCRUDService implements ICommentCRUDService {
       this.errorUtile.handleServiceError(err);
     }
   }
-  public async deleteComment() {
+
+  public async deleteComment(userId: ObjectId, commentId: ObjectId) {
     try {
+      await this.commentsCRUDRepository.deleteComment(commentId, userId);
     } catch (err: any) {
       this.errorUtile.handleServiceError(err);
     }

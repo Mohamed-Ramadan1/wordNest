@@ -35,7 +35,7 @@ commentSchema.index({ blog: 1, createdAt: -1 });
 commentSchema.pre<IComment>(/^find/, function (next) {
   this.populate({
     path: "comment_author",
-    select: "name email",
+    select: "firstName email",
   });
   next();
 });

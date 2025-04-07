@@ -104,5 +104,35 @@ export class CommentCRUDRepository implements ICommentCRUDRepository {
       );
     }
   }
-  // public async deleteComment(commentId: ObjectId): Promise<void> {}
+  public async deleteComment(
+    commentId: ObjectId,
+    userId: ObjectId
+  ): Promise<void> {
+    const session: ClientSession = await this.commentModel.startSession();
+    try {
+      session.startTransaction();
+      const deletedComment: IComment | null =
+        await this.commentModel.findOneAndDelete(
+          { _id: commentId, comment_author: userId },
+          { session }
+        );
+      if (!deletedComment) {
+        throw new Error("No comment found by this id and related ot this user");
+      }
+      await this.blogModel.updateOne(
+        { _id: deletedComment.blog },
+        { $inc: { commentsCount: -1 } },
+        { session }
+      );
+      await session.commitTransaction();
+    } catch (err: any) {
+      await session.abortTransaction();
+      throw new Error(
+        `Failed to delete the comment .
+        ${err.message}`
+      );
+    } finally {
+      await session.endSession();
+    }
+  }
 }

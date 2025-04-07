@@ -12,6 +12,8 @@ import {
   ICommentCRUDService,
   CreateCommentRequestBdy,
   UpdateCommentRequestBdy,
+  CommentCRUDRequestParams,
+  IComment,
 } from "../interfaces/index";
 
 @injectable()
@@ -35,7 +37,21 @@ export class CommentsCRUDController {
     }
   );
 
-  public getComment = catchAsync(async (req: Request, res: Response) => {});
+  public getComment = catchAsync(
+    async (req: Request<CommentCRUDRequestParams>, res: Response) => {
+      const comment: IComment = await this.commentsCRUDService.getComment(
+        req.params.commentId
+      );
+      const response: ApiResponse<IComment> = {
+        status: "success",
+        message: "Comment retrieved successfully",
+        data: {
+          comment: comment,
+        },
+      };
+      this.responseUtil.sendResponse(200, res, response);
+    }
+  );
   public getBlogPostComments = catchAsync(
     async (req: Request, res: Response) => {}
   );
@@ -53,5 +69,17 @@ export class CommentsCRUDController {
       this.responseUtil.sendResponse(200, res, response);
     }
   );
-  public deleteComment = catchAsync(async (req: Request, res: Response) => {});
+  public deleteComment = catchAsync(
+    async (req: Request<CommentCRUDRequestParams>, res: Response) => {
+      await this.commentsCRUDService.deleteComment(
+        req.user._id,
+        req.params.commentId
+      );
+      const response: ApiResponse<null> = {
+        status: "success",
+        message: "Comment deleted successfully",
+      };
+      this.responseUtil.sendResponse(204, res, response);
+    }
+  );
 }
