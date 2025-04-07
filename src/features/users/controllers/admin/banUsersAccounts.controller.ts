@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -13,13 +13,11 @@ import {
 
 @injectable()
 export class BanUsersAccountsController {
-  private banUserAccountService: IBanUserAccountService;
   constructor(
     @inject(TYPES.BanUserAccountService)
-    banUserAccountService: IBanUserAccountService
-  ) {
-    this.banUserAccountService = banUserAccountService;
-  }
+    private readonly banUserAccountService: IBanUserAccountService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
 
   /**
    * Bans a user account.
@@ -43,7 +41,7 @@ export class BanUsersAccountsController {
         status: "success",
         message: "User account has been successfully banned",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -67,7 +65,7 @@ export class BanUsersAccountsController {
         status: "success",
         message: "User account has been successfully un-banned",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

@@ -1,7 +1,7 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 import { container } from "@config/inversify.config";
 
 // middleware imports
@@ -12,6 +12,11 @@ import { ReadingListSettingsMiddleware } from "../middlewares/readingListSetting
 import { ReadingListCRUDController } from "../controllers/readingListCRUD.controller";
 import { ReadingListManagementController } from "../controllers/readingListManagement.controller";
 import { ReadingListSettingsController } from "../controllers/readingListSettings.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // initialize the controllers
 const readingListCRUDController = container.get<ReadingListCRUDController>(
@@ -40,7 +45,7 @@ const readingListSettingsMiddleware =
 // create  the express router
 const router: Router = Router();
 
-router.use(protect);
+router.use(accessControllerMiddleware.protect);
 
 // CRUD related routes
 router

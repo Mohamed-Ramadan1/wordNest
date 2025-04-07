@@ -3,13 +3,18 @@ import { Router } from "express";
 
 import { container } from "@config/inversify.config";
 // shared imports
-import { protect, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 
 // middleware imports
 import { FavoritesMiddleware } from "../middlewares/favorites.middleware";
 
 // controllers imports
 import { FavoritesController } from "../controllers/favorites.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // controllers initialization
 const favoritesController = container.get<FavoritesController>(
@@ -23,7 +28,7 @@ const favoritesMiddleware = container.get<FavoritesMiddleware>(
 // create  the express router
 const router: Router = Router();
 
-router.use(protect);
+router.use(accessControllerMiddleware.protect);
 
 // define the routes
 router

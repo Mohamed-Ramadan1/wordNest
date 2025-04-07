@@ -6,7 +6,7 @@ import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
 
 // middleware imports
-import { protect, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 import { ProfileMiddleware } from "@features/users/middlewares/users/profile.middleware";
 import { AccountPasswordManagementMiddleware } from "@features/users/middlewares/users/accountPasswordManagement.middleware";
 import { AccountNotificationMiddleware } from "@features/users/middlewares/users/accountNotification.middleware";
@@ -20,6 +20,11 @@ import { AccountEmailController } from "@features/users/controllers/users/accoun
 import { AccountDeletionController } from "@features/users/controllers/users/accountDeletion.controller";
 import { AccountPasswordManagementController } from "@features/users/controllers/users/accountPasswordManagement.controller";
 import { AccountStatusController } from "@features/users/controllers/users/accountStatus.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // Create an instance of UserController
 const profileController = container.get<ProfileController>(
@@ -80,18 +85,22 @@ const router: Router = Router();
 // Define user-related routes
 
 // Profile management
-router.get("/profile", protect, profileController.getProfile);
+router.get(
+  "/profile",
+  accessControllerMiddleware.protect,
+  profileController.getProfile
+);
 
 router.patch(
   "/profile/picture",
-  protect,
+  accessControllerMiddleware.protect,
   upload.single("profilePicture"),
   profileMiddleware.validateUpdateUserProfilePicture,
   profileController.updateProfilePicture
 );
 router.patch(
   "/profile/information",
-  protect,
+  accessControllerMiddleware.protect,
   profileMiddleware.validateUpdateUserProfileInformation,
   profileController.updateProfileInformation
 );
@@ -99,7 +108,7 @@ router.patch(
 // Password management
 router.patch(
   "/account/password",
-  protect,
+  accessControllerMiddleware.protect,
   accountPasswordManagement.validateChangeAccountPassword,
   accountPasswordManagementController.changeAccountPassword
 );
@@ -107,7 +116,7 @@ router.patch(
 // Account deletion
 router.post(
   "/account/deletion-request",
-  protect,
+  accessControllerMiddleware.protect,
   accountDeletionMiddleware.validateRequestAccountDeletion,
   accountDeletionController.requestAccountDeletion
 );
@@ -126,7 +135,7 @@ router.post(
 );
 router.post(
   "/account/deactivate-request",
-  protect,
+  accessControllerMiddleware.protect,
   accountStatusMiddleware.validateDeactivateAccountRequest,
   accountStatusController.deactivateAccountRequest
 );
@@ -140,13 +149,13 @@ router.post(
 // Notification management
 router.patch(
   "/account/notifications/enable",
-  protect,
+  accessControllerMiddleware.protect,
   accountNotificationMiddleware.validateEnableAccountNotifications,
   accountNotificationController.enableAccountNotifications
 );
 router.patch(
   "/account/notifications/disable",
-  protect,
+  accessControllerMiddleware.protect,
   accountNotificationMiddleware.validateDisableAccountNotifications,
   accountNotificationController.disableAccountNotifications
 );
@@ -155,7 +164,7 @@ router.patch(
 // Initiate email change process
 router.post(
   "/account/email/change-request",
-  protect,
+  accessControllerMiddleware.protect,
   accountEmailMiddleware.validateChangeEmailRequest,
   accountEmailController.requestAccountEmailChange
 );
@@ -178,7 +187,7 @@ router.patch(
 // Resend verification token to the new email
 router.post(
   "/account/email/resend-new-email-token",
-  protect,
+  accessControllerMiddleware.protect,
   accountEmailMiddleware.validateResendNewEmailVerificationToken,
   accountEmailController.resendNewEmailVerificationToken
 );

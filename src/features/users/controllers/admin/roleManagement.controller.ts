@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -14,13 +14,11 @@ import {
 
 @injectable()
 export class RolesManagementController {
-  private rolesManagementService: IRolesManagementService;
   constructor(
     @inject(TYPES.RolesManagementService)
-    rolesManagementService: IRolesManagementService
-  ) {
-    this.rolesManagementService = rolesManagementService;
-  }
+    private readonly rolesManagementService: IRolesManagementService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Assigns a role to a user.
    * Adds a specific role to a user based on their ID.
@@ -34,7 +32,7 @@ export class RolesManagementController {
       status: "success",
       message: "Role assigned to user successfully",
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 
   /**
@@ -51,7 +49,7 @@ export class RolesManagementController {
         status: "success",
         message: "Role removed from user successfully",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -71,7 +69,7 @@ export class RolesManagementController {
           roles,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -87,7 +85,7 @@ export class RolesManagementController {
         message:
           "Roles reset successfully. now user has only default role (user )",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

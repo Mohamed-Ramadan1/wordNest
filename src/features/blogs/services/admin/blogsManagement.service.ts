@@ -6,7 +6,7 @@ import { inject, injectable } from "inversify";
 import { ObjectId } from "mongoose";
 
 // utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { TYPES, IErrorUtils } from "@shared/index";
 
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
@@ -32,7 +32,8 @@ export class BlogManagementService implements IBlogManagementService {
     @inject(TYPES.BlogManagementRepository)
     private readonly blogManagementRepository: IBlogManagementRepository,
     @inject(TYPES.BlogsRepository)
-    private readonly blogsRepository: IBlogRepository
+    private readonly blogsRepository: IBlogRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Deletes a blog post permanently.
@@ -62,7 +63,7 @@ export class BlogManagementService implements IBlogManagementService {
         new Date()
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -77,7 +78,7 @@ export class BlogManagementService implements IBlogManagementService {
 
       return blogPost;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -90,7 +91,7 @@ export class BlogManagementService implements IBlogManagementService {
       const blogs: IBlog[] = await this.blogsRepository.getBlogs(request);
       return blogs;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -108,7 +109,7 @@ export class BlogManagementService implements IBlogManagementService {
       );
       return blogs;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -139,7 +140,7 @@ export class BlogManagementService implements IBlogManagementService {
         userAdmin.email
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -170,7 +171,7 @@ export class BlogManagementService implements IBlogManagementService {
         userAdmin.email
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

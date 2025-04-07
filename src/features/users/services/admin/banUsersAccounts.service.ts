@@ -13,7 +13,7 @@ import {
 } from "@jobs/index";
 
 // utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 // logger imports
 import { IBandAccountsLogger } from "@logging/interfaces";
 // const banPeriodMs = 2 * 60 * 1000;
@@ -30,7 +30,8 @@ export class BanUserAccountService implements IBanUserAccountService {
     @inject(TYPES.BandedAccountsLogger)
     private readonly bandAccountsLogger: IBandAccountsLogger,
     @inject(TYPES.UserManagementRepository)
-    private readonly userManagementRepository: IUserManagementRepository
+    private readonly userManagementRepository: IUserManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Bans a user account.
@@ -89,7 +90,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         ipAddress,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -133,7 +134,7 @@ export class BanUserAccountService implements IBanUserAccountService {
         adminUnBanComment,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

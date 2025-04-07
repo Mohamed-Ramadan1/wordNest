@@ -4,10 +4,7 @@ import Redis from "ioredis";
 import { ObjectId } from "mongoose";
 import { IBlog } from "@features/blogs/interfaces/blog.interface";
 import { IUser } from "@features/users";
-import {
-  UpdateScheduleBlogBodyRequestBody,
-  BlogData,
-} from "./scheduledBlogsRequest.interface";
+import { UpdateScheduleBlogBodyRequestBody, BlogData } from "../index";
 
 // Interface for ScheduledBlogsService
 /**

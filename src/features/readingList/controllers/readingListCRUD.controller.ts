@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shared interface imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, IResponseUtils, TYPES, catchAsync } from "@shared/index";
 
 // interfaces imports
 import {
@@ -16,13 +16,11 @@ import {
 } from "../interfaces/index";
 @injectable()
 export class ReadingListCRUDController {
-  private readingListCRUDService: IReadingListCRUDService;
   constructor(
     @inject(TYPES.ReadingListCRUDService)
-    readingListCRUDService: IReadingListCRUDService
-  ) {
-    this.readingListCRUDService = readingListCRUDService;
-  }
+    private readonly readingListCRUDService: IReadingListCRUDService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Retrieves all reading list items.
    * Handles the request to get all items in the reading list.
@@ -45,7 +43,7 @@ export class ReadingListCRUDController {
         },
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -67,7 +65,7 @@ export class ReadingListCRUDController {
           readingListItem: listItem,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -91,7 +89,7 @@ export class ReadingListCRUDController {
         status: "success",
         message: "Reading list item created successfully.",
       };
-      sendResponse(201, res, response);
+      this.responseUtils.sendResponse(201, res, response);
     }
   );
 
@@ -110,7 +108,7 @@ export class ReadingListCRUDController {
         status: "success",
         message: "Reading list item deleted successfully.",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 }

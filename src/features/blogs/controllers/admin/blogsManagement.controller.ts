@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shared interface imports
-import { ApiResponse, catchAsync, sendResponse, TYPES } from "@shared/index";
+import { ApiResponse, catchAsync, IResponseUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -17,13 +17,11 @@ import {
 
 @injectable()
 export class BlogManagementController {
-  private blogManagementService: IBlogManagementService;
   constructor(
     @inject(TYPES.BlogManagementService)
-    blogManagementService: IBlogManagementService
-  ) {
-    this.blogManagementService = blogManagementService;
-  }
+    private readonly blogManagementService: IBlogManagementService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Deletes a blog post.
    * Handles the request to remove a specified blog post permanently from the system.
@@ -40,7 +38,7 @@ export class BlogManagementController {
         status: "success",
         message: "Blog post deleted successfully",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 
@@ -60,7 +58,7 @@ export class BlogManagementController {
           blog: blogPost,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -78,7 +76,7 @@ export class BlogManagementController {
         blogs: blogsData,
       },
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 
   /**
@@ -99,7 +97,7 @@ export class BlogManagementController {
           blogs: blogsData,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -120,7 +118,7 @@ export class BlogManagementController {
         status: "success",
         message: "Blog post unpublished successfully",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -142,7 +140,7 @@ export class BlogManagementController {
         status: "success",
         message: "Blog post republished successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

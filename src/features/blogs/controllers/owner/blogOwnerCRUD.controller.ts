@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shared interface imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, IResponseUtils } from "@shared/index";
 
 // service  imports
 import {
@@ -18,13 +18,11 @@ import {
 
 @injectable()
 export class BlogCRUDController {
-  private blogCRUDService: IBlogOwnerCRUDService;
   constructor(
     @inject(TYPES.BlogOwnerCRUDService)
-    blogCRUDService: IBlogOwnerCRUDService
-  ) {
-    this.blogCRUDService = blogCRUDService;
-  }
+    private readonly blogCRUDService: IBlogOwnerCRUDService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Creates a new blog post.
    * Handles the request to add a new post with the provided content.
@@ -36,7 +34,7 @@ export class BlogCRUDController {
         status: "success",
         message: "Blog post created successfully",
       };
-      sendResponse(201, res, response);
+      this.responseUtils.sendResponse(201, res, response);
     }
   );
 
@@ -55,7 +53,7 @@ export class BlogCRUDController {
         status: "success",
         message: "Blog post updated successfully",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -73,7 +71,7 @@ export class BlogCRUDController {
         status: "success",
         message: "Blog post deleted successfully",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 
@@ -94,7 +92,7 @@ export class BlogCRUDController {
           blog: blogPost,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -112,6 +110,6 @@ export class BlogCRUDController {
         blogs: blogPosts,
       },
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 }

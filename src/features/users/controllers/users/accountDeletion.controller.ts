@@ -10,17 +10,15 @@ import { IAccountDeletionService } from "../../interfaces/index";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 @injectable()
 export class AccountDeletionController {
-  private accountDeletionService: IAccountDeletionService;
   constructor(
     @inject(TYPES.AccountDeletionService)
-    accountDeletionService: IAccountDeletionService
-  ) {
-    this.accountDeletionService = accountDeletionService;
-  }
+    private readonly accountDeletionService: IAccountDeletionService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Handles the user's request to delete their account.
    * This initiates the deletion process and may involve additional verification steps.
@@ -36,7 +34,7 @@ export class AccountDeletionController {
         message:
           "Account deletion request received successfully. We have sent you an email with further instructions.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -55,7 +53,7 @@ export class AccountDeletionController {
         message:
           "Account deletion confirmed. Your account has been deleted successfully for some more information please review your email address..",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

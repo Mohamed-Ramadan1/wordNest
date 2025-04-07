@@ -4,20 +4,18 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { TicketCloseBody, ITicketStatusService } from "../../interfaces/index";
 
 @injectable()
 export class TicketStatusController {
-  private ticketStatusService: ITicketStatusService;
   constructor(
     @inject(TYPES.TicketStatusService)
-    ticketStatusService: ITicketStatusService
-  ) {
-    this.ticketStatusService = ticketStatusService;
-  }
+    private readonly ticketStatusService: ITicketStatusService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
 
   /**
    * Marks a ticket as closed.
@@ -34,7 +32,7 @@ export class TicketStatusController {
         status: "success",
         message: "Ticket closed successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -60,7 +58,7 @@ export class TicketStatusController {
           "Ticket reopened successfully.we send an confirmation email to the user with the new update.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

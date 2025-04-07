@@ -1,7 +1,7 @@
 // Express imports
 import { Router } from "express";
 // shared imports
-import { protect, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 
 // middleware  imports
 import { InteractionsMiddleware } from "../middlewares/interactions.middleware";
@@ -11,6 +11,11 @@ import { container } from "@config/inversify.config";
 
 // controllers imports
 import { InteractionsController } from "../controllers/interactions.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // controllers initialization
 const interactionController = container.get<InteractionsController>(
@@ -24,7 +29,7 @@ const interactionMiddleware = container.get<InteractionsMiddleware>(
 // create  the express router
 const router: Router = Router();
 
-router.use(protect);
+router.use(accessControllerMiddleware.protect);
 
 router
   .route("/")

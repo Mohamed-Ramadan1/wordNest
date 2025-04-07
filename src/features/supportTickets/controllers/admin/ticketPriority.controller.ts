@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 import {
   ITicketPriorityService,
@@ -12,13 +12,11 @@ import {
 
 @injectable()
 export class TicketPriorityController {
-  private ticketPriorityService: ITicketPriorityService;
   constructor(
     @inject(TYPES.TicketPriorityService)
-    ticketPriorityService: ITicketPriorityService
-  ) {
-    this.ticketPriorityService = ticketPriorityService;
-  }
+    private readonly ticketPriorityService: ITicketPriorityService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Changes the priority of a ticket.
    * Sends or skips notifications based on the priority level.
@@ -41,7 +39,7 @@ export class TicketPriorityController {
         message: `Priority updated to ${newPriority}`,
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

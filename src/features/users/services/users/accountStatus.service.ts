@@ -2,7 +2,7 @@
 import { inject, injectable } from "inversify";
 
 // Shard imports
-import { TYPES, handleServiceError } from "@shared/index";
+import { TYPES, IErrorUtils } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -23,7 +23,8 @@ export class AccountStatusService implements IAccountStatusService {
     @inject(TYPES.AccountStatusLogger)
     private readonly accountStatusLogger: IAccountStatusLogger,
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // Logic to deactivate  account request.
   public async deactivateAccountReq(
@@ -51,7 +52,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -82,7 +83,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -112,7 +113,7 @@ export class AccountStatusService implements IAccountStatusService {
         user.createdAt,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

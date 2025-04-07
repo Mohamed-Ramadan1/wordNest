@@ -167,3 +167,15 @@
 {"error":"No user existing with email address mohamedramadan11b@gmail.com","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-10 00:51:55","user":"mohamedramadan11b@gmail.com"}
 {"error":"Invalid credentials","event":"login_failed","ip":"::1","level":"warn","message":"Failed login attempt","module":"auth","timestamp":"2025-03-16 14:00:21","user":"mohamedramadan11b@gmail.com"}
 {"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-03-16 15:29:40","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-03 10:28:29","user":"ahmedmagadey@gmail.com"}
+{"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","module":"auth","timestamp":"2025-04-03 10:28:53","user":"ahmedmagadey@gmail.com","userID":"67ee46988bdf79297559603b"}
+{"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","module":"auth","timestamp":"2025-04-03 12:10:37","user":"ahmedmagadey@gmail.com","userID":"67ee46988bdf79297559603b"}
+{"event":"password_reset","ip":"::1","level":"info","message":"User requested password reset successfully","module":"auth","timestamp":"2025-04-03 12:16:08","user":"mohamedramadan11b@gmail.com","userID":"67e71f913ce7eccf6bf7df26"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-04 17:01:33","user":"mohamedramadan11b@gmail.com"}
+{"event":"logout","ip":"::1","level":"info","message":"User logged out successfully","module":"auth","timestamp":"2025-04-04 17:01:37","user":"mohamedramadan11b@gmail.com"}
+{"event":"logout","ip":"::1","level":"info","message":"User logged out successfully","module":"auth","timestamp":"2025-04-04 17:01:41","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-04 17:02:08","user":"mohamedramadan11b@gmail.com"}
+{"event":"logout","ip":"::1","level":"info","message":"User logged out successfully","module":"auth","timestamp":"2025-04-04 17:02:12","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-04 17:02:19","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-04 17:05:56","user":"mohamedramadan11b@gmail.com"}
+{"event":"login","ip":"::1","level":"info","message":"User logged in successfully","module":"auth","timestamp":"2025-04-04 17:13:40","user":"mohamedramadan11b@gmail.com"}

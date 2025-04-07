@@ -5,14 +5,11 @@ import { inject, injectable } from "inversify";
 import { Request } from "express";
 import { ObjectId } from "mongoose";
 
-// models imports
-import UserModel from "@features/users/models/user.model";
-
 // interfaces imports
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { APIFeatures, handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // queues imports
 import {
@@ -34,7 +31,8 @@ import {
 export class UsersCrudService implements IUsersCrudService {
   constructor(
     @inject(TYPES.UserManagementRepository)
-    private readonly userManagementRepository: IUserManagementRepository
+    private readonly userManagementRepository: IUserManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // get all users
   public getUsers = async (req: Request): Promise<IUser[]> => {
@@ -42,7 +40,7 @@ export class UsersCrudService implements IUsersCrudService {
       const users: IUser[] = await this.userManagementRepository.getUsers(req);
       return users;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -53,7 +51,7 @@ export class UsersCrudService implements IUsersCrudService {
         await this.userManagementRepository.getUserById(id);
       return user;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -68,7 +66,7 @@ export class UsersCrudService implements IUsersCrudService {
 
       return user;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -83,7 +81,7 @@ export class UsersCrudService implements IUsersCrudService {
 
       return updatedUser;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -96,7 +94,7 @@ export class UsersCrudService implements IUsersCrudService {
         user,
       });
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 }

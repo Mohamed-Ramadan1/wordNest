@@ -1,6 +1,6 @@
 import { ObjectId } from "mongoose";
 
-import { ReminderAlertData } from "../interfaces/readingListSettingsRequest.interface";
+import { ReminderAlertData } from "../index";
 
 /**
  * Interface for the ReadingListSettingsService class.

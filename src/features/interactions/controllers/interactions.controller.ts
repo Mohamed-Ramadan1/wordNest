@@ -6,7 +6,7 @@ import { injectable, inject } from "inversify";
 // interface imports
 
 // shared interface imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, IResponseUtils } from "@shared/index";
 
 // services imports
 import {
@@ -26,7 +26,8 @@ import {
 export class InteractionsController {
   constructor(
     @inject(TYPES.InteractionService)
-    private readonly interactionService: IInteractionsService
+    private readonly interactionService: IInteractionsService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
   ) {}
   /**
    * Handles the logic for interacting with a blog post.
@@ -44,7 +45,7 @@ export class InteractionsController {
         status: "success",
         message: "Successfully interacted with blog post.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -62,7 +63,7 @@ export class InteractionsController {
         status: "success",
         message: "Interaction with blog post deleted successfully.",
       };
-      sendResponse(204, res, response);
+      this.responseUtils.sendResponse(204, res, response);
     }
   );
 
@@ -83,7 +84,7 @@ export class InteractionsController {
         status: "success",
         message: "Interaction with blog post updated successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -106,7 +107,7 @@ export class InteractionsController {
           interactions: blogPostInteractions,
         },
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

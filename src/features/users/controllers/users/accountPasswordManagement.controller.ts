@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { inject, injectable } from "inversify";
 
 // Shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import { IAccountPasswordManagementService } from "../../interfaces/index";
@@ -13,13 +13,11 @@ import { IUser } from "@features/users/interfaces/user.interface";
 
 @injectable()
 export class AccountPasswordManagementController {
-  private accountPasswordManagementService: IAccountPasswordManagementService;
   constructor(
     @inject(TYPES.AccountPasswordManagementService)
-    accountPasswordManagementService: IAccountPasswordManagementService
-  ) {
-    this.accountPasswordManagementService = accountPasswordManagementService;
-  }
+    private readonly accountPasswordManagementService: IAccountPasswordManagementService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Allows the user to change their account password.
    * Validates the old password before updating to a new one.
@@ -35,7 +33,7 @@ export class AccountPasswordManagementController {
         message: "your password have been changed successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

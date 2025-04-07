@@ -5,7 +5,7 @@ import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 import { IReadingList } from "../interfaces/readingList.interface";
 
 import {
@@ -20,7 +20,9 @@ const redisClient = new Redis();
 export class ReadingListCRUDService implements IReadingListCRUDService {
   constructor(
     @inject(TYPES.ReadingListRepository)
-    private readingListRepository: IReadingListRepository
+    private readonly readingListRepository: IReadingListRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Retrieves all reading list items.
@@ -38,7 +40,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
 
       return readingList;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -64,7 +66,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
       await redisClient.setex(cacheKey, 3600, JSON.stringify(readingListItem));
       return readingListItem;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -84,7 +86,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
         notes
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -105,7 +107,7 @@ export class ReadingListCRUDService implements IReadingListCRUDService {
 
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

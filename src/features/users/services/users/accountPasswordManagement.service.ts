@@ -2,7 +2,7 @@
 import { inject, injectable } from "inversify";
 
 // utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -17,13 +17,14 @@ export class AccountPasswordManagementService
 {
   constructor(
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   public async changePassword(user: IUser, newPassword: string): Promise<void> {
     try {
       this.userSelfRepository.updateUserPassword(user, newPassword);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

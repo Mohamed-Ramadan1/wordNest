@@ -1,8 +1,8 @@
 // packages imports
 import { inject, injectable } from "inversify";
 
-// utils imports
-import { handleServiceError, TYPES } from "@shared/index";
+// Shard imports
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // models imports
 import { IUser } from "@features/users/interfaces/user.interface";
@@ -25,7 +25,8 @@ export class AccountEmailService implements IAccountEmailService {
     @inject(TYPES.ChangeAccountEmailLogger)
     private readonly changeAccountEmailLogger: IChangeAccountEmailLogger,
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Handles the request to change the user's email address.
@@ -57,7 +58,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "Unknown IP address",
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -90,7 +91,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -121,7 +122,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -153,7 +154,7 @@ export class AccountEmailService implements IAccountEmailService {
         ipAddress ? ipAddress : "unknown ip address",
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

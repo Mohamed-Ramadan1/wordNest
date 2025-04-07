@@ -8,21 +8,18 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users";
 
 // shared imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, IResponseUtils, TYPES, catchAsync } from "@shared/index";
 
 // interface imports
 import { IAccountRecoveryService } from "../interfaces";
 
 @injectable()
 export default class AccountRecoveryController {
-  accountRecoveryService: IAccountRecoveryService;
-
   constructor(
     @inject(TYPES.AccountRecoveryService)
-    accountRecoveryService: IAccountRecoveryService
-  ) {
-    this.accountRecoveryService = accountRecoveryService;
-  }
+    private readonly accountRecoveryService: IAccountRecoveryService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   // Verify user's email address.
   public verifyEmail = catchAsync(async (req: Request, res: Response) => {
     await this.accountRecoveryService.verifyEmail(req.user as IUser);
@@ -31,7 +28,7 @@ export default class AccountRecoveryController {
       status: "success",
       message: "Email Verified successfully",
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 
   // Resend verification email.
@@ -43,7 +40,7 @@ export default class AccountRecoveryController {
         status: "success",
         message: "Verification email resent successfully.",
       };
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -60,7 +57,8 @@ export default class AccountRecoveryController {
         message:
           "Password reset request was successful please check your email address .",
       };
-      sendResponse(200, res, response);
+      console.log("Iam here finaly");
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -78,6 +76,6 @@ export default class AccountRecoveryController {
       message:
         "Password reset successfully now you can login with your new password.",
     };
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 }

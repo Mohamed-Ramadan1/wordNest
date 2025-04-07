@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect, restrictTo, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 import { container } from "@config/inversify.config";
 
 // middleware imports
@@ -12,6 +12,11 @@ import { UsersCrudController } from "@features/users/controllers/admin/usersCrud
 import { RolesManagementController } from "@features/users/controllers/admin/roleManagement.controller";
 import { LockAccountsController } from "@features/users/controllers/admin/locAccounts.controller";
 import { BanUsersAccountsController } from "@features/users/controllers/admin/banUsersAccounts.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // Instantiate controller
 const usersCrudController = container.get<UsersCrudController>(
@@ -42,8 +47,10 @@ const banUserAccountMiddleware = container.get<BanUserAccountMiddleware>(
 const router: Router = Router();
 
 // Get all users
-router.use(protect);
-router.use(restrictTo("admin"));
+router.use(
+  accessControllerMiddleware.protect,
+  accessControllerMiddleware.restrictTo("admin")
+);
 router
   .route("/")
   .get(usersCrudController.getUsers)

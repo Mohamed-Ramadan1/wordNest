@@ -8,17 +8,17 @@ import { Request, Response } from "express";
 import { IUser } from "@features/users";
 
 // shard imports
-import { ApiResponse, TYPES, catchAsync, sendResponse } from "@shared/index";
+import { ApiResponse, TYPES, catchAsync, IResponseUtils } from "@shared/index";
 
 // interface imports
 import { IAuthService } from "../interfaces";
 
 @injectable()
 export default class AuthController {
-  private authService: IAuthService;
-  constructor(@inject(TYPES.AuthService) authService: IAuthService) {
-    this.authService = authService;
-  }
+  constructor(
+    @inject(TYPES.AuthService) private readonly authService: IAuthService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   // !Register a new user with Google account.(Not implemented)
   socialRegister = catchAsync(async (req: Request, res: Response) => {});
 
@@ -38,7 +38,7 @@ export default class AuthController {
       data: { user },
     };
 
-    sendResponse(201, res, response);
+    this.responseUtils.sendResponse(201, res, response);
   });
 
   // Login a user with email address.
@@ -55,7 +55,7 @@ export default class AuthController {
       token,
     };
 
-    sendResponse(200, res, re);
+    this.responseUtils.sendResponse(200, res, re);
   });
 
   // Logout a user.
@@ -68,6 +68,6 @@ export default class AuthController {
       token,
     };
 
-    sendResponse(200, res, re);
+    this.responseUtils.sendResponse(200, res, re);
   });
 }

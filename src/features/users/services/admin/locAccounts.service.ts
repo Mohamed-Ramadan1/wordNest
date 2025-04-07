@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users/interfaces/user.interface";
 
 // utils imports
-import { TYPES, handleServiceError } from "@shared/index";
+import { TYPES, IErrorUtils } from "@shared/index";
 
 // queues imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -25,7 +25,8 @@ export class LockAccountService implements ILockAccountService {
     @inject(TYPES.LockAccountsLogger)
     private readonly lockAccountsLogger: ILockAccountsLogger,
     @inject(TYPES.UserManagementRepository)
-    private readonly userManagementRepository: IUserManagementRepository
+    private readonly userManagementRepository: IUserManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Locks a user account.
@@ -66,7 +67,7 @@ export class LockAccountService implements ILockAccountService {
         err.message,
         ipAddress
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -110,7 +111,7 @@ export class LockAccountService implements ILockAccountService {
         err.message,
         ipAddress
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

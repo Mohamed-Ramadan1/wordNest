@@ -19,7 +19,7 @@ import {
 import { IUser } from "@features/users";
 
 // shard imports
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // jobs imports
 import { blogQueue, BlogsQueueJobs } from "@jobs/index";
@@ -37,7 +37,8 @@ import {
 export class ScheduledBlogsService implements IScheduledBlogsService {
   constructor(
     @inject(TYPES.UserAuthRepository)
-    private readonly userAuthorRepository: IBlogAuthorRepository
+    private readonly userAuthorRepository: IBlogAuthorRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Creates a new scheduled blog post.
@@ -60,7 +61,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
         }
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
   /**
@@ -75,7 +76,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
         );
       return scheduledBlogPosts;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -101,7 +102,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
 
       return blogPost;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -118,7 +119,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
       await this.userAuthorRepository.updateScheduleBlogPost(reqBody);
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -134,7 +135,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
       // check if it at the cash memory and delete it
       await redisClient.del(cacheKey);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -163,7 +164,7 @@ export class ScheduledBlogsService implements IScheduledBlogsService {
         }
       );
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

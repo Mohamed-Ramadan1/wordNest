@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { protect, restrictTo, TYPES } from "@shared/index";
+import { AccessControlMiddleware, TYPES } from "@shared/index";
 import { upload } from "@config/multer.config";
 import { container } from "@config/inversify.config";
 
@@ -14,6 +14,11 @@ import { TicketsCRUDController } from "../controllers/admin/ticketsCRUD.controll
 import { TicketStatusController } from "../controllers/admin/ticketStatus.controller";
 import { TicketPriorityController } from "../controllers/admin/ticketPriority.controller";
 import { TicketResponseController } from "../controllers/admin/ticketResponse.controller";
+
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // instantiate the controllers
 const ticketsCRUDController = container.get<TicketsCRUDController>(
@@ -48,8 +53,10 @@ const ticketResponseMiddleware = container.get<TicketResponseMiddleware>(
 // create  the express router
 const router: Router = Router();
 
-router.use(protect);
-router.use(restrictTo("admin"));
+router.use(
+  accessControllerMiddleware.protect,
+  accessControllerMiddleware.restrictTo("admin")
+);
 
 router
   .route("/")

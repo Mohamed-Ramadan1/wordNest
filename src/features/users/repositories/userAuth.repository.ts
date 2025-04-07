@@ -169,15 +169,12 @@ export class UserAuthRepository implements IUserAuthRepository {
     password: string
   ): Promise<IUser> {
     try {
-      console.log("here it begins ");
-
       const user: IUser = new this.userModel({
         email,
         firstName,
         lastName,
         password,
       });
-      console.log("here it begins ");
 
       // generate verification token
       user.emailVerificationToken = user.createEmailVerificationToken();

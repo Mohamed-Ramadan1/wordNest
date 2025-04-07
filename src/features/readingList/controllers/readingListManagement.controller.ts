@@ -3,7 +3,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // shard imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // service imports
 import {
@@ -13,13 +13,11 @@ import {
 
 @injectable()
 export class ReadingListManagementController {
-  private readingListManagementService: IReadingListManagementService;
   constructor(
     @inject(TYPES.ReadingListManagementService)
-    readingListManagementService: IReadingListManagementService
-  ) {
-    this.readingListManagementService = readingListManagementService;
-  }
+    private readonly readingListManagementService: IReadingListManagementService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Marks a reading list item as unread.
    * This function updates the status of a specific item in the reading list to "unread".
@@ -36,7 +34,7 @@ export class ReadingListManagementController {
         message: "Reading list item marked as unread successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -56,7 +54,7 @@ export class ReadingListManagementController {
         message: "Reading list item marked as completed successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -77,7 +75,7 @@ export class ReadingListManagementController {
           "Reading list item marked as currently being read successfully.",
       };
 
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -93,6 +91,6 @@ export class ReadingListManagementController {
       message: "Reading list cleared successfully.",
     };
 
-    sendResponse(200, res, response);
+    this.responseUtils.sendResponse(200, res, response);
   });
 }

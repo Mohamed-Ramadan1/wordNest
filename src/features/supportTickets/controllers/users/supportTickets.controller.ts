@@ -5,7 +5,7 @@ import { Response, Request } from "express";
 import { inject, injectable } from "inversify";
 
 // Shared imports
-import { catchAsync, sendResponse, ApiResponse, TYPES } from "@shared/index";
+import { catchAsync, IResponseUtils, ApiResponse, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -18,13 +18,11 @@ import {
 
 @injectable()
 export class SupportTicketController {
-  private supportTicketService: ISupportTicketService;
   constructor(
     @inject(TYPES.SupportTicketService)
-    supportTicketService: ISupportTicketService
-  ) {
-    this.supportTicketService = supportTicketService;
-  }
+    private readonly supportTicketService: ISupportTicketService,
+    @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
+  ) {}
   /**
    * Creates a new support ticket.
    * Allows the user to submit a new issue or request for assistance.
@@ -44,7 +42,7 @@ export class SupportTicketController {
       };
 
       // sending the response.
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -65,7 +63,7 @@ export class SupportTicketController {
       };
 
       // sending the response.
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -91,7 +89,7 @@ export class SupportTicketController {
       };
 
       // sending the response.
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 
@@ -118,7 +116,7 @@ export class SupportTicketController {
       };
 
       // sending the response.
-      sendResponse(200, res, response);
+      this.responseUtils.sendResponse(200, res, response);
     }
   );
 }

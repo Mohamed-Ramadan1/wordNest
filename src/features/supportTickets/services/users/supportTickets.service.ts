@@ -18,8 +18,8 @@ import { ObjectId } from "mongoose";
 // shard imports
 import {
   AppError,
-  uploadToCloudinary,
-  handleServiceError,
+  ICloudinaryUploader,
+  IErrorUtils,
   TYPES,
 } from "@shared/index";
 
@@ -42,7 +42,10 @@ export class SupportTicketService implements ISupportTicketService {
     @inject(TYPES.SupportTicketsLogger)
     private readonly supportTicketLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketRepository)
-    private readonly supportTicketRepository: ISupportTicketRepository
+    private readonly supportTicketRepository: ISupportTicketRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
 
   /**
@@ -57,7 +60,7 @@ export class SupportTicketService implements ISupportTicketService {
     try {
       if (ticketInfo.attachments) {
         const uploadedAttachments: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             ticketInfo.attachments.imageLink,
             "support-ticket-attachments"
           );
@@ -93,7 +96,7 @@ export class SupportTicketService implements ISupportTicketService {
         user._id,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -110,7 +113,7 @@ export class SupportTicketService implements ISupportTicketService {
         await this.supportTicketRepository.getUserSupportTickets(user._id, req);
       return supportTickets;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -138,7 +141,7 @@ export class SupportTicketService implements ISupportTicketService {
       }
       return supportTicket;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -155,7 +158,7 @@ export class SupportTicketService implements ISupportTicketService {
     try {
       if (responseInfo.attachment) {
         const uploadedAttachments: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             responseInfo.attachment.imageLink,
             "support-ticket-replay-attachments"
           );
@@ -193,7 +196,7 @@ export class SupportTicketService implements ISupportTicketService {
         supportTicket._id,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

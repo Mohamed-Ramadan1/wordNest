@@ -5,7 +5,7 @@ import { ObjectId } from "mongoose";
 import Redis from "ioredis";
 
 // shard imports
-import { AppError, TYPES, handleServiceError } from "@shared/index";
+import { AppError, TYPES, IErrorUtils } from "@shared/index";
 
 import { IUser } from "@features/users";
 
@@ -24,7 +24,9 @@ const redisClient = new Redis();
 export class FavoritesService implements IFavoritesService {
   constructor(
     @inject(TYPES.FavoritesRepository)
-    private readonly favoritesRepository: IFavoritesRepository
+    private readonly favoritesRepository: IFavoritesRepository,
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils
   ) {}
   /**
    * Adds a blog post to the user's favorites list.
@@ -33,7 +35,7 @@ export class FavoritesService implements IFavoritesService {
     try {
       await this.favoritesRepository.createFavoriteItem(blogPostId, user._id);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -51,7 +53,7 @@ export class FavoritesService implements IFavoritesService {
       if (err instanceof AppError) {
         throw err;
       }
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -78,7 +80,7 @@ export class FavoritesService implements IFavoritesService {
       if (err instanceof AppError) {
         throw err;
       }
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -94,7 +96,7 @@ export class FavoritesService implements IFavoritesService {
         await this.favoritesRepository.getFavoriteItems(user._id, reqQuery);
       return favorites;
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 }

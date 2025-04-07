@@ -4,7 +4,9 @@ import {
   IBlog,
   IUploadedImage,
 } from "@features/blogs/interfaces/blog.interface";
+import CommentModel from "@features/comments/models/comment.model";
 import BlogModel from "@features/blogs/models/blog.model";
+import { InteractionModel } from "@features/interactions/models/interactions.model";
 import { AppError } from "@shared/index";
 import { ClientSession, startSession } from "mongoose";
 import { BlogsQueueLogger } from "@logging/index";
@@ -15,6 +17,8 @@ export interface DeleteBlogJobData {
 }
 
 const blogQueueLogger = new BlogsQueueLogger();
+
+//! this function need to be enhanced from teh aspect of using session and other di adding
 
 export const deleteBlogsPostsProcessor = async (
   job: Job<DeleteBlogJobData>
@@ -48,10 +52,16 @@ export const deleteBlogsPostsProcessor = async (
         });
       }
     }
-    //! here the logic of deleting the interactions related to this blog (will be added later since its collection not added yet).
 
-    //!here we will add the logic of deleting the comments related to this blog (will be added later since its collection not added yet).
+    const deletedInteractions = await InteractionModel.deleteMany(
+      { blog: blog._id },
+      { session }
+    );
 
+    const deletedComments = await CommentModel.deleteMany(
+      { blog: blog._id },
+      { session }
+    );
     // Commit the transaction
     await session.commitTransaction();
   } catch (err: any) {

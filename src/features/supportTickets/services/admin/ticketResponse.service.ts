@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { ISupportTicket } from "@features/supportTickets/interfaces/supportTicket.interface";
 
 // shard imports
-import { uploadToCloudinary, TYPES, handleServiceError } from "@shared/index";
+import { ICloudinaryUploader, TYPES, IErrorUtils } from "@shared/index";
 
 // logger imports
 // logger imports
@@ -29,7 +29,10 @@ export class TicketResponseService implements ITicketResponseService {
     @inject(TYPES.SupportTicketsLogger)
     private readonly supportTicketsLogger: ISupportTicketsLogger,
     @inject(TYPES.SupportTicketManagementRepository)
-    private readonly ticketManagementRepository: ISupportTicketManagementRepository
+    private readonly ticketManagementRepository: ISupportTicketManagementRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
   /**
    * Allows an admin to respond to a ticket.
@@ -45,7 +48,7 @@ export class TicketResponseService implements ITicketResponseService {
     try {
       if (ticketResponseObject.attachment) {
         const uploadedAttachments: cloudinary.UploadApiResponse =
-          await uploadToCloudinary(
+          await this.cloudinaryUploader.uploadSingleFile(
             ticketResponseObject.attachment.imageLink,
             "support-ticket-attachments"
           );
@@ -80,7 +83,7 @@ export class TicketResponseService implements ITicketResponseService {
         ticket._id,
         err
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

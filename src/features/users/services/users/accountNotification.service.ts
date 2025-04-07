@@ -4,7 +4,7 @@ import { inject, injectable } from "inversify";
 import { ObjectId } from "mongoose";
 // packages imports
 
-import { handleServiceError, TYPES } from "@shared/index";
+import { IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -16,7 +16,8 @@ import {
 export class AccountNotificationService implements IAccountNotificationService {
   constructor(
     @inject(TYPES.UserSelfRepository)
-    private readonly userSelfRepository: IUserSelfRepository
+    private readonly userSelfRepository: IUserSelfRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // Notifications
   public async enableNotifications(userId: ObjectId): Promise<void> {
@@ -24,7 +25,7 @@ export class AccountNotificationService implements IAccountNotificationService {
     try {
       await this.userSelfRepository.updateNotificationsEnabled(userId, true);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 
@@ -32,7 +33,7 @@ export class AccountNotificationService implements IAccountNotificationService {
     try {
       await this.userSelfRepository.updateNotificationsEnabled(userId, false);
     } catch (err: any) {
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   }
 }

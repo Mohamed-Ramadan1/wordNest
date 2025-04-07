@@ -7,3 +7,4 @@ export { SUPPORT_TICKETS_TYPES } from "./injectionContainerTypes/supportTicketTy
 export { BLOGS_TYPES } from "./injectionContainerTypes/blogsTypes";
 export { LOGGING_TYPES } from "./injectionContainerTypes/loggingTypes";
 export { SHARED_TYPES } from "./injectionContainerTypes/sharedTypes";
+export { COMMENTS_TYPES } from "./injectionContainerTypes/commentsTypes";

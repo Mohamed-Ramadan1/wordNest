@@ -5,7 +5,7 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users";
 
 // Shard imports
-import { TYPES, handleServiceError } from "@shared/index";
+import { TYPES, IErrorUtils } from "@shared/index";
 
 // jobs imports
 import { emailQueue, EmailQueueJobs } from "@jobs/index";
@@ -36,7 +36,8 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
     private readonly userAuthRepository: IUserAuthRepository,
     @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.EmailVerificationLogger)
-    private readonly emailsVerificationsLogger: IEmailsVerificationsLogger
+    private readonly emailsVerificationsLogger: IEmailsVerificationsLogger,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
 
   /**
@@ -63,7 +64,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
         user.createdAt,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -89,7 +90,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
         user.createdAt,
         err.message
       );
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -116,7 +117,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
       );
 
       // Throw a meaningful error
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 
@@ -142,8 +143,7 @@ export default class AccountRecoveryService implements IAccountRecoveryService {
         user.id,
         err.message
       );
-      // If transaction failed, re-throw the error
-      handleServiceError(err);
+      this.errorUtils.handleServiceError(err);
     }
   };
 }

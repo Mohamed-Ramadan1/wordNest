@@ -5,7 +5,7 @@ import { Router } from "express";
 import { container } from "@config/inversify.config";
 
 // shared imports
-import { TYPES } from "@shared/index";
+import { TYPES, AccessControlMiddleware } from "@shared/index";
 
 // controllers imports
 import AuthController from "../controllers/auth.controller";
@@ -15,8 +15,10 @@ import AccountRecoveryController from "../controllers/accountRecovery.controller
 import { AuthMiddleware } from "../middlewares/auth.middleware";
 import { AccountRecoveryMiddleware } from "../middlewares/accountRecovery.middleware";
 
-// shared imports
-import { protect } from "@shared/index";
+// shard instances initialization
+const accessControllerMiddleware = container.get<AccessControlMiddleware>(
+  TYPES.AccessControlMiddleware
+);
 
 // controllers instances (dependency injection)
 const authController = container.get<AuthController>(TYPES.AuthController);
@@ -43,7 +45,9 @@ router
   .post(authMiddleware.validateLogin, authController.emailLogin);
 
 // Log out auth user.
-router.route("/logout").post(protect, authController.logout);
+router
+  .route("/logout")
+  .post(accessControllerMiddleware.protect, authController.logout);
 
 // OAuth register routes.
 router.route("/social-register").post(authController.socialRegister);
@@ -59,7 +63,7 @@ router
 router
   .route("/verify-email/resend")
   .post(
-    protect,
+    accessControllerMiddleware.protect,
     accountRecoveryMiddleware.validateResendVerificationEmail,
     accountRecoveryController.resendVerification
   );

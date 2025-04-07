@@ -10,7 +10,7 @@ import {
   catchAsync,
   validateDto,
   AppError,
-  uploadImagesToCloudinary,
+  ICloudinaryUploader,
   TYPES,
 } from "@shared/index";
 
@@ -37,7 +37,9 @@ import {
 export class ScheduledBlogsMiddleware implements IScheduledBlogsMiddleware {
   constructor(
     @inject(TYPES.BlogAuthorRepository)
-    private readonly blogAuthorRepository: IBlogAuthorRepository
+    private readonly blogAuthorRepository: IBlogAuthorRepository,
+    @inject(TYPES.CloudinaryUploader)
+    private readonly cloudinaryUploader: ICloudinaryUploader
   ) {}
   public validateScheduleDateFormat = catchAsync(
     async (
@@ -107,7 +109,7 @@ export class ScheduledBlogsMiddleware implements IScheduledBlogsMiddleware {
         if (req.files) {
           const blogImages = filterValidImages(req.files);
 
-          const imagesData = await uploadImagesToCloudinary(
+          const imagesData = await this.cloudinaryUploader.uploadMultipleImages(
             blogImages,
             "blogImages",
             "blogs-images"
