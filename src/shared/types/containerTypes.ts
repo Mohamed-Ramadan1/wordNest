@@ -10,6 +10,7 @@ import {
   SHARED_TYPES,
   COMMENTS_TYPES,
   JOBS_TYPES,
+  CONTENT_REPORTING_TYPES,
 } from "../constants/index";
 
 // Define identifiers for bindings
@@ -36,4 +37,6 @@ export const TYPES = {
   ...SHARED_TYPES,
   // Jobs types
   ...JOBS_TYPES,
+  // Content reporting types
+  ...CONTENT_REPORTING_TYPES,
 };
