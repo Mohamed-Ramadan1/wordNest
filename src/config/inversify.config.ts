@@ -11,6 +11,8 @@ import blogsModule from "@features/blogs/modules/blogs.module";
 import loggingModule from "@logging/modules/logging.module";
 import commentsModule from "@features/comments/modules/comments.module";
 import sharedModule from "@shared/modules/shared.module";
+import jobsModule from "@jobs/modules/jobs.module";
+
 // Create an IoC container
 const container = new Container();
 
@@ -24,7 +26,8 @@ container.load(
   blogsModule,
   loggingModule,
   commentsModule,
-  sharedModule
+  sharedModule,
+  jobsModule
 );
 
 export { container };

@@ -6,6 +6,7 @@ import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
 import { IUser } from "@features/users";
 import { AppError } from "@shared/index";
+import {container} from '@config/inversify.config'
 
 const bandAccountsLogger = new BandedAccountsLogger();
 

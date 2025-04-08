@@ -9,6 +9,7 @@ import {
   LOGGING_TYPES,
   SHARED_TYPES,
   COMMENTS_TYPES,
+  JOBS_TYPES,
 } from "../constants/index";
 
 // Define identifiers for bindings
@@ -33,4 +34,6 @@ export const TYPES = {
   ...LOGGING_TYPES,
   // Shard types
   ...SHARED_TYPES,
+  // Jobs types
+  ...JOBS_TYPES,
 };
