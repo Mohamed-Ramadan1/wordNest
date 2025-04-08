@@ -13,3 +13,6 @@ export { IContentReportingCRUDMiddleware } from "./middlewareInterfaces/contentR
 // services interfaces exports
 export { IContentReportingManagementService } from "./servicesInterfaces/contentReportingManagementService.interfaces";
 export { IContentReportingCRUDService } from "./servicesInterfaces/contentReportingCRUDService.interface";
+
+// repositories interfaces exports
+export { IContentReportRepository } from "./repositoryInterfaces/contentReportRepository.interface";

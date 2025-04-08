@@ -26,7 +26,7 @@ import { favoritesRouter } from "@features/favorites";
 import { readingListRouter } from "@features/readingList";
 import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
 import { interactionsRouter } from "@features/interactions";
-
+import { contentReportingRouter } from "@features/contentReporting";
 // error handling middleware
 import { globalError } from "@shared/index";
 
@@ -106,6 +106,9 @@ app.use("/api/v1/auth", authRouter);
 
 // comment related routes
 app.use("/api/v1/comments", commentRouter);
+
+// content reporting related routes
+app.use("/api/v1/content-reporting", contentReportingRouter);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {
