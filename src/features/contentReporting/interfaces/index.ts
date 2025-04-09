@@ -16,3 +16,10 @@ export { IContentReportingCRUDService } from "./servicesInterfaces/contentReport
 
 // repositories interfaces exports
 export { IContentReportRepository } from "./repositoryInterfaces/contentReportRepository.interface";
+
+// requests interfaces exports
+export {
+  ContentReportingRequestBody,
+  ContentReportingRequestParams,
+  ReportRequestData,
+} from "./requestsInterfaces/contentReportingCRUDRequest.interface";
