@@ -1,5 +1,4 @@
 /*
-=> create comments feature.
 => create content Reports feature.
 => analytics feature (aggregation framework  / filtration process).
 => load testing for the project.
