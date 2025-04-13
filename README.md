@@ -25,7 +25,7 @@ WordNest includes a comprehensive email notification system for various user acc
 
 ### Account Restriction Notice
 
-![Account Restriction Notice](./docs/auth/imgs/RequestResetPasswordEmail-3.png_)
+![Account Restriction Notice](./docs/auth/imgs/failedLoginAttempsEMail1.png_)
 
 ### Account Deletion Confirmation
 
