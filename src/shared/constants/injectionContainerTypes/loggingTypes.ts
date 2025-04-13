@@ -12,4 +12,5 @@ export const LOGGING_TYPES = {
   BlogsQueueLogger: Symbol.for("BlogsQueueLogger"),
   SupportTicketsLogger: Symbol.for("SupportTicketsLogger"),
   ReadingListLogger: Symbol.for("ReadingListLogger"),
+  ReportContentLogger: Symbol.for("ReportContentLogger"),
 };

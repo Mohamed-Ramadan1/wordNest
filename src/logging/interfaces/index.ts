@@ -11,3 +11,4 @@ export { IEmailsVerificationsLogger } from "./emailsVerificationsLogger.interfac
 export { ILockAccountsLogger } from "./lockAccountsLogger.interface";
 export { IReadingListLogger } from "./readingListLogger.interface";
 export { ISupportTicketsLogger } from "./supportTicketsLogger.interface";
+export { IReportContentLogger } from "./reportContentLogger.interface";

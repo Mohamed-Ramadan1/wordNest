@@ -35,7 +35,9 @@ export class ContentReportingCRUDMiddleware
         req: Request<{}, {}, ContentReportingRequestBody>,
         res: Response,
         next: NextFunction
-      ) => {}
+      ) => {
+        const { contentId, contentReportType, details } = req.body;
+      }
     ),
   ];
 }

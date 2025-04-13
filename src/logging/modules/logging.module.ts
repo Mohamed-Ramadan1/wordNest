@@ -16,6 +16,7 @@ import {
   ILockAccountsLogger,
   IReadingListLogger,
   ISupportTicketsLogger,
+  IReportContentLogger,
 } from "@logging/interfaces";
 
 // loggers imports
@@ -33,6 +34,7 @@ import {
   BlogsQueueLogger,
   SupportTicketsLogger,
   ReadingListLogger,
+  ReportContentLogger,
 } from "@logging/index";
 /**
  * This module encapsulates the bindings for the logging system(winston logger) .
@@ -62,4 +64,5 @@ export default new ContainerModule((bind: interfaces.Bind) => {
     SupportTicketsLogger
   );
   bind<IReadingListLogger>(TYPES.ReadingListLogger).to(ReadingListLogger);
+  bind<IReportContentLogger>(TYPES.ReportContentLogger).to(ReportContentLogger);
 });
