@@ -53,15 +53,9 @@ export const deleteBlogsPostsProcessor = async (
       }
     }
 
-    const deletedInteractions = await InteractionModel.deleteMany(
-      { blog: blog._id },
-      { session }
-    );
+    await InteractionModel.deleteMany({ blog: blog._id }, { session });
 
-    const deletedComments = await CommentModel.deleteMany(
-      { blog: blog._id },
-      { session }
-    );
+    await CommentModel.deleteMany({ blog: blog._id }, { session });
     // Commit the transaction
     await session.commitTransaction();
   } catch (err: any) {

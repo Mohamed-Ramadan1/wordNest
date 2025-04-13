@@ -23,3 +23,5 @@ export { BlogsQueueLogger } from "./loggers/blogQueueLogger";
 export { SupportTicketsLogger } from "./loggers/supportTicketsLogger";
 
 export { ReadingListLogger } from "./loggers/readingListLogger";
+
+export { ReportContentLogger } from "./loggers/reportContentLogger";

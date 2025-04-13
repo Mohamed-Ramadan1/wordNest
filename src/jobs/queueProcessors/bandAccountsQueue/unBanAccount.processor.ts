@@ -1,11 +1,12 @@
-import { container } from "@config/inversify.config";
+
 import { Job } from "bull";
 import { UserModel } from "@features/users";
 import { BandedAccountsLogger } from "@logging/index";
 import { EmailQueueJobs } from "@jobs/constants/emailQueueJobs";
 import { emailQueue } from "../../queues/emailsQueue";
 import { IUser } from "@features/users";
-import { AppError, TYPES } from "@shared/index";
+import { AppError } from "@shared/index";
+import {container} from '@config/inversify.config'
 
 const bandAccountsLogger = new BandedAccountsLogger();
 
