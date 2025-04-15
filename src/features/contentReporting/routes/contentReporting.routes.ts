@@ -62,10 +62,6 @@ router
     accessControllerMiddleware.restrictTo("admin"),
     contentReportingCRUDController.getReportContentRequest
   )
-  .patch(
-    accessControllerMiddleware.restrictTo("admin"),
-    contentReportingCRUDController.updateReportContentRequest
-  )
   .delete(
     accessControllerMiddleware.restrictTo("admin"),
     contentReportingCRUDMiddleware.validateDeleteContentReporting,
