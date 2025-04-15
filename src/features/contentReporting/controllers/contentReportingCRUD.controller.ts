@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 // packages imports
 import { inject, injectable } from "inversify";
 
-// shard imports
+// shared imports
 import { ApiResponse, catchAsync, IResponseUtils, TYPES } from "@shared/index";
 
 // interfaces imports
@@ -16,20 +16,34 @@ import {
   ContentReportingRequestParams,
 } from "../interfaces/index";
 
+/**
+ * Controller responsible for handling content reporting CRUD operations.
+ */
 @injectable()
 export class ContentReportingCRUDController {
+  /**
+   * Constructs the ContentReportingCRUDController.
+   *
+   * @param responseUtils - Utility service for formatting and sending API responses.
+   * @param contentReportingCRUDService - Service layer handling the business logic for content reports.
+   */
   constructor(
     @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils,
     @inject(TYPES.ContentReportingCRUDService)
     private readonly contentReportingCRUDService: IContentReportingCRUDService
   ) {}
 
+  /**
+   * Handles creating a content report request.
+   *
+   * @param req - Express request containing the reporting data in the body.
+   * @param res - Express response object used to send back the result.
+   */
   public createReportContentRequest = catchAsync(
     async (
       req: Request<{}, {}, ContentReportingRequestBody>,
       res: Response
     ): Promise<void> => {
-      // Implement the logic for creating a report content request
       await this.contentReportingCRUDService.createReportContentRequest(
         req.body.reportingRequestData
       );
@@ -43,12 +57,17 @@ export class ContentReportingCRUDController {
     }
   );
 
+  /**
+   * Retrieves a single content report request by its ID.
+   *
+   * @param req - Express request containing the report ID in the route parameters.
+   * @param res - Express response object used to send back the result.
+   */
   public getReportContentRequest = catchAsync(
     async (
       req: Request<ContentReportingRequestParams>,
       res: Response
     ): Promise<void> => {
-      // Implement the logic for getting a report content request
       const reportRequest =
         await this.contentReportingCRUDService.getReportContentRequest(
           req.params.id
@@ -66,9 +85,14 @@ export class ContentReportingCRUDController {
     }
   );
 
+  /**
+   * Retrieves all content report requests with optional filters from the query parameters.
+   *
+   * @param req - Express request that may contain filter or pagination query parameters.
+   * @param res - Express response object used to send back the list of report requests.
+   */
   public getAllReportContentRequests = catchAsync(
     async (req: Request, res: Response): Promise<void> => {
-      // Implement the logic for creating a report content request
       const reportsRequests =
         await this.contentReportingCRUDService.getAllReportContentRequests(
           req.query
@@ -87,17 +111,12 @@ export class ContentReportingCRUDController {
     }
   );
 
-  //! his is in progress
-  public updateReportContentRequest = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
-      await this.contentReportingCRUDService.updateReportContentRequest();
-      const response: ApiResponse<null> = {
-        status: "success",
-        message: "Report content request updated successfully",
-      };
-      this.responseUtils.sendResponse(200, res, response);
-    }
-  );
+  /**
+   * Deletes a specific content report request.
+   *
+   * @param req - Express request containing the deleteReportData in the body.
+   * @param res - Express response object used to confirm deletion.
+   */
   public deleteReportContentRequest = catchAsync(
     async (
       req: Request<{}, {}, DeleteReportRequestBody>,
@@ -111,6 +130,7 @@ export class ContentReportingCRUDController {
         status: "success",
         message: "Report content request deleted successfully",
       };
+
       this.responseUtils.sendResponse(204, res, response);
     }
   );

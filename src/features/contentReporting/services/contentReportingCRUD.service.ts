@@ -1,9 +1,9 @@
-//packages imports
+// packages imports
 import { inject, injectable } from "inversify";
 import { ObjectId } from "mongoose";
 import { ParsedQs } from "qs";
 
-// shard imports
+// shared imports
 import { TYPES, IErrorUtils } from "@shared/index";
 
 // interfaces imports
@@ -17,6 +17,10 @@ import {
 
 // logs imports
 import { IReportContentLogger } from "@logging/interfaces/index";
+
+/**
+ * Service class responsible for handling content reporting CRUD operations.
+ */
 @injectable()
 export class ContentReportingCRUDService
   implements IContentReportingCRUDService
@@ -24,11 +28,19 @@ export class ContentReportingCRUDService
   constructor(
     @inject(TYPES.ContentReportRepository)
     private readonly contentReportRepository: IContentReportRepository,
-    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+
+    @inject(TYPES.ErrorUtils)
+    private readonly errorUtils: IErrorUtils,
+
     @inject(TYPES.ReportContentLogger)
     private readonly reportContentLogger: IReportContentLogger
   ) {}
 
+  /**
+   * Creates a new report content request.
+   *
+   * @param reportInfo - The report data to be created.
+   */
   public async createReportContentRequest(
     reportInfo: ReportRequestData
   ): Promise<void> {
@@ -39,6 +51,12 @@ export class ContentReportingCRUDService
     }
   }
 
+  /**
+   * Retrieves a report content request by its ID.
+   *
+   * @param reportId - The ObjectId of the report to retrieve.
+   * @returns The content reporting object.
+   */
   public async getReportContentRequest(
     reportId: ObjectId
   ): Promise<IContentReporting> {
@@ -51,6 +69,12 @@ export class ContentReportingCRUDService
     }
   }
 
+  /**
+   * Retrieves all report content requests based on query parameters.
+   *
+   * @param requestQuery - The parsed query parameters for filtering or pagination.
+   * @returns An array of content reporting objects.
+   */
   public async getAllReportContentRequests(
     requestQuery: ParsedQs
   ): Promise<IContentReporting[]> {
@@ -63,11 +87,22 @@ export class ContentReportingCRUDService
     }
   }
 
+  /**
+   * Placeholder for future implementation of report content request update logic.
+   */
   public async updateReportContentRequest(): Promise<void> {
     try {
-    } catch (err: any) {}
+      // No implementation yet
+    } catch (err: any) {
+      // Error handling to be added when implemented
+    }
   }
 
+  /**
+   * Deletes a report content request and logs the action.
+   *
+   * @param deleteReportData - Data required to perform the deletion, including admin and content identifiers.
+   */
   public async deleteReportContentRequest(
     deleteReportData: DeleteReportData
   ): Promise<void> {
@@ -76,7 +111,6 @@ export class ContentReportingCRUDService
         deleteReportData.reportId
       );
 
-      // log the action
       this.reportContentLogger.logReportContentDeletion(
         deleteReportData.adminId,
         deleteReportData.contentId,
