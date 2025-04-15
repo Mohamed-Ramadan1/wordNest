@@ -68,6 +68,7 @@ router
   )
   .delete(
     accessControllerMiddleware.restrictTo("admin"),
+    contentReportingCRUDMiddleware.validateDeleteContentReporting,
     contentReportingCRUDController.deleteReportContentRequest
   );
 

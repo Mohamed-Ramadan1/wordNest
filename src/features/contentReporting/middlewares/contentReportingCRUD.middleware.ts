@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 //packages imports
 import { inject, injectable } from "inversify";
-import { Model } from "mongoose";
+import { Model, ObjectId } from "mongoose";
 
 // shard imports
 import { AppError, catchAsync, TYPES, validateDto } from "@shared/index";
@@ -13,8 +13,11 @@ import {
   IContentReportingCRUDMiddleware,
   IContentReportRepository,
   ContentReportingRequestBody,
-  ContentReportingRequestParams,
   ReportRequestData,
+  ContentReportingRequestParams,
+  DeleteReportRequestBody,
+  DeleteReportData,
+  IContentReporting,
 } from "../interfaces/index";
 
 //dtos imports
@@ -22,7 +25,7 @@ import { ValidateReportContentRequestDto } from "../dtos/index";
 
 // blogs feature imports
 import { IBlog } from "@features/blogs/interfaces/index";
-import { Mode } from "fs";
+
 @injectable()
 export class ContentReportingCRUDMiddleware
   implements IContentReportingCRUDMiddleware
@@ -63,7 +66,31 @@ export class ContentReportingCRUDMiddleware
         };
 
         req.body.reportingRequestData = reportRequestData;
+        next();
       }
     ),
   ];
+
+  public validateDeleteContentReporting = catchAsync(
+    async (
+      req: Request<ContentReportingRequestParams, {}, DeleteReportRequestBody>,
+      res: Response,
+      next: NextFunction
+    ) => {
+      const reportRequest: IContentReporting =
+        await this.contentReportingRepository.getContentReportById(
+          req.params.id
+        );
+      const content = reportRequest.content as IBlog;
+      const deleteRequestData: DeleteReportData = {
+        reportId: reportRequest._id,
+        contentId: content._id,
+        adminId: req.user._id,
+        ipAddress: req.ip as string,
+      };
+
+      req.body.deleteReportData = deleteRequestData;
+      next();
+    }
+  );
 }

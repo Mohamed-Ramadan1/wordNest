@@ -39,12 +39,17 @@ export interface IReportContentLogger {
    * Logs the deletion of a report related to specific content.
    * @param userId - The ID of the user deleting the report.
    * @param contentId - The ID of the content associated with the deleted report.
+   * @param reportId - The ID of the report being deleted.
    */
-  logReportContentDeletion(userId: ObjectId, contentId: ObjectId): void;
+  logReportContentDeletion(
+    adminId: ObjectId,
+    contentId: ObjectId,
+    reportId: ObjectId
+  ): void;
 
   /**
    * Logs the processing of a report, such as moderation actions taken.
-   * @param userId - The ID of the user who processed the report.
+   * @param adminId - The ID of the user who deleted the report.
    * @param contentId - The ID of the content associated with the report.
    * @param status - The result/status of the processing.
    */

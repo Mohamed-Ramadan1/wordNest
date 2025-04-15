@@ -15,6 +15,17 @@ export interface ContentReportingRequestBody {
   reportingRequestData: ReportRequestData;
 }
 
+export interface DeleteReportData {
+  reportId: ObjectId;
+  contentId: ObjectId;
+  adminId: ObjectId;
+  ipAddress: string;
+}
+
+export interface DeleteReportRequestBody {
+  deleteReportData: DeleteReportData;
+}
+
 export interface ContentReportingRequestParams {
   id: ObjectId;
 }

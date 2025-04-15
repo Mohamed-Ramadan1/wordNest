@@ -22,4 +22,6 @@ export {
   ContentReportingRequestBody,
   ContentReportingRequestParams,
   ReportRequestData,
+  DeleteReportData,
+  DeleteReportRequestBody,
 } from "./requestsInterfaces/contentReportingCRUDRequest.interface";

@@ -12,7 +12,8 @@ import {
   IContentReporting,
   IContentReportingCRUDService,
   ContentReportingRequestBody,
-  ReportRequestData,
+  DeleteReportRequestBody,
+  ContentReportingRequestParams,
 } from "../interfaces/index";
 
 @injectable()
@@ -43,10 +44,15 @@ export class ContentReportingCRUDController {
   );
 
   public getReportContentRequest = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
+    async (
+      req: Request<ContentReportingRequestParams>,
+      res: Response
+    ): Promise<void> => {
       // Implement the logic for getting a report content request
       const reportRequest =
-        await this.contentReportingCRUDService.getReportContentRequest();
+        await this.contentReportingCRUDService.getReportContentRequest(
+          req.params.id
+        );
 
       const response: ApiResponse<IContentReporting> = {
         status: "success",
@@ -64,7 +70,9 @@ export class ContentReportingCRUDController {
     async (req: Request, res: Response): Promise<void> => {
       // Implement the logic for creating a report content request
       const reportsRequests =
-        await this.contentReportingCRUDService.getAllReportContentRequests();
+        await this.contentReportingCRUDService.getAllReportContentRequests(
+          req.query
+        );
 
       const response: ApiResponse<IContentReporting[]> = {
         status: "success",
@@ -78,6 +86,8 @@ export class ContentReportingCRUDController {
       this.responseUtils.sendResponse(200, res, response);
     }
   );
+
+  //! his is in progress
   public updateReportContentRequest = catchAsync(
     async (req: Request, res: Response): Promise<void> => {
       await this.contentReportingCRUDService.updateReportContentRequest();
@@ -89,8 +99,13 @@ export class ContentReportingCRUDController {
     }
   );
   public deleteReportContentRequest = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
-      await this.contentReportingCRUDService.deleteReportContentRequest();
+    async (
+      req: Request<{}, {}, DeleteReportRequestBody>,
+      res: Response
+    ): Promise<void> => {
+      await this.contentReportingCRUDService.deleteReportContentRequest(
+        req.body.deleteReportData
+      );
 
       const response: ApiResponse<null> = {
         status: "success",

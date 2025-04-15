@@ -49,11 +49,16 @@ export class ReportContentLogger implements IReportContentLogger {
     });
   }
 
-  public logReportContentDeletion(userId: ObjectId, contentId: ObjectId): void {
+  public logReportContentDeletion(
+    adminId: ObjectId,
+    contentId: ObjectId,
+    reportId: ObjectId
+  ): void {
     this.logger.info("Report content deletion", {
       event: "report_content_deletion",
-      userId: userId,
+      adminId: adminId,
       contentId: contentId,
+      reportId: reportId,
       timestamp: new Date().toISOString(),
     });
   }
