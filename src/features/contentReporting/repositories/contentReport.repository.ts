@@ -27,7 +27,7 @@ export class ContentReportRepository implements IContentReportRepository {
 
   public async createReportingRequest(
     reportData: ReportRequestData
-  ): Promise<void> {
+  ): Promise<IContentReporting> {
     try {
       const report: IContentReporting | null =
         await this.contentReportingModel.create(reportData);
@@ -35,6 +35,7 @@ export class ContentReportRepository implements IContentReportRepository {
       if (!report) {
         throw new Error("Error while creating reporting request.");
       }
+      return report;
     } catch (err: any) {
       throw new Error(`Error while creating reporting request: ${err.message}`);
     }
@@ -91,12 +92,3 @@ export class ContentReportRepository implements IContentReportRepository {
     }
   }
 }
-
-/* 
-
-  public async getReportingRequest(): Promise<IContentReporting> {}
-  public async getReportingRequests(): Promise<IContentReporting[]> {}
-  public async updateReportingRequest(): Promise<void> {}
-  public async deleteReportingRequest(): Promise<void> {}
-
-  */

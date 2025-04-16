@@ -18,6 +18,9 @@ import {
 // logs imports
 import { IReportContentLogger } from "@logging/interfaces/index";
 
+// jobs imports
+import { contentReportingQueue, ContentReportingQueueJobs } from "@jobs/index";
+
 /**
  * Service class responsible for handling content reporting CRUD operations.
  */
@@ -45,7 +48,15 @@ export class ContentReportingCRUDService
     reportInfo: ReportRequestData
   ): Promise<void> {
     try {
-      await this.contentReportRepository.createReportingRequest(reportInfo);
+      const report: IContentReporting =
+        await this.contentReportRepository.createReportingRequest(reportInfo);
+      contentReportingQueue.add(
+        ContentReportingQueueJobs.SendReceiveReportConfirmation,
+        {
+          user: reportInfo.user,
+          reportId: report._id,
+        }
+      );
     } catch (err: any) {
       this.errorUtils.handleServiceError(err);
     }

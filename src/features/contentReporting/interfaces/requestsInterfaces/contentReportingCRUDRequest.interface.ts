@@ -1,8 +1,9 @@
 import { ObjectId } from "mongoose";
 import { ContentReportingType } from "../index";
+import { IUser } from "@features/users";
 
 export interface ReportRequestData {
-  user: ObjectId;
+  user: IUser;
   content: ObjectId;
   type: ContentReportingType;
   details: string;

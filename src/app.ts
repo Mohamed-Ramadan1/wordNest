@@ -13,8 +13,6 @@ import hpp from "hpp";
 
 // routes imports from features
 import { authRouter } from "@features/auth";
-// import { userRouter, userAdminRouter } from "@features/users";
-// import userRouter from "./features/users_feature/routes/user.routes";
 import userAdminRouter from "./userFeatureRoutes/usersAdmin";
 import userRouter from "./userFeatureRoutes/users";
 import { commentRouter } from "@features/comments/index";

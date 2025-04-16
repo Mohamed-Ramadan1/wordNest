@@ -62,7 +62,7 @@ export class ContentReportingCRUDMiddleware
           content: blog._id,
           type: contentReportType,
           details,
-          user: req.user._id,
+          user: req.user,
         };
 
         req.body.reportingRequestData = reportRequestData;
