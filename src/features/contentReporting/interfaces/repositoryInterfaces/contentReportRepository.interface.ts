@@ -38,4 +38,7 @@ export interface IContentReportRepository {
    * @returns A promise that resolves when the deletion is complete.
    */
   deleteReportingRequest(reportId: ObjectId): Promise<void>;
+
+  archiveReport(reportId: ObjectId): Promise<void>;
+  unarchiveReport(reportId: ObjectId): Promise<void>;
 }

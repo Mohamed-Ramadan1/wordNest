@@ -68,4 +68,27 @@ router
     contentReportingCRUDController.deleteReportContentRequest
   );
 
+// management routes
+router.patch(
+  "/:id/process",
+  accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementController.processReport
+);
+router.patch(
+  "/:id/update-status",
+  accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementController.updateReportStatus
+);
+
+router.patch(
+  "/:id/archive",
+  accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementController.archiveReport
+);
+router.patch(
+  "/:id/unarchive",
+  accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementController.unarchiveReport
+);
+
 export default router;
