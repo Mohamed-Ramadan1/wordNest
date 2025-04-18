@@ -1,10 +1,8 @@
+import { ObjectId } from "mongoose";
+
 export interface IContentReportingManagementService {
-  processReport(reportId: string): Promise<void>;
-  updateReportStatus(
-    reportId: string,
-    status: string,
-    resolutionType?: string
-  ): Promise<void>;
-  archiveReport(reportId: string): Promise<void>;
-  unarchiveReport(reportId: string): Promise<void>;
+  processReport(): Promise<void>;
+  updateReportStatus(): Promise<void>;
+  archiveReport(reportId: ObjectId): Promise<void>;
+  unarchiveReport(reportId: ObjectId): Promise<void>;
 }

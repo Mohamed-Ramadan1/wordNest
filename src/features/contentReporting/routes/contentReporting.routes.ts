@@ -72,11 +72,13 @@ router
 router.patch(
   "/:id/process",
   accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementMiddleware.validateProcessReport,
   contentReportingManagementController.processReport
 );
 router.patch(
   "/:id/update-status",
   accessControllerMiddleware.restrictTo("admin"),
+  contentReportingManagementMiddleware.validateUpdateReportStatus,
   contentReportingManagementController.updateReportStatus
 );
 

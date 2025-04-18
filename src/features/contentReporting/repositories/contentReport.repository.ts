@@ -91,4 +91,31 @@ export class ContentReportRepository implements IContentReportRepository {
       throw new Error(`Error while deleting reporting request: ${err.message}`);
     }
   }
+
+  public async archiveReport(reportId: ObjectId): Promise<void> {
+    try {
+      await this.contentReportingModel.findByIdAndUpdate(
+        reportId,
+        { isArchived: true },
+        { new: true }
+      );
+    } catch (err: any) {
+      throw new Error(
+        `Error while archiving reporting request: ${err.message}`
+      );
+    }
+  }
+  public async unarchiveReport(reportId: ObjectId): Promise<void> {
+    try {
+      await this.contentReportingModel.findByIdAndUpdate(
+        reportId,
+        { isArchived: false },
+        { new: true }
+      );
+    } catch (err: any) {
+      throw new Error(
+        `Error while un-archiving reporting request: ${err.message}`
+      );
+    }
+  }
 }

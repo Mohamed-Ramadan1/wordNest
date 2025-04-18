@@ -1,11 +1,14 @@
 //packages imports
 import { inject, injectable } from "inversify";
-
+import { ObjectId } from "mongoose";
 // shard imports
 import { TYPES, IErrorUtils } from "@shared/index";
 
 // interfaces imports
-import { IContentReportingManagementService } from "../interfaces/index";
+import {
+  IContentReportingManagementService,
+  IContentReportRepository,
+} from "../interfaces/index";
 
 @injectable()
 export class ContentReportingManagementService
@@ -13,31 +16,34 @@ export class ContentReportingManagementService
 {
   // Add your service methods here
   constructor(
-    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
+    @inject(TYPES.ContentReportRepository)
+    private readonly contentReportRepository: IContentReportRepository
   ) {}
 
-  public processReport = async (reportId: string): Promise<void> => {
+  //! in progress
+  public processReport = async (): Promise<void> => {
     // Your logic here
   };
-  public updateReportStatus = async (
-    reportId: string,
-    status: string,
-    resolutionType?: string
-  ): Promise<void> => {
+
+  //! in progress
+  public updateReportStatus = async (): Promise<void> => {
     try {
     } catch (err: any) {
       this.errorUtils.handleServiceError(err);
     }
   };
-  public archiveReport = async (reportId: string): Promise<void> => {
+  public archiveReport = async (reportId: ObjectId): Promise<void> => {
     try {
+      await this.contentReportRepository.archiveReport(reportId);
     } catch (err: any) {
       this.errorUtils.handleServiceError(err);
     }
   };
 
-  public unarchiveReport = async (reportId: string): Promise<void> => {
+  public unarchiveReport = async (reportId: ObjectId): Promise<void> => {
     try {
+      await this.contentReportRepository.unarchiveReport(reportId);
     } catch (err: any) {
       this.errorUtils.handleServiceError(err);
     }

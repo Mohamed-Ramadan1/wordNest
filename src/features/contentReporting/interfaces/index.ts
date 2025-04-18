@@ -25,3 +25,9 @@ export {
   DeleteReportData,
   DeleteReportRequestBody,
 } from "./requestsInterfaces/contentReportingCRUDRequest.interface";
+
+export {
+  ProcessReportRequestData,
+  ProcessReportRequestBody,
+  ReportManagementParams,
+} from "./requestsInterfaces/contentReportingManagementRequest.interface";
