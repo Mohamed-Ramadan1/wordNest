@@ -11,6 +11,7 @@ import { ApiResponse, catchAsync, IResponseUtils, TYPES } from "@shared/index";
 import {
   IContentReportingManagementService,
   ReportManagementParams,
+  UpdateReportStatusRequestBody,
 } from "../interfaces/index";
 @injectable()
 export class ContentReportingManagementController {
@@ -34,8 +35,14 @@ export class ContentReportingManagementController {
   );
 
   public updateReportStatus = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
-      await this.contentReportingManagementService.updateReportStatus();
+    async (
+      req: Request<ReportManagementParams, {}, UpdateReportStatusRequestBody>,
+      res: Response
+    ): Promise<void> => {
+      await this.contentReportingManagementService.updateReportStatus(
+        req.params.id,
+        req.body.reportStatus
+      );
 
       const response: ApiResponse<null> = {
         status: "success",

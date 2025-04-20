@@ -2,7 +2,11 @@
 import { ObjectId } from "mongoose";
 import { ParsedQs } from "qs";
 // interfaces imports
-import { IContentReporting, ReportRequestData } from "../index";
+import {
+  IContentReporting,
+  ReportRequestData,
+  ContentReportingStatus,
+} from "../index";
 
 /**
  * Interface for the Content Report Repository.
@@ -38,7 +42,10 @@ export interface IContentReportRepository {
    * @returns A promise that resolves when the deletion is complete.
    */
   deleteReportingRequest(reportId: ObjectId): Promise<void>;
-
+  updateReportStatus(
+    reportId: ObjectId,
+    reportStatus: ContentReportingStatus
+  ): Promise<void>;
   archiveReport(reportId: ObjectId): Promise<void>;
   unarchiveReport(reportId: ObjectId): Promise<void>;
 }

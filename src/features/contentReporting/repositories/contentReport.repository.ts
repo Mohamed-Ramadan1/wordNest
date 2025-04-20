@@ -8,6 +8,7 @@ import { TYPES, APIFeaturesInterface } from "@shared/index";
 
 // interfaces imports
 import {
+  ContentReportingStatus,
   IContentReporting,
   IContentReportRepository,
   ReportRequestData,
@@ -116,6 +117,26 @@ export class ContentReportRepository implements IContentReportRepository {
       throw new Error(
         `Error while un-archiving reporting request: ${err.message}`
       );
+    }
+  }
+
+  public async updateReportStatus(
+    reportId: ObjectId,
+    reportStatus: ContentReportingStatus
+  ): Promise<void> {
+    try {
+      const updatedReport: IContentReporting | null =
+        await this.contentReportingModel.findByIdAndUpdate(
+          reportId,
+          { status: reportStatus },
+          { new: true }
+        );
+
+      if (!updatedReport) {
+        throw new Error("Reporting request not found with given id.");
+      }
+    } catch (err: any) {
+      throw new Error(`Error while updating reporting request: ${err.message}`);
     }
   }
 }

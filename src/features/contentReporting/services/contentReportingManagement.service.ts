@@ -6,6 +6,7 @@ import { TYPES, IErrorUtils } from "@shared/index";
 
 // interfaces imports
 import {
+  ContentReportingStatus,
   IContentReportingManagementService,
   IContentReportRepository,
 } from "../interfaces/index";
@@ -27,8 +28,15 @@ export class ContentReportingManagementService
   };
 
   //! in progress
-  public updateReportStatus = async (): Promise<void> => {
+  public updateReportStatus = async (
+    reportId: ObjectId,
+    reportStatus: ContentReportingStatus
+  ): Promise<void> => {
     try {
+      await this.contentReportRepository.updateReportStatus(
+        reportId,
+        reportStatus
+      );
     } catch (err: any) {
       this.errorUtils.handleServiceError(err);
     }

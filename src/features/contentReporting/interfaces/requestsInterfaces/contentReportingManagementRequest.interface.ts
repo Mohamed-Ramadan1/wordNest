@@ -1,7 +1,6 @@
 import { ObjectId } from "mongoose";
 import {
   ResolutionType,
-  IContentReporting,
   ContentReportingStatus,
 } from "../contentReporting.interface";
 
@@ -17,6 +16,9 @@ export interface ProcessReportRequestBody {
   resolutionType: ResolutionType;
 }
 
+export interface UpdateReportStatusRequestBody {
+  reportStatus: ContentReportingStatus;
+}
 export interface ReportManagementParams {
   id: ObjectId;
 }
