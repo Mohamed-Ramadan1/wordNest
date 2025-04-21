@@ -1,5 +1,4 @@
 /*
-=> create content Reports feature.
 => swagger integration for all routes.
 => analytics feature (aggregation framework  / filtration process).
 -----------------------------------------------------------------------------------
