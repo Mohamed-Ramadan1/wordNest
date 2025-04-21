@@ -99,17 +99,6 @@ export class ContentReportingCRUDService
   }
 
   /**
-   * Placeholder for future implementation of report content request update logic.
-   */
-  public async updateReportContentRequest(): Promise<void> {
-    try {
-      // No implementation yet
-    } catch (err: any) {
-      // Error handling to be added when implemented
-    }
-  }
-
-  /**
    * Deletes a report content request and logs the action.
    *
    * @param deleteReportData - Data required to perform the deletion, including admin and content identifiers.

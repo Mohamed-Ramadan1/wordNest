@@ -10,7 +10,7 @@ export const sendContentReportAcknowledgment = async (
     const transport = createMailTransporter();
 
     // Create link to report tracking page (optional)
-    const reportStatusLink = `${process.env.FRONTEND_URL}/reports/status/${reportId}`;
+    // const reportStatusLink = `${process.env.FRONTEND_URL}/reports/status/${reportId}`;
 
     const mailOptions = {
       from: `${siteName} <${siteOfficialEmail}>`,

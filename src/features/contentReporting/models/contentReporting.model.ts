@@ -8,7 +8,6 @@ import {
   ContentReportingType,
   ResolutionType,
 } from "../interfaces/index";
-import path from "path";
 
 const contentReportingSchema: Schema = new Schema<IContentReporting>(
   {
