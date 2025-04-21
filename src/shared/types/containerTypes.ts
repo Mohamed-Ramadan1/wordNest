@@ -11,6 +11,7 @@ import {
   COMMENTS_TYPES,
   JOBS_TYPES,
   CONTENT_REPORTING_TYPES,
+  ANALYTICS_TYPES,
 } from "../constants/index";
 
 // Define identifiers for bindings
@@ -39,4 +40,6 @@ export const TYPES = {
   ...JOBS_TYPES,
   // Content reporting types
   ...CONTENT_REPORTING_TYPES,
+  // Analytics types
+  ...ANALYTICS_TYPES,
 };
