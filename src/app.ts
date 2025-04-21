@@ -13,8 +13,6 @@ import hpp from "hpp";
 
 // routes imports from features
 import { authRouter } from "@features/auth";
-// import { userRouter, userAdminRouter } from "@features/users";
-// import userRouter from "./features/users_feature/routes/user.routes";
 import userAdminRouter from "./userFeatureRoutes/usersAdmin";
 import userRouter from "./userFeatureRoutes/users";
 import { commentRouter } from "@features/comments/index";
@@ -32,6 +30,7 @@ import { globalError } from "@shared/index";
 
 // shard imports
 import { AppError } from "@shared/index";
+import swaggerDocs from "@config/swagger.config";
 
 require("events").setMaxListeners(50);
 
@@ -109,6 +108,8 @@ app.use("/api/v1/comments", commentRouter);
 
 // content reporting related routes
 app.use("/api/v1/content-reporting", contentReportingRouter);
+
+swaggerDocs(app, Number(process.env.PORT) || 5000);
 
 // Error handling middleware
 app.use("*", (req: Request, res: Response, next: NextFunction) => {

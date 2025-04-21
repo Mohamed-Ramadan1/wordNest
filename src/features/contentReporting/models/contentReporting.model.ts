@@ -57,6 +57,15 @@ const contentReportingSchema: Schema = new Schema<IContentReporting>(
   { timestamps: true }
 );
 
+// populate the content when find
+contentReportingSchema.pre<IContentReporting>(/^find/, function (next) {
+  this.populate({
+    path: "content",
+    select: "-__v -createdAt -updatedAt",
+  });
+  next();
+});
+
 const ContentReportingModel: Model<IContentReporting> =
   model<IContentReporting>("ContentReporting", contentReportingSchema);
 

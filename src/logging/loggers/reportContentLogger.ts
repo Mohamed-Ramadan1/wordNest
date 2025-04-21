@@ -3,12 +3,27 @@ import { createLogger } from "@logging/utils/loggerFactory";
 import { Logger } from "winston";
 import { IReportContentLogger } from "@logging/interfaces/index";
 
+/**
+ * Logger class for tracking content reporting activities.
+ * Implements methods to log various content report-related events.
+ */
 export class ReportContentLogger implements IReportContentLogger {
   private logger: Logger;
+
+  /**
+   * Creates an instance of ReportContentLogger.
+   * Initializes the logger with the "reportContent" context.
+   */
   constructor() {
     this.logger = createLogger("reportContent");
   }
 
+  /**
+   * Logs the creation of a content reporting request.
+   * @param userId - The ID of the user creating the report.
+   * @param contentId - The ID of the content being reported.
+   * @param reason - The reason for the report.
+   */
   public logReportContentCreation(
     userId: ObjectId,
     contentId: ObjectId,
@@ -23,6 +38,11 @@ export class ReportContentLogger implements IReportContentLogger {
     });
   }
 
+  /**
+   * Logs the retrieval of a content reporting request.
+   * @param userId - The ID of the user retrieving the report.
+   * @param contentId - The ID of the content associated with the report.
+   */
   public logReportContentRetrieval(
     userId: ObjectId,
     contentId: ObjectId
@@ -35,6 +55,12 @@ export class ReportContentLogger implements IReportContentLogger {
     });
   }
 
+  /**
+   * Logs the update of a content reporting request.
+   * @param userId - The ID of the user updating the report.
+   * @param contentId - The ID of the content associated with the report.
+   * @param status - The new status of the report.
+   */
   public logReportContentUpdate(
     userId: ObjectId,
     contentId: ObjectId,
@@ -49,29 +75,55 @@ export class ReportContentLogger implements IReportContentLogger {
     });
   }
 
-  public logReportContentDeletion(userId: ObjectId, contentId: ObjectId): void {
+  /**
+   * Logs the deletion of a content reporting request.
+   * @param adminId - The ID of the admin performing the deletion.
+   * @param contentId - The ID of the content associated with the report.
+   * @param reportId - The ID of the report being deleted.
+   */
+  public logReportContentDeletion(
+    adminId: ObjectId,
+    contentId: ObjectId,
+    reportId: ObjectId
+  ): void {
     this.logger.info("Report content deletion", {
       event: "report_content_deletion",
-      userId: userId,
+      adminId: adminId,
       contentId: contentId,
+      reportId: reportId,
       timestamp: new Date().toISOString(),
     });
   }
 
+  /**
+   * Logs the processing of a content reporting request.
+   * @param adminId - The ID of the admin processing the report.
+   * @param reportId - The ID of the report being processed.
+   * @param notes - Additional notes about the processing.
+   * @param status - The new status of the report.
+   */
   public logReportContentProcessed(
-    userId: ObjectId,
-    contentId: ObjectId,
+    adminId: ObjectId,
+    reportId: ObjectId,
+    notes: string,
     status: string
   ): void {
     this.logger.info("Report content processed", {
       event: "report_content_processed",
-      userId: userId,
-      contentId: contentId,
+      adminId: adminId,
+      reportId: reportId,
+      notes: notes,
       status: status,
       timestamp: new Date().toISOString(),
     });
   }
 
+  /**
+   * Logs an error related to a content reporting request.
+   * @param userId - The ID of the user associated with the error.
+   * @param contentId - The ID of the content associated with the error.
+   * @param error - The error message.
+   */
   public logReportContentError(
     userId: ObjectId,
     contentId: ObjectId,

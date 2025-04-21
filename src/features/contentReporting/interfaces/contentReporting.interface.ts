@@ -40,7 +40,7 @@ export interface IContentReporting extends Document {
   processedAt?: Date; // When the report was processed (optional)
   processedNotes?: string; // Notes from the processor (optional)
   resolutionType?: ResolutionType; // How the report was resolved (optional)
-  isArchived?: boolean; // Soft-delete flag (optional, defaults to false)
+  isArchived: boolean; // Soft-delete flag (optional, defaults to false)
   createdAt: Date; // Auto-generated timestamp
   updatedAt: Date; // Auto-generated timestamp
 }

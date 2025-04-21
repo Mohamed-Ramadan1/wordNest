@@ -3689,7 +3689,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"blogPostId\":\"\"\n}",
+							"raw": "{\n    \"blogId\":\"67e71fc03ce7eccf6bf7df29\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3708,6 +3708,304 @@
 						"description": "### GET /comments\n\nThis endpoint retrieves comments for a specific blog.\n\n#### Request\n\n- Method: GET\n    \n- URL: {{URL}}/comments\n    \n- Headers:\n    \n    - Content-Type: application/json\n        \n- { \"blogId\": \"67e71fc03ce7eccf6bf7df29\"}\n    \n\n#### Response\n\nThe response is a JSON object with the following schema:\n\n``` json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"status\": {\"type\": \"string\"},\n    \"message\": {\"type\": \"string\"},\n    \"results\": {\"type\": \"integer\"},\n    \"data\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"comments\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"attachedImage\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"public_id\": {\"type\": \"string\"},\n                  \"url\": {\"type\": \"string\"}\n                }\n              },\n              \"_id\": {\"type\": \"string\"},\n              \"blog\": {\"type\": \"string\"},\n              \"comment_author\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"_id\": {\"type\": \"string\"},\n                  \"firstName\": {\"type\": \"string\"},\n                  \"email\": {\"type\": \"string\"}\n                }\n              },\n              \"content\": {\"type\": \"string\"},\n              \"createdAt\": {\"type\": \"string\"},\n              \"updatedAt\": {\"type\": \"string\"}\n            }\n          }\n        }\n      }\n    }\n  }\n}\n\n ```"
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "Content Reporting",
+			"item": [
+				{
+					"name": "Users",
+					"item": [
+						{
+							"name": "create content report request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"contentId\":\"67e71fc03ce7eccf6bf7df29\",\n    \"contentReportType\":\"harassment\",\n    \"details\":\"a very bad contnet you have to review it again\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/content-reporting",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admins",
+					"item": [
+						{
+							"name": "get all content reporting requests ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								},
+								"description": "This endpoint makes an HTTP GET request to retrieve content reporting data.\n\n### Request Body\n\nThis request does not require a request body.\n\n### Response Body\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `results` (integer): The number of results returned.\n    \n- `data` (object): The main data object containing the following fields:\n    \n    - `requests` (array): An array of content reporting requests, each containing the following fields:\n        \n        - `_id` (string): The unique identifier of the request.\n            \n        - `user` (string): The user associated with the request.\n            \n        - `content` (string): The content reported.\n            \n        - `type` (string): The type of the reported content.\n            \n        - `status` (string): The status of the reported content.\n            \n        - `details` (string): Additional details about the reported content.\n            \n        - `isArchived` (boolean): Indicates whether the request is archived.\n            \n        - `createdAt` (string): The timestamp of when the request was created.\n            \n        - `updatedAt` (string): The timestamp of when the request was last updated."
+							},
+							"response": []
+						},
+						{
+							"name": "get content request report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/67fe4937e0e721921c51b536",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67fe4937e0e721921c51b536"
+									]
+								},
+								"description": "This endpoint makes an HTTP GET request to retrieve content reporting details for a specific ID. The response will be in JSON format with a 200 status code. The response body will include the status, message, and data fields. The data field will contain details about the content reporting request, including the ID, user, content, type, status, details, archival status, creation and update timestamps, and version."
+							},
+							"response": []
+						},
+						{
+							"name": "delete content reporting request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/67fe4937e0e721921c51b536",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67fe4937e0e721921c51b536"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update content reporting request ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/id",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"id"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "archive report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/67ff5825cb6bc61dee4ce495/archive",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67ff5825cb6bc61dee4ce495",
+										"archive"
+									]
+								},
+								"description": "### PATCH /content-reporting/67ff5825cb6bc61dee4ce495/archive\n\nThis endpoint is used to archive a specific content report.\n\n#### Request Body\n\n- No request body parameters are required for this endpoint.\n    \n\n#### Response\n\nThe response for this request is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```\n\nThe response includes the status and message fields, both of which are strings."
+							},
+							"response": []
+						},
+						{
+							"name": "unArchive  report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/67ff5825cb6bc61dee4ce495/unarchive",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67ff5825cb6bc61dee4ce495",
+										"unarchive"
+									]
+								},
+								"description": "### PATCH /content-reporting/67ff5825cb6bc61dee4ce495/unarchive\n\nThis endpoint is used to unarchive a specific content report.\n\n#### Request Body\n\n- No request body is required for this endpoint.\n    \n\n#### Response\n\nThe response for this request is in JSON format and has the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```\n\nThe response will include the status and a message indicating the outcome of the unarchive operation."
+							},
+							"response": []
+						},
+						{
+							"name": "process report",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/content-reporting/67fe4937e0e721921c51b536/process",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67fe4937e0e721921c51b536",
+										"process"
+									]
+								},
+								"description": "This endpoint allows you to process a content report with an HTTP PATCH request. The request should be made to {{URL}}/content-reporting/67ff5825cb6bc61dee4ce495/process. The request body should be in raw format and include the \"processedNotes\" and \"resolutionType\" fields.\n\n### Request Body\n\n- `processedNotes` (string): A note describing the processing of the content report.\n    \n- `resolutionType` (string): Indicates the resolution type for the content report.\n    \n\n#### Example\n\n``` json\n{\n    \"processedNotes\": \"hello this is a very fake repo ...\",\n    \"resolutionType\": \"no_action\"\n}\n\n ```\n\n### Response\n\nThe response to this request is in JSON format and has the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "update report status ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reportStatus\":\"resolved\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/content-reporting/67ff5825cb6bc61dee4ce495/update-status",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"content-reporting",
+										"67ff5825cb6bc61dee4ce495",
+										"update-status"
+									]
+								},
+								"description": "This endpoint allows the user to update the status of a content report by sending an HTTP PATCH request to the specified URL. The request should include a payload with the \"reportStatus\" field to indicate the new status of the content report.\n\n### Request Body\n\n- reportStatus (string, required): The new status to be assigned to the content report.\n    \n\n### Response\n\nThe response of this request is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
