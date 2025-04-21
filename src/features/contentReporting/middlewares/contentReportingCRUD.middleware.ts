@@ -1,9 +1,9 @@
-//express imports
+// express imports
 import { Request, Response, NextFunction } from "express";
 
-//packages imports
+// packages imports
 import { inject, injectable } from "inversify";
-import { Model, ObjectId } from "mongoose";
+import { Model } from "mongoose";
 
 // shard imports
 import { AppError, catchAsync, TYPES, validateDto } from "@shared/index";
@@ -20,16 +20,25 @@ import {
   IContentReporting,
 } from "../interfaces/index";
 
-//dtos imports
+// dtos imports
 import { ValidateReportContentRequestDto } from "../dtos/index";
 
 // blogs feature imports
 import { IBlog } from "@features/blogs/interfaces/index";
 
+/**
+ * Middleware for validating CRUD operations related to content reporting.
+ * Implements validation logic for creating and deleting content reports.
+ */
 @injectable()
 export class ContentReportingCRUDMiddleware
   implements IContentReportingCRUDMiddleware
 {
+  /**
+   * Creates an instance of ContentReportingCRUDMiddleware.
+   * @param contentReportingRepository - Repository for accessing content reporting data.
+   * @param blogModel - Mongoose model for interacting with blog data.
+   */
   constructor(
     @inject(TYPES.ContentReportRepository)
     private readonly contentReportingRepository: IContentReportRepository,
@@ -37,6 +46,14 @@ export class ContentReportingCRUDMiddleware
     private readonly blogModel: Model<IBlog>
   ) {}
 
+  /**
+   * Middleware array for validating the creation of a content reporting request.
+   * Validates the request body and ensures the referenced blog exists before constructing report data.
+   * @param req - Express request object containing report data in the body.
+   * @param res - Express response object for sending responses.
+   * @param next - Express next function to pass control to the next middleware.
+   * @returns A promise that resolves when validation and data preparation are complete, or throws an error if the blog is not found.
+   */
   public validateCreateContentReporting = [
     validateDto(ValidateReportContentRequestDto),
     catchAsync(
@@ -71,6 +88,14 @@ export class ContentReportingCRUDMiddleware
     ),
   ];
 
+  /**
+   * Middleware for validating the deletion of a content reporting request.
+   * Retrieves the report and constructs deletion data including report and content details.
+   * @param req - Express request object containing report ID in params and optional body data.
+   * @param res - Express response object for sending responses.
+   * @param next - Express next function to pass control to the next middleware.
+   * @returns A promise that resolves when validation and data preparation are complete.
+   */
   public validateDeleteContentReporting = catchAsync(
     async (
       req: Request<ContentReportingRequestParams, {}, DeleteReportRequestBody>,

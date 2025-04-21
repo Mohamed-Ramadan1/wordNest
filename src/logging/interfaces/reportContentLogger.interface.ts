@@ -46,16 +46,17 @@ export interface IReportContentLogger {
     contentId: ObjectId,
     reportId: ObjectId
   ): void;
-
   /**
    * Logs the processing of a report, such as moderation actions taken.
-   * @param adminId - The ID of the user who deleted the report.
-   * @param contentId - The ID of the content associated with the report.
+   * @param adminId - The ID of the admin who processed the report.
+   * @param reportId - The ID of the report being processed.
+   * @param notes - Notes or details about the processing action.
    * @param status - The result/status of the processing.
    */
   logReportContentProcessed(
-    userId: ObjectId,
-    contentId: ObjectId,
+    adminId: ObjectId,
+    reportId: ObjectId,
+    notes: string,
     status: string
   ): void;
 

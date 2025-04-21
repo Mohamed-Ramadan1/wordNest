@@ -14,6 +14,7 @@ export interface ProcessReportRequestData {
 export interface ProcessReportRequestBody {
   processedNotes: string;
   resolutionType: ResolutionType;
+  reportProcessedData: ProcessReportRequestData;
 }
 
 export interface UpdateReportStatusRequestBody {

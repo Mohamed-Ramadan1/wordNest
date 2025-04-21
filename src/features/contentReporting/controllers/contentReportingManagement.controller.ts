@@ -12,19 +12,41 @@ import {
   IContentReportingManagementService,
   ReportManagementParams,
   UpdateReportStatusRequestBody,
+  ProcessReportRequestBody,
 } from "../interfaces/index";
+
+/**
+ * Controller for managing content reporting operations.
+ * Handles HTTP requests related to processing, updating, archiving, and unarchiving content reports.
+ */
 @injectable()
 export class ContentReportingManagementController {
-  // Add your controller methods here
+  /**
+   * Creates an instance of ContentReportingManagementController.
+   * @param contentReportingManagementService - Service for managing content reporting operations.
+   * @param responseUtils - Utility for sending standardized API responses.
+   */
   constructor(
     @inject(TYPES.ContentReportingManagementService)
     private readonly contentReportingManagementService: IContentReportingManagementService,
     @inject(TYPES.ResponseUtils) private readonly responseUtils: IResponseUtils
   ) {}
 
+  /**
+   * Processes a content report based on the provided data.
+   * @param req - Express request object containing report ID in params and report data in body.
+   * @param res - Express response object for sending the response.
+   * @returns A promise that resolves when the report is processed successfully.
+   */
   public processReport = catchAsync(
-    async (req: Request, res: Response): Promise<void> => {
-      await this.contentReportingManagementService.processReport();
+    async (
+      req: Request<ReportManagementParams, {}, ProcessReportRequestBody>,
+      res: Response
+    ): Promise<void> => {
+      await this.contentReportingManagementService.processReport(
+        req.body.reportProcessedData,
+        req.params.id
+      );
 
       const response: ApiResponse<null> = {
         status: "success",
@@ -34,6 +56,12 @@ export class ContentReportingManagementController {
     }
   );
 
+  /**
+   * Updates the status of a content report.
+   * @param req - Express request object containing report ID in params and new status in body.
+   * @param res - Express response object for sending the response.
+   * @returns A promise that resolves when the report status is updated successfully.
+   */
   public updateReportStatus = catchAsync(
     async (
       req: Request<ReportManagementParams, {}, UpdateReportStatusRequestBody>,
@@ -52,6 +80,12 @@ export class ContentReportingManagementController {
     }
   );
 
+  /**
+   * Archives a content report.
+   * @param req - Express request object containing report ID in params.
+   * @param res - Express response object for sending the response.
+   * @returns A promise that resolves when the report is archived successfully.
+   */
   public archiveReport = catchAsync(
     async (
       req: Request<ReportManagementParams>,
@@ -67,6 +101,12 @@ export class ContentReportingManagementController {
     }
   );
 
+  /**
+   * Un-archives a content report.
+   * @param req - Express request object containing report ID in params.
+   * @param res - Express response object for sending the response.
+   * @returns A promise that resolves when the report is un-archived successfully.
+   */
   public unarchiveReport = catchAsync(
     async (
       req: Request<ReportManagementParams>,
