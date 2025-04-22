@@ -25,7 +25,18 @@ const options: swaggerJsdoc.Options = {
       },
     ],
   },
-  apis: ["./src/routes/*.ts", "./src/models/*Model.ts"],
+  apis: [
+    "./src/features/auth/routes/*.ts",
+    "./src/features/users/routes/*.ts",
+    "./src/features/blogs/routes/*.ts",
+    "./src/features/supportTickets/routes/*.ts",
+    "./src/features/readingList/routes/*.ts",
+    "./src/features/favorites/routes/*.ts",
+    "./src/features/comments/routes/*.ts",
+    "./src/features/interactions/routes/*.ts",
+    "./src/features/contentReporting/routes/*.ts",
+    "./src/features/analytics/routes/*.ts",
+  ],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
