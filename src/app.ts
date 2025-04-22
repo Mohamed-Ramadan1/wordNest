@@ -25,6 +25,7 @@ import { readingListRouter } from "@features/readingList";
 import { adminBlogRouter, blogOwnerRouter, blogRouter } from "@features/blogs";
 import { interactionsRouter } from "@features/interactions";
 import { contentReportingRouter } from "@features/contentReporting";
+import { analyticsRouter } from "@features/analytics/index";
 // error handling middleware
 import { globalError } from "@shared/index";
 
@@ -108,6 +109,9 @@ app.use("/api/v1/comments", commentRouter);
 
 // content reporting related routes
 app.use("/api/v1/content-reporting", contentReportingRouter);
+
+// analytics related routes
+app.use("/api/v1/analytics", analyticsRouter);
 
 swaggerDocs(app, Number(process.env.PORT) || 5000);
 
