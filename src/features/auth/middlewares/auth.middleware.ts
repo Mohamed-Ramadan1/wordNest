@@ -7,7 +7,7 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users";
 
 // shard imports
-import { AppError, catchAsync, validateDto, TYPES } from "@shared/index";
+import { catchAsync, validateDto, TYPES, IErrorUtils } from "@shared/index";
 
 // dto imports
 import { RegistrationDto } from "../dtos/registration.dto";
@@ -35,7 +35,8 @@ export class AuthMiddleware implements IAuthMiddleware {
   constructor(
     @inject(TYPES.AuthLogger) private readonly authLogger: IAuthLogger,
     @inject(TYPES.UserAuthRepository)
-    private readonly userAuthRepository: IUserAuthRepository
+    private readonly userAuthRepository: IUserAuthRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   public validateRegistration = [
     validateDto(RegistrationDto), // Step 1: Validate inputs using DTO
@@ -46,7 +47,7 @@ export class AuthMiddleware implements IAuthMiddleware {
         await this.userAuthRepository.findUserByEmail(email);
 
       if (existingUser) {
-        throw new AppError("Email already in use.", 409);
+        return this.errorUtils.handleAppError("Email already in use.", 409);
       }
 
       next();
@@ -69,7 +70,8 @@ export class AuthMiddleware implements IAuthMiddleware {
           req.ip,
           `No user existing with email address ${email}`
         ); // Log failed login attempt
-        throw new AppError("Invalid email or password", 401);
+
+        return this.errorUtils.handleAppError("Invalid email or password", 401);
       }
       // Call checkAccountLoginLockedStatus only once before any other checks
       await checkAccountLoginLockedStatus(user);
@@ -83,7 +85,7 @@ export class AuthMiddleware implements IAuthMiddleware {
         // Increment login attempts and potentially lock the account
         await lockAccountLogin(user);
         this.authLogger.logFailedLogin(email, req.ip, "Invalid credentials"); // Log failed login attempt
-        throw new AppError("Invalid email or password", 401);
+        return this.errorUtils.handleAppError("Invalid email or password", 401);
       }
       // Check account deletion status (if account marked for deletion)
       checkAccountDeletionStatus(user);

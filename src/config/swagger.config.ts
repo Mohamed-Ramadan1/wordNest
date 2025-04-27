@@ -3,7 +3,6 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { version } from "../../package.json";
 
-import { UserModel } from "@features/users";
 const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
