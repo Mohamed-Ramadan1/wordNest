@@ -178,7 +178,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
       ]);
 
       const result = aggregation[0];
-      const analytics: IBlogsCollectionAnalytics = {
+      const analytics: IBlogsCollectionAnalytics | any = {
         totalBlogs: result.totalBlogs || 0,
         totalViews: result.totalViews || 0,
         totalShares: result.totalShares || 0,

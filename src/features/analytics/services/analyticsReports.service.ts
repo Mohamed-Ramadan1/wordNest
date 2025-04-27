@@ -1,10 +1,14 @@
+/**
+ * Service for handling analytics reports business logic.
+ * Implements methods to fetch and cache analytics reports for blogs, users, support tickets, and content reporting.
+ */
+
 // packages imports
 import { inject, injectable } from "inversify";
 import { ParsedQs } from "qs";
 import Redis from "ioredis";
 
 // utils imports
-
 import { TYPES, IErrorUtils } from "@shared/index";
 
 // interfaces imports
@@ -20,7 +24,7 @@ import {
   IAnalyticsReportsRepository,
 } from "../interfaces/index";
 
-//! The part of redis client instance creation will be refactored to be DI supporting .
+//! The part of redis client instance creation will be refactored to be DI supporting.
 // redis client instance creation.
 /**
  * @private
@@ -29,14 +33,29 @@ import {
  */
 const redisClient = new Redis();
 
+/**
+ * AnalyticsReportsService class to manage analytics reports with caching.
+ * Implements the IAnalyticsReportsService interface.
+ */
 @injectable()
 export class AnalyticsReportsService implements IAnalyticsReportsService {
+  /**
+   * Constructs the AnalyticsReportsService with dependency injection.
+   * @param errorUtils - Utility for handling service errors.
+   * @param analyticsReportsRepository - Repository for accessing analytics data.
+   */
   constructor(
     @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils,
     @inject(TYPES.AnalyticsReportsRepository)
     private readonly analyticsReportsRepository: IAnalyticsReportsRepository
   ) {}
 
+  /**
+   * Fetches blogs analytics reports, utilizing Redis caching.
+   * @param params - The query parameters for filtering the analytics reports.
+   * @returns A promise that resolves to an array of blogs analytics reports.
+   * @throws Throws an error if the operation fails, handled by errorUtils.
+   */
   public async getAllBlogsAnalyticsReports(
     params: ParsedQs
   ): Promise<IBlogsCollectionAnalytics[]> {
@@ -55,6 +74,12 @@ export class AnalyticsReportsService implements IAnalyticsReportsService {
     }
   }
 
+  /**
+   * Fetches users analytics reports, utilizing Redis caching.
+   * @param params - The query parameters for filtering the analytics reports.
+   * @returns A promise that resolves to an array of users analytics reports.
+   * @throws Throws an error if the operation fails, handled by errorUtils.
+   */
   public async getAllUsersAnalyticsReports(
     params: ParsedQs
   ): Promise<IUsersCollectionAnalytics[]> {
@@ -73,6 +98,12 @@ export class AnalyticsReportsService implements IAnalyticsReportsService {
     }
   }
 
+  /**
+   * Fetches support tickets analytics reports, utilizing Redis caching.
+   * @param params - The query parameters for filtering the analytics reports.
+   * @returns A promise that resolves to an array of support tickets analytics reports.
+   * @throws Throws an error if the operation fails, handled by errorUtils.
+   */
   public async getAllSupportTicketsAnalyticsReports(
     params: ParsedQs
   ): Promise<ISupportTicketsCollectionAnalytics[]> {
@@ -93,6 +124,12 @@ export class AnalyticsReportsService implements IAnalyticsReportsService {
     }
   }
 
+  /**
+   * Fetches content reporting analytics reports, utilizing Redis caching.
+   * @param params - The query parameters for filtering the analytics reports.
+   * @returns A promise that resolves to an array of content reporting analytics reports.
+   * @throws Throws an error if the operation fails, handled by errorUtils.
+   */
   public async getAllContentReportingAnalyticsReports(
     params: ParsedQs
   ): Promise<IContentReportingCollectionAnalytics[]> {
