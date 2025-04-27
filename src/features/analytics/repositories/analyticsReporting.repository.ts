@@ -1,9 +1,10 @@
 // packages imports
 import { inject, injectable } from "inversify";
-import { Model } from "mongoose";
+import { Model, Query } from "mongoose";
+import { ParsedQs } from "qs";
 
 // utils imports
-import { TYPES, IErrorUtils } from "@shared/index";
+import { TYPES, IErrorUtils, APIFeaturesInterface } from "@shared/index";
 
 // interfaces imports
 import {
@@ -25,11 +26,28 @@ export class AnalyticsReportsRepository implements IAnalyticsReportsRepository {
     @inject(TYPES.SupportTicketCollectionAnalyticsModel)
     private readonly supportTicketsCollectionAnalyticsModel: Model<ISupportTicketsCollectionAnalytics>,
     @inject(TYPES.ContentReportingCollectionAnalyticsModel)
-    private readonly contentReportingCollectionAnalyticsModel: Model<IContentReportingCollectionAnalytics>
+    private readonly contentReportingCollectionAnalyticsModel: Model<IContentReportingCollectionAnalytics>,
+    @inject(TYPES.APIFeatures)
+    private readonly apiFeatures: (
+      query: Query<any[], any>,
+      queryString: ParsedQs
+    ) => APIFeaturesInterface<any>
   ) {}
 
-  public async getAllBlogsAnalytics(): Promise<IBlogsCollectionAnalytics> {
+  public async getAllBlogsAnalytics(
+    params: ParsedQs
+  ): Promise<IBlogsCollectionAnalytics[]> {
     try {
+      const query = this.apiFeatures(
+        this.blogsCollectionAnalyticsModel.find(),
+        params
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const blogsAnalytics = await query.execute();
+      return blogsAnalytics;
     } catch (err: any) {
       this.errorUtils.handleRepositoryError(
         `Error in getAllBlogsAnalytics reports : ${err.message}`
@@ -37,8 +55,20 @@ export class AnalyticsReportsRepository implements IAnalyticsReportsRepository {
     }
   }
 
-  public async getAllUsersAnalytics(): Promise<IUsersCollectionAnalytics> {
+  public async getAllUsersAnalytics(
+    params: ParsedQs
+  ): Promise<IUsersCollectionAnalytics[]> {
     try {
+      const query = this.apiFeatures(
+        this.usersCollectionAnalyticsModel.find(),
+        params
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const usersAnalytics = await query.execute();
+      return usersAnalytics;
     } catch (err: any) {
       this.errorUtils.handleRepositoryError(
         `Error in getAllUsersAnalytics reports : ${err.message}`
@@ -46,8 +76,20 @@ export class AnalyticsReportsRepository implements IAnalyticsReportsRepository {
     }
   }
 
-  public async getAllSupportTicketsAnalytics(): Promise<ISupportTicketsCollectionAnalytics> {
+  public async getAllSupportTicketsAnalytics(
+    params: ParsedQs
+  ): Promise<ISupportTicketsCollectionAnalytics[]> {
     try {
+      const query = this.apiFeatures(
+        this.supportTicketsCollectionAnalyticsModel.find(),
+        params
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const supportTicketsAnalytics = await query.execute();
+      return supportTicketsAnalytics;
     } catch (err: any) {
       this.errorUtils.handleRepositoryError(
         `Error in getAllSupportTicketsAnalytics reports : ${err.message}`
@@ -55,8 +97,20 @@ export class AnalyticsReportsRepository implements IAnalyticsReportsRepository {
     }
   }
 
-  public async getAllContentReportingAnalytics(): Promise<IContentReportingCollectionAnalytics> {
+  public async getAllContentReportingAnalytics(
+    params: ParsedQs
+  ): Promise<IContentReportingCollectionAnalytics[]> {
     try {
+      const query = this.apiFeatures(
+        this.contentReportingCollectionAnalyticsModel.find(),
+        params
+      )
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+      const contentReportingAnalytics = await query.execute();
+      return contentReportingAnalytics;
     } catch (err: any) {
       this.errorUtils.handleRepositoryError(
         `Error in getAllContentReportingAnalytics reports : ${err.message}`
