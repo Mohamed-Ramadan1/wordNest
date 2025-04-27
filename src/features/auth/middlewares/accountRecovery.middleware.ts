@@ -8,7 +8,7 @@ import { inject, injectable } from "inversify";
 import { IUser } from "@features/users";
 
 // utils imports
-import { AppError, catchAsync, TYPES, validateDto } from "@shared/index";
+import { catchAsync, TYPES, validateDto, IErrorUtils } from "@shared/index";
 
 // dto imports
 import { ResetPasswordDTO } from "@features/auth/dtos/resetPassword.dto";
@@ -29,7 +29,8 @@ import {
 export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
   constructor(
     @inject(TYPES.UserAuthRepository)
-    private readonly userAuthRepository: IUserAuthRepository
+    private readonly userAuthRepository: IUserAuthRepository,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   // validation middleware for validate the verify email token to the user.
   public validateVerifyEmails = catchAsync(
@@ -46,7 +47,10 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
         ]);
 
       if (!user) {
-        throw new AppError("Token is invalid or has expired", 400);
+        return this.errorUtils.handleAppError(
+          "Token is invalid or has expired",
+          400
+        );
       }
       req.user = user;
       next();
@@ -58,7 +62,7 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
     async (req: Request, res: Response, next: NextFunction) => {
       // Check if the user's email is already verified
       if (req.user.emailVerified) {
-        throw new AppError("Email is already verified", 400);
+        return this.errorUtils.handleAppError("Email is already verified", 400);
       }
 
       // Validate resend attempts
@@ -72,7 +76,7 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
   public validateRequestResetPassword = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       if (!req.body.email) {
-        throw new AppError("Email is required", 400);
+        return this.errorUtils.handleAppError("Email is required", 400);
       }
       // find the user who have the email.
       const user: IUser | null = await this.userAuthRepository.findUserByEmail(
@@ -103,12 +107,18 @@ export class AccountRecoveryMiddleware implements IAccountRecoveryMiddleware {
         ]);
 
       if (!user) {
-        throw new AppError("Invalid reset token", 400);
+        return this.errorUtils.handleAppError(
+          "Token is invalid or has expired",
+          400
+        );
       }
 
       // Then check if token is expired
       if (user.passwordResetTokenExpiredAt < new Date()) {
-        throw new AppError("Reset token has expired", 400);
+        return this.errorUtils.handleAppError(
+          "Token is invalid or has expired",
+          400
+        );
       }
 
       req.user = user;

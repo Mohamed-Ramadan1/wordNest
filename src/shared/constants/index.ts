@@ -10,3 +10,4 @@ export { SHARED_TYPES } from "./injectionContainerTypes/sharedTypes";
 export { COMMENTS_TYPES } from "./injectionContainerTypes/commentsTypes";
 export { JOBS_TYPES } from "./injectionContainerTypes/jobsTypes";
 export { CONTENT_REPORTING_TYPES } from "./injectionContainerTypes/contentReportingTypes";
+export { ANALYTICS_TYPES } from "./injectionContainerTypes/analyticsTypes";

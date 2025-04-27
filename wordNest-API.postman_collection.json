@@ -3947,18 +3947,34 @@
 							"name": "process report",
 							"request": {
 								"auth": {
-									"type": "noauth"
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
 								},
 								"method": "PATCH",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"processedNotes\":\"hello this is a very fake report be sure next time pro-----------------\",\n    \"resolutionType\":\"no_action\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
-									"raw": "{{URL}}/content-reporting/67fe4937e0e721921c51b536/process",
+									"raw": "{{URL}}/content-reporting/67ff5825cb6bc61dee4ce495/process",
 									"host": [
 										"{{URL}}"
 									],
 									"path": [
 										"content-reporting",
-										"67fe4937e0e721921c51b536",
+										"67ff5825cb6bc61dee4ce495",
 										"process"
 									]
 								},
@@ -4002,6 +4018,257 @@
 									]
 								},
 								"description": "This endpoint allows the user to update the status of a content report by sending an HTTP PATCH request to the specified URL. The request should include a payload with the \"reportStatus\" field to indicate the new status of the content report.\n\n### Request Body\n\n- reportStatus (string, required): The new status to be assigned to the content report.\n    \n\n### Response\n\nThe response of this request is a JSON object with the following schema:\n\n``` json\n{\n    \"type\": \"object\",\n    \"properties\": {\n        \"status\": {\n            \"type\": \"string\"\n        },\n        \"message\": {\n            \"type\": \"string\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "Generate Analytics",
+					"item": [
+						{
+							"name": "genrate blog analytics report ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/blogs",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"blogs"
+									]
+								},
+								"description": "The endpoint retrieves analytics data for blogs. The response is a JSON object with the following schema:\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"data\": {\n        \"analytics\": {\n            \"totalBlogs\": 0,\n            \"totalViews\": 0,\n            \"totalShares\": 0,\n            \"totalComments\": 0,\n            \"totalInteractions\": 0,\n            \"averageViewsPerBlog\": 0,\n            \"averageSharesPerBlog\": 0,\n            \"averageCommentsPerBlog\": 0,\n            \"averageInteractionsPerBlog\": 0,\n            \"blogsPublishedToday\": 0,\n            \"blogsPublishedThisMonth\": 0,\n            \"blogsArchived\": 0,\n            \"blogsUnderReview\": 0,\n            \"blogsPrivate\": 0,\n            \"mostPopularTags\": [\"\"],\n            \"mostPopularCategories\": [\"\"],\n            \"lastCalculatedAt\": \"\",\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\"\n        }\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "generate users analytics report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/users",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"users"
+									]
+								},
+								"description": "### GET /analytics/users\n\nThis endpoint retrieves analytics data related to the users of the system.\n\n#### Response\n\nThe response returns a JSON object with the following properties:\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `data` (object): The analytics data object containing the following properties:\n    \n    - `totalUsers` (number): The total number of users in the system.\n        \n    - `totalBlogsCreated` (number): The total number of blogs created by users.\n        \n    - `totalFollowers` (number): The total number of followers across all users.\n        \n    - `totalFollowing` (number): The total number of users being followed by others.\n        \n    - `totalActiveUsers` (number): The total number of active users.\n        \n    - `totalVerifiedUsers` (number): The total number of verified users.\n        \n    - `totalLockedUsers` (number): The total number of locked users.\n        \n    - `totalBannedUsers` (number): The total number of banned users.\n        \n    - `totalUsersToBeDeleted` (number): The total number of users to be deleted.\n        \n    - `usersByRole` (object): The count of users by role, with properties:\n        \n        - `user` (number): The count of regular users.\n            \n        - `admin` (number): The count of admin users.\n            \n    - `averageFollowersPerUser` (number): The average number of followers per user.\n        \n    - `averageFollowingPerUser` (number): The average number of users being followed per user.\n        \n    - `averageBlogsPerUser` (number): The average number of blogs per user.\n        \n    - `usersRegisteredToday` (number): The number of users registered today.\n        \n    - `usersRegisteredThisMonth` (number): The number of users registered this month.\n        \n    - `usersLoggedInToday` (number): The number of users logged in today.\n        \n    - `usersActiveThisMonth` (number): The number of users active this month.\n        \n    - `emailVerificationRequestsToday` (number): The number of email verification requests today.\n        \n    - `emailVerificationRequestsThisMonth` (number): The number of email verification requests this month.\n        \n    - `passwordResetRequests` (number): The number of password reset requests.\n        \n    - `accountDeletionRequests` (number): The number of account deletion requests.\n        \n    - `emailChangeRequests` (number): The number of email change requests.\n        \n    - `deactivationRequests` (number): The number of deactivation requests.\n        \n    - `reactivationRequests` (number): The number of reactivation requests.\n        \n    - `mostFollowedUsers` (array): An array of the most followed users.\n        \n    - `lastCalculatedAt` (string): The timestamp when the data was last calculated.\n        \n    - `createdAt` (string): The timestamp of creation of the data.\n        \n    - `updatedAt` (string): The timestamp of the last update of the data."
+							},
+							"response": []
+						},
+						{
+							"name": "generate support tickets analytics report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/support-tickets",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"support-tickets"
+									]
+								},
+								"description": "# Support Tickets Analytics\n\nThis endpoint retrieves analytics data related to support tickets.\n\n## Request\n\n### Endpoint\n\n`GET /analytics/support-tickets`\n\n### Response Body\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `data` (object): The analytics data object containing various metrics related to support tickets.\n    \n    - `analytics` (object): The analytics data for support tickets.\n        \n        - `totalTickets` (number): The total number of support tickets.\n            \n        - `totalUserResponses` (number): The total number of responses from users.\n            \n        - `totalAdminResponses` (number): The total number of responses from admins.\n            \n        - `totalAttachments` (number): The total number of attachments associated with tickets.\n            \n        - `ticketsByStatus` (object): The count of tickets by status (in_progress, closed, open).\n            \n        - `ticketsByPriority` (object): The count of tickets by priority (low, urgent).\n            \n        - `ticketsByCategory` (object): The count of tickets by category (account, technical).\n            \n        - `ticketsCreatedToday` (number): The number of tickets created today.\n            \n        - `ticketsCreatedThisMonth` (number): The number of tickets created this month.\n            \n        - `ticketsResolvedToday` (number): The number of tickets resolved today.\n            \n        - `ticketsResolvedThisMonth` (number): The number of tickets resolved this month.\n            \n        - `ticketsReopenedToday` (number): The number of tickets reopened today.\n            \n        - `ticketsReopenedThisMonth` (number): The number of tickets reopened this month.\n            \n        - `averageResolutionTimeHours` (number): The average resolution time in hours.\n            \n        - `averageFirstResponseTimeHours` (number): The average time for the first response in hours.\n            \n        - `averageUserResponsesPerTicket` (number): The average number of user responses per ticket.\n            \n        - `averageAdminResponsesPerTicket` (number): The average number of admin responses per ticket.\n            \n        - `mostActiveUsers` (array): An array of the most active users.\n            \n        - `mostActiveAdmins` (array): An array of the most active admins.\n            \n        - `ticketsWithFollowUps` (number): The number of tickets with follow-ups.\n            \n        - `escalatedTickets` (number): The number of escalated tickets.\n            \n        - `ticketsWithInternalNotes` (number): The number of tickets with internal notes.\n            \n        - `mostCommonCategories` (array): An array of the most common ticket categories.\n            \n        - `mostCommonPriorities` (array): An array of the most common ticket priorities.\n            \n        - `lastCalculatedAt` (string): The timestamp when the analytics were last calculated.\n            \n        - `createdAt` (string): The timestamp when the analytics data was created.\n            \n        - `updatedAt` (string): The timestamp when the analytics data was last updated.\n            \n\n## Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n- { \"status\": \"\", \"message\": \"\", \"data\": { \"analytics\": { \"totalTickets\": 0, \"totalUserResponses\": 0, \"totalAdminResponses\": 0, \"totalAttachments\": 0, \"ticketsByStatus\": { \"in_progress\": 0, \"closed\": 0, \"open\": 0 }, \"ticketsByPriority\": { \"low\": 0, \"urgent\": 0 }, \"ticketsByCategory\": { \"account\": 0, \"technical\": 0 }, \"ticketsCreatedToday\": 0, \"ticketsCreatedThisMonth\": 0, \"ticketsResolvedToday\": 0, \"ticketsResolvedThisMonth\": 0, \"ticketsReopenedToday\": 0, \"ticketsReopenedThisMonth\": 0, \"averageResolutionTimeHours\": 0, \"averageFirstResponseTimeHours\": 0, \"averageUserResponsesPerTicket\": 0, \"averageAdminResponsesPerTicket\": 0, \"mostActiveUsers\": \\[\"\"\\], \"mostActiveAdmins\": \\[\\], \"ticketsWithFollowUps\": 0, \"escalatedTickets\": 0, \"ticketsWithInternalNotes\": 0, \"mostCommonCategories\": \\[\"\"\\], \"mostCommonPriorities\": \\[\"\"\\], \"lastCalculatedAt\": \"\", \"createdAt\": \"\", \"updatedAt\": \"\" } }}"
+							},
+							"response": []
+						},
+						{
+							"name": "generate content reporting analytics report",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/content-reporting",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"content-reporting"
+									]
+								},
+								"description": "## Get Content Reporting Analytics\n\nThis endpoint retrieves analytics data for content reporting.\n\n### Request Body\n\nThis is a GET request and does not require a request body.\n\n### Response Body\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `data` (object): The container for the analytics data.\n    \n    - `analytics` (object): The analytics data.\n        \n        - `totalReports` (number): The total number of reports.\n            \n        - `totalArchivedReports` (number): The total number of archived reports.\n            \n        - `totalProcessedReports` (number): The total number of processed reports.\n            \n        - `reportsByStatus` (object): The count of reports by status.\n            \n        - `reportsByType` (object): The count of reports by type.\n            \n        - `reportsByResolutionType` (object): The count of reports by resolution type.\n            \n        - `reportsCreatedToday` (number): The number of reports created today.\n            \n        - `reportsCreatedThisMonth` (number): The number of reports created this month.\n            \n        - `reportsProcessedToday` (number): The number of reports processed today.\n            \n        - `reportsProcessedThisMonth` (number): The number of reports processed this month.\n            \n        - `reportsArchivedToday` (number): The number of reports archived today.\n            \n        - `reportsArchivedThisMonth` (number): The number of reports archived this month.\n            \n        - `averageProcessingTimeHours` (number): The average processing time in hours.\n            \n        - `averageReportsPerBlog` (number): The average reports per blog.\n            \n        - `averageReportsPerUser` (number): The average reports per user.\n            \n        - `mostReportedBlogs` (array): The list of most reported blogs.\n            \n        - `mostActiveReportingUsers` (array): The list of most active reporting users.\n            \n        - `mostActiveProcessingAdmins` (array): The list of most active processing admins.\n            \n        - `reportsWithProcessingNotes` (number): The number of reports with processing notes.\n            \n        - `mostCommonReportTypes` (array): The list of most common report types.\n            \n        - `mostCommonResolutionTypes` (array): The list of most common resolution types.\n            \n        - `lastCalculatedAt` (string): The timestamp when the analytics were last calculated.\n            \n        - `createdAt` (string): The timestamp of creation.\n            \n        - `updatedAt` (string): The timestamp of the last update."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get reports",
+					"item": [
+						{
+							"name": "get all blogs analytics reports",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/blogs/reports",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"blogs",
+										"reports"
+									]
+								},
+								"description": "### GET /analytics/blogs/reports\n\nThis endpoint retrieves analytics reports for blogs.\n\n#### Request\n\nNo request body is required for this GET request.\n\n#### Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"results\": 0,\n    \"data\": {\n        \"reports\": [\n            {\n                \"_id\": \"\",\n                \"totalBlogs\": 0,\n                \"totalViews\": 0,\n                \"totalShares\": 0,\n                \"totalComments\": 0,\n                \"totalInteractions\": 0,\n                \"averageViewsPerBlog\": 0,\n                \"averageSharesPerBlog\": 0,\n                \"averageCommentsPerBlog\": 0,\n                \"averageInteractionsPerBlog\": 0,\n                \"blogsPublishedToday\": 0,\n                \"blogsPublishedThisMonth\": 0,\n                \"blogsArchived\": 0,\n                \"blogsUnderReview\": 0,\n                \"blogsPrivate\": 0,\n                \"mostPopularTags\": [\"\"],\n                \"mostPopularCategories\": [\"\"],\n                \"lastCalculatedAt\": \"\",\n                \"createdAt\": \"\",\n                \"updatedAt\": \"\"\n            }\n        ]\n    }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get all support tickets analytics reports",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/support-tickets/reports",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"support-tickets",
+										"reports"
+									]
+								},
+								"description": "The endpoint retrieves analytics and reports related to support tickets. The response is in JSON format and includes various metrics and data related to support tickets. Below is the JSON schema for the response:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"results\": 0,\n  \"data\": {\n    \"reports\": [\n      {\n        \"_id\": \"\",\n        \"totalTickets\": 0,\n        \"totalUserResponses\": 0,\n        \"totalAdminResponses\": 0,\n        \"totalAttachments\": 0,\n        \"ticketsByStatus\": {\n          \"in_progress\": 0,\n          \"closed\": 0,\n          \"open\": 0\n        },\n        \"ticketsByPriority\": {\n          \"low\": 0,\n          \"urgent\": 0\n        },\n        \"ticketsByCategory\": {\n          \"technical\": 0,\n          \"account\": 0\n        },\n        \"ticketsCreatedToday\": 0,\n        \"ticketsCreatedThisMonth\": 0,\n        \"ticketsResolvedToday\": 0,\n        \"ticketsResolvedThisMonth\": 0,\n        \"ticketsReopenedToday\": 0,\n        \"ticketsReopenedThisMonth\": 0,\n        \"averageResolutionTimeHours\": 0,\n        \"averageFirstResponseTimeHours\": 0,\n        \"averageUserResponsesPerTicket\": 0,\n        \"averageAdminResponsesPerTicket\": 0,\n        \"mostActiveUsers\": [\"\"],\n        \"mostActiveAdmins\": [\"\"],\n        \"ticketsWithFollowUps\": 0,\n        \"escalatedTickets\": 0,\n        \"ticketsWithInternalNotes\": 0,\n        \"mostCommonCategories\": [\"\"],\n        \"mostCommonPriorities\": [\"\"],\n        \"lastCalculatedAt\": \"\",\n        \"createdAt\": \"\",\n        \"updatedAt\": \"\"\n      }\n    ]\n  }\n}\n\n ```"
+							},
+							"response": []
+						},
+						{
+							"name": "get all users analytics reports",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/support-tickets/reports",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"support-tickets",
+										"reports"
+									]
+								},
+								"description": "# Analytics Users Reports\n\nThis endpoint retrieves analytics reports for user-related activities.\n\n## Request\n\n### Headers\n\n- No specific headers were mentioned in the request.\n    \n\n### Parameters\n\n- No specific parameters were mentioned in the request.\n    \n\n## Response\n\n- Status: 200\n    \n- Content-Type: application/json\n    \n\n### Data\n\nThe response contains a JSON object with the following fields:\n\n- `status` (string): The status of the response.\n    \n- `message` (string): A message related to the response.\n    \n- `results` (number): The total number of results returned.\n    \n- `data` (object): An object containing detailed analytics reports for users. It includes various metrics such as total users, blogs created, followers, following, comments, active users, verified users, locked users, banned users, users by role, average followers per user, average following per user, average blogs per user, average comments per user, users registered today, users registered this month, users logged in today, users active this month, email verification requests today, email verification requests this month, password reset requests, account deletion requests, email change requests, deactivation requests, reactivation requests, most followed users, last calculated at, created at, and updated at.\n    \n\nEach field within the `data` object provides specific analytics related to user activities."
+							},
+							"response": []
+						},
+						{
+							"name": "get all content reporting  analytics reports",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{URL}}/analytics/content-reporting/reports",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"analytics",
+										"content-reporting",
+										"reports"
+									]
+								},
+								"description": "The endpoint retrieves analytics and content reporting reports. The response is a JSON object with a status code of 200 and a content type of application/json. The response body contains various metrics related to the reports, such as totalReports, totalArchivedReports, totalProcessedReports, reportsByStatus, reportsByType, reportsByResolutionType, reportsCreatedToday, reportsCreatedThisMonth, reportsProcessedToday, reportsProcessedThisMonth, reportsArchivedToday, reportsArchivedThisMonth, averageProcessingTimeHours, averageReportsPerBlog, averageReportsPerUser, mostReportedBlogs, mostActiveReportingUsers, mostActiveProcessingAdmins, reportsWithProcessingNotes, mostCommonReportTypes, mostCommonResolutionTypes, lastCalculatedAt, createdAt, and updatedAt. Each of these metrics is associated with a specific value or array of values.\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"results\": 0,\n  \"data\": {\n    \"reports\": [\n      {\n        \"_id\": \"\",\n        \"totalReports\": 0,\n        \"totalArchivedReports\": 0,\n        \"totalProcessedReports\": 0,\n        \"reportsByStatus\": {\n          \"resolved\": 0\n        },\n        \"reportsByType\": {\n          \"harassment\": 0\n        },\n        \"reportsByResolutionType\": {\n          \"no_action\": 0\n        },\n        \"reportsCreatedToday\": 0,\n        \"reportsCreatedThisMonth\": 0,\n        \"reportsProcessedToday\": 0,\n        \"reportsProcessedThisMonth\": 0,\n        \"reportsArchivedToday\": 0,\n        \"reportsArchivedThisMonth\": 0,\n        \"averageProcessingTimeHours\": 0,\n        \"averageReportsPerBlog\": 0,\n        \"averageReportsPerUser\": 0,\n        \"mostReportedBlogs\": [\"\"],\n        \"mostActiveReportingUsers\": [\"\"],\n        \"mostActiveProcessingAdmins\": [\"\"],\n        \"reportsWithProcessingNotes\": 0,\n        \"mostCommonReportTypes\": [\"\"],\n        \"mostCommonResolutionTypes\": [\"\"],\n        \"lastCalculatedAt\": \"\",\n        \"createdAt\": \"\",\n        \"updatedAt\": \"\"\n      }\n    ]\n  }\n}\n\n ```"
 							},
 							"response": []
 						}

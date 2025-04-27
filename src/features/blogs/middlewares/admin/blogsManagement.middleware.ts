@@ -6,7 +6,7 @@ import { Model } from "mongoose";
 import { Response, Request, NextFunction } from "express";
 
 // shard imports
-import { catchAsync, AppError, TYPES } from "@shared/index";
+import { catchAsync, IErrorUtils, TYPES } from "@shared/index";
 
 // interfaces imports
 import {
@@ -28,7 +28,8 @@ export class BlogsManagementMiddleware implements IBlogsManagementMiddleware {
   constructor(
     @inject(TYPES.BlogsRepository)
     private readonly blogsRepository: IBlogRepository,
-    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>
+    @inject(TYPES.USER_MODEL) private readonly userModel: Model<IUser>,
+    @inject(TYPES.ErrorUtils) private readonly errorUtils: IErrorUtils
   ) {}
   public validateBlogPostManagementRequest = catchAsync(
     async (
@@ -48,7 +49,8 @@ export class BlogsManagementMiddleware implements IBlogsManagementMiddleware {
         blogQueue.add(BlogsQueueJobs.DeleteBlog, {
           blog: blog,
         });
-        throw new AppError("Blog author not found.", 404);
+
+        return this.errorUtils.handleAppError("Blog author not found.", 404);
       }
       req.body.blogOwner = blogAuthor;
       req.body.blogPost = blog;
@@ -64,7 +66,10 @@ export class BlogsManagementMiddleware implements IBlogsManagementMiddleware {
       next: NextFunction
     ) => {
       if (req.body.blogPost.isPublished === false) {
-        throw new AppError("Blog post is already unpublished.", 400);
+        return this.errorUtils.handleAppError(
+          "Blog post is already unpublished.",
+          400
+        );
       }
       next();
     }
@@ -77,7 +82,10 @@ export class BlogsManagementMiddleware implements IBlogsManagementMiddleware {
       next: NextFunction
     ) => {
       if (req.body.blogPost.isPublished === true) {
-        throw new AppError("Blog post is already published.", 400);
+        return this.errorUtils.handleAppError(
+          "Blog post is already published.",
+          400
+        );
       }
       next();
     }
