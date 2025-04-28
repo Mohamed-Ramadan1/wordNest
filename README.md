@@ -137,16 +137,45 @@ root/
    npm install
    ```
 
-3. Set up environment variables
+3. Create a `.env` file in the root directory with the following variables:
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   ```
+   NODE_ENV=
+   PORT=
+   DATABASE=
+   DATABASE_PASSWORD=
+   EMAIL_PASSWORD=
+   JWT_SECRET=
+   JWT_EXPIRES_IN=90d
+   JWT_LOGOUT_EXPIRES_IN=0
+   JWT_COOKIE_EXPIRES_IN=90
+   CLOUD_NAME=
+   CLOUD_API_KEY=
+   CLOUD_API_SECRET=
+   FRONTEND_URL=
+   REDIS_HOST=
+   REDIS_PORT=
+   FRONTEND_URL=
+   LOG_DIR=
+   GOOGLE_CLIENT_ID=
+   GOOGLE_REDIRECT_URL=
+   STRIPE_SECRET_KEY=
+   STRIPE_SUCCESS_URL=
+   STRIPE_CANCEL_URL=
    ```
 
+   Note: Fill in the appropriate values for each variable. Ensure you provide a MongoDB connection string for the `DATABASE` variable (local or Atlas).
+
 4. Run the development server
+
    ```bash
    npm run dev
+   ```
+
+5. build the application
+
+   ```bash
+   npm run build
    ```
 
 ### Docker Deployment
@@ -160,7 +189,7 @@ docker-compose up -d
 Once the server is running, access the Swagger documentation at:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3000/api/v1/docs
 ```
 
 ## Author Information
@@ -169,7 +198,7 @@ http://localhost:3000/api-docs
 
 - GitHub: [Mohamed-Ramadan1](https://github.com/Mohamed-Ramadan1)
 - Email: mohamedramadan11b@gmail.com
-- LinkedIn: Mohamed Ramadan
+- LinkedIn: [Mohamed Ramadan](https://www.linkedin.com/in/mohamed-ramadan-758555236/)
 
 I'm a dedicated backend software engineer with a passion for creating high-quality software solutions. My goal is to contribute to the tech community by developing innovative solutions that address real-world challenges. I'm always eager to learn new technologies and methodologies to enhance my skills and deliver better software.
 
