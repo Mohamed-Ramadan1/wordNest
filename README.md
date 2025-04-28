@@ -2,6 +2,8 @@
 
 WordNest is a fully functional blog API application built with modern web technologies. It provides a robust backend infrastructure for blog platforms with features including authentication, content management, comments, reading lists, and content reporting. The application follows a feature-based modular architecture, making it scalable and maintainable.
 
+## for full documentation you will find it in the docs folder
+
 ## Key Features
 
 - **User Authentication & Authorization**: Secure login, registration, and account recovery with JWT
@@ -9,6 +11,7 @@ WordNest is a fully functional blog API application built with modern web techno
 - **Comments System**: Interactive commenting functionality with nested replies
 - **Reading List**: Save and organize favorite content for later reading
 - **Content Reporting**: Flag inappropriate content for moderation
+- **Analytics**: powerful analytics dashboard that give insights about the whole application.
 - **Real-time Notifications**: Socket.io integration for instant updates
 - **Payment Processing**: Stripe integration for premium content and subscriptions
 - **Background Jobs**: Scheduled tasks for maintenance and notifications
@@ -25,7 +28,7 @@ WordNest includes a comprehensive email notification system for various user acc
 
 ### Account Restriction Notice
 
-![Account Restriction Notice](./docs/auth/imgs/failedLoginAttempsEMail1.png_)
+![Account Restriction Notice](/docs/auth/imgs/failedLoginAttempsEMail1.png)
 
 ### Account Deletion Confirmation
 
@@ -137,16 +140,45 @@ root/
    npm install
    ```
 
-3. Set up environment variables
+3. Create a `.env` file in the root directory with the following variables:
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   ```
+   NODE_ENV=
+   PORT=
+   DATABASE=
+   DATABASE_PASSWORD=
+   EMAIL_PASSWORD=
+   JWT_SECRET=
+   JWT_EXPIRES_IN=90d
+   JWT_LOGOUT_EXPIRES_IN=0
+   JWT_COOKIE_EXPIRES_IN=90
+   CLOUD_NAME=
+   CLOUD_API_KEY=
+   CLOUD_API_SECRET=
+   FRONTEND_URL=
+   REDIS_HOST=
+   REDIS_PORT=
+   FRONTEND_URL=
+   LOG_DIR=
+   GOOGLE_CLIENT_ID=
+   GOOGLE_REDIRECT_URL=
+   STRIPE_SECRET_KEY=
+   STRIPE_SUCCESS_URL=
+   STRIPE_CANCEL_URL=
    ```
 
+   Note: Fill in the appropriate values for each variable. Ensure you provide a MongoDB connection string for the `DATABASE` variable (local or Atlas).
+
 4. Run the development server
+
    ```bash
    npm run dev
+   ```
+
+5. build the application
+
+   ```bash
+   npm run build
    ```
 
 ### Docker Deployment
@@ -155,13 +187,39 @@ root/
 docker-compose up -d
 ```
 
+## Webpack Build
+
+To build the application using Webpack, run the following command:
+
+```bash
+npm run build
+```
+
+This will create a `dist` directory containing the bundled application files.
+
+run the application using the following command:
+
+```bash
+npm start
+```
+
+This will start the application in production mode.
+
 ## API Documentation
 
 Once the server is running, access the Swagger documentation at:
 
 ```
-http://localhost:3000/api-docs
+http://localhost:3000/api/v1/docs
 ```
+
+## Postman Collection
+
+A Postman collection is included for testing the API endpoints. You can import the `wordNest-API.postman_collection.json` file into Postman to explore and test the API.
+
+## API documentation on Postman
+
+## [Postman-Documentation](https://documenter.getpostman.com/view/31297722/2sB2j1hCkk#4119ae76-78d1-4364-be22-b4d0ce5eebc8)
 
 ## Author Information
 
@@ -169,7 +227,7 @@ http://localhost:3000/api-docs
 
 - GitHub: [Mohamed-Ramadan1](https://github.com/Mohamed-Ramadan1)
 - Email: mohamedramadan11b@gmail.com
-- LinkedIn: Mohamed Ramadan
+- LinkedIn: [Mohamed Ramadan](https://www.linkedin.com/in/mohamed-ramadan-758555236/)
 
 I'm a dedicated backend software engineer with a passion for creating high-quality software solutions. My goal is to contribute to the tech community by developing innovative solutions that address real-world challenges. I'm always eager to learn new technologies and methodologies to enhance my skills and deliver better software.
 
