@@ -28,7 +28,7 @@ WordNest includes a comprehensive email notification system for various user acc
 
 ### Account Restriction Notice
 
-![Account Restriction Notice](/docs/auth/imgs/failedLoginAttempsEMail1.png_)
+![Account Restriction Notice](/docs/auth/imgs/failedLoginAttempsEMail1.png)
 
 ### Account Deletion Confirmation
 
@@ -217,7 +217,7 @@ http://localhost:3000/api/v1/docs
 
 A Postman collection is included for testing the API endpoints. You can import the `wordNest-API.postman_collection.json` file into Postman to explore and test the API.
 
-# API documentation on Postman
+## API documentation on Postman
 
 ## [Postman-Documentation](https://documenter.getpostman.com/view/31297722/2sB2j1hCkk#4119ae76-78d1-4364-be22-b4d0ce5eebc8)
 
