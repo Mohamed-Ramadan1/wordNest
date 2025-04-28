@@ -2,6 +2,8 @@
 
 WordNest is a fully functional blog API application built with modern web technologies. It provides a robust backend infrastructure for blog platforms with features including authentication, content management, comments, reading lists, and content reporting. The application follows a feature-based modular architecture, making it scalable and maintainable.
 
+## for full documentation you will find it in the docs folder
+
 ## Key Features
 
 - **User Authentication & Authorization**: Secure login, registration, and account recovery with JWT
@@ -191,6 +193,14 @@ Once the server is running, access the Swagger documentation at:
 ```
 http://localhost:3000/api/v1/docs
 ```
+
+## Postman Collection
+
+A Postman collection is included for testing the API endpoints. You can import the `wordNest-API.postman_collection.json` file into Postman to explore and test the API.
+
+# API documentation on Postman
+
+## [Postman-Documentation](https://documenter.getpostman.com/view/31297722/2sB2j1hCkk#4119ae76-78d1-4364-be22-b4d0ce5eebc8)
 
 ## Author Information
 
