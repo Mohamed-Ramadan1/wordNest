@@ -11,6 +11,7 @@ WordNest is a fully functional blog API application built with modern web techno
 - **Comments System**: Interactive commenting functionality with nested replies
 - **Reading List**: Save and organize favorite content for later reading
 - **Content Reporting**: Flag inappropriate content for moderation
+- **Analytics**: powerful analytics dashboard that give insights about the whole application.
 - **Real-time Notifications**: Socket.io integration for instant updates
 - **Payment Processing**: Stripe integration for premium content and subscriptions
 - **Background Jobs**: Scheduled tasks for maintenance and notifications
@@ -27,7 +28,7 @@ WordNest includes a comprehensive email notification system for various user acc
 
 ### Account Restriction Notice
 
-![Account Restriction Notice](./docs/auth/imgs/failedLoginAttempsEMail1.png_)
+![Account Restriction Notice](/docs/auth/imgs/failedLoginAttempsEMail1.png_)
 
 ### Account Deletion Confirmation
 
@@ -185,6 +186,24 @@ root/
 ```bash
 docker-compose up -d
 ```
+
+## Webpack Build
+
+To build the application using Webpack, run the following command:
+
+```bash
+npm run build
+```
+
+This will create a `dist` directory containing the bundled application files.
+
+run the application using the following command:
+
+```bash
+npm start
+```
+
+This will start the application in production mode.
 
 ## API Documentation
 
