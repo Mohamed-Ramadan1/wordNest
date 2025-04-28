@@ -4,6 +4,14 @@ WordNest is a fully functional blog API application built with modern web techno
 
 ## for full documentation you will find it in the docs folder
 
+## DeepScan project analysis
+
+![Deep scan analytics](/docs/globalDocs//d1.png)
+
+![Deep scan analytics](/docs/globalDocs/d2.png)
+
+![Deep scan analytics](/docs/globalDocs/d3.png)
+
 ## Key Features
 
 - **User Authentication & Authorization**: Secure login, registration, and account recovery with JWT
